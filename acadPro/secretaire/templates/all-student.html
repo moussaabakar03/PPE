@@ -1,0 +1,160 @@
+{% load static %}
+
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AcadPro | Elèves</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    {% include 'partial/head.html' %}
+</head>
+    
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+        <!-- Header Menu Area Start Here -->
+        
+        {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+           
+            {% include 'partial/aside.html' %}
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Elèves</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'index' %}">Tableau de Bord</a>
+                        </li>
+                        <li>Elèves *</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Student Table Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Elèves *</h3>
+                            </div>
+                        </div>
+                        <form class="mg-b-20" method="POST">
+                            {% csrf_token %}
+                            <div class="row gutters-8">
+                                <div class="col-3-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                    <input type="text" name="matricule" placeholder="Filtrer par matricule ..." class="form-control">
+                                </div>
+                                <div class="col-4-xxxl col-xl-4 col-lg-3 col-12 form-group">
+                                    <input type="text" name ="nom" placeholder="Filtrer par Nom ..." class="form-control">
+                                </div>
+                                <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                    <input type="hidden" placeholder="Search by Class ..." class="form-control">
+                                </div>
+                                <div class="col-1-xxxl col-xl-2 col-lg-3 col-12 form-group">
+                                    <button type="submit" class="fw-btn-fill btn-gradient-yellow">Filtrer</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="table-responsive">
+                            <table class="table display data-table text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input checkAll">
+                                                <label class="form-check-label">Matricule</label>
+                                            </div>
+                                        </th>
+                                        <th>Photo</th>
+                                        <th>Nom</th>
+                                        <th>Prenom</th>
+                                        <th>Genre</th>
+                                        {% comment %} <th>Salle</th> {% endcomment %}
+                                        <th>E-mail</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for etudiant in etudiants %}
+                                    <tr>
+                                        <td>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input">
+                                                <label class="form-check-label">{{etudiant.matricule}}</label>
+                                            </div>
+                                        </td>
+                                        {% if etudiant.photo %}
+                                            <td><img src="{{etudiant.photo.url}}" alt="Photo" style="width: 160px; height: 50px; border-radius: 7px; object-fit: cover; object-position: center;"></td>
+                                        {% else %}
+                                            <td class="text-center"><i class="fa fa-user"></i></td> 
+                                        {% endif %}
+                                        <td>{{etudiant.nom}}</td>
+                                        <td>{{etudiant.prenom}}</td>
+                                        <td>{{etudiant.genre}}</td>
+                                       
+                                        <td>{{etudiant.mail}}</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                    <span class="flaticon-more-button-of-three-dots"></span>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item" href="{% url 'supprimer_student' etudiant.matricule %}" onclick = "return confirm('Voulez-vous vraiment supprimer cet étudiant?')"><i
+                                                            class="fas fa-times text-orange-red"></i>Supprimer</a>
+                                                    {% if etudiant.matricule %}
+                                                        <a class="dropdown-item" href="{% url 'modifier_student' etudiant.matricule %}"><i
+                                                                class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
+                                                    {% else %}
+                                                        <span style="color: red;">Matricule manquant ou invalide</span>
+                                                    {% endif %}
+                                                    <a class="dropdown-item" href="{{etudiant.detailEtudiant}}"><i class="fas fa-eye" title = "voir plus"></i>voir plus</a>
+                                                    {% comment %} <a class="dropdown-item" href="{% url 'detailEtudiant' etudiant.matricule etudiant.parent.id inscription.etudiant.id %}"><i class="fas fa-eye" title = "voir plus"></i>voir plus</a> {% endcomment %}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Student Table Area End Here -->
+                               {% include 'partial/copyright.html' %}
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <!-- jquery-->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Data Table Js -->
+    <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+</body>
+
+</html>

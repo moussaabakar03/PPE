@@ -1,0 +1,202 @@
+{% load static %}
+
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AcadPro | listePresencePasse</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    {% include 'partial/head.html' %}
+
+        <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+</head>
+    
+
+<body>
+
+
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+        <!-- Header Menu Area Start Here -->
+        
+        {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+           
+            {% include 'partial/aside.html' %}
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div style = "display: flex; justify-content: space-between;">
+                    <div class="breadcrumbs-area">
+                        <h3>Elève</h3>
+                        <ul>
+                            <li>
+                                <a href="{% url 'listePresence' salleClasse.id anneeScolaire.id %}"><i class="fa fa-arrow-left"></i> Retour</a>
+                            </li>
+                            <li>
+                                Liste de presences passée 
+                            </li>
+                            <span>
+                                [{{salleClasse.niveau.classe}} {{salleClasse.nom}}]
+                            </span>
+                        </ul>
+                    </div>
+                    <div class="breadcrumbs-area">
+                        <ul>
+                            <li>
+                                <a href=""><i class="fa fa-print" style = "color: #ffaa01; margin-top: 45px;"></i> Imprimer </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Student Table Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1" style="display: flex; justify-content: space-between; align-items: center;">
+                            <div></div>
+                            <div class="item-title" style="text-align: center;">
+                                <h3>Liste de Présences Passées</h3>
+                                <h6>Salle: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{salleClasse.nom}} >> </span> </h6>
+                            </div>
+                            <div>
+                                <h6><span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> {{anneeScolaire.debutAnnee|date:"Y"}}-{{anneeScolaire.fintAnnee|date:"Y"}}</span></h6>
+                            </div>
+                        </div>
+                        {% comment %} <form class="mg-b-20" method=""> {% endcomment %}
+                            {% comment %} {% csrf_token %} {% endcomment %}
+                        <div class="row gutters-8">
+                            <div class="col-3-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                <input type="text" id="searchInput" placeholder="Filtrer ..." class="form-control">
+                            </div>
+                        </div>
+                        <form method="POST" class="mb-3">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" id="searchInput" name="filtre" class="form-control" placeholder="Rechercher par nom, prénom ou matricule..." value="{{ request.POST.filtre }}">
+                                <button type="submit" class="btn" style="background-color: #ffaa01; height: 25px; margin-left: 20px;">Rechercher</button>
+                            </div>
+                        </form>
+
+                        <div class="table-responsive">
+                            <table id="emargementTable" class="table display data-table text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input checkAll">
+                                                <label class="form-check-label">Matricule</label>
+                                            </div>
+                                        </th>
+                                        <th>Nom</th>
+                                        <th>Prenom</th>
+                                        <th>Genre</th>
+                                        <th>Salle</th>
+                                        {% comment %} <th>Salle</th> {% endcomment %}
+                                        <th>Présence</th>
+                                        <th>Date debut heure</th>
+                                        <th>Date fin emargement</th>
+                                        <th>Commentaires...</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    {% for date, emargements in emargements_par_date.items %}
+                                        <tr style="background-color:#f0f0f0;">
+                                            <td colspan="9" style="text-align: center;"><strong style =>Date : {{ date }}</strong></td>
+                                        </tr>
+
+                                        {% for emargement in emargements %}
+                                        <tr>
+                                            <td>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input">
+                                                <label class="form-check-label">{{ emargement.inscrits.etudiant.matricule }}</label>
+                                            </div>
+                                            </td>
+                                            <td>{{ emargement.inscrits.etudiant.nom }}</td>
+                                            <td>{{ emargement.inscrits.etudiant.prenom }}</td>
+                                            <td>{{ emargement.inscrits.etudiant.genre }}</td>
+                                            <td>{{ emargement.salleClasse.niveau.classe }} - {{ emargement.salleClasse.nom }}</td>
+                                            <td>
+                                            {% if emargement.presence == 1 %}
+                                                <i class="fas fa-check-circle" style="color:green;"></i>
+                                            {% else %}
+                                                <i class="fas fa-times-circle" style="color:red;"></i>
+                                            {% endif %}
+                                            </td>
+                                            <td>{{ emargement.dateHeureDebut|date:"d/m/Y H:i" }}</td>
+                                            <td>{{ emargement.date_heure_fin|date:"d/m/Y H:i" }}</td>
+                                            <td>{{ emargement.commentaire }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    </div>
+                </div>
+                <!-- Student Table Area End Here -->
+                {% include 'partial/copyright.html' %}
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <!-- jquery-->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Data Table Js -->
+    <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+
+    
+ <script>
+        document.getElementById('searchInput').addEventListener('keyup', function () {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('table tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(filter)) {
+                    row.style.display = ''; // afficher la ligne
+                } else {
+                    row.style.display = 'none'; // masquer la ligne
+                }
+            });
+        });
+    </script>
+  
+
+</body>
+
+</html>

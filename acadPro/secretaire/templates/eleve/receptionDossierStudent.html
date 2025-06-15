@@ -1,0 +1,175 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+   {% include 'partial/head.html' %}
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+        
+         {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+
+            {% include 'partial/aside.html' %}
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Reception Dossier</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'index' %}">Tableau de Bord</a>
+                        </li>
+                        <li>Reception Dossier *</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Class Table Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Reception Dossier *</h3>
+                            </div>
+                           <div class="dropdown">
+                                <a class="dropdown-toggle" href="#" role="button" 
+                                data-toggle="dropdown" aria-expanded="false">...</a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#"><i class="fas fa-times text-orange-red"></i>Fermer</a>
+                                    <a class="dropdown-item" href="#"><i class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
+                                    <a class="dropdown-item" href="#"><i class="fas fa-redo-alt text-orange-peel"></i>Refrecher</a>
+                                </div>
+                            </div>
+                        </div>
+                        <form class="mg-b-20" method="POST">
+                            {% csrf_token %}
+                            <div class="row gutters-8">
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <select id="anneeScolaireFilter" class="select2 form-control" name="anneesScolaire" onchange="applyFilters()">
+                                        <option value="">Année scolaire *</option>
+                                        {% for anneesScolaire in annees %}
+                                            <option value="{{ anneesScolaire.debutAnnee|date:"Y" }}-{{ anneesScolaire.fintAnnee|date:"Y" }}">{{ anneesScolaire.debutAnnee|date:"Y" }}-{{ anneesScolaire.fintAnnee|date:"Y" }}</option>
+                                        {% endfor %}
+                                        <option value="Non-renseigné">Autre</option>
+                                    </select>
+                                </div>
+                                <div class="col-4-xxxl col-xl-4 col-lg-3 col-12 form-group">
+                                    <input type="hidden" name = "niveau" placeholder="Filtre par Niveau ..." class="form-control">
+                                </div>
+                                <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                    <input type="hidden" placeholder="Filter par Code ..." class="form-control">
+                                </div>
+                                
+                                 {% for message in messages %}
+                                    <div class="alert alert-warning alert-dismissible fade show" role="alert" style = "text-align: center;">
+                                        <strong >{{ message }} </strong> 
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style = "cursor: pointer;">❌</button>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </form>
+                        <div class="table-responsive">
+                            <table id="projectsTable" class="table display data-table text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th> 
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input checkAll">
+                                                <label class="form-check-label">ID</label>
+                                            </div>
+                                        </th>
+                                        <th>Nom</th>
+                                        <th>Prenom</th>
+                                        <th>Niveau</th>
+                                        <th>Date</th>
+                                        <th>Mail</th>
+                                        <th>Dossier</th>
+                                        <th>Telephone</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for reception in receptions %}
+                                    <tr>
+                                        <td>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input">
+                                                <label class="form-check-label">{{reception.id}}</label>
+                                            </div>
+                                        </td>
+
+                                        {% comment %} <td class="text-center"><img src="img/figure/student2.png" alt="student"></td> {% endcomment %}
+                                        {% comment %} <td>{{anneesScolaire.debutAnnee|date:"Y"}}-{{anneesScolaire.fintAnnee|date:"Y"}}</td> {% endcomment %}
+                                        {% comment %} <td>{{matiere.niveau}}</td> {% endcomment %}
+                                        <td>{{reception.nom}}</td>
+                                        <td>{{reception.prenom}}</td>
+                                        <td>{{reception.niveau}}</td>
+                                        <td>{{reception.dateheure|date:"d/m/Y H:m:s"}}</td>
+                                        <td>{{reception.mail}}</td>
+                                        <td>
+                                            {% if reception.dossier %}
+                                                <a href="{{ reception.dossier.url }}" title="Ouvrir le cv" target="_blank">Ouvrir le dossier</a>
+                                            {% else %}
+                                                Aucun fichier
+                                            {% endif %}
+                                        </td>
+                                        <td>{{reception.numero_telephone}}</td>
+
+                                        {% comment %} <td>{{matiere.enseignant}}</td> {% endcomment %}
+                                        {% comment %} <td>{{anneesScolaire.fintAnnee|date:"d/m/Y"}}</td> {% endcomment %}
+                                         <td>
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                    <span class="flaticon-more-button-of-three-dots"></span>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item" href="" onclick = "return confirm('Voulez-vous vraiment supprimer cette année scolaire?')"><i class="fas fa-times text-orange-red"></i>Supprimer</a>
+                                                    <a class="dropdown-item" href=""><i class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Class Table Area End Here -->
+                {% include 'partial/copyright.html' %}
+
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Data Table Js -->
+    <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+   
+</body>
+
+</html>

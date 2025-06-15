@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <style type="text/css">
+    table, tr, td, th{
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+    table{
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <div>
+    <h1 style="text-align: center;">BULLETIN DES NOTES 2024-2025</h1>
+
+      <table border="1">
+          <tr>
+              <td>Noms et Prénoms</td>
+              <th colspan="4">{{ etudiant.nom }} {{ etudiant.prenom }}</th>
+              <td colspan="2">2e Trimestre</td>
+          </tr>
+          <tr>
+              <td>Classe</td>
+              <td colspan="6">{% for inscrit in inscrits %} {{ inscrit.salleClasse.niveau.classe }} {% endfor %}</td>
+          </tr>
+
+          <tr>
+              <th>Discipline</th>
+              <th>Coef.</th>
+              <th>Moy. Dev</th>
+              <th>Moy. Int</th>
+              <th>Moy. Comp</th>
+              <th>Moy. Générale</th>
+              <th>Moy. Pondérée</th>
+          </tr>
+          {% if bulletin %}
+              {% for ligne in bulletin %}
+                <tr>
+                    <td>{{ ligne.matiere }}</td>
+                    <td>{{ ligne.coef }}</td>
+                    <td>{{ ligne.dev }}</td>
+                    <td>{{ ligne.int }}</td>
+                    <td>{{ ligne.comp }}</td>
+                    <td>{{ ligne.moyenne }}</td>
+                    <td>{{ ligne.ponderee }}</td>
+                </tr>
+              {% endfor %}
+          {% else %}
+              <tr>
+                  <td colspan="7" style="text-align:center;">Aucune note disponible pour ce trimestre.</td>
+              </tr>
+          {% endif %}
+
+          <tr>
+              <td colspan="5"><strong>Moyenne Générale</strong></td>
+              <td colspan="2" style="font-weight:bold; text-align:center;
+                  {% if moyenne_generale >= 10 %}color:green;
+                  {% else %}color:red;
+                  {% endif %}">
+                  {{ moyenne_generale|floatformat:2 }} / 20
+              </td>
+          </tr>
+      </table>
+
+    <div>
+      <a href="{% url 'all-student' %}" type="button" style = "color: with; width: 25%; display: flex; justify-content: center; items-align: center; margin-top: 20px; background-color: green;"> Retour</a>
+    </div>
+  </div>
+</body>
+</html>

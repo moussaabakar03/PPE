@@ -1,0 +1,231 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+
+   {% include 'partial/head.html' %}
+
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+        
+         {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+
+            {% include 'partial/aside.html' %}
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Evaluation</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'index' %}">Tableau de Bord</a>
+                            
+                        </li>
+                        <li><a href="{% url 'all_evaluation' %}">Evaluation *</a></li>
+                        <li>Notes {{salle.nom}}</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Class Table Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Notes evaluations de la salle <span style = "color: #ffaa01; margin-left: 15px;"> {{salle.niveau.classe}} -({{salle.nom}})</span> </h3>
+                            </div>
+                           <div class="dropdown">
+                                <a class="dropdown-toggle" href="#" role="button" 
+                                data-toggle="dropdown" aria-expanded="false">...</a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#"><i class="fas fa-times text-orange-red"></i>Fermer</a>
+                                    <a class="dropdown-item" href="#"><i class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
+                                    <a class="dropdown-item" href="#"><i class="fas fa-redo-alt text-orange-peel"></i>Refrecher</a>
+                                </div>
+                            </div>
+                        </div>
+                        <form class="mg-b-20" method="POST">
+                            {% csrf_token %}
+                            <div class="row gutters-8">
+                                <div class="col-3-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                    <input type="text" name="nom" id="filtreNom" placeholder="Filtre par Nom etudiant ..." class="form-control" oninput="applyEvaluationFilters()">
+                                </div>
+                                <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                    <select class="form-control" name="typeEvaluation" id="filtreType" onchange="applyEvaluationFilters()">
+                                        <option value=""> Filtre par type evaluation ... </option>
+                                        <option value="Devoir">Devoir</option>
+                                        <option value="Interrogation">Interrogation</option>
+                                        <option value="Composition">Composition</option>
+                                    </select>
+                                    {% comment %} <input type="text" name="typeEvaluation" id="filtreType" placeholder="Filtre par type eval ..." class="form-control" oninput="applyEvaluationFilters()"> {% endcomment %}
+
+                                </div>
+                                <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                    <input type="text" name="matiere" id="filtreMatiere" placeholder="Filtre par matiere ..." class="form-control" oninput="applyEvaluationFilters()">
+                                </div>
+                                {% comment %} <div class="col-1-xxxl col-xl-2 col-lg-3 col-12 form-group">
+                                    <button type="submit" class="fw-btn-fill btn-gradient-yellow">FILTRER</button>
+                                </div> {% endcomment %}
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <select id="anneeScolaireFilter" class="select2 form-control" name="anneesScolaire" onchange="applyEvaluationFilters()">
+                                        <option value="">Année scolaire *</option>
+                                        {% for anneesScolaire in annees %}
+                                            <option value="{{ anneesScolaire.debutAnnee|date:"Y" }}-{{ anneesScolaire.fintAnnee|date:"Y" }}">{{ anneesScolaire.debutAnnee|date:"Y" }}-{{ anneesScolaire.fintAnnee|date:"Y" }}</option>
+                                        {% endfor %}
+                                        <option value="Non-renseigné">Autre</option>
+                                    </select>
+                                </div>
+                                <div class="col-4-xxxl col-xl-4 col-lg-3 col-12 form-group">
+                                    <select class="form-control" name="trimestre" id="filtreTrimestre" onchange="applyEvaluationFilters()">
+                                        <option value="">Filtre par trimestre ...</option>
+                                        <option value="1er trimestre">1er trimestre</option>
+                                        <option value="2e trimestre">2e trimestre</option>
+                                        <option value="3e trimestre">3e trimestre</option>
+                                    </select>
+                                </div>
+                               
+                            </div>
+                        </form>
+                        <div class="table-responsive">
+                            <table id="evaluationsTable" class="table display data-table text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input checkAll">
+                                                <label class="form-check-label">ID</label>
+                                            </div>
+                                        </th>
+                                        <th>Élève</th>
+                                        <th>Classe</th>
+                                        <th>Matière</th>
+                                        <th>Note(/20)</th>
+                                        <th>Pourcentage</th>
+                                        <th>Trimestre</th>
+                                        <th>Année Scolaire</th>
+                                        <th>Enseignant</th>
+                                        <th>Type.E</th>
+                                        <th>Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for evaluation in evaluations %}
+                                        <tr>
+                                            <td>
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input">
+                                                    <label class="form-check-label">{{ evaluation.id }}</label>
+                                                </div>
+                                            </td>
+                                            <td><span style= "font-weight: bold;">{{ evaluation.etudiant.nom }} </span>  {{ evaluation.etudiant.prenom }}</td>
+                                            <td>{{ evaluation.cours.classe.classe }} </td>
+                                            <td>{{ evaluation.cours.matiere.nom }}</td>
+                                            {% if evaluation.note > 10  %}
+                                                <td><span style= "font-weight: bold; color: green;">{{ evaluation.note }}</span></td>
+                                            {% elif evaluation.note == 10  %}
+                                                <td><span style= "font-weight: bold; color: #ffa001;">{{ evaluation.note }}</span></td>
+                                            {% else %}
+                                                <td><span style= "font-weight: bold; color: red;">{{ evaluation.note }}</span></td>
+                                            {% endif %}
+                                            <td>{{ evaluation.pourcentage }} %</td>
+                                            <td>{{ evaluation.trimestre }}</td>
+                                            <td>{{ evaluation.cours.anneeScolaire.debutAnnee|date:"Y" }}-{{ evaluation.cours.anneeScolaire.fintAnnee|date:"Y" }}</td>
+                                            <td>{{ evaluation.cours.enseignant.nom }} {{ evaluation.cours.enseignant.prenom }}</td>
+                                            <td>{{ evaluation.typeEvaluation }}</td>
+                                            <td>{{ evaluation.dateEvaluation|date:"d/m/Y" }}</td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                        <span class="flaticon-more-button-of-three-dots"></span>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <a class="dropdown-item" href="{% url 'modifier_evaluation' evaluation.id  %}">
+                                                            <i class="fas fa-cogs text-dark-pastel-green"></i>Modifier
+                                                        </a>
+                                                        <a class="dropdown-item" href="{% url 'supprimer_evaluation' evaluation.id  %}" onclick="return confirm('Voulez-vous vraiment supprimer cette évaluation ?')">
+                                                            <i class="fas fa-times text-orange-red"></i>Supprimer
+                                                        </a>
+                                                        <a class="dropdown-item" href="#">
+                                                            <i class="fas fa-redo-alt text-orange-peel"></i>Rafraîchir
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- Class Table Area End Here -->
+                {% include 'partial/copyright.html' %}
+
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Data Table Js -->
+    <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+
+    <script>
+        function applyEvaluationFilters() {
+            const nom = document.getElementById("filtreNom").value.toLowerCase();
+            const matiere = document.getElementById("filtreMatiere").value.toLowerCase();
+            const typeEvaluation = document.getElementById("filtreType").value.toLowerCase();
+            const trimestre = document.getElementById("filtreTrimestre").value.toLowerCase();
+            const anneeScolaireFilter = document.getElementById("anneeScolaireFilter").value.toLowerCase();
+
+            const table = document.getElementById("evaluationsTable");
+            const rows = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName("td");
+
+                const cellNom = cells[1]?.innerText.toLowerCase();
+                const cellMatiere = cells[3]?.innerText.toLowerCase();
+                const cellTypeEvaluation = cells[9]?.innerText.toLowerCase();
+                const cellTrimestre = cells[6]?.innerText.toLowerCase();
+                const cellAnneeScolaireFilter = cells[7]?.innerText.toLowerCase();
+
+                const matchNom = cellNom.includes(nom);
+                const matchMatiere = cellMatiere.includes(matiere);
+                const matchTypeEvaluation = cellTypeEvaluation.includes(typeEvaluation);
+                const matchTrimestre = cellTrimestre.includes(trimestre);
+                const matchAnneeScolaireFilter = cellAnneeScolaireFilter.includes(anneeScolaireFilter);
+
+                rows[i].style.display = (matchNom && matchMatiere && matchTypeEvaluation && matchTrimestre && matchAnneeScolaireFilter) ? "" : "none";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

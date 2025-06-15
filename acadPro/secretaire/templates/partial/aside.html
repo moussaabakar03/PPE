@@ -1,0 +1,173 @@
+<div class="sidebar-main sidebar-menu-one sidebar-expand-md sidebar-color">
+    <div class="mobile-sidebar-header d-md-none">
+        <div class="header-logo">
+            <a href="{% url 'index' %}"><img src="img/logo1.png" alt="logo"></a>
+        </div>
+    </div>
+    <div class="sidebar-menu-content">
+        <ul class="nav nav-sidebar-menu sidebar-toggle-view">
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link"><i class="flaticon-dashboard"></i><span>Tableau de Bord</span></a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'index' %}" class="nav-link"><i class="fas fa-angle-right"></i>Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'index3' %}" class="nav-link"><i class="fas fa-angle-right"></i>Elèves</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'index4' %}" class="nav-link"><i class="fas fa-angle-right"></i>Parents</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'index5' %}" class="nav-link"><i class="fas fa-angle-right"></i>Enseignants</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link"><i class="flaticon-classmates"></i><span>Elèves</span></a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'all-student' %}" class="nav-link"><i class="fas fa-angle-right"></i>Elèves *</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'admit-form' %}" class="nav-link"><i class="fas fa-angle-right"></i>Admission</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'student-promotion' %}" class="nav-link"><i class="fas fa-angle-right"></i>Promotion Elèves</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link"><i class="fas fa-user-plus"></i>  <span>Inscription</span></a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'all_inscription' %}" class="nav-link"><i class="fas fa-angle-right"></i>Inscrits *</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'add_inscription' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout Inscription</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link"><i class="flaticon-multiple-users-silhouette"></i><span>Enseignants</span></a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'all-teacher' %}" class="nav-link"><i class="fas fa-angle-right"></i>Enseignants *</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'add-teacher' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout Enseignants</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link"><i class="flaticon-couple"></i><span>Parents</span></a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'all-parents' %}" class="nav-link"><i class="fas fa-angle-right"></i>All Parents</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'add-parents' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout Parent</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link"><i class="flaticon-maths-class-materials-cross-of-a-pencil-and-a-ruler"></i><span>Matière</span></a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'all-class' %}" class="nav-link"><i class="fas fa-angle-right"></i>Matière *</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'add-class' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout Matière</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link"><i class="flaticon-maths-class-materials-cross-of-a-pencil-and-a-ruler"></i><span>Cours</span></a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'all-cours' %}" class="nav-link"><i class="fas fa-angle-right"></i>Cours *</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'add-cours' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout cours</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link"><i class="fas fa-layer-group"></i><span>Niveau</span></a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'all_niveau' %}" class="nav-link"><i class="fas fa-angle-right"></i>Niveau *</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'add_niveau' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout Niveau</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link"><i class="fas fa-chalkboard"></i> <span>Salle</span></a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'all-salle' %}" class="nav-link"><i class="fas fa-angle-right"></i>Salle *</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'add-salle' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout Salle</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link"><i class="flaticon-shopping-list"></i><span>Evaluations</span></a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'selectClasse' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout de Note individuelle</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'selectClasseEvaluation' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout de Note groupée</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'all_evaluation' %}" class="nav-link"><i class="fas fa-angle-right"></i>Détail des evaluations</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link"><i class="fas fa-dollar-sign"></i><span>Scolarité</span></a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'all-salle' %}" class="nav-link"><i class="fas fa-angle-right"></i>Scolarité *</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'add-salle' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout Scolarité</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link"><i class="fas fa-user-plus"></i>  <span>Cout frais</span></a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'all_cout' %}" class="nav-link"><i class="fas fa-angle-right"></i>Cout *</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'add_cout' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout cout</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item sidebar-nav-item">
+                <a href="#" class="nav-link"><i class="flaticon-calendar"></i><span>Année Scolaire</span></a>
+                <ul class="nav sub-group-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'affichageAnneeScolaire' %}" class="nav-link"><i class="fas fa-angle-right"></i>Année Scolaire *</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'ajoutAnneeScolaire' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout année scolaire</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'receptionDossierStudent' %}" class="nav-link"><i class="fas fa-inbox"></i> <span>Reception Dossier</span></a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'messages' %}" class="nav-link"><i class="flaticon-chat"></i><span>Message</span></a>
+            </li>
+            
+        </ul>
+    </div>
+</div>

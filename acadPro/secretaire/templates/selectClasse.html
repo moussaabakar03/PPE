@@ -1,0 +1,132 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+
+   {% include 'partial/head.html' %}
+
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+        
+         {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+
+            {% include 'partial/aside.html' %}
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Salle</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'index' %}">Tableau de Bord</a>
+                        </li>
+                        <li>Salle *</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Class Table Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Veillez choisir la classe correspondante!</h3>
+                            </div>
+                            <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                <label style="color: red;">Année Scolaire *</label>
+                                <select name="anneeScolaire" class="select2 form-control" required>
+                                    {% for annee in annees %}
+                                        <option value="{{annee.id}}">{{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                        </div>
+                       
+                        <div class="table-responsive">
+                            <table class="table display data-table text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>Classe</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for salleClasse in salleClasses %}
+                                    <tr>
+                                        <td>{{ salleClasse.niveau.classe }}-{{ salleClasse.nom }}</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <a href="#"
+                                                    class="attribuer-notes" 
+                                                    data-salle-id="{{ salleClasse.id }}">
+                                                    <i class="fas fa-clipboard-check"> </i> Attribuer Notes
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- Class Table Area End Here -->
+                {% include 'partial/copyright.html' %}
+
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Data Table Js -->
+    <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('.attribuer-notes').on('click', function (e) {
+                e.preventDefault();
+
+                const salleId = $(this).data('salle-id');
+                const classeId = $(this).data('classe-id');
+                const anneeScolaireId = $('select[name="anneeScolaire"]').val();
+
+                if (!anneeScolaireId) {
+                    alert("Veuillez sélectionner une année scolaire !");
+                    return;
+                }
+
+                // Rediriger vers l'URL avec les 3 paramètres
+                const url = `/note_individuelle/${salleId}/${anneeScolaireId}/`;
+                window.location.href = url;
+            });
+        });
+    </script>
+</body>
+
+</html>

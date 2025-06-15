@@ -1,0 +1,166 @@
+{% load static %}
+
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AcadPro | Presence</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    {% include 'partial/head.html' %}
+</head>
+    
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+        <!-- Header Menu Area Start Here -->
+        
+        {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+           
+            {% include 'partial/aside.html' %}
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Elèves</h3>
+                    <div style = "display: flex; gap: 50px;">
+                        <ul>
+                            <li>
+                                <a href="{% url 'studentParSalle' salle.id annee.id%}"><i class="fa fa-arrow-left"></i> Retour</a>
+                            </li>
+                            <li>{{salle.niveau.classe}} {{salle.nom}}</li>
+                            <li>
+                                <a href="{% url 'listePresencePasse' salle.id annee.id %}"> Voir les presences passées </a>
+                            </li>
+                        </ul>
+                        <h6 style = "margin-left: 60px;">Année scolaire: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}}>> </span></h6>
+                    </div>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Student Table Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h6>Liste d'appel des élèves de salle: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{salle.niveau.classe}}  {{salle.nom}} >> </span></h6>
+                            </div>
+                            <div>
+                                <h6> <i class="fa fa-list"></i>  Total des élèves <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> <<{{nombre}}>> </span></h6>
+                            </div>
+                        </div>
+                        <form class="mg-b-20" method="POST">
+                            {% csrf_token %}
+                            <div class="row gutters-8">
+                                <div class="col-3-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                    <input type="text" name="matricule" placeholder="Filtrer par matricule..." class="form-control">
+                                </div>
+                                <div class="col-4-xxxl col-xl-4 col-lg-3 col-12 form-group">
+                                    <input type="text" name ="nom" placeholder="Filtrer par nom..." class="form-control">
+                                </div>
+                                <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                    <input type="hidden" placeholder="Search by Class ..." class="form-control">
+                                </div>
+                                <div class="col-1-xxxl col-xl-2 col-lg-3 col-12 form-group">
+                                    <button type="submit" class="fw-btn-fill btn-gradient-yellow">FILTRER</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="table-responsive">
+                            <form method = "POST">
+                                {% csrf_token %}
+                                <table class="table display data-table text-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input checkAll">
+                                                    <label class="form-check-label">Matricule</label>
+                                                </div>
+                                            </th>
+                                            <th>Nom</th>
+                                            <th>Prenom</th>
+                                            <th>Genre</th>
+                                            <th>Salle</th>
+                                            <th style = "color: green;">Présent</th>
+                                            <th style = "color: red;">Absent</th>
+                                        </tr>
+                                    </thead>
+                                        <tbody>
+                                            {% for inscrit in inscrits %}
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input">
+                                                        <label class="form-check-label">{{inscrit.etudiant.matricule}}</label>
+                                                    </div>
+                                                </td>
+                                                <td>{{inscrit.etudiant.nom}}</td>
+                                                <td>{{inscrit.etudiant.prenom}}</td>
+                                                <td>{{inscrit.etudiant.genre}}</td>
+                                                <td>{{inscrit.salleClasse.niveau.classe}}- {{inscrit.salleClasse.nom}}</td>
+                                                <td>
+                                                    <input type="radio" name="presence_{{inscrit.etudiant.matricule}}" value="P" required>
+                                                </td>
+                                                <td>
+                                                    <input type="radio" name="presence_{{inscrit.etudiant.matricule}}" value="A" required>
+                                                </td>
+                                                {% comment %} <td>
+                                                    <textarea width = "30" height = "29" value="A" required></textarea>
+                                                </td> {% endcomment %}
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                </table>
+                                <div style ="display: flex; justify-content: space-between; margin-top: 20px; margin-bottom: 20px; ">
+                                    <div>
+                                        <lable> Debut heure de presence </lable>
+                                        <input type="datetime-local" name="dateHeureDebut" required>
+                                    </div>
+                                    <div>
+                                        <textarea style = "margin-bottom: 15px; margin-left: 20px;" name="commentaire" placeholder="Commentaires..."></textarea>
+                                    </div>
+                                </div>
+                                <div  style = "width: 40%; margin-left: 27%;">
+                                    <button type="submit" class="fw-btn-fill btn-gradient-yellow">Enregistrer</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Student Table Area End Here -->
+                               {% include 'partial/copyright.html' %}
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <!-- jquery-->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Data Table Js -->
+    <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+</body>
+
+</html>

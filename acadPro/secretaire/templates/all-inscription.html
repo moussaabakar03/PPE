@@ -1,0 +1,181 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+
+   {% include 'partial/head.html' %}
+
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+        
+         {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+
+            {% include 'partial/aside.html' %}
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Inscription</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'index' %}">Tableau de Bord</a>
+                        </li>
+                        <li>Inscriptions *</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Class Table Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Inscriptions *</h3>
+                            </div>
+                           <div class="dropdown">
+                                <a class="dropdown-toggle" href="#" role="button" 
+                                data-toggle="dropdown" aria-expanded="false">...</a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#"><i class="fas fa-times text-orange-red"></i>Fermer</a>
+                                    <a class="dropdown-item" href="#"><i class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
+                                    <a class="dropdown-item" href="#"><i class="fas fa-redo-alt text-orange-peel"></i>Refrecher</a>
+                                </div>
+                            </div>
+                        </div>
+                        <form class="mg-b-20" method="POST">
+                            {% csrf_token %}
+                            <div class="row gutters-8">
+                                <div class="col-3-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                    <input type="text" name ="matricule" placeholder="Filtrer par matricule élève ..." class="form-control">
+                                </div>
+                                <div class="col-4-xxxl col-xl-4 col-lg-3 col-12 form-group">
+                                    {% comment %} <input type="text"  name ="niveau"  placeholder="Filtrer par niveau ..." class="form-control"> {% endcomment %}
+                                    <select class="select2 form-control" id="etudiant-select" name="niveau" >
+                                        <option value="">Filtrer par niveau ...</option>
+                                        {% for niveau in niveaux %}
+                                            <option value="{{ niveau.id }}"> {{niveau.classe}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                    
+                                    {% comment %} <input type="text"  name ="anneeScolaire" placeholder="Filtrer par année scolaire ..." class="form-control"> {% endcomment %}
+                                    <select class="select2 form-control" id="etudiant-select" name="anneeScolaire" >
+                                        <option value="">Filtrer par année scolaire ...</option>
+                                        {% for anneeScolaire in anneeScolaires %}
+                                            <option value="{{ anneeScolaire.id }}"> {{anneeScolaire.debutAnnee|date:'Y'}}- {{anneeScolaire.fintAnnee|date:'Y'}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-1-xxxl col-xl-2 col-lg-3 col-12 form-group">
+                                    <button type="submit" class="fw-btn-fill btn-gradient-yellow">Filtrer</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="table-responsive">
+                            <table class="table display data-table text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input checkAll">
+                                                <label class="form-check-label">Matricule</label>
+                                            </div>
+                                        </th>
+                                        <th>Nom de l'étudiant</th>
+                                        <th>Salle de classe</th>
+                                        <th>Année scolaire</th>
+                                        <th>Coûts Attendus</th>
+                                        <th>Montant versé</th>
+                                        <th>Date d'enregistrement</th>
+                                        <th>Photo</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for inscription in inscriptions %}
+                                    <tr>
+                                        <td>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input">
+                                                <label class="form-check-label">{{ inscription.etudiant.matricule }}</label>
+                                            </div>
+                                        </td>
+                                        <td>{{inscription.etudiant.nom }} {{ inscription.etudiant.prenom }}</td>
+                                        <td>{{ inscription.salleClasse.niveau.classe }} {{ inscription.salleClasse.nom }}</td>
+                                        <td>{{ inscription.anneeAcademique.debutAnnee|date:"Y"}}- {{ inscription.anneeAcademique.fintAnnee|date:"Y"}}</td>
+                                        {% with cout=inscription.salleClasse.niveau.couts.first %}
+                                            {% if cout %}
+                                                <td>{{ cout.coutInscription }} F CFA</td>
+                                            {% else %}
+                                                <td>Non défini</td>
+                                            {% endif %}
+                                        {% endwith %}
+                                        <td>{{ inscription.montantVerse }} F CFA</td>
+                                        <td>{{ inscription.dateEnregistrement|date:"d/m/Y H:i" }}</td>
+                                        {% if inscription.etudiant.photo %}
+                                            <td><img src="{{inscription.etudiant.photo.url}}" alt="image" width="50" height="50"></td>
+                                        {% else %}
+                                            <td>Non défini</td>
+                                        {% endif %}
+                                        <td>
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                    <span class="flaticon-more-button-of-three-dots"></span>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item" href="{% url 'modifierInscription' inscription.id %}">
+                                                        <i class="fas fa-cogs text-dark-pastel-green"></i> Modifier
+                                                    </a>
+                                                    <a class="dropdown-item" href="{% url 'delete_inscription' inscription.id %}" onclick="return confirm('Voulez-vous vraiment supprimer cette inscription ?');">
+                                                        <i class="fas fa-times text-orange-red"></i> Supprimer
+                                                    </a>
+                                                    <a class="dropdown-item" href="{% url 'detailEtudiant' inscription.etudiant.matricule inscription.etudiant.parent.id %}">
+                                                        <i class="fas fa-eye" title = "voir plus"></i>voir plus</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- Class Table Area End Here -->
+                {% include 'partial/copyright.html' %}
+
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Data Table Js -->
+    <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+</body>
+
+</html>

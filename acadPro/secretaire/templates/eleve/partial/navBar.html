@@ -1,0 +1,25 @@
+<div class="nav-tabs">
+    {% comment %} <a href="#" class="nav-tab"><i class="fas fa-list"></i> Progression</a> {% endcomment %}
+    <a href="#" class="nav-tab"><i class="fas fa-euro-sign"></i> Inscriptions et Payements</a>
+    <a href="{% url 'notes' etudiant.matricule %}" class="nav-tab"><i class="fas fa-sticky-note"></i> Notes</a>
+    <a href="{% url 'messagesEleves' etudiant.matricule  %}" class="nav-tab"> <i class="far fa-envelope"></i> Message</a>
+    <a href="#" class="nav-tab"><i class="fas fa-book"></i> Emploie du temps</a>
+    <a href="{% url 'presence' etudiant.matricule %}" class="nav-tab"><i class="fas fa-user-check"></i> Ma - Presence</a>
+    {% comment %} <a href="#" class="nav-tab"><i class="fas fa-clipboard-list"></i> Présence aux cours</a> {% endcomment %}
+</div>
+
+
+
+
+{% comment %} 
+<div class="nav-tabs">
+    {% if matricule %}
+        <a href="{% url 'inscriptionPayement' %}" class="nav-tab"><i class="fas fa-euro-sign"></i> Inscriptions et Payements</a>
+        <a href="{% url 'notes' matricule %}" class="nav-tab"><i class="fas fa-sticky-note"></i> Notes</a>
+        <a href="{% url 'messagesEleves' matricule %}" class="nav-tab"><i class="far fa-envelope"></i> Message</a>
+        <a href="#" class="nav-tab"><i class="fas fa-book"></i> Emploie du temps</a>
+        <a href="{% url 'presence' matricule %}" class="nav-tab"><i class="fas fa-user-check"></i> Ma - Presence</a>
+    {% else %}
+        <p>Erreur : Matricule non trouvé. Veuillez vous reconnecter.</p>
+    {% endif %}
+</div> {% endcomment %}

@@ -1,0 +1,194 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AcadPro | Inscrits par classe</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Select 2 CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/select2.min.css' %}">
+    <!-- Date Picker CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/datepicker.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+    <!-- Modernize js -->
+    <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+        
+         {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+           
+            {% include 'partial/aside.html' %}
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Evaluation</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'all_evaluation' %}">Evaluations *</a>
+                        </li>
+                        <li>Ajout Evaluation</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Add Class Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Liste de note pour la salle de classe : {{ salleClasse.nom }} -({{salleClasse.niveau.classe}})</h3>
+                            </div>
+                           <div class="dropdown">
+                                <a class="dropdown-toggle" href="#" role="button" 
+                                data-toggle="dropdown" aria-expanded="false">...</a>
+                            </div>
+                        </div>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                        
+                                <!-- Trimestre / Module -->
+                                <div class="col-md-2">
+                                    <label for="trimestre">Trimestre/Module:</label>
+                                    <select class="form-control" name="trimestre" required>
+                                        <option value="">Choisir</option>
+                                        <option value="1er trimestre">1er trimestre</option>
+                                        <option value="2e trimestre">2e trimestre</option>
+                                        <option value="3e trimestre">3e trimestre</option>
+                                    </select>
+                                </div>
+                        
+                                <!-- Classe -->
+                                <div class="col-md-2">
+                                    <label for="cours">Cours:</label>
+                                    <select class="form-control" name="cours" required>
+                                        <option value = ""> Veillez Choisir une matière</option>
+                                        {% for cours in courrs %}
+                                            <option value="{{ cours.id }}"> {{ cours.matiere.nom }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="typeEvaluation">Type d'évaluation:</label>
+                                    <select class="form-control" name="typeEvaluation" required>
+                                        <option value=""> Veillez choisir le type d'évaluation</option>
+                                        <option value="Devoir">Devoir</option>
+                                        <option value="Interrogation">Interrogation</option>
+                                        <option value="Composition">Composition</option>
+                                    </select>
+                                </div>
+
+                                <!-- Date d'évaluation -->
+                                {% comment %} <div class="col-md-3">
+                                    <label for="dateEvaluation">Date de l'évaluation:</label>
+                                    <input type="date" name="dateEvaluation" class="form-control" required>
+                                </div> {% endcomment %}
+                        
+                                <div class="col-md-3">
+                                    <label for="pourcentage">Pourcentage:</label>
+                                    <input type="number" name="pourcentage" class="form-control" required min="0" step="0.1">
+                                </div>
+                            </div>
+                        
+                            <hr>
+                        
+                            <div class="table-responsive">
+                                <table class="table display data-table text-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">Matricule</label>
+                                                </div>
+                                            </th>
+                                            <th> Nom & Prenom </th>
+                                            <th> Note (/20) </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for inscrit in inscrits %}
+                                            <tr>
+                                                <!-- Matricule -->
+                                                <td>
+                                                    {{inscrit.etudiant.matricule}}
+                                                </td>
+                                                <!-- Nom & Prénom -->
+                                                <td>
+                                                    {{ inscrit.etudiant.nom }} {{ inscrit.etudiant.prenom }}
+                                                </td>
+                                                
+                                                <!-- Note -->
+                                                <td>
+                                                    <input type="number" name="note_{{ inscrit.etudiant.id }}" class="form-control" required min="0" max="20">
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- Bouton sauvegarder -->
+                            <div class="col-12 form-group mg-t-8" style="text-align: center;">
+                                <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Sauvegarder</button>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+                <!-- Add Class Area End Here -->
+                {% include 'partial/copyright.html' %}
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <!-- jquery-->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Select 2 Js -->
+    <script src="{% static 'secretaire/js/select2.min.js' %}"></script>
+    <!-- Date Picker Js -->
+    <script src="{% static 'secretaire/js/datepicker.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,239 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Gestion des Notes</title>
+    {% include 'partial/head.html' %}
+
+    <style>
+      
+        .filters {
+            display: flex;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            justify-content: space-between;
+        }
+        
+        .year-select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 150px;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            padding: 8px 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 250px;
+            background-color: #e6f2ff;
+        }
+        
+        .search-icon {
+            margin-right: 5px;
+            color: #3d7eac;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background-color: #f0f8ff;
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+            color: #3d7eac;
+            position: relative;
+        }
+        
+        th i {
+            margin-left: 5px;
+        }
+        
+        td {
+            padding: 10px;
+            border: 1px solid #eee;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .sort-icon::after {
+            content: "↕";
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        
+        .excellent {
+            color: #009900;
+            font-weight: bold;
+        }
+        
+        .tres-bien {
+            color: #33aa00;
+            font-weight: bold;
+        }
+        
+        .assez-bien {
+            color: #7cb342;
+            font-weight: bold;
+        }
+        
+        .passable {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3d7eac;
+            color: white;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 5px;
+            text-decoration: none;
+            opacity: 0.8;
+        }
+        
+        .back-to-top:hover {
+            opacity: 1;
+        }
+         table.dataTable thead th {
+              background-color: #f0f8ff; 
+              color: #3d7eac;
+            }
+        
+        /* Cacher les éléments de pagination et de recherche de DataTables */
+        .dataTables_length, .dataTables_filter, .dataTables_info, .dataTables_paginate {
+            display: none !important;
+        }
+
+        /* Smartphones en mode paysage jusqu'aux tablettes */
+       
+    </style>
+</head>
+<body>
+   
+    {% include 'eleve/partial/header.html' %}
+
+    <div class="container">
+        
+        <!-- Navigation Tabs -->
+        {% include 'eleve/partial/navBar.html' %}
+       
+        
+        <div class="table-responsive">
+            <table class="table display data-table text-nowrap">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Début heure</th>
+                        <th>Fin heure</th>
+                        <th>Présent</th>
+                        <th>Absent</th>
+                        <th>Durée</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if emargements %}
+                        {% for emargement in emargements %}
+                            <tr>
+                                <td>{{ emargement.dateHeureDebut|date:"d/m/Y" }}</td>
+                                <td>{{ emargement.dateHeureDebut|date:"d/m/Y H:i" }}</td>
+                                <td>{{ emargement.date_heure_fin|date:"d/m/Y H:i" }}</td>
+                                <td>
+                                    {% if emargement.presence == 1 %}
+                                        <i class="fas fa-check-circle" style="color:green;"></i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if emargement.presence == 0 %}
+                                        <i class="fas fa-times-circle" style="color:red;"></i>
+                                    {% endif %}
+                                </td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center" style= "color: #ff9d01;">Aucune présence enregistrée</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+                
+            </table>
+            
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+        <script>
+          $(document).ready(function () {
+            $('#notesTable').DataTable({
+              "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
+              },
+              // Désactiver les fonctionnalités de pagination et recherche
+              "paging": false,
+              "searching": false,
+              "info": false,
+              "ordering": true
+            });
+          });
+        </script>
+    </div>
+    
+    <!-- Back to top button -->
+    <a href="#" class="back-to-top">↑</a>
+
+    {% comment %} <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script> {% endcomment %}
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+    
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+<!-- script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+$(document).ready(function () {
+  $('#notesTable').DataTable({
+    "language": {
+      "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
+    }
+  });
+});
+</script>
+</script> -->
+ 
