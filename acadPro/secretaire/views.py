@@ -50,12 +50,12 @@ def connexion(request):
 
 def inscription(request):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST) # type: ignore
         if form.is_valid():
             form.save()
             return redirect('login')
     else:
-        form = CustomUserCreationForm()
+        form = CustomUserCreationForm() # type: ignore
     return render(request, 'inscription.html', {'form': form})
 
 def deconnexion(request):
@@ -703,6 +703,9 @@ def add_niveau(request):
         # capacite = int(request.POST["capacite"])
         # scolarite = request.POST["scolarite"]
         
+        if Classe.objects.filter(classe = classe):
+             messages.error(request, f"Ce niveau ({classe}) existe déjà")
+             return redirect("add_niveau")
         Classe.objects.create(
             classe = classe,
             # capacite = capacite,
@@ -774,23 +777,34 @@ def ajoutInscription(request):
         etudiant = Etudiant.objects.get(pk=int(etudiant_id))
         salleDeClasse = SalleDeClasse.objects.get(pk=int(salleClasse_id))
         anneeAcademique = AnneeScolaire.objects.get(pk=int(anneeScolaire))
-        cout = Cout.objects.get(classe = salleDeClasse.niveau)
         
         if Inscription.objects.filter(etudiant = etudiant, anneeAcademique = anneeAcademique).exists():
             messages.error(request, "Cet élève est déjà inscrit pour cette année scolaire.")
             return redirect("add_inscription")
         
-        if float(montantVerse) <= float(cout.coutInscription):  
-            Inscription.objects.create(
-                etudiant = etudiant,
-                salleClasse = salleDeClasse,
-                montantVerse = montantVerse,
-                anneeAcademique = anneeAcademique
-            )
-            return redirect("all_inscription")
-        else:
-            messages.error(request, "Le montant versé doit être inférieur ou égal au cout d'inscription ")
-            return redirect("add_inscription")
+        # if Cout.objects.get(classe = salleDeClasse.niveau).exists():
+        #     cout = Cout.objects.get(classe = salleDeClasse.niveau)
+
+        #     if float(montantVerse) <= float(cout.coutInscription):  
+        #         Inscription.objects.create(
+        #             etudiant = etudiant,
+        #             salleClasse = salleDeClasse,
+        #             montantVerse = montantVerse,
+        #             anneeAcademique = anneeAcademique
+        #         )
+        #         return redirect("all_inscription")
+        #     else:
+        #         messages.error(request, "Le montant versé doit être inférieur ou égal au cout d'inscription ")
+        #         return redirect("add_inscription")
+        # else:
+        Inscription.objects.create(
+            etudiant = etudiant,
+            salleClasse = salleDeClasse,
+            montantVerse = montantVerse,
+            anneeAcademique = anneeAcademique
+        )
+        return redirect("all_inscription")
+       
     context = {
         'etudiants': Etudiant.objects.all(),
         'salles': SalleDeClasse.objects.all(),
@@ -1124,10 +1138,13 @@ def ajoutCout(request):
         coutScolarite = request.POST['coutScolarite']
         fraisEtudeDossier = request.POST['fraisEtudeDossier']
         fraisAssocie = request.POST['fraisAssocie']
+        annee = request.POST['anneeScolaire']
+
+        anneeScolaire = AnneeScolaire.objects.get(pk=int(annee))
         
         classe = get_object_or_404(Classe, id=classe_id)
-        if Cout.objects.filter(classe = classe).exists():
-            messages.error(request, "Les coûts de cette classe ont déjà été ajoutés. veuillez modifier les coûts existants")
+        if Cout.objects.filter(classe = classe, anneeScolaire = anneeScolaire).exists():
+            messages.error(request, f"Les coûts de cette classe ont déjà été ajoutés ({classe} ({anneeScolaire})). veuillez modifier les coûts existants")
         
         else:
             Cout.objects.create(
@@ -1135,10 +1152,11 @@ def ajoutCout(request):
                 coutInscription=coutInscription,
                 coutScolarite=coutScolarite,
                 fraisEtudeDossier=fraisEtudeDossier,
-                fraisAssocie=fraisAssocie
+                fraisAssocie=fraisAssocie,
+                anneeScolaire = anneeScolaire
                 )
             return redirect('all_cout')
-    context = {'classe_list': Classe.objects.all()}
+    context = {'classe_list': Classe.objects.all(), 'anneeScolaires': AnneeScolaire.objects.all()}
     return render(request, 'add-cout.html', context)
 
 def suppCout(request, id):
@@ -1154,12 +1172,16 @@ def modifierCout(request, id):
         cout.coutScolarite = request.POST['coutScolarite']
         cout.fraisEtudeDossier = request.POST['fraisEtudeDossier']
         cout.fraisAssocie = request.POST['fraisAssocie']
-        
+
+        anneeScolaire = request.POST["anneeScolaire"]
+
+        cout.anneeScolaire = AnneeScolaire.objects.get(pk=int(anneeScolaire))
+
         cout.classe = get_object_or_404(Classe, id=classe_id)
         
         cout.save()
         return redirect('all_cout')
-    context = {'cout': cout, 'classe_list': Classe.objects.all()}
+    context = {'cout': cout, 'classe_list': Classe.objects.all(), 'anneeScolaires': AnneeScolaire.objects.all()}
     return render(request, 'modifier-cout.html', context)
 
 
@@ -1208,62 +1230,103 @@ from django.db.models import Avg
 
 def generationBilletin(request, matricule, classe):
     etudiant = Etudiant.objects.get(matricule=matricule)
-    inscrits = etudiant.inscriptions.all()
-    cours_classe = Cours.objects.filter(classe__classe=classe, trimestre="2e Trimestre")
+    cours_classe = Cours.objects.filter(classe__classe=classe)
 
-    evaluations = Evaluation.objects.filter(
-        etudiant=etudiant,
-        trimestre="2e Trimestre",
-        cours__in=cours_classe
-    )
+    # inscrits = etudiant.inscriptions.all()
 
-    # Regrouper les moyennes par matière et type d'évaluation
-    notes_par_matiere = defaultdict(lambda: {"Devoir": [], "Composition": [], "Interrogation": [], "coef": 1})
+    # evaluations = Evaluation.objects.filter(
+    #     etudiant=etudiant,
+    #     trimestre="2e trimestre",
+    #     cours__in=cours_classe
+    # )
+    moyenneCoursDevoirInterrogation = 0.0
+    moyenneCoursComposition = 0.0
+    moyenneCours= 0.0
+    pourcentage = 1.0
+    for cours in cours_classe:
+        if cours:
+            evaluationCours = Evaluation.objects.filter(etudiant = etudiant, trimestre="2e trimestre", cours = cours)
+            for evalua in evaluationCours:
+                if evalua.typeEvaluation == "Devoir" or evalua.typeEvaluation == "Interrogation":
+                    pourcentage +=evalua.pourcentage
+                    moyenneCoursDevoirInterrogation = float((evalua.note * evalua.pourcentage)/pourcentage)
+                    
+                elif evalua.typeEvaluation == "Composition":
+                    pourcentage +=evalua.pourcentage
+                    moyenneCoursComposition = float((evalua.note * evalua.pourcentage)/(pourcentage))
 
-    for eval in evaluations:
-        matiere = eval.cours.matiere
-        notes_par_matiere[matiere.nom]["coef"] = matiere.coefficient
-        notes_par_matiere[matiere.nom][eval.typeEvaluation].append(float(eval.note))
+            moyenneCours = (moyenneCoursComposition+moyenneCoursDevoirInterrogation)/pourcentage
+    print(f"moyenne devoir: {moyenneCoursDevoirInterrogation}")
 
-    # Calcul des moyennes par matière
-    bulletin = []
-    somme_notes_ponderees = 0.0
-    somme_coefficients = 0.0
-
-    for matiere, notes in notes_par_matiere.items():
-        coef = notes["coef"]
-
-        def moyenne(note_list):
-            return round(sum(note_list) / len(note_list), 2) if note_list else 0.0
-
-        moy_dev = moyenne(notes["Devoir"])
-        moy_int = moyenne(notes["Interrogation"])
-        moy_comp = moyenne(notes["Composition"])
-
-        moy_globale = round((moy_dev + moy_int + moy_comp) / 3, 2) if (moy_dev or moy_int or moy_comp) else 0.0
-        moy_coef = round(moy_globale * coef, 2)
-
-        bulletin.append({
-            "matiere": matiere,
-            "coef": coef,
-            "dev": moy_dev,
-            "int": moy_int,
-            "comp": moy_comp,
-            "moyenne": moy_globale,
-            "ponderee": moy_coef
-        })
-
-        somme_notes_ponderees += moy_coef
-        somme_coefficients += coef
-
-    moyenne_generale = round(somme_notes_ponderees / somme_coefficients, 2) if somme_coefficients else 0.0
 
     return render(request, 'generationBilletin.html', {
         "etudiant": etudiant,
-        "inscrits": inscrits,
-        "bulletin": bulletin,
-        "moyenne_generale": moyenne_generale
+        "cours_classes": cours_classe,
+        "moyenneCoursDevoirInterrogation":moyenneCoursDevoirInterrogation,
+        "moyenneCoursComposition":moyenneCoursComposition,
+        "moyenneCours":moyenneCours,
     })
+
+
+# def generationBilletin(request, matricule, classe):
+#     etudiant = Etudiant.objects.get(matricule=matricule)
+#     inscrits = etudiant.inscriptions.all()
+#     cours_classe = Cours.objects.filter(classe__classe=classe)
+
+#     evaluations = Evaluation.objects.filter(
+#         etudiant=etudiant,
+#         trimestre="2e Trimestre",
+#         cours__in=cours_classe
+#     )
+
+#     # Regrouper les moyennes par matière et type d'évaluation
+#     notes_par_matiere = defaultdict(lambda: {"Devoir": [], "Composition": [], "Interrogation": [], "coef": 1})
+
+#     for eval in evaluations:
+#         matiere = eval.cours.matiere
+#         notes_par_matiere[matiere.nom]["coef"] = matiere.coefficient
+#         notes_par_matiere[matiere.nom][eval.typeEvaluation].append(float(eval.note))
+
+#     # Calcul des moyennes par matière
+#     bulletin = []
+#     somme_notes_ponderees = 0.0
+#     somme_coefficients = 0.0
+
+#     for matiere, notes in notes_par_matiere.items():
+#         coef = notes["coef"]
+
+#         def moyenne(note_list):
+#             return round(sum(note_list) / len(note_list), 2) if note_list else 0.0
+
+#         moy_dev = moyenne(notes["Devoir"])
+#         moy_int = moyenne(notes["Interrogation"])
+#         moy_comp = moyenne(notes["Composition"])
+
+#         moy_globale = round((moy_dev + moy_int + moy_comp) / 3, 2) if (moy_dev or moy_int or moy_comp) else 0.0
+#         moy_coef = round(moy_globale * coef, 2)
+
+#         bulletin.append({
+#             "matiere": matiere,
+#             "coef": coef,
+#             "dev": moy_dev,
+#             "int": moy_int,
+#             "comp": moy_comp,
+#             "moyenne": moy_globale,
+#             "ponderee": moy_coef
+#         })
+
+#         somme_notes_ponderees += moy_coef
+#         somme_coefficients += coef
+
+#     moyenne_generale = round(somme_notes_ponderees / somme_coefficients, 2) if somme_coefficients else 0.0
+
+#     return render(request, 'generationBilletin.html', {
+#         "etudiant": etudiant,
+#         "inscrits": inscrits,
+#         "bulletin": bulletin,
+#         "moyenne_generale": moyenne_generale,
+#         "cours_classes": cours_classe
+#     })
 
 
 

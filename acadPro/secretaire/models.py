@@ -9,6 +9,9 @@ class AnneeScolaire(models.Model):
     debutAnnee = models.DateField()
     fintAnnee = models.DateField()
 
+    def __str__(self):
+        return f"{self.debutAnnee}/{self.fintAnnee}"
+
 class Classe(models.Model):
     classe = models.CharField(max_length=100, unique=True)
     # capacite = models.PositiveIntegerField(default=1)  
@@ -74,7 +77,7 @@ class Etudiant(models.Model):
         return f"{self.matricule}- {self.nom} {self.prenom}"
     
     def detailEtudiant(self):
-        return reverse("detailEtudiant", kwargs={"matricule": self.matricule, "id": self.id})
+        return reverse("detailEtudiant", kwargs={"matricule": self.matricule, "id": self.parent.id})
     
         
 
@@ -159,6 +162,7 @@ class Evaluation(models.Model):
 
 class Cout(models.Model):
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE, null=True, blank=True, related_name='couts')
+    anneeScolaire = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE, null=False, blank=True, related_name='cout')
     coutInscription = models.DecimalField(max_digits=10, decimal_places=2)
     coutScolarite = models.DecimalField(max_digits=10, decimal_places=2)
     fraisEtudeDossier = models.DecimalField(max_digits=10, decimal_places=2)

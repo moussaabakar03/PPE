@@ -147,7 +147,12 @@
                             
                 <div class="chat-container">
                     <div class="chat-header">
-                        <a href="{{etudiant.photo.url}}"><img src="{{etudiant.photo.url}}" alt="Photo étudiant"></a>
+                        
+                        {% if etudiant.photo %}
+                           <a href="{{etudiant.photo.url}}"><img src="{{etudiant.photo.url}}" alt="Photo étudiant"></a>
+                        {% else %}
+                            <span class="text-center"><i class="fa fa-user"></i></span> 
+                        {% endif %}
                         <a href="{% url 'detailEtudiant' etudiant.matricule etudiant.parent.id %}" style="color: black;"><div class="student-name">{{etudiant.nom}} {{etudiant.prenom}}</div></a>
                     </div>
 

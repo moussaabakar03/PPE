@@ -95,7 +95,6 @@
             justify-content: center;
             align-items: center;
             background-color: #ffa001;
-            {% comment %} padding: 20px; {% endcomment %}
             width: 50%;
             margin: 20px auto;
             border-radius: 10px;
@@ -130,7 +129,7 @@
                         <p style = "text-align: center; margin-top: 15px;" > DETAILS ELEVE: [<span style = "font-weight: bold;">{{etudiant.nom}}</span>] </p>
                     </div>
                     <div> 
-                        <a href = {% url 'echangeMessage' etudiant.id %}>
+                        <a href ="{% url 'echangeMessage' etudiant.id %}">
                             <div class="message-icon"  style = "cursor: pointer;" title = "message">Ecrire un message 
                                 <i class="fas fa-comment"  style = "color: with;" ></i>
                             </div>
@@ -146,7 +145,7 @@
                         <li> <a href ="{% url 'students-detail' etudiant.matricule %}" ><i class="fas fa-id-card"></i>  Génerer la carte scolaire de l'étudiant</a></li>
                         <li> <a href ="{% url 'modifier_student' etudiant.matricule %}" ><i class='fas fa-edit'></i>  Editer les infos de l'élève</a></li>
                         <li> <a href ="{% url 'presenceEtudiant' etudiant.matricule %}" ><i class="fas fa-check-circle text-success"></i>  Ma présence</a></li>
-                        <li> <a href ="{% url 'generationBilletin' etudiant.matricule 'Tl' %}" >generationBilletin</a></li>
+                        <li> <a href ="{% url 'generationBilletin' etudiant.matricule '4ème' %}" >generationBilletin</a></li>
                         {% comment %} <li> <a href ="" >generationBilletin</a></li> {% endcomment %}
                     </ul>
                 </div>
