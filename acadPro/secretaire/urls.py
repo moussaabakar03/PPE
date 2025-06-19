@@ -65,7 +65,10 @@ urlpatterns = [
     path('add-salle/', views.add_salle, name='add-salle'),
     path('modifierSalle/<str:nom>', views.modifierSalle, name='modifierSalle'),
     path('supprimerSalle/<int:id>', views.supprimerSalle, name='supprimerSalle'),
+    path('emploiDuTemps/', views.emploiDuTemps, name='emploiDuTemps'),
+    path('ajoutEmploiTemps/', views.ajoutEmploiTemps, name='ajoutEmploiTemps'),
     
+
     
     path('all_niveau/', views.all_niveau, name='all_niveau'),
     path('add_niveau/', views.add_niveau, name='add_niveau'),
@@ -107,6 +110,7 @@ urlpatterns = [
     path('update_cout/<int:id>', views.modifierCout, name='update_cout'),
     
     
+
     path('all-subject/', views.all_subject, name='all-subject'),
     path('class-routine/', views.class_routine, name='class-routine'),
     path('student-attendance/', views.student_attendance, name='student-attendance'),
@@ -127,21 +131,6 @@ urlpatterns = [
     path('generationBilletin/<str:matricule>/<str:classe>', views.generationBilletin, name='generationBilletin'),
     
     
-    
-    path('notes/<str:matricule>/', views.notes, name='notes'),
-    path('presence/<str:matricule>', views.presence, name='presence'),
-    path('inscriptionPayement/', views.inscriptionPayement, name="inscriptionPayement"),
-    path('messagesEleves/<str:matricule>', views.messagesEleves, name="messagesEleves"),
-    path('echangeMessageEleves/<int:id>/<str:matricule>', views.echangeMessageEleves, name="echangeMessageEleves"),
-    
-    
-    path('pageAccueil/', views.pageAccueil, name="pageAccueil"),
-    # path('connexion/', views.connexion, name="connexion"),
-    path('traiterConnexion/', views.traiterConnexion, name="traiterConnexion"),
-    path('navBarEleve/', views.navBarEleve, name="navBarEleve"),
-    path('header/', views.header, name="header"),
-    path('depotDossier/', views.depotDossier, name="depotDossier"),
-    path('receptionDossierStudent/', views.receptionDossierStudent, name="receptionDossierStudent"),
     # path('recuperationDossierEleve/', views.recuperationDossierEleve, name="recuperationDossierEleve"),
     
     

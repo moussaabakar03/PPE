@@ -79,8 +79,6 @@ class Etudiant(models.Model):
     def detailEtudiant(self):
         return reverse("detailEtudiant", kwargs={"matricule": self.matricule, "id": self.parent.id})
     
-        
-
 
 class Enseignant(models.Model):
     matricule = models.CharField(max_length=50, unique=True)
@@ -102,7 +100,6 @@ class Enseignant(models.Model):
     
     def __str__(self):
         return f"{self.nom} {self.prenom}"
-
 
 class cvEnseignant(models.Model):
     cv = models.FileField(upload_to='cvEnseignant')
@@ -202,3 +199,12 @@ class depotDossierEtudiant(models.Model):
 
 
 
+class EmploiDuTemps(models.Model):
+    jour = models.CharField(max_length=30)
+    heure_debut = models.TimeField()
+    heure_fin = models.TimeField()
+
+    classe = models.ForeignKey(Classe, on_delete=models.CASCADE)
+    matiere = models.ForeignKey(Matiere, on_delete=models.CASCADE)
+    enseignant = models.ForeignKey(Enseignant, on_delete=models.CASCADE)
+    salle = models.CharField(max_length=50, blank=True, null=True)  # Facultatif

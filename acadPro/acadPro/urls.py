@@ -20,12 +20,20 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('secretaire.urls')),
-    # path('eleve/',  include('eleve.urls'))
+    path('eleve/',  include('eleve.urls')),
+    path('pageAccueil/', views.pageAccueil, name="pageAccueil"),
+    path('depotDossier/', views.depotDossier, name="depotDossier"),
+    path('receptionDossierStudent/', views.receptionDossierStudent, name="receptionDossierStudent"),
+    path('traiterConnexion/', views.traiterConnexion, name="traiterConnexion"),
+
+
+    path('formateur/', views.formateur, name="formateur"),
+
 ]
 
 

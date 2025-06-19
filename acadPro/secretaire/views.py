@@ -105,13 +105,37 @@ def affichageAnneeScolaire(request):
 
 def modifierAnneeScolaire(request, id):
     anneeScolaire = AnneeScolaire.objects.get(id=id)
+    
     if request.method == 'POST':
-        debutAnnee = request.POST['debutAnnee']
+        debut_str = request.POST.get('debutAnnee')
+        fin_str = request.POST.get('finAnnee')
 
-        finAnnee = request.POST['finAnnee']
+        try:
+            debutAnnee = datetime.strptime(debut_str, '%Y-%m-%d').date()
+            finAnnee = datetime.strptime(fin_str, '%Y-%m-%d').date()
+        except ValueError:
+            messages.error(request, "Format de date invalide.")
+            return redirect('affichageAnneeScolaire')
+
+        # Vérifie que l'année de début est inférieure à celle de fin
+        if debutAnnee >= finAnnee:
+            messages.error(request, "L'année de début doit être inférieure à l'année de fin.")
+            return redirect('affichageAnneeScolaire')
+
+        # Vérification : est-ce qu'une année scolaire avec ces années existe déjà ?
+        if AnneeScolaire.objects.filter(
+            debutAnnee__year=debutAnnee.year,
+            fintAnnee__year=finAnnee.year
+        ).exists():
+            messages.error(request, f"L'année scolaire {debutAnnee.year}-{finAnnee.year} existe déjà.")
+            return redirect('affichageAnneeScolaire')
+
+
         anneeScolaire.debutAnnee = debutAnnee
         anneeScolaire.fintAnnee = finAnnee
+
         anneeScolaire.save()
+        messages.success(request, f"Année scolaire {debutAnnee.year}-{finAnnee.year} modifiée avec succès.")
         return redirect('affichageAnneeScolaire')
     
     return render(request, 'modifierAnneeScolaire.html', {'anneeScolaire': anneeScolaire})
@@ -584,8 +608,6 @@ def supprimerSalle(request, id):
     SalleDeClasse.objects.get(id=id).delete()
     return redirect('all-salle')
 
-
-
 def studentParSalle(request, id, id2):
     salle = SalleDeClasse.objects.get(pk=id)
     anneeScolaire = AnneeScolaire.objects.get(id = id2)
@@ -642,8 +664,6 @@ def listePresence(request, id, id2):
     nombre = inscrits.count()
     return render(request, 'listePresence.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, "annee": anneeScolaire})
 
-
-
 def listePresencePasse(request, id, id2):
     salleClasse = SalleDeClasse.objects.get(id=id)
     anneeScolaire = AnneeScolaire.objects.get(id=id2)
@@ -675,8 +695,6 @@ def listePresencePasse(request, id, id2):
         "anneeScolaire": anneeScolaire
     })
 
-
-
 def presenceEtudiant(request, matricule):
     etudiant = Etudiant.objects.get(matricule=matricule)
     inscrits = etudiant.inscriptions.all()
@@ -690,7 +708,69 @@ def presenceEtudiant(request, matricule):
         emargements_par_date[date_str].append(em)
 
     return render(request, 'presenceStudent.html', { "emargements_par_date": dict(emargements_par_date),"etudiant": etudiant, "emargements": emargements})
-    
+
+def emploiDuTemps(request):
+    return render(request, "emploiTemps.html")
+
+def ajoutEmploiTemps(request):
+    jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
+    heures = ["1h-2h", "2h-3h", "3h-4h", "4h-5h"]
+    cours = Cours.objects.all()
+    return render(request, "ajoutEmploiTemps.html", {
+        "jours": jours,
+        "heures": heures,
+        "cours": cours,
+    })
+
+
+# def ajout_emploi_temps(request):
+#     jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
+#     heures = ["1h-2h", "2h-3h", "3h-4h"]
+#     cours = Cours.objects.all()
+
+#     if request.method == "POST":
+#         emploi_du_temps = []
+#         erreurs = False
+
+#         for i, heure in enumerate(heures, start=1):
+#             for jour in jours:
+#                 champ = f"{jour.lower()}_{i}"
+#                 cours_id = request.POST.get(champ)
+
+#                 if not cours_id:
+#                     messages.error(request, f"Le champ {champ} est requis.")
+#                     erreurs = True
+#                     continue
+
+#                 try:
+#                     cours_obj = Cours.objects.get(id=cours_id)
+#                 except Cours.DoesNotExist:
+#                     messages.error(request, f"Cours introuvable pour {champ}.")
+#                     erreurs = True
+#                     continue
+
+#                 emploi_du_temps.append({
+#                     "jour": jour,
+#                     "heure": heure,
+#                     "cours": cours_obj
+#                 })
+
+#         if not erreurs:
+#             for ligne in emploi_du_temps:
+#                 EmploiDuTemps.objects.create(
+#                     jour=ligne["jour"],
+#                     heure=ligne["heure"],
+#                     cours=ligne["cours"]
+#                 )
+#             messages.success(request, "Emploi du temps enregistré avec succès.")
+#             return redirect("liste_emplois")  # ou la vue de ton choix
+
+#     return render(request, "emploi/ajoutEmploiTemps.html", {
+#         "jours": jours,
+#         "heures": heures,
+#         "cours": cours,
+#     })
+
 
 #Classe(niveau)
 def all_niveau(request):
@@ -1404,116 +1484,6 @@ from collections import defaultdict
 
 
 
-
-def compteEtudiant(request, matricule):
-    etudiant = Etudiant.objects.get(matricule=matricule)
-    inscriptions = etudiant.inscriptions.all()
-
-    somme_notes_ponderees = 0.0
-    somme_coefficients = 0
-    
-    if request.method == "POST":
-        # moyenne = 0.0
-        
-        matiere = request.POST['matiere']
-        trimestre = request.POST['trimestre']
-        typeEvaluation = request.POST['typeEvaluation']
-        
-        evaluations = etudiant.evaluations.all()
-        
-        if matiere:
-            evaluations = etudiant.evaluations.filter(cours__matiere__nom__contains = matiere.strip())
-            for evaluation in evaluations:
-                coefficient = evaluation.cours.matiere.coefficient
-                somme_notes_ponderees += float(evaluation.note) * coefficient
-                somme_coefficients += coefficient
-        elif trimestre:
-            evaluations = etudiant.evaluations.filter(trimestre__contains = trimestre.strip())
-            for evaluation in evaluations:
-                coefficient = evaluation.cours.matiere.coefficient
-                somme_notes_ponderees += float(evaluation.note) * coefficient
-                somme_coefficients += coefficient
-        elif typeEvaluation:
-            evaluations = etudiant.evaluations.filter(typeEvaluation__contains = typeEvaluation.strip())
-            for evaluation in evaluations:
-                coefficient = evaluation.cours.matiere.coefficient
-                somme_notes_ponderees += float(evaluation.note) * coefficient
-                somme_coefficients += coefficient
-        elif matiere and trimestre and typeEvaluation:
-            evaluations = etudiant.evaluations.filter(typeEvaluation__contains = typeEvaluation, trimestre__contains = trimestre, cours__matiere__nom__contains = matiere.strip())
-            for evaluation in evaluations:
-                coefficient = evaluation.cours.matiere.coefficient
-                somme_notes_ponderees += float(evaluation.note) * coefficient
-                somme_coefficients += coefficient
-        
-        moyenne = round(somme_notes_ponderees / somme_coefficients, 2) if somme_coefficients != 0 else 0.0
-        
-        context = {
-            "etudiant": etudiant,
-            "evaluations": evaluations,
-            "moyenne": moyenne
-            }
-        return render(request, 'eleve/compteEtudiant.html', context)
-        
-        
-    else:    
-        evaluations = etudiant.evaluations.all()
-        for evaluation in evaluations:
-            coefficient = evaluation.cours.matiere.coefficient
-            somme_notes_ponderees += float(evaluation.note) * coefficient
-            somme_coefficients += coefficient
-
-        moyenne = round(somme_notes_ponderees / somme_coefficients, 2) if somme_coefficients != 0 else 0.0
-
-        context = {
-            "etudiant": etudiant,
-            "evaluations": evaluations,
-            "moyenne": moyenne
-        }
-        return render(request, 'eleve/compteEtudiant.html', context)
-
-def accueilEtudiant(request):
-    etudiant = Etudiant.objects.get(user=request.user)
-    return render(request, 'eleve/accueilEtudiant.html', {'etudiant': etudiant})
-
-def presence(request, matricule):
-    etudiant = Etudiant.objects.get(matricule=matricule)
-    inscrits = Inscription.objects.filter(etudiant =etudiant)
-    # parent = Etudiant.objects.get(parent = etudiant.parent)
-    emargements = Emargement.objects.filter(inscrits__in=inscrits).order_by('-id')
-    return render(request, 'eleve/presence.html', {"etudiant": etudiant, "emargements": emargements})
-    
-    
-def notes(request, matricule):
-    etudiant = Etudiant.objects.get(matricule=matricule)
-    # inscriptions = etudiant.inscriptions.all()
-    if request.method == "POST":
-        annee = request.POST['annee']
-        if annee:
-            anneeScolaire = AnneeScolaire.objects.get(pk=int(annee))
-            evaluations = Evaluation.objects.filter(cours__anneeScolaire = anneeScolaire)
-            # return render(request, 'eleve/notes.html', {'evaluations': evaluations, 'etudiant': etudiant, 'annees': AnneeScolaire.objects.all().order_by('-id')})
-        else:
-            evaluations = Evaluation.objects.filter(etudiant = etudiant)
-    else:
-        evaluations = Evaluation.objects.filter(etudiant = etudiant)
-    
-    return render(request, 'eleve/notes.html', {'evaluations': evaluations, 'etudiant': etudiant, 'annees': AnneeScolaire.objects.all().order_by('-id')})
-
-
-def inscriptionPayement(request):
-    return render(request, 'eleve/inscriptionPayement.html')
-
-
-
-
-
-def messagesEleves(request, matricule):
-    etudiants = Etudiant.objects.exclude(matricule=matricule)
-    etudiant = Etudiant.objects.get(matricule=matricule)
-    contains = {"etudiants": etudiants, "etudiant": etudiant}
-    return render(request, 'eleve/messages.html', contains)
-
 # def echangeMessageEleves(request, id, matricule):
 #     eleve = Etudiant.objects.get(matricule=matricule)
 #     etudiant = Etudiant.objects.get(id = id)
@@ -1567,115 +1537,13 @@ def messagesEleves(request, matricule):
 #     return render(request, 'eleve/echangeMessageEleves.html', contains)
 
 
-def pageAccueil(request):
-    return render(request, 'accueil/accueil.html')
-
-# def depotDossier(request):
-#     return render(request, "accueil/depotDossier.html")
-
-def depotDossier(request):
-    if request.method == "POST":
-        cv = request.FILES["cv"]
-        cv = request.FILES.get("cv")
-        if not cv:
-            return render(request, "accueil/depotDossier.html", {"erreur": "Veuillez télécharger votre CV."})
-
-        niveau = request.POST["niveau"]
-        numero_telephone = request.POST["numero_telephone"]
-        nom = request.POST['nom']
-        prenom = request.POST['prenom']
-        email = request.POST['email']
-        # message = request.POST['message']
-        
-        depotDossierEtudiant.objects.create(
-            dossier=cv,
-            nom=nom,
-            prenom=prenom,
-            mail=email,
-            niveau=niveau,
-            numero_telephone=numero_telephone
-        )
-        return redirect('pageAccueil')
-    return render(request, "accueil/depotDossier.html")
-
-def traiterConnexion(request):
-    if request.method == "POST":
-        matricule = request.POST['matricule']
-        nom = request.POST['nom']
-        try:
-            eleve = Etudiant.objects.get(matricule=matricule, nom=nom)
-            request.session['matricule'] = eleve.matricule  
-            return redirect('notes', matricule=eleve.matricule)
-        except Etudiant.DoesNotExist:
-            # Gérer l'erreur si l'étudiant n'existe pas
-            return render(request, 'accueil/connexion.html', {'erreur': "Identifiants incorrects"})
-    return render(request, 'accueil/connexion.html')
-
-def receptionDossierStudent(request):
-    receptions = depotDossierEtudiant.objects.all()
-    annees = AnneeScolaire.objects.all()
-    return render(request, 'eleve/receptionDossierStudent.html', {"receptions": receptions, "annees": annees})
-
-def navBarEleve(request):
-    matricule = request.session.get('matricule')
-    if not matricule:
-        return redirect('connexion') 
-    return render(request, 'eleve/partial/navBar.html', {'matricule': matricule})
-
-def header(request):
-    matricule = request.session.get('matricule')
-    print("Matricule:----------------------------------------------------------", matricule)  # pour vérifier dans la console
-    if not matricule:
-        return HttpResponse("Matricule non défini en session.")
-    eleve = Etudiant.objects.get(matricule=matricule)
-    return render(request, 'eleve/partial/header.html', {'eleve': eleve})
-
-
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
 import json
 from datetime import datetime
 
-#s'intégrer avec AJAX
-def echangeMessageEleves(request, id, matricule):
-    eleve = Etudiant.objects.get(matricule=matricule)
-    etudiant = Etudiant.objects.get(id=id)
-    
-    etudiants = Etudiant.objects.exclude(matricule=matricule)
-    
-    if request.method == "POST" and not request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        print(request.POST)  # Pour debug
-        contenu_message = request.POST['message']
-        if contenu_message != '':
-            message = Messages.objects.create(contenu=contenu_message, expediteur=eleve, destinataire=etudiant, est_lu=False)
-            message.save()
-        else:
-            messages = Messages.objects.filter(expediteur=eleve, destinataire=etudiant)
-            for message in messages:
-                message.est_lu = True
-                message.save()
-                return redirect('echangeMessageEleves', id=id, matricule=matricule)
-            return redirect('echangeMessageEleves', id=id, matricule=matricule)
-        
-        return redirect('echangeMessageEleves', id=id, matricule=matricule)
-    
-    # Récupérer tous les messages entre ces deux utilisateurs
-    tous_messages = Messages.objects.filter(
-        (Q(expediteur=eleve) & Q(destinataire=etudiant)) | 
-        (Q(expediteur=etudiant) & Q(destinataire=eleve))
-    ).order_by('date_envoi')
-    
-    # Marquer les messages comme lus quand la page est chargée
-    Messages.objects.filter(expediteur=etudiant, destinataire=eleve, est_lu=False).update(est_lu=True)
-    
-    contains = {
-        'etudiant': etudiant, 
-        'eleve': eleve, 
-        'tous_messages': tous_messages,
-        "etudiants": etudiants,
-    }
-    return render(request, 'eleve/echangeMessageEleves.html', contains)
+
 
 # Nouvelle API pour récupérer les nouveaux messages
 @require_GET

@@ -1,0 +1,67 @@
+{% extends 'accueil/base.html' %} 
+
+{% load static %}
+
+{% block body %}
+    
+    <main class="main">
+
+        <!-- Page Title -->
+        <div class="page-title" data-aos="fade">
+        <div class="heading">
+            <div class="container">
+            <div class="row d-flex justify-content-center text-center">
+                <div class="col-lg-8">
+                <h1>Formateurs</h1>
+                <p class="mb-0">La haine et l’origine du partage. Ils ne renoncent jamais à l’effort. Des obligations dans lesquelles la haine est un plaisir obtenu, causé par une haine de la chose désirée. Ils subissent la douleur des dettes, une vérité née des douleurs. Presque une raison. Ils subissent la quête même de la douleur.</p>
+                </div>
+            </div>
+            </div>
+        </div>
+        <nav class="breadcrumbs">
+            <div class="container">
+            <ol>
+                <li><a href="{% url 'pageAccueil' %}">Accueil</a></li>
+                <li class="current">Formateurs</li>
+            </ol>
+            </div>
+        </nav>
+        </div><!-- End Page Title -->
+
+        <!-- Trainers Section -->
+        <section id="trainers" class="section trainers">
+
+        <div class="container">
+
+            <div class="row gy-5">
+                {% for enseignant in enseignants %}
+                <div class="col-lg-4 col-md-6 member" data-aos="fade-up" data-aos-delay="100">
+                    <div class="member-img">
+                        {% if enseignant.photo %}
+                           <img src="{{enseignant.photo.url }}" class="img-fluid" alt="">
+                        {% else %}
+                            <i class="fa fa-user"></i>
+                        {% endif %}
+                        <div class="social">
+                            <a href="#"><i class="bi bi-twitter-x"></i></a>
+                            <a href="#"><i class="bi bi-facebook"></i></a>
+                            <a href="#"><i class="bi bi-instagram"></i></a>
+                            <a href="#"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                        </div>
+                        <div class="member-info text-center">
+                        <h4>{{enseignant.nom}} {{enseignant.prenom}}</h4>
+                        <span>{{enseignant.profession}}</span>
+                        <p>Aliquam iure quaerat voluptatem praesentium possimus unde laudantium vel dolorum distinctio dire flow</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+
+        </section><!-- /Trainers Section -->
+
+    </main>
+
+{% endblock %}
