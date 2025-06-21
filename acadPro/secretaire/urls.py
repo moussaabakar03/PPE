@@ -65,8 +65,8 @@ urlpatterns = [
     path('add-salle/', views.add_salle, name='add-salle'),
     path('modifierSalle/<str:nom>', views.modifierSalle, name='modifierSalle'),
     path('supprimerSalle/<int:id>', views.supprimerSalle, name='supprimerSalle'),
-    path('emploiDuTemps/', views.emploiDuTemps, name='emploiDuTemps'),
-    path('ajoutEmploiTemps/', views.ajoutEmploiTemps, name='ajoutEmploiTemps'),
+    path('emploiDuTemps/<int:id1>/<int:id2>', views.emploiDuTemps, name='emploiDuTemps'),
+    path('ajoutEmploiTemps/<int:id1>/<int:id2>/<int:id3>', views.ajoutEmploiTemps, name='ajoutEmploiTemps'),
     
 
     

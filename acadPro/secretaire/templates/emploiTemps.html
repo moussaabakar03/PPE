@@ -1,3 +1,6 @@
+{% load dict_utils %}
+
+
 {% load static %}
 <!doctype html>
 <html class="no-js" lang="">
@@ -58,6 +61,8 @@
         th, td {
           text-align: left;
           padding: 8px;
+          border: solid 0.5px black;
+          border-collapse: collapse;
         }
     
         th {
@@ -131,16 +136,17 @@
                     <h3>Emploi du Temps</h3>
                     <div style ="display: flex; justify-content: space-between;">
                         <ul>
-                            <li>
-                                <a href="">Salle de classe</a>
-                            </li>
-                            <li><a href =""> Retour<a></li>
+                            <li>{{salle.niveau.classe}}- {{salle.nom}}</li>
+                            <li><a href ="{% url 'studentParSalle' salle.id annee.id %}"> Retour<a></li>
                             <li> Emploi du temps</li>
                         </ul>
                         <ul>
-                            <li><a href ="{% url 'ajoutEmploiTemps' %}"> Ajout Emploi du Temps<a></li>
+                            <li><a href ="{% url 'ajoutEmploiTemps' salle.id annee.id salle.niveau.id %}"> <i class="fa fa-plus"></i> Ajout nouvel Emploi du Temps<a></li>
                         </ul>
                     </div>
+                        <!-- <li>{{salle.niveau.classe}} {{salle.nom}}</li>
+                        <h6 style = "margin-left: 60px;">Année scolaire: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}}>> </span></h6> -->
+
                 </div>
                 <!-- Breadcubs Area End Here -->
                 <!-- etudiant Details Area Start Here -->
@@ -157,34 +163,48 @@
                                 {% endfor %}
                             </div>
 
-                            <div class="table-wrapper">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Date ajouter</th>
-                                            <th>Voir Emploi du temps</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% if cvEnseignants %}
-                                            {% for cvEnseignant in cvEnseignants%}
-                                                <tr>
-                                                    <td>{{ cvEnseignant.dateHeure|date:"Y-m-d H:m:s" }}</td>
-                                                    <td><a href ="" alt="cv enseignant" style ="color: #ffae01;">Voir</a></td>
-                                                    <td>
-                                                        <a href="" onclick="return confirm('Voulez-vous vraiment supprimer ce CV ?')" class="btn btn-danger btn-sm">
-                                                            <i class="fas fa-trash"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                        {% else %}
-                                            <td colspan="3"> Il n'y a pas d'emploi du temps pour cette Salle</td>
-                                        {% endif %}
-                                    </tbody>
-                                </table>
+                            <div style = "display: flex; justify-content: space-between;">
+                                <h6>Emploi du temps de la salle de classe: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{salle.niveau.classe}}  {{salle.nom}} >> </span></h6>
+                                <h6>Année scolaire: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}}>> </span></h6>
                             </div>
+
+                           <div class="table-wrapper">
+                             <table>
+                                <thead>
+                                    <tr>
+                                        <th>Heure / Jour</th>
+                                        {% for jour in jours %}
+                                            <th>{{ jour }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for heure in heures %}
+                                    <tr>
+                                        <td>{{ heure }}</td>
+                                        {% for jour in jours %}
+                                            {% with ligne=emploi_dict|dict_get:heure %}
+                                                {% with emploi=ligne|dict_get:jour %}
+                                                    <td>
+                                                        {% if emploi %}
+                                                            {{ emploi.cours.matiere.nom }}
+                                                        {% else %}
+                                                            -
+                                                        {% endif %}
+                                                    </td>
+                                                {% endwith %}
+                                            {% endwith %}
+                                        {% endfor %}
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                             </table>
+                             <div class="col-12 form-group mg-t-8" style="display: flex; justify-content: center; gap: 10px;">
+                                <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Mettre à jour</button>
+                                <a href="" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Supprimer</a>
+                            </div>
+                            </div>
+
                         </div>
                         
                     </div>

@@ -101,6 +101,7 @@ class Enseignant(models.Model):
     def __str__(self):
         return f"{self.nom} {self.prenom}"
 
+
 class cvEnseignant(models.Model):
     cv = models.FileField(upload_to='cvEnseignant')
     dateHeure = models.DateTimeField(auto_now_add=True)
@@ -140,7 +141,7 @@ class Cours(models.Model):
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE, null=True, blank=True, related_name="cours")
     dateDebutCours = models.DateField()
     # dureeCours = models.PositiveIntegerField()
-    trimestre = models.CharField(max_length=100, choices=[('Trimestre 1', 'Trimestre 1'), ('Trimestre 2', 'Trimestre 2'), ('Trimestre 3', 'Trimestre 3' )])
+    # trimestre = models.CharField(max_length=100, choices=[('Trimestre 1', 'Trimestre 1'), ('Trimestre 2', 'Trimestre 2'), ('Trimestre 3', 'Trimestre 3' )])
     # typeDeCours = models.CharField(max_length=100, choices=[('Normal', 'Normal'), ('Rattrapage', 'Rattrapage') ])
     etat = models.CharField(max_length=100, choices=[('En cours', 'En cours'), ('Effectué', 'Effectué'), ('Planifié', 'Planifié')])
 
@@ -198,13 +199,12 @@ class depotDossierEtudiant(models.Model):
     numero_telephone = models.CharField(max_length=20)
 
 
-
 class EmploiDuTemps(models.Model):
-    jour = models.CharField(max_length=30)
-    heure_debut = models.TimeField()
-    heure_fin = models.TimeField()
+    cours = models.ForeignKey(Cours, on_delete=models.CASCADE)
+    salle = models.ForeignKey(SalleDeClasse, on_delete = models.CASCADE, null=True)
+    annee = models.ForeignKey(AnneeScolaire, on_delete = models.CASCADE, null=True)
 
-    classe = models.ForeignKey(Classe, on_delete=models.CASCADE)
-    matiere = models.ForeignKey(Matiere, on_delete=models.CASCADE)
-    enseignant = models.ForeignKey(Enseignant, on_delete=models.CASCADE)
-    salle = models.CharField(max_length=50, blank=True, null=True)  # Facultatif
+    jour = models.CharField(max_length=30)
+    heure = models.CharField(max_length=30)
+    # heure_debut = models.TimeField()
+    # heure_fin = models.TimeField()

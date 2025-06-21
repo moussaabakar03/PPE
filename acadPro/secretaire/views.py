@@ -3,7 +3,7 @@ from django.contrib import messages
 from datetime import timedelta, datetime
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
-from . models import AnneeScolaire, Classe, Cours, Cout, Emargement, Etudiant, Enseignant, Evaluation, Inscription, Matiere, Messages, Parent, SalleDeClasse, cvEnseignant, depotDossierEtudiant
+from . models import AnneeScolaire, Classe, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, Inscription, Matiere, Messages, Parent, SalleDeClasse, cvEnseignant, depotDossierEtudiant
 from django.utils.timezone import localtime
 from django.db.models import Q
 
@@ -709,67 +709,85 @@ def presenceEtudiant(request, matricule):
 
     return render(request, 'presenceStudent.html', { "emargements_par_date": dict(emargements_par_date),"etudiant": etudiant, "emargements": emargements})
 
-def emploiDuTemps(request):
-    return render(request, "emploiTemps.html")
 
-def ajoutEmploiTemps(request):
+def emploiDuTemps(request, id1, id2):
+    salle = SalleDeClasse.objects.get(id=id1)
+    annee = AnneeScolaire.objects.get(id=id2)
     jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
     heures = ["1h-2h", "2h-3h", "3h-4h", "4h-5h"]
-    cours = Cours.objects.all()
+
+    emploi_dict = {}  # exemple : emploi_dict["1h-2h"]["Lundi"] = cours
+
+    for heure in heures:
+        emploi_dict[heure] = {}
+        for jour in jours:
+            emploi = EmploiDuTemps.objects.filter(
+                salle=salle, annee=annee, heure=heure, jour=jour
+            ).first()
+            emploi_dict[heure][jour] = emploi
+
+    contains = {
+        'salle': salle,
+        'annee': annee,
+        'jours': jours,
+        'heures': heures,
+        # 'emploi': emploi,
+        'emploi_dict': emploi_dict,
+    }
+
+    return render(request, "emploiTemps.html", contains)
+
+
+
+def ajoutEmploiTemps(request, id1, id2, id3):
+    salle = SalleDeClasse.objects.get(id=id1)
+    annee = AnneeScolaire.objects.get(id=id2)
+    classe = Classe.objects.get(id=id3)
+    
+    jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
+    heures = ["1h-2h", "2h-3h", "3h-4h", "4h-5h"]
+    cours = Cours.objects.filter(classe = classe, anneeScolaire= annee)
+
+    if request.method == "POST":
+        for i, heure in enumerate(heures, start=1):
+            for jour in jours:
+                champ = f"{jour.lower()}_{i}"
+                cours_id = request.POST.get(champ)
+
+                if not cours_id:
+                    messages.error(request, f"Le champ {champ} est requis.")
+                    continue 
+
+                try:
+                    coursRecu = Cours.objects.get(id=cours_id)
+                except Cours.DoesNotExist:
+                    messages.error(request, f"Le cours avec l’ID {cours_id} n'existe pas.")
+                    continue
+
+                # if EmploiDuTemps.objects.filter(salle= salle, annee=annee, cours = coursRecu).exists():
+                #     messages.error(request, "Emploi existe déjà! Veillez la modifier si vous voullez")
+                #     return redirect("ajoutEmploiTemps", id1= id1, id2 = id2, id3= id3)
+                # else:
+                EmploiDuTemps.objects.create(
+                    cours=coursRecu,
+                    salle=salle,
+                    annee = annee,
+                    jour=jour,
+                    heure=heure
+                )
+                # messages.error(request, f"Emploi ajouté avec succès.")
+        return redirect('emploiDuTemps', id1 = id1, id2 = id2)
+
     return render(request, "ajoutEmploiTemps.html", {
-        "jours": jours,
-        "heures": heures,
-        "cours": cours,
+        'salle': salle,
+        'annee': annee,
+        'jours': jours,
+        'heures': heures,
+        'cours': cours
     })
 
 
-# def ajout_emploi_temps(request):
-#     jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
-#     heures = ["1h-2h", "2h-3h", "3h-4h"]
-#     cours = Cours.objects.all()
 
-#     if request.method == "POST":
-#         emploi_du_temps = []
-#         erreurs = False
-
-#         for i, heure in enumerate(heures, start=1):
-#             for jour in jours:
-#                 champ = f"{jour.lower()}_{i}"
-#                 cours_id = request.POST.get(champ)
-
-#                 if not cours_id:
-#                     messages.error(request, f"Le champ {champ} est requis.")
-#                     erreurs = True
-#                     continue
-
-#                 try:
-#                     cours_obj = Cours.objects.get(id=cours_id)
-#                 except Cours.DoesNotExist:
-#                     messages.error(request, f"Cours introuvable pour {champ}.")
-#                     erreurs = True
-#                     continue
-
-#                 emploi_du_temps.append({
-#                     "jour": jour,
-#                     "heure": heure,
-#                     "cours": cours_obj
-#                 })
-
-#         if not erreurs:
-#             for ligne in emploi_du_temps:
-#                 EmploiDuTemps.objects.create(
-#                     jour=ligne["jour"],
-#                     heure=ligne["heure"],
-#                     cours=ligne["cours"]
-#                 )
-#             messages.success(request, "Emploi du temps enregistré avec succès.")
-#             return redirect("liste_emplois")  # ou la vue de ton choix
-
-#     return render(request, "emploi/ajoutEmploiTemps.html", {
-#         "jours": jours,
-#         "heures": heures,
-#         "cours": cours,
-#     })
 
 
 #Classe(niveau)
@@ -949,7 +967,7 @@ def ajoutCours(request):
         classe_nom = request.POST["classe"]
         # date_debut = request.POST["dateDebutCours"]
         # duree = request.POST["dureeCours"]
-        trimestre = request.POST["trimestre"]
+        # trimestre = request.POST["trimestre"]
         etat = request.POST["etat"]
         anneeScolaire = request.POST["anneeScolaire"]
 
@@ -969,7 +987,6 @@ def ajoutCours(request):
                 enseignant=enseignant,
                 classe=classe,
                 dateDebutCours=timezone.now(),
-                trimestre=trimestre,
                 etat=etat,
                 anneeScolaire=anneeAcademique
             )
@@ -992,7 +1009,7 @@ def modifier_cours(request, pk):
         classe_nom = request.POST["classe"]
         cours.dateDebutCours = request.POST["dateDebutCours"]
         cours.dureeCours = request.POST["dureeCours"]
-        cours.trimestre = request.POST["trimestre"]
+        # cours.trimestre = request.POST["trimestre"]
         cours.etat = request.POST["etat"]
         anneeScolaire = request.POST["anneeScolaire"]
 

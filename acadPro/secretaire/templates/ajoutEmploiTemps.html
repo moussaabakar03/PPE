@@ -63,10 +63,13 @@
             <div class="dashboard-content-one">
                 <!-- Breadcubs Area Start Here -->
                 <div class="breadcrumbs-area">
-                    <h3>Parents *</h3>
+                    <h3>Ajout emploi du temps</h3>
                     <ul>
                         <li>
                             <a href="{% url 'index' %}">Home</a>
+                        </li>
+                         <li>
+                            <a href="{% url 'emploiDuTemps' salle.id annee.id %}">Retour</a>
                         </li>
                         <li>Ajout emploi du temps</li>
                     </ul>
@@ -79,6 +82,8 @@
                             <div class="item-title">
                                 <h3>Ajout emploi du temps</h3>
                             </div>
+                            <li>{{salle.niveau.classe}} {{salle.nom}}</li>
+                            <h6 style = "margin-left: 60px;">Année scolaire: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}}>> </span></h6>
                         </div>
                         <form class="new-added-form" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
@@ -98,7 +103,7 @@
                                             <th>{{ heure }}</th>
                                             {% for jour in jours %}
                                             <td>
-                                                <select name="{{ jour|lower }}_{{ forloop.parentloop.counter }}" class="select2 form-control" required>
+                                                <select name="{{ jour|lower }}_{{ forloop.parentloop.counter }}" class="select2 form-control">
                                                     <option value=""></option>
                                                     {% for c in cours %}
                                                         <option value="{{ c.id }}">{{ c.matiere.nom }}</option>
@@ -111,11 +116,9 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="row">
-                                <div class="col-12 form-group mg-t-8">
+                            <div class="row" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
                                     <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Enregistrer</button>
-                                    <button type="reset" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Réinitialiser</button>
-                                </div>
+                                    <a href="{% url 'emploiDuTemps' salle.id annee.id %}" type="reset" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Annuler</a>
                             </div>
                         </form>
                         
