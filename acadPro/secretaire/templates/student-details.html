@@ -124,7 +124,6 @@
             width: 120px;
             height: 150px;
             background-color: #ddd;
-            {% comment %} border: 1px solid #999; {% endcomment %}
             position: relative;
             overflow: hidden;
         }
@@ -198,20 +197,7 @@
             font-weight: bold;
         }
         
-        {% comment %} .qr-code {
-            width: 100px;
-            height: 100px;
-            background-color: #fff;
-            border: 1px solid #000;
-            margin-top: 20px;
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            grid-template-rows: repeat(10, 1fr);
-        } {% endcomment %}
-        
-        {% comment %} .qr-pixel {
-            background-color: black;
-        } {% endcomment %}
+     
         
         .footer {
             font-size: 8px;
@@ -255,7 +241,10 @@
                             <li>
                                 <a href="{% url 'all-student' %}">Elèves *</a>
                             </li>
-                            {% comment %} <li> <a href ="{% url 'detailEtudiant' etudiant.matricule parent.id %}" ><i class="fas fa-info-circle"></i> Mes Infos</a></li> {% endcomment %}
+                             <!-- <li>
+                                <a href="{% url 'all-student' %}">Retour</a>
+                            </li> -->
+                            <li> <a href ="{% url 'detailEtudiant' etudiant.matricule parent.id %}" >Retour(<i class="fas fa-info-circle"></i> Mes Infos)</a></li>
                             <li>Details élèves</li>
                         </ul>
                     </div>

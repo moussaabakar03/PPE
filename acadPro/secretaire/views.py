@@ -256,10 +256,11 @@ def student_promotion(request):
 
 def student_detail(request, matricule):
     etudiant = Etudiant.objects.get(matricule = matricule)
+    parent = etudiant.parent
     inscrits = etudiant.inscriptions.all()
     # parent = Etudiant.objects.get(parent = etudiant.parent)
     annees = AnneeScolaire.objects.all().order_by("-id")
-    context = {"etudiant": etudiant, "inscrits": inscrits, "annees": annees}
+    context = {"etudiant": etudiant, "inscrits": inscrits, "annees": annees, 'parent': parent}
     return render(request, 'student-details.html', context)
 
 def detailEtudiant(request, matricule, id):
@@ -698,7 +699,7 @@ def listePresencePasse(request, id, id2):
 def presenceEtudiant(request, matricule):
     etudiant = Etudiant.objects.get(matricule=matricule)
     inscrits = etudiant.inscriptions.all()
-    # parent = Etudiant.objects.get(parent = etudiant.parent)
+    parent = etudiant.parent
     emargements = Emargement.objects.filter(inscrits__in=inscrits).order_by('-id')
     
     
@@ -707,7 +708,7 @@ def presenceEtudiant(request, matricule):
         date_str = localtime(em.dateHeureDebut).date().strftime('%Y-%m-%d')
         emargements_par_date[date_str].append(em)
 
-    return render(request, 'presenceStudent.html', { "emargements_par_date": dict(emargements_par_date),"etudiant": etudiant, "emargements": emargements})
+    return render(request, 'presenceStudent.html', { "emargements_par_date": dict(emargements_par_date),"etudiant": etudiant, "emargements": emargements, 'parent': parent})
 
 
 def emploiDuTemps(request, id1, id2):
@@ -755,7 +756,7 @@ def ajoutEmploiTemps(request, id1, id2, id3):
                 cours_id = request.POST.get(champ)
 
                 if not cours_id:
-                    messages.error(request, f"Le champ {champ} est requis.")
+                    # messages.error(request, f"Le champ {champ} est requis.")
                     continue 
 
                 try:

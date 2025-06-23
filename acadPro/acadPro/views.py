@@ -53,3 +53,7 @@ def formateur(request):
     enseignants = Enseignant.objects.all()
     contains = {'enseignants': enseignants}
     return render(request, 'accueil/formateur.html', contains)
+
+
+def contact(request):
+    return render(request, 'accueil/contact.html')

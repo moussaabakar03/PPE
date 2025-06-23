@@ -71,13 +71,12 @@
                                     </select>
                                 </div>
                                 <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
-                                    
-                                    {% comment %} <input type="text"  name ="anneeScolaire" placeholder="Filtrer par année scolaire ..." class="form-control"> {% endcomment %}
-                                    <select class="select2 form-control" id="etudiant-select" name="anneeScolaire" >
-                                        <option value="">Filtrer par année scolaire ...</option>
-                                        {% for anneeScolaire in anneeScolaires %}
-                                            <option value="{{ anneeScolaire.id }}"> {{anneeScolaire.debutAnnee|date:'Y'}}- {{anneeScolaire.fintAnnee|date:'Y'}}</option>
+                                     <select id="anneeScolaireFilter" class="select2 form-control" name="anneeScolaire" onchange="applyFilters()">
+                                        <option value="">Année scolaire *</option>
+                                        {% for anneesScolaire in anneeScolaires %}
+                                            <option value="{{ anneesScolaire.debutAnnee|date:"Y" }}- {{ anneesScolaire.fintAnnee|date:"Y" }}">{{ anneesScolaire.debutAnnee|date:"Y" }}-{{ anneesScolaire.fintAnnee|date:"Y" }}</option>
                                         {% endfor %}
+                                        <option value="Non-renseigné">Autre</option>
                                     </select>
                                 </div>
                                 <div class="col-1-xxxl col-xl-2 col-lg-3 col-12 form-group">
@@ -86,7 +85,7 @@
                             </div>
                         </form>
                         <div class="table-responsive">
-                            <table class="table display data-table text-nowrap">
+                            <table class="table display data-table text-nowrap"  id="projectsTable" >
                                 <thead>
                                     <tr>
                                         <th>
@@ -176,6 +175,24 @@
     <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
     <!-- Custom Js -->
     <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+    <script>
+        function applyFilters() {
+            const anneeFilter = document.getElementById('anneeScolaireFilter').value;
+            const table = document.getElementById('projectsTable');
+            const rows = table.getElementsByTagName('tr');
+            let hasVisibleRows = false;
+
+            for (let i = 1; i < rows.length; i++) {
+                const anneeCell = rows[i].getElementsByTagName('td')[3];
+                const anneeText = anneeCell ? anneeCell.textContent.trim() : '';
+                const showRow = anneeFilter === "" || anneeText.includes(anneeFilter);
+
+                rows[i].style.display = showRow ? "" : "none";
+                if (showRow) hasVisibleRows = true;
+            }
+        }
+    </script>
 </body>
 
 </html>

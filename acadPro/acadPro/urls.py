@@ -33,6 +33,7 @@ urlpatterns = [
 
 
     path('formateur/', views.formateur, name="formateur"),
+    path('contact/', views.contact, name="contact"),
 
 ]
 
