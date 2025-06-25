@@ -1,7 +1,7 @@
 
 from django.shortcuts import redirect, render
 
-from secretaire.models import AnneeScolaire, Enseignant, Etudiant, depotDossierEtudiant
+from secretaire.models import AnneeScolaire, Classe, Cout, Enseignant, Etudiant, depotDossierEtudiant
 
 def pageAccueil(request):
     return render(request, 'accueil/accueil.html')
@@ -57,3 +57,14 @@ def formateur(request):
 
 def contact(request):
     return render(request, 'accueil/contact.html')
+
+
+def prixDeClasse(request):
+    classes = Classe.objects.all()
+    couts = Cout.objects.filter(classe__in = classes)
+    for cout in couts:
+        coutAnnuel = cout.coutInscription + cout.coutScolarite + cout.fraisAssocie
+        cout.coutScolarite = coutAnnuel
+    contains = {'couts': couts}
+    return render(request, 'accueil/prixDeClasse.html', contains)
+

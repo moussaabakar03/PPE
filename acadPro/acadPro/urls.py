@@ -24,9 +24,12 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('secretaire.urls')),
+    path('secretaire/', include('secretaire.urls')),
     path('eleve/',  include('eleve.urls')),
-    path('pageAccueil/', views.pageAccueil, name="pageAccueil"),
+    path('users/',  include('users.urls')),
+    
+    
+    path('', views.pageAccueil, name="pageAccueil"),
     path('depotDossier/', views.depotDossier, name="depotDossier"),
     path('receptionDossierStudent/', views.receptionDossierStudent, name="receptionDossierStudent"),
     path('traiterConnexion/', views.traiterConnexion, name="traiterConnexion"),
@@ -34,6 +37,7 @@ urlpatterns = [
 
     path('formateur/', views.formateur, name="formateur"),
     path('contact/', views.contact, name="contact"),
+    path('prixDeClasse/', views.prixDeClasse, name="prixDeClasse"),
 
 ]
 
