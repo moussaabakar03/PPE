@@ -1,8 +1,11 @@
 from django.urls import path
 from . import views
 
+app_name = "secretaire"
+
 urlpatterns = [
-    path('index', views.index, name='index'),
+    
+    path('index/', views.index, name='index'),
     path('index3/', views.index3, name='index3'),
     path('index4/', views.index4, name='index4'),
     path('index5/', views.index5, name='index5'),
@@ -128,7 +131,7 @@ urlpatterns = [
     
     
     
-    path('generationBilletin/<str:matricule>/<str:classe>', views.generationBilletin, name='generationBilletin'),
+    path('generationBilletin/<str:matricule>/<str:classe>/<int:id>', views.generationBilletin, name='generationBilletin'),
     
     
     # path('recuperationDossierEleve/', views.recuperationDossierEleve, name="recuperationDossierEleve"),

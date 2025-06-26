@@ -139,10 +139,7 @@ class Cours(models.Model):
     matiere = models.ForeignKey(Matiere, on_delete=models.CASCADE, null=True, blank=True, related_name='cours')
     enseignant = models.ForeignKey(Enseignant, on_delete=models.CASCADE, null=True, blank=True, related_name="cours")
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE, null=True, blank=True, related_name="cours")
-    dateDebutCours = models.DateField()
-    # dureeCours = models.PositiveIntegerField()
-    # trimestre = models.CharField(max_length=100, choices=[('Trimestre 1', 'Trimestre 1'), ('Trimestre 2', 'Trimestre 2'), ('Trimestre 3', 'Trimestre 3' )])
-    # typeDeCours = models.CharField(max_length=100, choices=[('Normal', 'Normal'), ('Rattrapage', 'Rattrapage') ])
+    dateDebutCours = models.DateTimeField(auto_now_add=True)
     etat = models.CharField(max_length=100, choices=[('En cours', 'En cours'), ('Effectué', 'Effectué'), ('Planifié', 'Planifié')])
 
     anneeScolaire = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE, related_name='anneeScolaire')

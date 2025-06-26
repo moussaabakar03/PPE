@@ -138,7 +138,7 @@
                     <h3>Communications</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'messages' %}">Messages étudiants</a>
+                            <a href="{% url 'secretaire:messages' %}">Messages étudiants</a>
                         </li>
                     </ul>
                 </div>
@@ -153,7 +153,7 @@
                         {% else %}
                             <span class="text-center"><i class="fa fa-user"></i></span> 
                         {% endif %}
-                        <a href="{% url 'detailEtudiant' etudiant.matricule etudiant.parent.id %}" style="color: black;"><div class="student-name">{{etudiant.nom}} {{etudiant.prenom}}</div></a>
+                        <a href="{% url 'secretaire:detailEtudiant' etudiant.matricule etudiant.parent.id %}" style="color: black;"><div class="student-name">{{etudiant.nom}} {{etudiant.prenom}}</div></a>
                     </div>
 
                     <div class="chat-body" id="chat-body">

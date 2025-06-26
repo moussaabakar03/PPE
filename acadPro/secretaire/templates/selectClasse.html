@@ -32,7 +32,7 @@
                     <h3>Salle</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'index' %}">Tableau de Bord</a>
+                            <a href="{% url 'secretaire:index' %}">Tableau de Bord</a>
                         </li>
                         <li>Salle *</li>
                     </ul>
@@ -122,7 +122,7 @@
                 }
 
                 // Rediriger vers l'URL avec les 3 paramètres
-                const url = `/note_individuelle/${salleId}/${anneeScolaireId}/`;
+                const url = `/secretaire/note_individuelle/${salleId}/${anneeScolaireId}/`;
                 window.location.href = url;
             });
         });

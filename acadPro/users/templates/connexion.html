@@ -372,6 +372,11 @@
             <div class="auth-header">
                 <h2>Connexion</h2>
                 <p>Accédez à votre compte AcadPro</p>
+                {% if messages %}
+                    {% for message in messages %}
+                        <p style = "color: red;">{{message}}</p>
+                    {% endfor %}
+                {% endif %}
             </div>
             
             <form id="login-form" method = "POST">

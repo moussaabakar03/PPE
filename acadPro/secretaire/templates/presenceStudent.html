@@ -253,9 +253,9 @@
                         <h3>Elèves</h3>
                         <ul>
                             <li>
-                                <a href="{% url 'all-student' %}">Elèves *</a>
+                                <a href="{% url 'secretaire:all-student' %}">Elèves *</a>
                             </li>
-                            <li> <a href ="{% url 'detailEtudiant' etudiant.matricule parent.id %}" >Retour</a></li>
+                            <li> <a href ="{% url 'secretaire:detailEtudiant' etudiant.matricule parent.id %}" >Retour</a></li>
                             <li><i class="fas fa-check-circle text-success"></i>  Ma présence</li>
                         </ul>
                     </div>

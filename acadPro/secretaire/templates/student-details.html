@@ -239,12 +239,12 @@
                         <h3>Elèves</h3>
                         <ul>
                             <li>
-                                <a href="{% url 'all-student' %}">Elèves *</a>
+                                <a href="{% url 'secretaire:all-student' %}">Elèves *</a>
                             </li>
                              <!-- <li>
-                                <a href="{% url 'all-student' %}">Retour</a>
+                                <a href="{% url 'secretaire:all-student' %}">Retour</a>
                             </li> -->
-                            <li> <a href ="{% url 'detailEtudiant' etudiant.matricule parent.id %}" >Retour(<i class="fas fa-info-circle"></i> Mes Infos)</a></li>
+                            <li> <a href ="{% url 'secretaire:detailEtudiant' etudiant.matricule parent.id %}" >Retour(<i class="fas fa-info-circle"></i> Mes Infos)</a></li>
                             <li>Details élèves</li>
                         </ul>
                     </div>
@@ -264,7 +264,7 @@
                     </div>
                     <div class="">
                         <ul style="display: flex; gap: 15px; margin-top: 35px;">
-                            <li><a href="{% url 'modifier_student' etudiant.matricule %}"><i class="far fa-edit" style="color: #ff9d01;"></i></a></li>
+                            <li><a href="{% url 'secretaire:modifier_student' etudiant.matricule %}"><i class="far fa-edit" style="color: #ff9d01;"></i></a></li>
                             <li><a href="#"><i class="fas fa-print" style="color: #ff9d01;"></i></a></li>
                             <li><a href="#"><i class="fas fa-download" style="color: #ff9d01;"></i></a></li>
                         </ul>
@@ -277,7 +277,7 @@
                         <div class="card">
                             <div class="header">
                                 <div class="togo-map">
-                                    <img src = "../static/secretaire/img/togo.png" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/>
+                                    <img src = "{% static 'secretaire/img/togo.png' %}" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/>
                                 </div>
                                 <div class="header-center">
                                     <div class="subtitle">REPUBLIQUE DU TOGO</div>
@@ -286,7 +286,7 @@
                                     <div class="id-label">CARTE D'IDENTITÉ SCOLAIRE</div>
                                 </div>
                                 <div class="education-emblem">
-                                    <img src = "../static/secretaire/img/logo.png" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/>
+                                    <img src = "{% static 'secretaire/img/logo.png' %}" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/>
                                 </div>
                             </div>
                             

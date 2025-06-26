@@ -32,7 +32,7 @@
                     <h3>Cours</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'index' %}">Tableau de Bord</a>
+                            <a href="{% url 'secretaire:index' %}">Tableau de Bord</a>
                         </li>
                         <li>Cours *</li>
                     </ul>
@@ -121,10 +121,10 @@
                                                     <span class="flaticon-more-button-of-three-dots"></span>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="{% url 'modifier_cours' cours.id %}">
+                                                    <a class="dropdown-item" href="{% url 'secretaire:modifier_cours' cours.id %}">
                                                         <i class="fas fa-cogs text-dark-pastel-green"></i>Modifier
                                                     </a>
-                                                    <a class="dropdown-item" href="{% url 'supprimer_cours' cours.id %}" onclick="return confirm('Voulez-vous vraiment supprimer ce cours ?')">
+                                                    <a class="dropdown-item" href="{% url 'secretaire:supprimer_cours' cours.id %}" onclick="return confirm('Voulez-vous vraiment supprimer ce cours ?')">
                                                         <i class="fas fa-times text-orange-red"></i>Supprimer
                                                     </a>
                                                     <a class="dropdown-item" href="#">

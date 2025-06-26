@@ -137,11 +137,11 @@
                     <div style ="display: flex; justify-content: space-between;">
                         <ul>
                             <li>{{salle.niveau.classe}}- {{salle.nom}}</li>
-                            <li><a href ="{% url 'studentParSalle' salle.id annee.id %}"> Retour<a></li>
+                            <li><a href ="{% url 'secretaire:studentParSalle' salle.id annee.id %}"> Retour<a></li>
                             <li> Emploi du temps</li>
                         </ul>
                         <ul>
-                            <li><a href ="{% url 'ajoutEmploiTemps' salle.id annee.id salle.niveau.id %}"> <i class="fa fa-plus"></i> Ajout nouvel Emploi du Temps<a></li>
+                            <li><a href ="{% url 'secretaire:ajoutEmploiTemps' salle.id annee.id salle.niveau.id %}"> <i class="fa fa-plus"></i> Ajout nouvel Emploi du Temps<a></li>
                         </ul>
                     </div>
                         <!-- <li>{{salle.niveau.classe}} {{salle.nom}}</li>

@@ -48,7 +48,7 @@
                     {% endfor %}
                 </div>
                 {% endif %}
-                <form action="{% url 'login' %}" method="POST" class="login-form">
+                <form action="{% url 'secretaire:login' %}" method="POST" class="login-form">
                     {% csrf_token %}
                     <div class="form-group">
                         <label>Username</label>
@@ -79,7 +79,7 @@
                         <li><a href="#" class="bg-gplus"><i class="fab fa-google-plus-g"></i></a></li>
                         <li><a href="#" class="bg-git"><i class="fab fa-github"></i></a></li>
                     </ul>
-                    <div class="sign-up" style ="color: black;">Don't have an account ? <a href="{% url 'inscription' %}" style ="color: black;">Signup now!</a></div>
+                    <div class="sign-up" style ="color: black;">Don't have an account ? <a href="{% url 'secretaire:inscription' %}" style ="color: black;">Signup now!</a></div>
 
                 </div>
             </div>

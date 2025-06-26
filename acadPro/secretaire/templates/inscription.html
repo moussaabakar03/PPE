@@ -9,13 +9,13 @@
     <div class="container">
         <div class="container">
             <div class="form">
-                <form method="post" action="{% url 'inscription' %}">
+                <form method="post" action="{% url 'secretaire:inscription' %}">
                     {% csrf_token %}
                     <h1>Inscription</h1>
                     {{ form.as_p }}    
                     <button type="submit">S'inscrire</button>
                 </form>
-                <p class="link">Déjà inscrit ? <a href="{% url 'login' %}">Se connecter</a></p>
+                <p class="link">Déjà inscrit ? <a href="{% url 'secretaire:login' %}">Se connecter</a></p>
             </div>
         </div>      
     </div>

@@ -43,7 +43,7 @@ def traiterConnexion(request):
         try:
             eleve = Etudiant.objects.get(matricule=matricule, nom=nom)
             request.session['matricule'] = eleve.matricule  
-            return redirect('notes', matricule=eleve.matricule)
+            return redirect('eleve:notes', matricule=eleve.matricule)
         except Etudiant.DoesNotExist:
             # Gérer l'erreur si l'étudiant n'existe pas
             return render(request, 'accueil/connexion.html', {'erreur': "Identifiants incorrects"})

@@ -57,7 +57,7 @@
                     <h3>Enseignant</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'index' %}">Tableau de Bord</a>
+                            <a href="{% url 'secretaire:index' %}">Tableau de Bord</a>
                         </li>
                         <li>Enseignant *</li>
                     </ul>
@@ -150,15 +150,15 @@
                                                     <span class="flaticon-more-button-of-three-dots"></span>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="{% url 'supprimer_teacher' enseignant.matricule %}" onclick = "return confirm('Voulez-Vous vraiment supprimer cet enseignant?')"><i class="fas fa-times text-orange-red"></i>Supprimer</a>
+                                                    <a class="dropdown-item" href="{% url 'secretaire:supprimer_teacher' enseignant.matricule %}" onclick = "return confirm('Voulez-Vous vraiment supprimer cet enseignant?')"><i class="fas fa-times text-orange-red"></i>Supprimer</a>
                                                     {% if enseignant.matricule %}
-                                                        <a class="dropdown-item" href="{% url 'modifier_teacher' enseignant.matricule %}"><i
+                                                        <a class="dropdown-item" href="{% url 'secretaire:modifier_teacher' enseignant.matricule %}"><i
                                                                 class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
                                                     {% else %}
                                                         <span style="color: red;">Matricule manquant ou invalide</span>
                                                     {% endif %} 
                                                     {% comment %} <a class="dropdown-item" href="{% url'modifier_teacher' enseignant.matricule %} "><i class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a> {% endcomment %}
-                                                    <a class="dropdown-item" href="{% url 'detailEnseignant' enseignant.matricule %}"><i class="fas fa-eye" title = "voir plus"></i>voir plus</a>
+                                                    <a class="dropdown-item" href="{% url 'secretaire:detailEnseignant' enseignant.matricule %}"><i class="fas fa-eye" title = "voir plus"></i>voir plus</a>
                                                 </div>
                                             </div>
                                         </td>

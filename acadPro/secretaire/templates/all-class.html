@@ -32,7 +32,7 @@
                     <h3>Matières</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'index' %}">Tableau de Bord</a>
+                            <a href="{% url 'secretaire:index' %}">Tableau de Bord</a>
                         </li>
                         <li>Matières *</li>
                     </ul>
@@ -111,8 +111,8 @@
                                                     <span class="flaticon-more-button-of-three-dots"></span>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="{% url 'supprimer_matiere' matiere.id %}" onclick = "return confirm('Voulez-vous vraiment supprimer cette matière?')"><i class="fas fa-times text-orange-red"></i>Supprimer</a>
-                                                    <a class="dropdown-item" href="{% url 'modifier_matiere' matiere.id %}"><i class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
+                                                    <a class="dropdown-item" href="{% url 'secretaire:supprimer_matiere' matiere.id %}" onclick = "return confirm('Voulez-vous vraiment supprimer cette matière?')"><i class="fas fa-times text-orange-red"></i>Supprimer</a>
+                                                    <a class="dropdown-item" href="{% url 'secretaire:modifier_matiere' matiere.id %}"><i class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
                                                 </div>
                                             </div>
                                         </td>

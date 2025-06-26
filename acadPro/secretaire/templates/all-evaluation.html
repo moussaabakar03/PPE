@@ -32,7 +32,7 @@
                     <h3>Evaluation</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'index' %}">Tableau de Bord</a>
+                            <a href="{% url 'secretaire:index' %}">Tableau de Bord</a>
                         </li>
                         <li>Evaluation *</li>
                     </ul>
@@ -98,12 +98,12 @@
                                         <td>{{ salleDeClasse.evaluations.typeEvaluation }}</td> {% endcomment %}
                                         <td style = "display: flex; justify-content: space-between, gap: 10px;">
                                             <div class="">
-                                                <a class="dropdown-item" href="{% url 'filtre_evaluation' salleDeClasse.id %}">
+                                                <a class="dropdown-item" href="{% url 'secretaire:filtre_evaluation' salleDeClasse.id %}">
                                                     <i class="fas fa-eye" title = "voir plus" aria-hidden="true" style="color:rgb(25, 25, 103); font-size: 22px; margin-right: 10px;"></i> Voir plus
                                                 </a>
                                             </div>
                                             {% comment %} <div class="">
-                                                <a href="{% url 'deleteEvaluation' salleDeClasse.id %}" onclick= "return confirm('voulez-vous vraiment supprimer ce test?')"  class='btn btn-danger btn-sm'><i class='fas fa-trash' style='font-size: 18px'></i></a>
+                                                <a href="{% url 'secretaire:deleteEvaluation' salleDeClasse.id %}" onclick= "return confirm('voulez-vous vraiment supprimer ce test?')"  class='btn btn-danger btn-sm'><i class='fas fa-trash' style='font-size: 18px'></i></a>
                                             </div> {% endcomment %}
                                         </td>
                                     </tr>

@@ -39,11 +39,11 @@
                     <div style = "display: flex; gap: 50px;">
                         <ul>
                             <li>
-                                <a href="{% url 'studentParSalle' salle.id annee.id%}"><i class="fa fa-arrow-left"></i> Retour</a>
+                                <a href="{% url 'secretaire:studentParSalle' salle.id annee.id%}"><i class="fa fa-arrow-left"></i> Retour</a>
                             </li>
                             <li>{{salle.niveau.classe}} {{salle.nom}}</li>
                             <li>
-                                <a href="{% url 'listePresencePasse' salle.id annee.id %}"> Voir les presences passées </a>
+                                <a href="{% url 'secretaire:listePresencePasse' salle.id annee.id %}"> Voir les presences passées </a>
                             </li>
                         </ul>
                         <h6 style = "margin-left: 60px;">Année scolaire: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}}>> </span></h6>

@@ -89,7 +89,7 @@
                     <h3>Evaluation</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'all_evaluation' %}">All Evaluation</a>
+                            <a href="{% url 'secretaire:all_evaluation' %}">All Evaluation</a>
                         </li>
                         <li>Evaluation individuelle</li>
                     </ul>
@@ -144,7 +144,7 @@
                                                 
                                                 <!-- Note -->
                                                 <td>
-                                                    <a href="{% url 'ajout_note_individuelle' inscrit.etudiant.id inscrit.salleClasse.niveau.id inscrit.anneeAcademique.id %}" type="button" class="btn btn-warning attribuer-notes" style ="width: 100px; height: 100%; margin: 5px; padding: 5px; 
+                                                    <a href="{% url 'secretaire:ajout_note_individuelle' inscrit.etudiant.id inscrit.salleClasse.niveau.id inscrit.anneeAcademique.id %}" type="button" class="btn btn-warning attribuer-notes" style ="width: 100px; height: 100%; margin: 5px; padding: 5px; 
                                                     border-radius: 5px; font-size: 12px;">Nouvelle Note</a>
                                                 </td>
                                             </tr>

@@ -15,10 +15,10 @@ def traitement_login(request):
         if user is not None:
             login(request,user)
             if user.is_superuser:
-                return redirect(reverse('index'))
+                return redirect(reverse('secretaire:index'))
             elif user.groups.filter(name="Eleve").exists():
                 return redirect('inscriptionPayement')
         else:
-            return redirect('notes', matricule = username)
+            return redirect('eleve:notes', matricule = username)
 
     return render(request, 'connexion.html')

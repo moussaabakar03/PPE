@@ -132,9 +132,9 @@
                     <div style ="display: flex; justify-content: space-between;">
                         <ul>
                             <li>
-                                <a href="{% url 'all-teacher' %}">Enseigant *</a>
+                                <a href="{% url 'secretaire:all-teacher' %}">Enseigant *</a>
                             </li>
-                            <li><a href ="{% url 'detailEnseignant' enseignant.matricule%}"> Retour<a></li>
+                            <li><a href ="{% url 'secretaire:detailEnseignant' enseignant.matricule%}"> Retour<a></li>
                             <li>CV enseignant</li>
                         </ul>
                     </div>
@@ -172,7 +172,7 @@
                                                     <td>{{ cvEnseignant.dateHeure|date:"Y-m-d H:m:s" }}</td>
                                                     <td><a href ="{{ cvEnseignant.cv.url }}" alt="cv enseignant" style ="color: #ffae01;">Voir</a></td>
                                                     <td>
-                                                        <a href="{% url 'suppCvEnseignant' cvEnseignant.id %}" onclick="return confirm('Voulez-vous vraiment supprimer ce CV ?')" class="btn btn-danger btn-sm">
+                                                        <a href="{% url 'secretaire:suppCvEnseignant' cvEnseignant.id %}" onclick="return confirm('Voulez-vous vraiment supprimer ce CV ?')" class="btn btn-danger btn-sm">
                                                             <i class="fas fa-trash"></i>
                                                         </a>
                                                     </td>

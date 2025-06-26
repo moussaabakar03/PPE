@@ -38,7 +38,7 @@
                     <h3>Elèves</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'index' %}">Tableau de Bord</a>
+                            <a href="{% url 'secretaire:index' %}">Tableau de Bord</a>
                         </li>
                         <li>Elèves *</li>
                     </ul>
@@ -114,16 +114,16 @@
                                                     <span class="flaticon-more-button-of-three-dots"></span>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="{% url 'supprimer_student' etudiant.matricule %}" onclick = "return confirm('Voulez-vous vraiment supprimer cet étudiant?')"><i
+                                                    <a class="dropdown-item" href="{% url 'secretaire:supprimer_student' etudiant.matricule %}" onclick = "return confirm('Voulez-vous vraiment supprimer cet étudiant?')"><i
                                                             class="fas fa-times text-orange-red"></i>Supprimer</a>
                                                     {% if etudiant.matricule %}
-                                                        <a class="dropdown-item" href="{% url 'modifier_student' etudiant.matricule %}"><i
+                                                        <a class="dropdown-item" href="{% url 'secretaire:modifier_student' etudiant.matricule %}"><i
                                                                 class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
                                                     {% else %}
                                                         <span style="color: red;">Matricule manquant ou invalide</span>
                                                     {% endif %}
-                                                    <a class="dropdown-item" href="{{etudiant.detailEtudiant}}"><i class="fas fa-eye" title = "voir plus"></i>voir plus</a>
-                                                    <!-- <a class="dropdown-item" href="{% url 'detailEtudiant' etudiant.matricule etudiant.parent.id %}"><i class="fas fa-eye" title = "voir plus"></i>voir plus</a> -->
+                                                    {% comment %} <a class="dropdown-item" href="{{etudiant.detailEtudiant}}"><i class="fas fa-eye" title = "voir plus"></i>voir plus</a> {% endcomment %}
+                                                    <a class="dropdown-item" href="{% url 'secretaire:detailEtudiant' etudiant.matricule etudiant.parent.id %}"><i class="fas fa-eye" title = "voir plus"></i>voir plus</a>
                                                 </div>
                                             </div>
                                         </td>

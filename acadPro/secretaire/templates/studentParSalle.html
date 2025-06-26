@@ -38,17 +38,17 @@
                     <h3>Elèves</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'all-salle' %}">Elèves par salles de classe</a>
+                            <a href="{% url 'secretaire:all-salle' %}">Elèves par salles de classe</a>
                         </li>
                         <li>{{salle.niveau.classe}} {{salle.nom}}</li>
                         <li>
                             <a href=""><i class="fa fa-print" style = "color: #ffaa01;"></i> Imprimer </a>
                         </li>
                         <li>
-                            <a href="{% url 'listePresence' salle.id annee.id %}"><i class="fa fa-user-check" style = "color: #ffaa01;"></i> Créer une liste d'appel de présence </a>
+                            <a href="{% url 'secretaire:listePresence' salle.id annee.id %}"><i class="fa fa-user-check" style = "color: #ffaa01;"></i> Créer une liste d'appel de présence </a>
                         </li>
                         <li>
-                            <a href="{% url 'emploiDuTemps' salle.id annee.id %}">Emploi du Temps</a>
+                            <a href="{% url 'secretaire:emploiDuTemps' salle.id annee.id %}">Emploi du Temps</a>
                         </li>
                     </ul>
                 </div>

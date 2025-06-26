@@ -219,7 +219,7 @@
                     <h3>Communications</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'all_evaluation' %}">Messages étudiants</a>
+                            <a href="{% url 'secretaire:all_evaluation' %}">Messages étudiants</a>
                         </li>
                     </ul>
                 </div>
@@ -247,7 +247,7 @@
                                         {{ etudiant.nom }} {{ etudiant.prenom }}
                                         {% comment %} <span class="message-counter">3</span> {% endcomment %}
                                     </div>
-                                    <a href = {% url 'echangeMessage' etudiant.id %}>
+                                    <a href = {% url 'secretaire:echangeMessage' etudiant.id %}>
                                         <div class="message-icon"  style = "cursor: pointer;" title = "message">
                                             <i class="fas fa-comment"  style = "color: with;" ></i>
                                         </div>

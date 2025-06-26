@@ -32,10 +32,10 @@
                     <h3>Evaluation</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'index' %}">Tableau de Bord</a>
+                            <a href="{% url 'secretaire:index' %}">Tableau de Bord</a>
                             
                         </li>
-                        <li><a href="{% url 'all_evaluation' %}">Evaluation *</a></li>
+                        <li><a href="{% url 'secretaire:all_evaluation' %}">Evaluation *</a></li>
                         <li>Notes {{salle.nom}}</li>
                     </ul>
                 </div>
@@ -153,10 +153,10 @@
                                                         <span class="flaticon-more-button-of-three-dots"></span>
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-right">
-                                                        <a class="dropdown-item" href="{% url 'modifier_evaluation' evaluation.id  %}">
+                                                        <a class="dropdown-item" href="{% url 'secretaire:modifier_evaluation' evaluation.id  %}">
                                                             <i class="fas fa-cogs text-dark-pastel-green"></i>Modifier
                                                         </a>
-                                                        <a class="dropdown-item" href="{% url 'supprimer_evaluation' evaluation.id  %}" onclick="return confirm('Voulez-vous vraiment supprimer cette évaluation ?')">
+                                                        <a class="dropdown-item" href="{% url 'secretaire:supprimer_evaluation' evaluation.id  %}" onclick="return confirm('Voulez-vous vraiment supprimer cette évaluation ?')">
                                                             <i class="fas fa-times text-orange-red"></i>Supprimer
                                                         </a>
                                                         <a class="dropdown-item" href="#">

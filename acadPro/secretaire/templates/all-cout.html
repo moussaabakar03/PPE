@@ -32,7 +32,7 @@
                     <h3>Frais</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'index' %}">Tableau de Bord</a>
+                            <a href="{% url 'secretaire:index' %}">Tableau de Bord</a>
                         </li>
                         <li>Frais *</li>
                     </ul>
@@ -109,10 +109,10 @@
                                                     <span class="flaticon-more-button-of-three-dots"></span>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="{% url 'update_cout' cout.id %}">
+                                                    <a class="dropdown-item" href="{% url 'secretaire:update_cout' cout.id %}">
                                                         <i class="fas fa-cogs text-dark-pastel-green"></i>Modifier
                                                     </a>
-                                                    <a class="dropdown-item" href="{% url 'delete_cout' cout.id %}" onclick="return confirm('Voulez-vous vraiment supprimer ce frais ?')">
+                                                    <a class="dropdown-item" href="{% url 'secretaire:delete_cout' cout.id %}" onclick="return confirm('Voulez-vous vraiment supprimer ce frais ?')">
                                                         <i class="fas fa-times text-orange-red"></i>Supprimer
                                                     </a>
                                                     <a class="dropdown-item" href="#">
