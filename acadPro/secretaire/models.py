@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-
+from django.contrib.auth.models import AbstractUser, Group, Permission
 # Create your models here.
 
 from django.db import models
@@ -50,15 +50,34 @@ class Parent(models.Model):
     def __str__(self):
         return f"{self.prenom} {self.nom}"  
     
-    
-class Etudiant(models.Model):
+class Utilisateur(AbstractUser):
+    groups = models.ManyToManyField(
+        Group,
+        related_name='utilisateur_groups',
+        blank=True,
+        help_text='The groups this user belongs to.',
+        verbose_name='groups'
+    )
+
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name='utilisateur_user_permissions',
+        blank=True,
+        help_text='Specific permissions for this user.',
+        verbose_name='user permissions'
+            
+    )
+        
+        
+class Etudiant(Utilisateur):
     parent = models.ForeignKey(Parent, on_delete=models.CASCADE, null=True, blank=True, related_name= 'etudiant')
     # salleDeClasse_id = models.ForeignKey(SalleDeClasse, on_delete=models.CASCADE, null=True, blank=True)
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
-    matricule = models.CharField(max_length=50, unique=True)
+    matricule = models.CharField(max_length=50, unique=True, null=True, blank=True)
     genre = models.CharField(max_length=10, choices=[('M', 'Masculin'), ('F', 'Féminin')])
-    date_naissance = models.DateField()
+    date_naissance = models.DateField(null=True, blank=True)
+
     groupe_sanguin = models.CharField(max_length=3, choices=[
         ('A+', 'A+'), ('A-', 'A-'), 
         ('B+', 'B+'), ('B-', 'B-'), 
@@ -72,9 +91,13 @@ class Etudiant(models.Model):
     photo = models.ImageField(upload_to='photos/etudiants/', null=True, blank=True)
     date_enregistrement = models.DateTimeField(auto_now_add=True)
     lieuDeNaissance = models.CharField(max_length=100)
+    # motDePasse = models.CharField(max_length=100, null= True, blank=True)
 
+
+   
+    
     def __str__(self):
-        return f"{self.matricule}- {self.nom} {self.prenom}"
+        return f"{self.username}"
     
     def detailEtudiant(self):
         return reverse("detailEtudiant", kwargs={"matricule": self.matricule, "id": self.parent.id})

@@ -1,7 +1,18 @@
 
 from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
 
+
+from django.contrib.auth import authenticate, login, logout
+from django.urls import reverse
+
+from django.contrib import messages
+
+from acadPro.forms import ConnexionForm
 from secretaire.models import AnneeScolaire, Classe, Cout, Enseignant, Etudiant, depotDossierEtudiant
+
+
+
 
 def pageAccueil(request):
     return render(request, 'accueil/accueil.html')
@@ -36,18 +47,55 @@ def receptionDossierStudent(request):
     annees = AnneeScolaire.objects.all()
     return render(request, 'accueil/receptionDossierStudent.html', {"receptions": receptions, "annees": annees})
 
-def traiterConnexion(request):
+def connexion(request):
     if request.method == "POST":
-        matricule = request.POST['matricule']
-        nom = request.POST['nom']
-        try:
-            eleve = Etudiant.objects.get(matricule=matricule, nom=nom)
-            request.session['matricule'] = eleve.matricule  
-            return redirect('eleve:notes', matricule=eleve.matricule)
-        except Etudiant.DoesNotExist:
-            # Gérer l'erreur si l'étudiant n'existe pas
-            return render(request, 'accueil/connexion.html', {'erreur': "Identifiants incorrects"})
-    return render(request, 'accueil/connexion.html')
+        form = ConnexionForm(request.POST)
+        # matricule = request.POST['matricule']
+        # nom = request.POST['password']
+        
+        if form.is_valid():
+            utilisateur = form.get_user()
+            login(request, utilisateur)
+            if utilisateur.is_superuser:
+                return redirect(reverse('secretaire:index'))
+            return redirect('eleve:notes')
+        else:
+            messages.error(request, "identifiant ou mot de passe incorrect")
+            
+            
+    else:
+        form = ConnexionForm()
+    return render(request, 'accueil/connexion.html', {"form": form})
+        
+    #     try:
+    #         eleve = Etudiant.objects.get(matricule=matricule, nom=nom)
+    #         # request.session['matricule'] = eleve.matricule  
+    #         return redirect('eleve:notes', matricule=eleve.matricule)
+    #     except Etudiant.DoesNotExist:
+    #         # Gérer l'erreur si l'étudiant n'existe pas
+    #         return render(request, 'accueil/connexion.html', {'erreur': "Identifiants incorrects"})
+    # return render(request, 'accueil/connexion.html')
+
+def deconnexion(request):
+    logout(request)
+    return redirect("pageAccueil")
+
+# def traitement_login(request):
+#     if request.method == "POST":
+#         username = request.POST.get("matricule")
+#         password = request.POST.get("nom")
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             login(request,user)
+#             if user.is_superuser:
+#                 return redirect(reverse('secretaire:index'))
+#             elif user.groups.filter(name="Eleve").exists():
+#                 return redirect('inscriptionPayement')
+#         else:
+#             return redirect('eleve:notes', matricule = username)
+#             # return HttpResponse('Page non trouvée')
+
+#     return render(request, 'connexion.html')
 
 def formateur(request):
     enseignants = Enseignant.objects.all()
@@ -58,7 +106,7 @@ def formateur(request):
 def contact(request):
     return render(request, 'accueil/contact.html')
 
-
+@login_required
 def prixDeClasse(request):
     classes = Classe.objects.all()
     couts = Cout.objects.filter(classe__in = classes)

@@ -34,7 +34,8 @@ urlpatterns = [
     path('', views.pageAccueil, name="pageAccueil"),
     path('depotDossier/', views.depotDossier, name="depotDossier"),
     path('receptionDossierStudent/', views.receptionDossierStudent, name="receptionDossierStudent"),
-    path('traiterConnexion/', views.traiterConnexion, name="traiterConnexion"),
+    path('connexion/', views.connexion, name="connexion"),
+    path('deconnexion/', views.deconnexion, name="deconnexion"),
 
 
     path('formateur/', views.formateur, name="formateur"),

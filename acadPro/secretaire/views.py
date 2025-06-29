@@ -7,7 +7,7 @@ from . models import AnneeScolaire, Classe, Cours, Cout, Emargement, EmploiDuTem
 from django.utils.timezone import localtime
 from django.db.models import Q
 
-
+from django.contrib.auth.hashers import make_password
 
 import random
 import string
@@ -19,7 +19,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 
-# @login_required
+@login_required
 def index(request):
     inscriptions = Inscription.objects.all().count()
     enseignants = Enseignant.objects.count()
@@ -185,10 +185,14 @@ def admit_form(request):
 
         # Génération du matricule
         matricule = generate_matricule(nom)
-
+        if nom == "":
+            nom = "vide"
         # Assurer unicité du matricule
         while Etudiant.objects.filter(matricule=matricule).exists():
             matricule = generate_matricule(nom)
+            if Etudiant.objects.filter(matricule="").exists():
+                vide = "vide"
+                matricule = generate_matricule(vide)
 
         parent_id = Parent.objects.get(pk=int(parent))
 
@@ -203,7 +207,9 @@ def admit_form(request):
             mail=mail,
             telephone=telephone,
             nationnalite=nationnalite,
-            photo=photo
+            photo=photo,
+            password = make_password(telephone),
+            username = matricule,
         )
 
         return redirect("secretaire:all-student")
@@ -230,6 +236,8 @@ def modifier_student(request, matricule):
         mtrcle.telephone = request.POST["telephone"]
         mtrcle.nationnalite = request.POST["nationnalite"]
         mtrcle.photo = request.FILES.get("photo")
+        
+        mtrcle.motDePasse = make_password(request.POST["telephone"])
         # mtrcle.salleDeClasse = SalleDeClasse.objects.get(pk=int(request.POST["salleDeClasse"]))
 
         mtrcle.parent = Parent.objects.get(pk=int(parent_id))
@@ -1379,7 +1387,7 @@ def generationBilletin(request, matricule, classe, id):
             # moyenne_matiere = float((total_devoir + total_compo)/2)   ############################
             # Si le pourcentage est 100% par tout. On applique ceci.
             # ###########################
-            moyenne_matiere = float((total_devoir + total_compo))
+            moyenne_matiere = float((total_devoir + total_compo)/2)
             
             liste_moyennes[trimestre].append({
                 "matiere": cours.matiere.nom,

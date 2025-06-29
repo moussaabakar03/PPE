@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COMMULINK - Connexion</title>
+    <title>AcadPro - Connexion</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
@@ -372,6 +372,11 @@
             <div class="auth-header">
                 <h2>Connexion</h2>
                 <p>Accédez à votre compte AcadPro</p>
+                {% if messages %}
+                    {% for message in messages %}
+                        <p style = "color: red;">{{message}}</p>
+                    {% endfor %}
+                {% endif %}
             </div>
             
             <form id="login-form" method = "POST">
@@ -380,7 +385,8 @@
                     <label for="login-username">Nom d'utilisateur</label>
                     <div class="form-control">
                         <span class="form-icon">👤</span>
-                        <input type="text" id="login-username" name="matricule" placeholder="Votre nom d'utilisateur" required>
+                        {% comment %} <input type="text" id="login-username" name="identifiant" placeholder="Votre nom d'utilisateur" required> {% endcomment %}
+                        {{ form.identifiant }}
                     </div>
                     <div class="error-message" id="login-username-error"></div>
                 </div>
@@ -389,7 +395,8 @@
                     <label for="login-password">Mot de passe</label>
                     <div class="form-control">
                         <span class="form-icon">🔒</span>
-                        <input type="password" id="login-password" name="nom" placeholder="Votre mot de passe" required>
+                        {% comment %} <input type="password" id="login-password" name="password" placeholder="Votre mot de passe" required> {% endcomment %}
+                        {{ form.password }}
                         <span class="password-toggle" id="login-password-toggle">👁️</span>
                     </div>
                     <div class="error-message" id="login-password-error"></div>
@@ -417,7 +424,7 @@
                 </div>
                 
                 <div class="switch-form">
-                    Nouveau sur Acadpro ? <a href="{% url 'inscription' %}" style="color: red;" id="switch-to-signup">S'inscrire</a>
+                    Nouveau sur Acadpro ? <a href="" style="color: red;" id="switch-to-signup">S'inscrire</a>
                 </div>
                 {% comment %} <button type="submit" class="btn" id="login-btn">Se connecter</button> {% endcomment %}
                 <div class="switch-form">
