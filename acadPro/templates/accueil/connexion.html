@@ -395,9 +395,8 @@
                     <label for="login-password">Mot de passe</label>
                     <div class="form-control">
                         <span class="form-icon">🔒</span>
-                        {% comment %} <input type="password" id="login-password" name="password" placeholder="Votre mot de passe" required> {% endcomment %}
                         {{ form.password }}
-                        <span class="password-toggle" id="login-password-toggle">👁️</span>
+                        <span class="password-toggle" id="login-password-toggle" style="cursor: pointer;">👁️</span>
                     </div>
                     <div class="error-message" id="login-password-error"></div>
                 </div>
@@ -407,7 +406,6 @@
                         <input type="checkbox" id="remember-me" style="margin-right: 8px;">
                         <label for="remember-me" style="margin-bottom: 0; font-size: 14px;">Se souvenir de moi</label>
                     </div>
-                    <a href="#" style="font-size: 14px; color: var(--primary-color); text-decoration: none;">Mot de passe oublié?</a>
                 </div>
                 
                 <button type="submit" class="btn" id="login-btn">Se connecter</button>
@@ -424,7 +422,7 @@
                 </div>
                 
                 <div class="switch-form">
-                    Nouveau sur Acadpro ? <a href="" style="color: red;" id="switch-to-signup">S'inscrire</a>
+                    <a href="#" style="font-size: 14px; color: var(--primary-color); text-decoration: none;">Mot de passe oublié?</a><a href="{% url 'contact' %}" style="color: red;" id="switch-to-signup">Nous ecrire</a>
                 </div>
                 {% comment %} <button type="submit" class="btn" id="login-btn">Se connecter</button> {% endcomment %}
                 <div class="switch-form">
@@ -433,5 +431,19 @@
             </form>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggle = document.getElementById("login-password-toggle");
+            const passwordField = document.getElementById("login-password");
+
+            toggle.addEventListener("click", function () {
+                const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+                passwordField.setAttribute("type", type);
+                toggle.textContent = type === "password" ? "👁️" : "🙈";
+            });
+        });
+    </script>
+
 </body>
 </html>

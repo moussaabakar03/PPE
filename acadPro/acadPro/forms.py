@@ -7,7 +7,10 @@ class ConnexionForm(forms.Form):
         required=True,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
-    password = forms.CharField(label="Mot de passe", widget=forms.PasswordInput)
+    password = forms.CharField(
+        label="Mot de passe",
+        widget=forms.PasswordInput(attrs={'id': 'login-password', 'placeholder': 'Votre mot de passe', 'required': 'required'})
+    )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -25,3 +28,11 @@ class ConnexionForm(forms.Form):
 
     def get_user(self):
         return self.cleaned_data.get('user')
+
+
+
+class ContactForm(forms.Form):
+    email = forms.EmailField(label="Email", widget=forms.EmailInput(attrs={'readonly': 'readonly', 'id': 'id_email'}))
+
+    sujet = forms.CharField(max_length=150, label="Sujet")
+    message = forms.CharField(widget=forms.Textarea, label="Message")

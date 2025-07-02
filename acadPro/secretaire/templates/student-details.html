@@ -234,8 +234,8 @@
             <!-- Sidebar Area End Here -->
             <div class="dashboard-content-one">
                 <!-- Breadcubs Area Start Here -->
-                <div style= "display: flex; justify-content: space-between;">
-                    <div class="breadcrumbs-area">
+                <div Class = "breadcrumbs-area" style= "display: flex; justify-content: space-between;">
+                    <div>
                         <h3>Elèves</h3>
                         <ul>
                             <li>
@@ -245,10 +245,10 @@
                                 <a href="{% url 'secretaire:all-student' %}">Retour</a>
                             </li> -->
                             <li> <a href ="{% url 'secretaire:detailEtudiant' etudiant.matricule parent.id %}" >Retour(<i class="fas fa-info-circle"></i> Mes Infos)</a></li>
-                            <li>Details élèves</li>
+                            <li>Carte scolaire ({{etudiant.nom}} {{etudiant.prenom}})</li>
                         </ul>
                     </div>
-                    <div class="col-xl-3 col-lg-6 col-12 form-group" style = "margin-top: 50px;">
+                    <div class="col-xl-3 col-lg-6 col-12 form-group" style = "margin-top: 30px;">
                        <select name="anneeScolaire" class="select2 form-control" id="anneeSelect" required>
                             <option value=""  style= "width: 600px;">-- Choisir une année scolaire --</option>
                             {% for annee in annees %}
@@ -260,6 +260,7 @@
                                     {% endif %}
                                 {% endfor %}
                             {% endfor %}
+                            
                         </select>
                     </div>
                     <div class="">
@@ -269,7 +270,6 @@
                             <li><a href="#"><i class="fas fa-download" style="color: #ff9d01;"></i></a></li>
                         </ul>
                     </div>
-                    
                 </div>
                
                 <div class =".body">

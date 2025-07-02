@@ -41,6 +41,8 @@ urlpatterns = [
     path('formateur/', views.formateur, name="formateur"),
     path('contact/', views.contact, name="contact"),
     path('prixDeClasse/', views.prixDeClasse, name="prixDeClasse"),
+    
+    path('sendMail/', views.contact_view, name='sendMail'),
 
 ]
 

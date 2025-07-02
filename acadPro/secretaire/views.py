@@ -19,6 +19,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 
+
+
 @login_required
 def index(request):
     inscriptions = Inscription.objects.all().count()
@@ -26,12 +28,15 @@ def index(request):
     contains = {'inscriptions': inscriptions, 'enseignants': enseignants}
     return render(request, 'index.html', contains)
 
+@login_required
 def index3(request):
     return render(request, 'index3.html')
 
+@login_required
 def index4(request):
     return render(request, 'index4.html')
 
+@login_required
 def index5(request):
     return render(request, 'index5.html')
 
@@ -65,7 +70,7 @@ def deconnexion(request):
 
 
 #Année scolaire.
-
+@login_required
 def ajoutAnneeScolaire(request):
     if request.method == 'POST':
         debut_str = request.POST.get('debutAnnee')
@@ -99,10 +104,12 @@ def ajoutAnneeScolaire(request):
 
     return render(request, 'ajoutAnneeScolaire.html')
 
+@login_required
 def affichageAnneeScolaire(request):
     anneesScolaires = AnneeScolaire.objects.all()
     return render(request, 'affichageAnneeScolaire.html', {'anneesScolaires': anneesScolaires})
 
+@login_required
 def modifierAnneeScolaire(request, id):
     anneeScolaire = AnneeScolaire.objects.get(id=id)
     
@@ -140,6 +147,7 @@ def modifierAnneeScolaire(request, id):
     
     return render(request, 'modifierAnneeScolaire.html', {'anneeScolaire': anneeScolaire})
 
+@login_required
 def supprimerAnneeScolaire(request, id):
     anneeScolaire = AnneeScolaire.objects.get(id=id)
     anneeScolaire.delete()
@@ -147,6 +155,7 @@ def supprimerAnneeScolaire(request, id):
 
 
 #Etudiant
+@login_required
 def all_student(request):
     inscription = Inscription.objects.all()
     if request.method == 'POST':
@@ -162,11 +171,13 @@ def all_student(request):
         context = {'etudiants': etudiant, 'inscription': inscription}
         return render(request, 'all-student.html', context)
 
+@login_required
 def generate_matricule(nom):
     prefix = slugify(nom)[:4].upper()  # Les 4 premières lettres du nom, en majuscules
     suffix = ''.join(random.choices(string.digits, k=4))  # 4 chiffres aléatoires
     return f"{prefix}{suffix}"
 
+@login_required
 def admit_form(request):
     salles = SalleDeClasse.objects.all()
     parentss = Parent.objects.all()
@@ -216,6 +227,7 @@ def admit_form(request):
 
     return render(request, "admit-form.html", {"salles": salles, "parentss": parentss})
 
+@login_required
 def modifier_student(request, matricule):
     
     mtrcle = mtrcle = get_object_or_404(Etudiant, matricule=matricule)
@@ -253,15 +265,18 @@ def modifier_student(request, matricule):
         "parents": Parent.objects.all(),
     })
 
+@login_required
 def supprimer_student(request, matricule):
     mtrcle = Etudiant.objects.get(matricule = matricule)
     if request.method == "GET":
         mtrcle.delete()
         return redirect("secretaire:all-student")
-    
+
+@login_required
 def student_promotion(request):
     return render(request, 'student-promotion.html')
 
+@login_required
 def student_detail(request, matricule):
     etudiant = Etudiant.objects.get(matricule = matricule)
     parent = etudiant.parent
@@ -271,6 +286,7 @@ def student_detail(request, matricule):
     context = {"etudiant": etudiant, "inscrits": inscrits, "annees": annees, 'parent': parent}
     return render(request, 'student-details.html', context)
 
+@login_required
 def detailEtudiant(request, matricule, id):
     etudiant = Etudiant.objects.get(matricule=matricule)
     parent = Parent.objects.get(id=id)
@@ -350,11 +366,13 @@ def detailEtudiant(request, matricule, id):
 
 
 #teacher
+@login_required
 def all_teacher(request):
     enseignants = Enseignant.objects.all()
     content = {"enseignants": enseignants }
     return render(request, 'all-teacher.html', content)
 
+@login_required
 def add_teacher(request):
     if request.method == "POST":
         nom = request.POST["nom"]
@@ -384,9 +402,11 @@ def add_teacher(request):
         return redirect("secretaire:all-teacher")
     return render(request, 'add-teacher.html')
 
+@login_required
 def teacher_detail(request):
     return render(request, 'teacher-details.html')
 
+@login_required
 def modifier_teacher(request, matricule):
     enseignant = Enseignant.objects.get(matricule = matricule)
     groupes_sanguins = ["A+", "A-", "B+", "B-", " AB+", "AB-", "O+", "O-"]
@@ -406,16 +426,19 @@ def modifier_teacher(request, matricule):
         return redirect("secretaire:all-teacher")
     return render(request, 'modifier-teacher.html', {"enseignant": enseignant, "groupes_sanguins": groupes_sanguins})
 
+@login_required
 def supprimer_teacher(request, matricule):
     enseignant = Enseignant.objects.get(matricule = matricule)
     enseignant.delete()
     return redirect("secretaire:all-teacher")
 
+@login_required
 def detailEnseignant(request, matricule):
     enseignant = Enseignant.objects.get(matricule = matricule)
     context = {"enseignant": enseignant}
     return render(request, 'detaitEnseignant.html', context)
 
+@login_required
 def cvEnseignants(request, id):
     if request.method == "POST":
         cv = request.FILES.get("cv")
@@ -428,11 +451,13 @@ def cvEnseignants(request, id):
         return redirect('secretaire:detailEnseignant', matricule = enseignant.matricule)
     return render(request, 'cvEnseignant.html')
 
+@login_required
 def listeCvEnseignant(request, id):
     enseignant = Enseignant.objects.get(id = id)
     cvEnseignants = cvEnseignant.objects.filter(enseignant = enseignant)
     return render(request, 'listeCvEnseignant.html', {"cvEnseignants" : cvEnseignants, "enseignant" : enseignant})
 
+@login_required
 def suppCvEnseignant(request, id):
     cvAsupp = cvEnseignant.objects.get(id = id)
     enseignant = cvAsupp.enseignant
@@ -442,10 +467,12 @@ def suppCvEnseignant(request, id):
 
 
 #parent
+@login_required
 def all_parents(request):
     parents = Parent.objects.all()
     return render(request, 'all-parents.html', {"parents": parents})
 
+@login_required
 def ajout_parents(request):
     if request.method == "POST":
         nom = request.POST["nom"]
@@ -472,6 +499,7 @@ def ajout_parents(request):
         return redirect("secretaire:all-parents")  # Redirige vers la liste des parents (à adapter selon ton URLconf)
     return render(request, 'add-parents.html')
 
+@login_required
 def modifier_parent(request, id):
     parent = Parent.objects.get(id = id)
     if request.method == "POST":
@@ -492,12 +520,14 @@ def modifier_parent(request, id):
     
     return render(request, 'modifierParent.html', {"parent": parent})
 
+@login_required
 def supprimer_parent(request, id):
     Parent.objects.get(id =id).delete()
     return redirect("secretaire:all-parents")  # Redirige vers la liste des parents
 
 
 #Matiere
+@login_required
 def all_class(request):
     if request.method == "POST":
         nom = request.POST["nom"]
@@ -513,6 +543,7 @@ def all_class(request):
         matiere = Matiere.objects.all()
         return render(request, 'all-class.html', {"matieres": matiere})
 
+@login_required
 def add_class(request):
     # enseignants = Enseignant.objects.all()
     # niveaux = Classe.objects.all()
@@ -539,10 +570,12 @@ def add_class(request):
 
     return render(request, 'add-class.html')
 
+@login_required
 def supprimer_matiere(request, id):
     Matiere.objects.get(id=id).delete()
     return redirect("secretaire:all-class")
 
+@login_required
 def modifier_matiere(request, id):
     matiere = Matiere.objects.get(id=id)
 
@@ -568,12 +601,14 @@ def modifier_matiere(request, id):
 
 
 #salle de classe
+@login_required
 def all_salle(request):
     salles = SalleDeClasse.objects.all()
     etudiant = Etudiant.objects.all()
     annees = AnneeScolaire.objects.all().order_by('-id')
     return render(request, 'all-salle.html', {"salles": salles, "etudiants": etudiant, "annees": annees})
 
+@login_required
 def add_salle(request):
     niveau = Classe.objects.all()
     if request.method == "POST":
@@ -600,6 +635,7 @@ def add_salle(request):
 
     return render(request, 'add-salle.html', {"niveaux": niveau})
 
+@login_required
 def modifierSalle(request, nom):
     salle = SalleDeClasse.objects.get(nom=nom)
 
@@ -616,10 +652,12 @@ def modifierSalle(request, nom):
 
     return render(request, 'modifier_Salle.html', {"salle": salle, "niveaux": Classe.objects.all()})
 
+@login_required
 def supprimerSalle(request, id):
     SalleDeClasse.objects.get(id=id).delete()
     return redirect('secretaire:all-salle')
 
+@login_required
 def studentParSalle(request, id, id2):
     salle = SalleDeClasse.objects.get(pk=id)
     anneeScolaire = AnneeScolaire.objects.get(id = id2)
@@ -637,6 +675,7 @@ def studentParSalle(request, id, id2):
         nombre = inscrits.count()
         return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'annee': anneeScolaire})
 
+@login_required
 def listePresence(request, id, id2):
     salle = SalleDeClasse.objects.get(pk=id)
     anneeScolaire = AnneeScolaire.objects.get(id = id2)
@@ -676,6 +715,7 @@ def listePresence(request, id, id2):
     nombre = inscrits.count()
     return render(request, 'listePresence.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, "annee": anneeScolaire})
 
+@login_required
 def listePresencePasse(request, id, id2):
     salleClasse = SalleDeClasse.objects.get(id=id)
     anneeScolaire = AnneeScolaire.objects.get(id=id2)
@@ -707,6 +747,7 @@ def listePresencePasse(request, id, id2):
         "anneeScolaire": anneeScolaire
     })
 
+@login_required
 def presenceEtudiant(request, matricule):
     etudiant = Etudiant.objects.get(matricule=matricule)
     inscrits = etudiant.inscriptions.all()
@@ -721,7 +762,7 @@ def presenceEtudiant(request, matricule):
 
     return render(request, 'presenceStudent.html', { "emargements_par_date": dict(emargements_par_date),"etudiant": etudiant, "emargements": emargements, 'parent': parent})
 
-
+@login_required
 def emploiDuTemps(request, id1, id2):
     salle = SalleDeClasse.objects.get(id=id1)
     annee = AnneeScolaire.objects.get(id=id2)
@@ -749,8 +790,7 @@ def emploiDuTemps(request, id1, id2):
 
     return render(request, "emploiTemps.html", contains)
 
-
-
+@login_required
 def ajoutEmploiTemps(request, id1, id2, id3):
     salle = SalleDeClasse.objects.get(id=id1)
     annee = AnneeScolaire.objects.get(id=id2)
@@ -803,10 +843,12 @@ def ajoutEmploiTemps(request, id1, id2, id3):
 
 
 #Classe(niveau)
+@login_required
 def all_niveau(request):
     niveaux = Classe.objects.all()
     return render(request, 'all-niveau.html', {"niveaux": niveaux})
 
+@login_required
 def add_niveau(request):
     if request.method == "POST":
         classe = request.POST["classe"]
@@ -824,6 +866,7 @@ def add_niveau(request):
         return redirect("secretaire:all_niveau")
     return render(request, 'add-niveau.html')
 
+@login_required
 def modifierNiveau(request, id):
     classe = Classe.objects.get(pk=id)
     if request.method == "POST":
@@ -832,11 +875,12 @@ def modifierNiveau(request, id):
         return redirect('secretaire:all_niveau')
     return render(request, 'modifier-niveau.html', {"classe": classe})
 
+@login_required
 def supprimerNiveau(request, id):
     Classe.objects.get(pk=id).delete()
     return redirect('secretaire:all_niveau')
 
-
+@login_required
 def all_inscription(request):
     if request.method == "POST":
         matricule = request.POST.get("matricule", "").strip()
@@ -876,6 +920,7 @@ def all_inscription(request):
             "niveaux": Classe.objects.all()
         })
 
+@login_required
 def ajoutInscription(request):
     if request.method == "POST":
         etudiant_id = request.POST["etudiant"]
@@ -921,12 +966,14 @@ def ajoutInscription(request):
         'anneeScolaires': AnneeScolaire.objects.all(),
     }
     return render(request, 'add-inscription.html', context)
-    
+   
+@login_required 
 def delete_inscription(request, id):
     inscription = Inscription.objects.get(pk=id)
     inscription.delete()
     return redirect("secretaire:all_inscription")
 
+@login_required
 def modifierInscription(request, id):
     inscription = Inscription.objects.get(pk=id)
     if request.method == 'POST':
@@ -950,7 +997,7 @@ def modifierInscription(request, id):
 
 
 #Cours
-
+@login_required
 def all_cours(request):
     cours = Cours.objects.all()
     
@@ -972,6 +1019,7 @@ def all_cours(request):
         context = {'cours_list': cours}
         return render(request, 'all-cours.html', context)
 
+@login_required
 def ajoutCours(request):
     if request.method == 'POST':
         matiere_nom = request.POST["matiere"]
@@ -1012,6 +1060,7 @@ def ajoutCours(request):
     }
     return render(request, 'add-cours.html', context)
 
+@login_required
 def modifier_cours(request, pk):
     cours = Cours.objects.get(pk=pk)
     if request.method == 'POST':
@@ -1035,6 +1084,7 @@ def modifier_cours(request, pk):
     context = {'cours': cours, 'matieres': Matiere.objects.all(), 'enseignants': Enseignant.objects.all(), 'classes': Classe.objects.all(), 'anneeScolaires': AnneeScolaire.objects.all()}
     return render(request, 'modifier-cours.html', context)
 
+@login_required
 def supprimer_cours(request, pk):
     Cours.objects.get(pk=pk).delete()
     return redirect('secretaire:all-cours')
@@ -1042,6 +1092,7 @@ def supprimer_cours(request, pk):
 
 
 #Evaluation
+@login_required
 def all_evaluation(request):
     # niveaux = Classe.objects.all()
     # evaluations = Evaluation.objects.all()
@@ -1050,10 +1101,12 @@ def all_evaluation(request):
     # context = {'evaluations': evaluations, 'niveaux': niveaux}
     return render(request, 'all-evaluation.html', {'salleDeClasses': salleDeClasse})
 
+@login_required
 def supprimer_evaluation(request, pk):
     Evaluation.objects.get(pk=pk).delete()
     return redirect('secretaire:all_evaluation')
 
+@login_required
 def modifier_evaluation(request, id):
     evaluation = Evaluation.objects.get(id=id)
     # etudiant = Etudiant.objects.get(id=id)
@@ -1084,6 +1137,7 @@ def modifier_evaluation(request, id):
     }
     return render(request, 'modifier-evaluation.html', context)
 
+@login_required
 def evaluation_groupee(request, id, id1, id2):
     # classe = Classe.objects.get(id=id)
     anneeScolaire = AnneeScolaire.objects.get(id=id2)
@@ -1128,16 +1182,19 @@ def evaluation_groupee(request, id, id1, id2):
     }
     return render(request, 'liste_inscrits_par_classe.html', context)
 
+@login_required
 def selectClasseEvaluation(request):
     # classe = Classe.objects.all()
     salleClasse = SalleDeClasse.objects.all()
     annee = AnneeScolaire.objects.all().order_by('-id')
     return render(request, 'selectClasseEvaluation.html', {'salleClasses': salleClasse, 'annees': annee})
 
+@login_required
 def selectClasse(request):
     salleClasses = SalleDeClasse.objects.all()
     return render(request, 'selectClasse.html', {'salleClasses': salleClasses, 'annees': AnneeScolaire.objects.all().order_by('-id')})
 
+@login_required
 def filtre_evaluation(request, id):
     salle = get_object_or_404(SalleDeClasse, id=id)
     classe = salle.niveau
@@ -1162,7 +1219,7 @@ def filtre_evaluation(request, id):
     context = {'evaluations': evaluation, 'salle':salle, 'etudiants': Etudiant.objects.all(), 'annees': AnneeScolaire.objects.all()}
     return render(request, 'filtre-evaluation.html', context)
 
-        
+@login_required    
 def note_individuelle(request, id, id2):
     salleClasse = SalleDeClasse.objects.get(id=id)
     annee = AnneeScolaire.objects.get(id=id2)
@@ -1183,6 +1240,7 @@ def note_individuelle(request, id, id2):
     }
     return render(request, 'note-individuelle.html', context)
 
+@login_required
 def ajout_note_individuelle(request, id, id1, id2):
     etudiant = Etudiant.objects.get(id=id)
     
@@ -1218,6 +1276,7 @@ def ajout_note_individuelle(request, id, id1, id2):
     }
     return render(request, 'ajout_note_individuelle.html', context)
     
+@login_required
 def deleteEvaluation(request, id):
     Evaluation.objects.get(id=id).delete()
     return redirect('secretaire:all_evaluation')
@@ -1226,6 +1285,7 @@ def deleteEvaluation(request, id):
     
     
 #coût
+@login_required
 def all_cout(request):
     if request.method == 'POST':
         classe = request.POST["classe"]
@@ -1238,6 +1298,7 @@ def all_cout(request):
         context = {'couts': couts}
         return render(request, 'all-cout.html', context)
 
+@login_required
 def ajoutCout(request):
     if request.method == 'POST':
         classe_id = request.POST["classe"]
@@ -1266,11 +1327,13 @@ def ajoutCout(request):
     context = {'classe_list': Classe.objects.all(), 'anneeScolaires': AnneeScolaire.objects.all()}
     return render(request, 'add-cout.html', context)
 
+@login_required
 def suppCout(request, id):
     cout = get_object_or_404(Cout, id=id)
     cout.delete()
     return redirect('secretaire:all_cout')
 
+@login_required
 def modifierCout(request, id):
     cout = get_object_or_404(Cout, id=id)
     if request.method == 'POST':
@@ -1293,38 +1356,47 @@ def modifierCout(request, id):
 
 
 
-
+@login_required
 def all_subject(request):
     return render(request, 'all-subject.html')
 
+@login_required
 def class_routine(request):
     return render(request, 'class-routine.html')
 
+@login_required
 def student_attendance(request):
     return render(request, 'student-attendance.html')
 
+@login_required
 def exam_schedule(request):
     return render(request, 'exam-schedule.html')
 
+@login_required
 def exam_grade(request):
     return render(request, 'exam-grade.html')
 
+@login_required
 def notice_board(request):
     return render(request, 'notice-board.html')
 
+@login_required
 def reception_dossier(request):
     return render(request, 'reception-dossier.html')
 
+@login_required
 def messagesDiscussion(request):
     etudiant = Etudiant.objects.all()
     contains = {"etudiants": etudiant}
     return render(request, 'messages.html', contains)
 
+@login_required
 def echangeMessage(request, id):
     etudiant = Etudiant.objects.get(id = id)
     contains = {'etudiant': etudiant}
     return render(request, 'echangeMessage.html', contains)
 
+@login_required
 def account_settings(request):
     return render(request, 'account-settings.html')
 
@@ -1352,7 +1424,8 @@ def get_appreciation(element):
         else:
             return "Note invalide"
         
-        
+
+@login_required
 def generationBilletin(request, matricule, classe, id):
     etudiant = get_object_or_404(Etudiant, matricule=matricule)
     annee = get_object_or_404(AnneeScolaire, id=id)
@@ -1666,6 +1739,7 @@ def get_new_messages(request, id, matricule):
 # API pour marquer les messages comme lus
 @require_POST
 @csrf_exempt
+
 def mark_messages_as_read(request, id, matricule):
     eleve = Etudiant.objects.get(matricule=matricule)
     etudiant = Etudiant.objects.get(id=id)

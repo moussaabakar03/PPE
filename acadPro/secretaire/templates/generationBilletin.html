@@ -218,432 +218,446 @@
             <!-- Sidebar Area Start Here -->
            
             {% include 'partial/aside.html' %}
-
-            <div  style="display: flex; flex-direction: column; justify-content: center; align-item: center; margin-left: 10%; margin-top: 50px;">
-            {% for trimestre in trimestres %}
-                {% if trimestre == "1er trimestre" %}
-                    <div class="bulletin" style="margin-top: 50px;">
-                        <!-- En-tête -->
-                        <div class="header">
-                            <div class="left-header">
-                                <div style="font-weight: bold;">République du Togo</div>
-                                <div style="font-size: 10px;">**************</div>
-                                <div style="font-size: 11px;">MINISTÈRE DE L'ÉDUCATION NATIONALE</div>
-                                <div style="font-size: 10px;">**************</div>
-                                <div style="font-size: 11px;">COMPLEXE SCOLAIRE AcadPro</div>
-                                <div style="font-size: 10px;">Éduquer - Produire - Se développer</div>
-                                <div style="font-size: 10px;">Tél : (+228) 63 79 77 19</div>
-                                <div style="font-size: 10px;">Ville : Lomé - Togo</div>
-                                <div style="font-size: 10px;">Adresse : Quartier Amriguébé - Rue de 40 m</div>
-                            </div>
-                            
-                            <div class="center-header">
-                                <div class="logo"> <img src = "{% static 'secretaire/img/logo.png' %}" alt = "image" style = "object-fit: cover; " /></div>
-                                <div class="title-large">BULLETIN DE NOTES</div>
-                                <div class="subtitle">{{trimestre}}</div>
-                                <div style="font-size: 11px;">Paix - Travail - Progrès</div>
-                            </div>
-                            
-                            <div class="right-header">
-                                <div style="direction: ltr;">جمهورية تشاد</div>
-                                <div style="font-size: 10px;">**************</div>
-                                <div style="direction: ltr;">وزارة التعليم الوطني</div>
-                                <div style="direction: ltr;">مجمع مدرسة النهضة العلمية</div>
-                                <div style="font-size: 10px; direction: ltr;">ANNÉE SCOLAIRE</div>
-                                <div style="font-size: 10px; direction: ltr;">2024-2025</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Informations élève -->
-                        <div class="student-info" style="display: flex; justify-content: space-between;">
-                            <div>
-                                <strong>Nom Prénoms :</strong> {{etudiant.nom}} {{etudiant.prenom}}<br>
-                                <strong>Date de Naissance :</strong> {{etudiant.date_naissance|date:"Y-m-d"}} <strong>Sexe :</strong> {{etudiant.genre}} <br>
-                                <strong>Lieu de Naissance :</strong> {{etudiant.lieuDeNaissance}}<br>
-                                <strong>Matricule :</strong> {{etudiant.matricule}}<br>
-                                <strong>Classe :</strong> 3eS_1 <strong>Effectif :</strong> 45<br>
-                                <strong>Redoublant (e) :</strong> Non
-                            </div>
-                            <div class="">
-                            {% if etudiant.photo %}
-                                <img src="{{etudiant.photo.url}}" alt="Photo" style="width: 130px; height: 130px; border-radius: 7px; object-fit: cover;">
-                            {% else %}
-                                <p class="text-center"><i class="fa fa-user"></i></p> 
-                            {% endif %}
-                            </div>
-                        </div>
-                        
-                        <!-- Tableau des matières -->
-                        <table class="subjects-table">
-                            <thead>
-                                <tr>
-                                    <th style="text-align: left; width: 25%;">Matière</th>
-                                    <th>Moyenne Devoir</th>
-                                    <th>Moyenne Composit.</th>
-                                    <th>Moyenne Matière</th>
-                                    <th>Coef.</th>
-                                    <th>Moy. Coeff.</th>
-                                    <th>Moy. Classe</th>
-                                    <th>Appréciation</th>
-                                    <th>Professeur</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for item in liste_moyennesTrimestre1 %}
-                                <tr>
-                                    <td>{{ item.matiere }}</td>
-                                    <td>{{ item.moyenne_devoir }}</td>
-                                    <td>{{ item.moyenne_compo }}</td>
-                                    <td style ="font-weight: bold; font-size: 16px;">{{ item.moyenne }}</td>
-                                    <td>{{ item.coefficient }}</td>
-                                    <td>{{ item.moyenne_ponderee }}</td>
-                                    <td>--</td>
-
-                                    <td>{{item.appreciation1}}</td>
-                                    <td>{{ item.enseignant }}</td>
-                                </tr>
-                                {% endfor %}
-
-                                <tr>
-                                    <td colspan="3"><strong>Moyenne Générale</strong></td>
-                                    <td colspan="6"><strong>{{ moyenne_generale1 }}</strong></td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        
-                        <!-- Totaux et moyennes -->
-                        <div class="totals">
-                            <div class="total-box">
-                                <div><strong>Moyenne 1er Trimestre :</strong> {{moyenne_generale1}}</div>
-                                <div><strong>Rang 1er Trimestre :</strong> 12 / 45</div>
-                            </div>
-                        </div>
-                        
-                        <div style="text-align: center; margin: 20px 0;">
-                            <div><strong>Forte moyenne :</strong> 15.50</div>
-                            <div><strong>Moyenne de classe :</strong> 10.85</div>
-                            <div><strong>Faible moyenne :</strong> 6.25</div>
-                        </div>
-                        
-                        <div style="text-align: center; margin: 20px 0; font-size: 14px;">
-                            <strong>Appréciation du travail : {{appreciationGenerale1}}</strong>
-                        </div>
-                        
-                        <!-- Décisions -->
-                        <div class="decisions">
-                            <div class="decision-box">
-                                <h4>DISCIPLINE</h4>
-                                <div><span class="checkbox"></span> Abs non justifiées : 1</div>
-                                <div><span class="checkbox"></span> Retard : 0</div>
-                                <div><span class="checkbox checked"></span> Bonne Conduite</div>
-                                <div><span class="checkbox"></span> Avertis. conduite</div>
-                                <div><span class="checkbox"></span> Blâme conduite</div>
-                            </div>
-                            
-                            <div class="decision-box">
-                                <h4>DÉCISION DU CONSEIL DE CLASSE</h4>
-                                <div><span class="checkbox"></span> Tableau d'honneur</div>
-                                <div><span class="checkbox"></span> Félicitations</div>
-                                <div><span class="checkbox checked"></span> Encouragements</div>
-                                <div><span class="checkbox"></span> Avertissement Travail</div>
-                                <div><span class="checkbox"></span> Blâme Travail</div>
-                            </div>
-                        </div>
-                        
-                        
-                        <!-- Note en bas -->
-                        <div class="note">
-                            <strong>NB:</strong> Toute rature entraînera l'annulation de ce bulletin. Ce relevé n'est tiré qu'en un seul exemplaire. Veuillez faire des copies pour d'autres services.
-                        </div>
-                    
-                    </div>
-                {% elif trimestre == "2e trimestre" %}
-                    <div class="bulletin" style="margin-top: 50px;">
-                        <!-- En-tête -->
-                        <div class="header">
-                            <div class="left-header">
-                                <div style="font-weight: bold;">République du Togo</div>
-                                <div style="font-size: 10px;">**************</div>
-                                <div style="font-size: 11px;">MINISTÈRE DE L'ÉDUCATION NATIONALE</div>
-                                <div style="font-size: 10px;">**************</div>
-                                <div style="font-size: 11px;">COMPLEXE SCOLAIRE AcadPro</div>
-                                <div style="font-size: 10px;">Éduquer - Produire - Se développer</div>
-                                <div style="font-size: 10px;">Tél : (+228) 63 79 77 19</div>
-                                <div style="font-size: 10px;">Ville : Lomé - Togo</div>
-                                <div style="font-size: 10px;">Adresse : Quartier Amriguébé - Rue de 40 m</div>
-                            </div>
-                            
-                            <div class="center-header">
-                                <div class="logo"> <img src = "{% static 'secretaire/img/logo.png' %}" alt = "image" style = "object-fit: cover; " /></div>
-                                <div class="title-large">BULLETIN DE NOTES</div>
-                                <div class="subtitle">{{trimestre}}</div>
-                                <div style="font-size: 11px;">Paix - Travail - Progrès</div>
-                            </div>
-                            
-                            <div class="right-header">
-                                <div style="direction: ltr;">جمهورية تشاد</div>
-                                <div style="font-size: 10px;">**************</div>
-                                <div style="direction: ltr;">وزارة التعليم الوطني</div>
-                                <div style="direction: ltr;">مجمع مدرسة النهضة العلمية</div>
-                                <div style="font-size: 10px; direction: ltr;">ANNÉE SCOLAIRE</div>
-                                <div style="font-size: 10px; direction: ltr;">2024-2025</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Informations élève -->
-                        <div class="student-info" style="display: flex; justify-content: space-between;">
-                            <div>
-                                <strong>Nom Prénoms :</strong> {{etudiant.nom}} {{etudiant.prenom}}<br>
-                                <strong>Date de Naissance :</strong> {{etudiant.date_naissance|date:"Y-m-d"}} <strong>Sexe :</strong> {{etudiant.genre}} <br>
-                                <strong>Lieu de Naissance :</strong> {{etudiant.lieuDeNaissance}}<br>
-                                <strong>Matricule :</strong> {{etudiant.matricule}}<br>
-                                <strong>Classe :</strong> 3eS_1 <strong>Effectif :</strong> 45<br>
-                                <strong>Redoublant (e) :</strong> Non
-                            </div>
-                            <div class="">
-                            {% if etudiant.photo %}
-                                <img src="{{etudiant.photo.url}}" alt="Photo" style="width: 130px; height: 130px; border-radius: 7px; object-fit: cover;">
-                            {% else %}
-                                <p class="text-center"><i class="fa fa-user"></i></p> 
-                            {% endif %}
-                            </div>
-                        </div>
-                        
-                        <!-- Tableau des matières -->
-                        <table class="subjects-table">
-                            <thead>
-                                <tr>
-                                    <th style="text-align: left; width: 25%;">Matière</th>
-                                    <th>Moyenne Devoir</th>
-                                    <th>Moyenne Composit.</th>
-                                    <th>Moyenne Matière</th>
-                                    <th>Coef.</th>
-                                    <th>Moy. Coeff.</th>
-                                    <th>Moy. Classe</th>
-                                    <th>Appréciation</th>
-                                    <th>Professeur</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for item in liste_moyennesTrimestre2 %}
-                                <tr>
-                                    <td>{{ item.matiere }}</td>
-                                    <td>{{ item.moyenne_devoir }}</td>
-                                    <td>{{ item.moyenne_compo }}</td>
-                                    <td>{{ item.moyenne }}</td>
-                                    <td>{{ item.coefficient }}</td>
-                                    <td>{{ item.moyenne_ponderee }}</td>
-                                    <td>--</td>
-                                    <td>{{item.appreciation2}}</td>
-                                    <td>{{ item.enseignant }}</td>
-                                </tr>
-                                {% endfor %}
-
-                                <tr>
-                                    <td colspan="3"><strong>Moyenne Générale</strong></td>
-                                    <td colspan="6"><strong>{{ moyenne_generale2 }}</strong></td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        
-                        <!-- Totaux et moyennes -->
-                        <div class="totals">
-                            <div class="total-box">
-                                <div><strong>Moyenne 1er Trimestre :</strong> {{moyenne_generale1}}</div>
-                                <div><strong>Rang 1er Trimestre :</strong> 12 / 45</div>
-                            </div>
-                            <div class="total-box">
-                                <div><strong>Moyenne 2ème Trimestre :</strong>  {{moyenne_generale2}}</div>
-                                <div><strong>Rang 2ème Trimestre :</strong> 10 / 45</div>
-                            </div>
-                        </div>
-                        
-                        <div style="text-align: center; margin: 20px 0;">
-                            <div><strong>Forte moyenne :</strong> 15.50</div>
-                            <div><strong>Moyenne de classe :</strong> 10.85</div>
-                            <div><strong>Faible moyenne :</strong> 6.25</div>
-                        </div>
-                        
-                        <div style="text-align: center; margin: 20px 0; font-size: 14px;">
-                            <strong>Appréciation du travail : {{appreciationGenerale2}}</strong>
-                        </div>
-                        
-                        <!-- Décisions -->
-                        <div class="decisions">
-                            <div class="decision-box">
-                                <h4>DISCIPLINE</h4>
-                                <div><span class="checkbox"></span> Abs non justifiées : 1</div>
-                                <div><span class="checkbox"></span> Retard : 0</div>
-                                <div><span class="checkbox checked"></span> Bonne Conduite</div>
-                                <div><span class="checkbox"></span> Avertis. conduite</div>
-                                <div><span class="checkbox"></span> Blâme conduite</div>
-                            </div>
-                            
-                            <div class="decision-box">
-                                <h4>DÉCISION DU CONSEIL DE CLASSE</h4>
-                                <div><span class="checkbox"></span> Tableau d'honneur</div>
-                                <div><span class="checkbox"></span> Félicitations</div>
-                                <div><span class="checkbox checked"></span> Encouragements</div>
-                                <div><span class="checkbox"></span> Avertissement Travail</div>
-                                <div><span class="checkbox"></span> Blâme Travail</div>
-                            </div>
-                        </div>
-                        
-                        
-                        <!-- Note en bas -->
-                        <div class="note">
-                            <strong>NB:</strong> Toute rature entraînera l'annulation de ce bulletin. Ce relevé n'est tiré qu'en un seul exemplaire. Veuillez faire des copies pour d'autres services.
-                        </div>
-                    
-                    </div>
-                {% elif trimestre == "3e trimestre" %}
-                    <div class="bulletin" style="margin-top: 50px;">
-                        <!-- En-tête -->
-                        <div class="header">
-                            <div class="left-header">
-                                <div style="font-weight: bold;">République du Togo</div>
-                                <div style="font-size: 10px;">**************</div>
-                                <div style="font-size: 11px;">MINISTÈRE DE L'ÉDUCATION NATIONALE</div>
-                                <div style="font-size: 10px;">**************</div>
-                                <div style="font-size: 11px;">COMPLEXE SCOLAIRE AcadPro</div>
-                                <div style="font-size: 10px;">Éduquer - Produire - Se développer</div>
-                                <div style="font-size: 10px;">Tél : (+228) 63 79 77 19</div>
-                                <div style="font-size: 10px;">Ville : Lomé - Togo</div>
-                                <div style="font-size: 10px;">Adresse : Quartier Amriguébé - Rue de 40 m</div>
-                            </div>
-                            
-                            <div class="center-header">
-                                <div class="logo"> <img src = "{% static 'secretaire/img/logo.png' %}" alt = "image" style = "object-fit: cover; " /></div>
-                                <div class="title-large">BULLETIN DE NOTES</div>
-                                <div class="subtitle">{{trimestre}}</div>
-                                <div style="font-size: 11px;">Paix - Travail - Progrès</div>
-                            </div>
-                            
-                            <div class="right-header">
-                                <div style="direction: ltr;">جمهورية تشاد</div>
-                                <div style="font-size: 10px;">**************</div>
-                                <div style="direction: ltr;">وزارة التعليم الوطني</div>
-                                <div style="direction: ltr;">مجمع مدرسة النهضة العلمية</div>
-                                <div style="font-size: 10px; direction: ltr;">ANNÉE SCOLAIRE</div>
-                                <div style="font-size: 10px; direction: ltr;">2024-2025</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Informations élève -->
-                        <div class="student-info" style="display: flex; justify-content: space-between;">
-                            <div>
-                                <strong>Nom Prénoms :</strong> {{etudiant.nom}} {{etudiant.prenom}}<br>
-                                <strong>Date de Naissance :</strong> {{etudiant.date_naissance|date:"Y-m-d"}} <strong>Sexe :</strong> {{etudiant.genre}} <br>
-                                <strong>Lieu de Naissance :</strong> {{etudiant.lieuDeNaissance}}<br>
-                                <strong>Matricule :</strong> {{etudiant.matricule}}<br>
-                                <strong>Classe :</strong> 3eS_1 <strong>Effectif :</strong> 45<br>
-                                <strong>Redoublant (e) :</strong> Non
-                            </div>
-                            <div class="">
-                            {% if etudiant.photo %}
-                                <img src="{{etudiant.photo.url}}" alt="Photo" style="width: 130px; height: 130px; border-radius: 7px; object-fit: cover;">
-                            {% else %}
-                                <p class="text-center"><i class="fa fa-user"></i></p> 
-                            {% endif %}
-                            </div>
-                        </div>
-                        
-                        <!-- Tableau des matières -->
-                        <table class="subjects-table">
-                            <thead>
-                                <tr>
-                                    <th style="text-align: left; width: 25%;">Matière</th>
-                                    <th>Moyenne Devoir</th>
-                                    <th>Moyenne Composit.</th>
-                                    <th>Moyenne Matière</th>
-                                    <th>Coef.</th>
-                                    <th>Moy. Coeff.</th>
-                                    <th>Moy. Classe</th>
-                                    <th>Appréciation</th>
-                                    <th>Professeur</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for item in liste_moyennesTrimestre3 %}
-                                <tr>
-                                    <td>{{ item.matiere }}</td>
-                                    <td>{{ item.moyenne_devoir }}</td>
-                                    <td>{{ item.moyenne_compo }}</td>
-                                    <td>{{ item.moyenne }}</td>
-                                    <td>{{ item.coefficient }}</td>
-                                    <td>{{ item.moyenne_ponderee }}</td>
-                                    <td>--</td>
-                                    <td>{{item.appreciation3}}</td>
-                                    <td>{{ item.enseignant }}</td>
-                                </tr>
-                                {% endfor %}
-
-                                <tr>
-                                    <td colspan="3"><strong>Moyenne Générale</strong></td>
-                                    <td colspan="6"><strong>{{ moyenne_generale3 }}</strong></td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <div>
-                        <!-- Totaux et moyennes -->
-                            <div class="totals">
-                                <div class="total-box">
-                                    <div><strong>Moyenne 1er Trimestre :</strong> {{moyenne_generale1}}</div>
-                                    <div><strong>Rang 1er Trimestre :</strong> 12 / 45</div>
+            <div>
+                <div Class = "breadcrumbs-area" style="margin-left: 20px; margin-bottom: -50px;">
+                    <h3>Elèves</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'secretaire:all-student' %}">Elèves *</a>
+                        </li>
+                            <!-- <li>
+                            <a href="{% url 'secretaire:all-student' %}">Retour</a>
+                        </li> -->
+                        <li> <a href ="{% url 'secretaire:detailEtudiant' etudiant.matricule etudiant.parent.id %}" >Retour(<i class="fas fa-info-circle"></i> Mes Infos)</a></li>
+                        <li>Bulletin Scolaire ({{etudiant.nom}} {{etudiant.prenom}})</li>
+                    </ul>
+                </div>
+                <div  style="display: flex; flex-direction: column; justify-content: center; align-item: center; margin-left: 10%; margin-top: 10px;">
+                    {% for trimestre in trimestres %}
+                        {% if trimestre == "1er trimestre" %}
+                            <div class="bulletin" style="margin-top: 50px;">
+                                <!-- En-tête -->
+                                <div class="header">
+                                    <div class="left-header">
+                                        <div style="font-weight: bold;">République du Togo</div>
+                                        <div style="font-size: 10px;">**************</div>
+                                        <div style="font-size: 11px;">MINISTÈRE DE L'ÉDUCATION NATIONALE</div>
+                                        <div style="font-size: 10px;">**************</div>
+                                        <div style="font-size: 11px;">COMPLEXE SCOLAIRE AcadPro</div>
+                                        <div style="font-size: 10px;">Éduquer - Produire - Se développer</div>
+                                        <div style="font-size: 10px;">Tél : (+228) 63 79 77 19</div>
+                                        <div style="font-size: 10px;">Ville : Lomé - Togo</div>
+                                        <div style="font-size: 10px;">Adresse : Quartier Amriguébé - Rue de 40 m</div>
+                                    </div>
+                                    
+                                    <div class="center-header">
+                                        <div class="logo"> <img src = "{% static 'secretaire/img/logo.png' %}" alt = "image" style = "object-fit: cover; " /></div>
+                                        <div class="title-large">BULLETIN DE NOTES</div>
+                                        <div class="subtitle">{{trimestre}}</div>
+                                        <div style="font-size: 11px;">Paix - Travail - Progrès</div>
+                                    </div>
+                                    
+                                    <div class="right-header">
+                                        <div style="direction: ltr;">جمهورية تشاد</div>
+                                        <div style="font-size: 10px;">**************</div>
+                                        <div style="direction: ltr;">وزارة التعليم الوطني</div>
+                                        <div style="direction: ltr;">مجمع مدرسة النهضة العلمية</div>
+                                        <div style="font-size: 10px; direction: ltr;">ANNÉE SCOLAIRE</div>
+                                        <div style="font-size: 10px; direction: ltr;">2024-2025</div>
+                                    </div>
                                 </div>
-                                <div class="total-box">
-                                    <div><strong>Moyenne 2ème Trimestre :</strong>  {{moyenne_generale2}}</div>
-                                    <div><strong>Rang 2ème Trimestre :</strong> 10 / 45</div>
+                                
+                                <!-- Informations élève -->
+                                <div class="student-info" style="display: flex; justify-content: space-between;">
+                                    <div>
+                                        <strong>Nom Prénoms :</strong> {{etudiant.nom}} {{etudiant.prenom}}<br>
+                                        <strong>Date de Naissance :</strong> {{etudiant.date_naissance|date:"Y-m-d"}} <strong>Sexe :</strong> {{etudiant.genre}} <br>
+                                        <strong>Lieu de Naissance :</strong> {{etudiant.lieuDeNaissance}}<br>
+                                        <strong>Matricule :</strong> {{etudiant.matricule}}<br>
+                                        <strong>Classe :</strong> 3eS_1 <strong>Effectif :</strong> 45<br>
+                                        <strong>Redoublant (e) :</strong> Non
+                                    </div>
+                                    <div class="">
+                                    {% if etudiant.photo %}
+                                        <img src="{{etudiant.photo.url}}" alt="Photo" style="width: 130px; height: 130px; border-radius: 7px; object-fit: cover;">
+                                    {% else %}
+                                        <p class="text-center"><i class="fa fa-user"></i></p> 
+                                    {% endif %}
+                                    </div>
                                 </div>
-                                <div class="total-box">
-                                    <div><strong>Moyenne 3ème Trimestre :</strong>  {{moyenne_generale3}}</div>
-                                    <div><strong>Rang 3ème Trimestre :</strong> 8 / 45</div>
+                                
+                                <!-- Tableau des matières -->
+                                <table class="subjects-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left; width: 25%;">Matière</th>
+                                            <th>Moyenne Devoir</th>
+                                            <th>Moyenne Composit.</th>
+                                            <th>Moyenne Matière</th>
+                                            <th>Coef.</th>
+                                            <th>Moy. Coeff.</th>
+                                            <th>Moy. Classe</th>
+                                            <th>Appréciation</th>
+                                            <th>Professeur</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in liste_moyennesTrimestre1 %}
+                                        <tr>
+                                            <td>{{ item.matiere }}</td>
+                                            <td>{{ item.moyenne_devoir }}</td>
+                                            <td>{{ item.moyenne_compo }}</td>
+                                            <td style ="font-weight: bold; font-size: 16px;">{{ item.moyenne }}</td>
+                                            <td>{{ item.coefficient }}</td>
+                                            <td>{{ item.moyenne_ponderee }}</td>
+                                            <td>--</td>
+
+                                            <td>{{item.appreciation1}}</td>
+                                            <td>{{ item.enseignant }}</td>
+                                        </tr>
+                                        {% endfor %}
+
+                                        <tr>
+                                            <td colspan="3"><strong>Moyenne Générale</strong></td>
+                                            <td colspan="6"><strong>{{ moyenne_generale1 }}</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                
+                                <!-- Totaux et moyennes -->
+                                <div class="totals">
+                                    <div class="total-box">
+                                        <div><strong>Moyenne 1er Trimestre :</strong> {{moyenne_generale1}}</div>
+                                        <div><strong>Rang 1er Trimestre :</strong> 12 / 45</div>
+                                    </div>
                                 </div>
-                            </div>
+                                
+                                <div style="text-align: center; margin: 20px 0;">
+                                    <div><strong>Forte moyenne :</strong> 15.50</div>
+                                    <div><strong>Moyenne de classe :</strong> 10.85</div>
+                                    <div><strong>Faible moyenne :</strong> 6.25</div>
+                                </div>
+                                
+                                <div style="text-align: center; margin: 20px 0; font-size: 14px;">
+                                    <strong>Appréciation du travail : {{appreciationGenerale1}}</strong>
+                                </div>
+                                
+                                <!-- Décisions -->
+                                <div class="decisions">
+                                    <div class="decision-box">
+                                        <h4>DISCIPLINE</h4>
+                                        <div><span class="checkbox"></span> Abs non justifiées : 1</div>
+                                        <div><span class="checkbox"></span> Retard : 0</div>
+                                        <div><span class="checkbox checked"></span> Bonne Conduite</div>
+                                        <div><span class="checkbox"></span> Avertis. conduite</div>
+                                        <div><span class="checkbox"></span> Blâme conduite</div>
+                                    </div>
+                                    
+                                    <div class="decision-box">
+                                        <h4>DÉCISION DU CONSEIL DE CLASSE</h4>
+                                        <div><span class="checkbox"></span> Tableau d'honneur</div>
+                                        <div><span class="checkbox"></span> Félicitations</div>
+                                        <div><span class="checkbox checked"></span> Encouragements</div>
+                                        <div><span class="checkbox"></span> Avertissement Travail</div>
+                                        <div><span class="checkbox"></span> Blâme Travail</div>
+                                    </div>
+                                </div>
+                                
+                                
+                                <!-- Note en bas -->
+                                <div class="note">
+                                    <strong>NB:</strong> Toute rature entraînera l'annulation de ce bulletin. Ce relevé n'est tiré qu'en un seul exemplaire. Veuillez faire des copies pour d'autres services.
+                                </div>
                             
-                            <div style="text-align: center; margin: 20px 0;">
-                                <div><strong>Forte moyenne :</strong> 15.50</div>
-                                <div><strong>Moyenne de classe :</strong> 10.85</div>
-                                <div><strong>Faible moyenne :</strong> 6.25</div>
                             </div>
-                        
-                        <div style="text-align: center; margin: 20px 0; font-size: 14px;">
-                            <strong>Appréciation du travail : {{appreciationGenerale3}}</strong>
-                        </div>
-                        
-                        <!-- Décisions -->
-                        <div class="decisions">
-                            <div class="decision-box">
-                                <h4>DISCIPLINE</h4>
-                                <div><span class="checkbox"></span> Abs non justifiées : 1</div>
-                                <div><span class="checkbox"></span> Retard : 0</div>
-                                <div><span class="checkbox checked"></span> Bonne Conduite</div>
-                                <div><span class="checkbox"></span> Avertis. conduite</div>
-                                <div><span class="checkbox"></span> Blâme conduite</div>
-                            </div>
+                        {% elif trimestre == "2e trimestre" %}
+                            <div class="bulletin" style="margin-top: 50px;">
+                                <!-- En-tête -->
+                                <div class="header">
+                                    <div class="left-header">
+                                        <div style="font-weight: bold;">République du Togo</div>
+                                        <div style="font-size: 10px;">**************</div>
+                                        <div style="font-size: 11px;">MINISTÈRE DE L'ÉDUCATION NATIONALE</div>
+                                        <div style="font-size: 10px;">**************</div>
+                                        <div style="font-size: 11px;">COMPLEXE SCOLAIRE AcadPro</div>
+                                        <div style="font-size: 10px;">Éduquer - Produire - Se développer</div>
+                                        <div style="font-size: 10px;">Tél : (+228) 63 79 77 19</div>
+                                        <div style="font-size: 10px;">Ville : Lomé - Togo</div>
+                                        <div style="font-size: 10px;">Adresse : Quartier Amriguébé - Rue de 40 m</div>
+                                    </div>
+                                    
+                                    <div class="center-header">
+                                        <div class="logo"> <img src = "{% static 'secretaire/img/logo.png' %}" alt = "image" style = "object-fit: cover; " /></div>
+                                        <div class="title-large">BULLETIN DE NOTES</div>
+                                        <div class="subtitle">{{trimestre}}</div>
+                                        <div style="font-size: 11px;">Paix - Travail - Progrès</div>
+                                    </div>
+                                    
+                                    <div class="right-header">
+                                        <div style="direction: ltr;">جمهورية تشاد</div>
+                                        <div style="font-size: 10px;">**************</div>
+                                        <div style="direction: ltr;">وزارة التعليم الوطني</div>
+                                        <div style="direction: ltr;">مجمع مدرسة النهضة العلمية</div>
+                                        <div style="font-size: 10px; direction: ltr;">ANNÉE SCOLAIRE</div>
+                                        <div style="font-size: 10px; direction: ltr;">2024-2025</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Informations élève -->
+                                <div class="student-info" style="display: flex; justify-content: space-between;">
+                                    <div>
+                                        <strong>Nom Prénoms :</strong> {{etudiant.nom}} {{etudiant.prenom}}<br>
+                                        <strong>Date de Naissance :</strong> {{etudiant.date_naissance|date:"Y-m-d"}} <strong>Sexe :</strong> {{etudiant.genre}} <br>
+                                        <strong>Lieu de Naissance :</strong> {{etudiant.lieuDeNaissance}}<br>
+                                        <strong>Matricule :</strong> {{etudiant.matricule}}<br>
+                                        <strong>Classe :</strong> 3eS_1 <strong>Effectif :</strong> 45<br>
+                                        <strong>Redoublant (e) :</strong> Non
+                                    </div>
+                                    <div class="">
+                                    {% if etudiant.photo %}
+                                        <img src="{{etudiant.photo.url}}" alt="Photo" style="width: 130px; height: 130px; border-radius: 7px; object-fit: cover;">
+                                    {% else %}
+                                        <p class="text-center"><i class="fa fa-user"></i></p> 
+                                    {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Tableau des matières -->
+                                <table class="subjects-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left; width: 25%;">Matière</th>
+                                            <th>Moyenne Devoir</th>
+                                            <th>Moyenne Composit.</th>
+                                            <th>Moyenne Matière</th>
+                                            <th>Coef.</th>
+                                            <th>Moy. Coeff.</th>
+                                            <th>Moy. Classe</th>
+                                            <th>Appréciation</th>
+                                            <th>Professeur</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in liste_moyennesTrimestre2 %}
+                                        <tr>
+                                            <td>{{ item.matiere }}</td>
+                                            <td>{{ item.moyenne_devoir }}</td>
+                                            <td>{{ item.moyenne_compo }}</td>
+                                            <td>{{ item.moyenne }}</td>
+                                            <td>{{ item.coefficient }}</td>
+                                            <td>{{ item.moyenne_ponderee }}</td>
+                                            <td>--</td>
+                                            <td>{{item.appreciation2}}</td>
+                                            <td>{{ item.enseignant }}</td>
+                                        </tr>
+                                        {% endfor %}
+
+                                        <tr>
+                                            <td colspan="3"><strong>Moyenne Générale</strong></td>
+                                            <td colspan="6"><strong>{{ moyenne_generale2 }}</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                
+                                <!-- Totaux et moyennes -->
+                                <div class="totals">
+                                    <div class="total-box">
+                                        <div><strong>Moyenne 1er Trimestre :</strong> {{moyenne_generale1}}</div>
+                                        <div><strong>Rang 1er Trimestre :</strong> 12 / 45</div>
+                                    </div>
+                                    <div class="total-box">
+                                        <div><strong>Moyenne 2ème Trimestre :</strong>  {{moyenne_generale2}}</div>
+                                        <div><strong>Rang 2ème Trimestre :</strong> 10 / 45</div>
+                                    </div>
+                                </div>
+                                
+                                <div style="text-align: center; margin: 20px 0;">
+                                    <div><strong>Forte moyenne :</strong> 15.50</div>
+                                    <div><strong>Moyenne de classe :</strong> 10.85</div>
+                                    <div><strong>Faible moyenne :</strong> 6.25</div>
+                                </div>
+                                
+                                <div style="text-align: center; margin: 20px 0; font-size: 14px;">
+                                    <strong>Appréciation du travail : {{appreciationGenerale2}}</strong>
+                                </div>
+                                
+                                <!-- Décisions -->
+                                <div class="decisions">
+                                    <div class="decision-box">
+                                        <h4>DISCIPLINE</h4>
+                                        <div><span class="checkbox"></span> Abs non justifiées : 1</div>
+                                        <div><span class="checkbox"></span> Retard : 0</div>
+                                        <div><span class="checkbox checked"></span> Bonne Conduite</div>
+                                        <div><span class="checkbox"></span> Avertis. conduite</div>
+                                        <div><span class="checkbox"></span> Blâme conduite</div>
+                                    </div>
+                                    
+                                    <div class="decision-box">
+                                        <h4>DÉCISION DU CONSEIL DE CLASSE</h4>
+                                        <div><span class="checkbox"></span> Tableau d'honneur</div>
+                                        <div><span class="checkbox"></span> Félicitations</div>
+                                        <div><span class="checkbox checked"></span> Encouragements</div>
+                                        <div><span class="checkbox"></span> Avertissement Travail</div>
+                                        <div><span class="checkbox"></span> Blâme Travail</div>
+                                    </div>
+                                </div>
+                                
+                                
+                                <!-- Note en bas -->
+                                <div class="note">
+                                    <strong>NB:</strong> Toute rature entraînera l'annulation de ce bulletin. Ce relevé n'est tiré qu'en un seul exemplaire. Veuillez faire des copies pour d'autres services.
+                                </div>
                             
-                            <div class="decision-box">
-                                <h4>DÉCISION DU CONSEIL DE CLASSE</h4>
-                                <div><span class="checkbox"></span> Tableau d'honneur</div>
-                                <div><span class="checkbox"></span> Félicitations</div>
-                                <div><span class="checkbox checked"></span> Encouragements</div>
-                                <div><span class="checkbox"></span> Avertissement Travail</div>
-                                <div><span class="checkbox"></span> Blâme Travail</div>
                             </div>
-                        </div>
-                        
-                        
-                        <!-- Note en bas -->
-                        <div class="note">
-                            <strong>NB:</strong> Toute rature entraînera l'annulation de ce bulletin. Ce relevé n'est tiré qu'en un seul exemplaire. Veuillez faire des copies pour d'autres services.
-                        </div>
-                    
-                    </div>
-                {% endif %}
-            {% endfor%}
+                        {% elif trimestre == "3e trimestre" %}
+                            <div class="bulletin" style="margin-top: 50px;">
+                                <!-- En-tête -->
+                                <div class="header">
+                                    <div class="left-header">
+                                        <div style="font-weight: bold;">République du Togo</div>
+                                        <div style="font-size: 10px;">**************</div>
+                                        <div style="font-size: 11px;">MINISTÈRE DE L'ÉDUCATION NATIONALE</div>
+                                        <div style="font-size: 10px;">**************</div>
+                                        <div style="font-size: 11px;">COMPLEXE SCOLAIRE AcadPro</div>
+                                        <div style="font-size: 10px;">Éduquer - Produire - Se développer</div>
+                                        <div style="font-size: 10px;">Tél : (+228) 63 79 77 19</div>
+                                        <div style="font-size: 10px;">Ville : Lomé - Togo</div>
+                                        <div style="font-size: 10px;">Adresse : Quartier Amriguébé - Rue de 40 m</div>
+                                    </div>
+                                    
+                                    <div class="center-header">
+                                        <div class="logo"> <img src = "{% static 'secretaire/img/logo.png' %}" alt = "image" style = "object-fit: cover; " /></div>
+                                        <div class="title-large">BULLETIN DE NOTES</div>
+                                        <div class="subtitle">{{trimestre}}</div>
+                                        <div style="font-size: 11px;">Paix - Travail - Progrès</div>
+                                    </div>
+                                    
+                                    <div class="right-header">
+                                        <div style="direction: ltr;">جمهورية تشاد</div>
+                                        <div style="font-size: 10px;">**************</div>
+                                        <div style="direction: ltr;">وزارة التعليم الوطني</div>
+                                        <div style="direction: ltr;">مجمع مدرسة النهضة العلمية</div>
+                                        <div style="font-size: 10px; direction: ltr;">ANNÉE SCOLAIRE</div>
+                                        <div style="font-size: 10px; direction: ltr;">2024-2025</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Informations élève -->
+                                <div class="student-info" style="display: flex; justify-content: space-between;">
+                                    <div>
+                                        <strong>Nom Prénoms :</strong> {{etudiant.nom}} {{etudiant.prenom}}<br>
+                                        <strong>Date de Naissance :</strong> {{etudiant.date_naissance|date:"Y-m-d"}} <strong>Sexe :</strong> {{etudiant.genre}} <br>
+                                        <strong>Lieu de Naissance :</strong> {{etudiant.lieuDeNaissance}}<br>
+                                        <strong>Matricule :</strong> {{etudiant.matricule}}<br>
+                                        <strong>Classe :</strong> 3eS_1 <strong>Effectif :</strong> 45<br>
+                                        <strong>Redoublant (e) :</strong> Non
+                                    </div>
+                                    <div class="">
+                                    {% if etudiant.photo %}
+                                        <img src="{{etudiant.photo.url}}" alt="Photo" style="width: 130px; height: 130px; border-radius: 7px; object-fit: cover;">
+                                    {% else %}
+                                        <p class="text-center"><i class="fa fa-user"></i></p> 
+                                    {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Tableau des matières -->
+                                <table class="subjects-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left; width: 25%;">Matière</th>
+                                            <th>Moyenne Devoir</th>
+                                            <th>Moyenne Composit.</th>
+                                            <th>Moyenne Matière</th>
+                                            <th>Coef.</th>
+                                            <th>Moy. Coeff.</th>
+                                            <th>Moy. Classe</th>
+                                            <th>Appréciation</th>
+                                            <th>Professeur</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in liste_moyennesTrimestre3 %}
+                                        <tr>
+                                            <td>{{ item.matiere }}</td>
+                                            <td>{{ item.moyenne_devoir }}</td>
+                                            <td>{{ item.moyenne_compo }}</td>
+                                            <td>{{ item.moyenne }}</td>
+                                            <td>{{ item.coefficient }}</td>
+                                            <td>{{ item.moyenne_ponderee }}</td>
+                                            <td>--</td>
+                                            <td>{{item.appreciation3}}</td>
+                                            <td>{{ item.enseignant }}</td>
+                                        </tr>
+                                        {% endfor %}
+
+                                        <tr>
+                                            <td colspan="3"><strong>Moyenne Générale</strong></td>
+                                            <td colspan="6"><strong>{{ moyenne_generale3 }}</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div>
+                                <!-- Totaux et moyennes -->
+                                    <div class="totals">
+                                        <div class="total-box">
+                                            <div><strong>Moyenne 1er Trimestre :</strong> {{moyenne_generale1}}</div>
+                                            <div><strong>Rang 1er Trimestre :</strong> 12 / 45</div>
+                                        </div>
+                                        <div class="total-box">
+                                            <div><strong>Moyenne 2ème Trimestre :</strong>  {{moyenne_generale2}}</div>
+                                            <div><strong>Rang 2ème Trimestre :</strong> 10 / 45</div>
+                                        </div>
+                                        <div class="total-box">
+                                            <div><strong>Moyenne 3ème Trimestre :</strong>  {{moyenne_generale3}}</div>
+                                            <div><strong>Rang 3ème Trimestre :</strong> 8 / 45</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="text-align: center; margin: 20px 0;">
+                                        <div><strong>Forte moyenne :</strong> 15.50</div>
+                                        <div><strong>Moyenne de classe :</strong> 10.85</div>
+                                        <div><strong>Faible moyenne :</strong> 6.25</div>
+                                    </div>
+                                
+                                <div style="text-align: center; margin: 20px 0; font-size: 14px;">
+                                    <strong>Appréciation du travail : {{appreciationGenerale3}}</strong>
+                                </div>
+                                
+                                <!-- Décisions -->
+                                <div class="decisions">
+                                    <div class="decision-box">
+                                        <h4>DISCIPLINE</h4>
+                                        <div><span class="checkbox"></span> Abs non justifiées : 1</div>
+                                        <div><span class="checkbox"></span> Retard : 0</div>
+                                        <div><span class="checkbox checked"></span> Bonne Conduite</div>
+                                        <div><span class="checkbox"></span> Avertis. conduite</div>
+                                        <div><span class="checkbox"></span> Blâme conduite</div>
+                                    </div>
+                                    
+                                    <div class="decision-box">
+                                        <h4>DÉCISION DU CONSEIL DE CLASSE</h4>
+                                        <div><span class="checkbox"></span> Tableau d'honneur</div>
+                                        <div><span class="checkbox"></span> Félicitations</div>
+                                        <div><span class="checkbox checked"></span> Encouragements</div>
+                                        <div><span class="checkbox"></span> Avertissement Travail</div>
+                                        <div><span class="checkbox"></span> Blâme Travail</div>
+                                    </div>
+                                </div>
+                                
+                                
+                                <!-- Note en bas -->
+                                <div class="note">
+                                    <strong>NB:</strong> Toute rature entraînera l'annulation de ce bulletin. Ce relevé n'est tiré qu'en un seul exemplaire. Veuillez faire des copies pour d'autres services.
+                                </div>
+                            
+                            </div>
+                        {% endif %}
+                    {% endfor%}
+                </div>
             </div>
         </div>
         <!-- Page Area End Here -->
@@ -666,9 +680,3 @@
 </body>
 
 </html>
-
-
-
-<div>
-    <a href="{% url 'secretaire:all-student' %}" type="button" style = "color: with; width: 25%; display: flex; justify-content: center; items-align: center; margin-top: 20px; background-color: green;"> Retour</a>
-</div>

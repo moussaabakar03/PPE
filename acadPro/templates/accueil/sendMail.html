@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formulaire de contact</title>
+
+    <style>
+        .conteneur{
+            display: flex;
+            align-item: center;
+            justify-content: center;
+            {% comment %} margin-left: 35%; {% endcomment %}
+        }
+        label{
+            font-size: 20px;
+            font-weight: bold;
+        }
+        input{
+            width: 100%;
+            height: 30px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+        textarea:hover, input:hover{
+            border: 1px solid red;
+        }
+        textarea{
+            width: 100%;
+            height: 70px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+        button{
+            display: flex;
+            justify-content: center;
+            align-item: center;
+            width: 100%;
+            border-radius: 10px;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            height: 30px;
+            text-align: center;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class = "conteneur">
+    <div>
+        <h1>Contactez-nous</h1>
+
+        {% if message_envoye %}
+            <p style="color: green;">Votre message a bien été envoyé. Merci !</p>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Envoyer</button>
+        </form>
+    </div>
+    </div>
+</body>
+</html>

@@ -13,6 +13,11 @@ from secretaire.models import AnneeScolaire, Classe, Cout, Enseignant, Etudiant,
 
 
 
+from django.core.mail import send_mail
+from django.conf import settings
+
+
+
 
 def pageAccueil(request):
     return render(request, 'accueil/accueil.html')
@@ -43,9 +48,62 @@ def depotDossier(request):
     return render(request, "accueil/depotDossier.html")
 
 def receptionDossierStudent(request):
+    form = ContactForm()
+    message_envoye = False
+
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            sujet = form.cleaned_data['sujet']
+            message = form.cleaned_data['message']
+
+            contenu_message = f"De: <{email}>\n\n{message}"
+
+            send_mail(
+                sujet,
+                contenu_message,
+                settings.EMAIL_HOST_USER,
+                [email],# Mets ici ton adresse de réception
+                fail_silently=False,
+            )
+            message_envoye = True
+            
+            
     receptions = depotDossierEtudiant.objects.all()
     annees = AnneeScolaire.objects.all()
-    return render(request, 'accueil/receptionDossierStudent.html', {"receptions": receptions, "annees": annees})
+    
+   
+    
+    return render(request, 'accueil/receptionDossierStudent.html', {"receptions": receptions, "annees": annees, 'form': form, 'message_envoye': message_envoye})
+
+
+from .forms import ContactForm
+
+def contact_view(request):
+    form = ContactForm()
+    message_envoye = False
+
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            nom = form.cleaned_data['nom']
+            email = form.cleaned_data['email']
+            sujet = form.cleaned_data['sujet']
+            message = form.cleaned_data['message']
+
+            contenu_message = f"De: {nom} <{email}>\n\n{message}"
+
+            send_mail(
+                sujet,
+                contenu_message,
+                settings.EMAIL_HOST_USER,
+                ['alimoussaabakar03@gmail.com'],  # Mets ici ton adresse de réception
+                fail_silently=False,
+            )
+            message_envoye = True
+
+    return render(request, 'accueil/sendMail.html', {'form': form, 'message_envoye': message_envoye})
 
 def connexion(request):
     if request.method == "POST":
@@ -106,7 +164,6 @@ def formateur(request):
 def contact(request):
     return render(request, 'accueil/contact.html')
 
-@login_required
 def prixDeClasse(request):
     classes = Classe.objects.all()
     couts = Cout.objects.filter(classe__in = classes)
