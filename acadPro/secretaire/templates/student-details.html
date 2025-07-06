@@ -339,7 +339,12 @@
                                     
                                     <div class="qr-code">
                                         <!-- Simplified QR code representation -->
-                                        <img src = "../static/secretaire/img/qr.png" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/>
+                                        {% comment %} <img src = "../static/secretaire/img/qr.png" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/> {% endcomment %}
+                                        {% if etudiant.cheminCodeQr %}
+                                            <img src="{{ etudiant.cheminCodeQr.url }}" alt="QR Code" style = "width: 170px; padding: 5px; object-fit: cover; ">
+                                        {% else %}
+                                            <img src = "" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

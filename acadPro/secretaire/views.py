@@ -13,6 +13,9 @@ import random
 import string
 from django.utils.text import slugify
 
+import os
+import qrcode
+from django.conf import settings
 
 from django.contrib.auth.forms import UserCreationForm 
 # from .form import CustomUserCreationForm
@@ -171,11 +174,18 @@ def all_student(request):
         context = {'etudiants': etudiant, 'inscription': inscription}
         return render(request, 'all-student.html', context)
 
-@login_required
 def generate_matricule(nom):
     prefix = slugify(nom)[:4].upper()  # Les 4 premières lettres du nom, en majuscules
     suffix = ''.join(random.choices(string.digits, k=4))  # 4 chiffres aléatoires
     return f"{prefix}{suffix}"
+
+
+
+# def generer_qr_code(infos, nom_fichier):
+#     qr = qrcode.make(infos)
+#     qr.save(nom_fichier)
+
+
 
 @login_required
 def admit_form(request):
@@ -196,16 +206,16 @@ def admit_form(request):
 
         # Génération du matricule
         matricule = generate_matricule(nom)
-        if nom == "":
-            nom = "vide"
+       
         # Assurer unicité du matricule
         while Etudiant.objects.filter(matricule=matricule).exists():
             matricule = generate_matricule(nom)
-            if Etudiant.objects.filter(matricule="").exists():
-                vide = "vide"
-                matricule = generate_matricule(vide)
+            # if Etudiant.objects.filter(matricule="").exists():
+            #     vide = "vide"
+            #     matricule = generate_matricule(vide)
 
         parent_id = Parent.objects.get(pk=int(parent))
+
 
         Etudiant.objects.create(
             nom=nom,
@@ -222,7 +232,7 @@ def admit_form(request):
             password = make_password(telephone),
             username = matricule,
         )
-
+        
         return redirect("secretaire:all-student")
 
     return render(request, "admit-form.html", {"salles": salles, "parentss": parentss})
@@ -278,10 +288,30 @@ def student_promotion(request):
 
 @login_required
 def student_detail(request, matricule):
-    etudiant = Etudiant.objects.get(matricule = matricule)
+    
+    etudiant = get_object_or_404(Etudiant, matricule = matricule)
+
+    # Générer les données à inclure dans le QR
+    contenu = f"Nom: {etudiant.nom} {etudiant.prenom}\nMatricule: {etudiant.matricule}"
+
+    # Créer le répertoire s'il n'existe pas
+    dossier_qr = os.path.join(settings.MEDIA_ROOT, "qr_codes")
+    os.makedirs(dossier_qr, exist_ok=True)
+
+    # Chemin du fichier image
+    nom_fichier = f"qr_{etudiant.id}.png"
+    chemin_fichier = os.path.join(dossier_qr, nom_fichier)
+
+    # Génération du QR
+    qr = qrcode.make(contenu)
+    qr.save(chemin_fichier)
+
+    # Mise à jour du chemin dans l'étudiant
+    etudiant.cheminCodeQr = f"qr_codes/{nom_fichier}"
+    etudiant.save()
+    
     parent = etudiant.parent
     inscrits = etudiant.inscriptions.all()
-    # parent = Etudiant.objects.get(parent = etudiant.parent)
     annees = AnneeScolaire.objects.all().order_by("-id")
     context = {"etudiant": etudiant, "inscrits": inscrits, "annees": annees, 'parent': parent}
     return render(request, 'student-details.html', context)
@@ -544,13 +574,14 @@ def all_class(request):
         return render(request, 'all-class.html', {"matieres": matiere})
 
 @login_required
-def add_class(request):
+def ajoutMatiere(request):
     # enseignants = Enseignant.objects.all()
     # niveaux = Classe.objects.all()
     # content = {"enseignants": enseignants, "niveaux": niveaux}
     if request.method == "POST":
         nom = request.POST["nom"]
         # niveau = request.POST["niveau"]
+        code = request.POST["code"]
         coefficient = request.POST["coefficient"]
         description = request.POST.get("description", "")  # facultatif
         # enseignant_id = request.POST["enseignant"]
@@ -561,6 +592,7 @@ def add_class(request):
             messages.error(request, "Cette matière existe déjà")
         else:
             Matiere.objects.create(
+                code =code,
                 nom=nom,
                 coefficient=coefficient,
                 description=description,

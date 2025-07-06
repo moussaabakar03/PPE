@@ -92,7 +92,7 @@ class Etudiant(Utilisateur):
     date_enregistrement = models.DateTimeField(auto_now_add=True)
     lieuDeNaissance = models.CharField(max_length=100)
     # motDePasse = models.CharField(max_length=100, null= True, blank=True)
-
+    cheminCodeQr = models.ImageField(null=True, blank=True)
 
    
     

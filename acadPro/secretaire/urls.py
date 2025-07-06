@@ -59,7 +59,7 @@ urlpatterns = [
 
 
     path('all-class/', views.all_class, name='all-class'),
-    path('add-class/', views.add_class, name='add-class'),
+    path('ajoutMatiere/', views.ajoutMatiere, name='add-class'),
     path('supprimer_matiere/<int:id>', views.supprimer_matiere, name='supprimer_matiere'),
     path('modifier_matiere/<int:id>', views.modifier_matiere, name='modifier_matiere'),
 
