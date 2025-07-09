@@ -149,7 +149,7 @@
                     <div class="chat-header">
                         
                         {% if etudiant.photo %}
-                           <a href="{{etudiant.photo.url}}"><img src="{{etudiant.photo.url}}" alt="Photo étudiant"></a>
+                           <a href="{{etudiant.photo.url}}"><img src="{{etudiant.photo.url}}" style = "object-fit: cover;" alt="Photo étudiant"></a>
                         {% else %}
                             <span class="text-center"><i class="fa fa-user"></i></span> 
                         {% endif %}

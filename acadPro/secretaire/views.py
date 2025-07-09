@@ -338,25 +338,25 @@ def detailEtudiant(request, matricule, id):
         if matiere:
             evaluations = etudiant.evaluations.filter(cours__matiere__nom__contains = matiere.strip())
             for evaluation in evaluations:
-                coefficient = evaluation.cours.matiere.coefficient
+                coefficient = evaluation.cours.coefficient
                 somme_notes_ponderees += float(evaluation.note) * coefficient
                 somme_coefficients += coefficient
         elif trimestre:
             evaluations = etudiant.evaluations.filter(trimestre__contains = trimestre.strip())
             for evaluation in evaluations:
-                coefficient = evaluation.cours.matiere.coefficient
+                coefficient = evaluation.cours.coefficient
                 somme_notes_ponderees += float(evaluation.note) * coefficient
                 somme_coefficients += coefficient
         elif typeEvaluation:
             evaluations = etudiant.evaluations.filter(typeEvaluation__contains = typeEvaluation.strip())
             for evaluation in evaluations:
-                coefficient = evaluation.cours.matiere.coefficient
+                coefficient = evaluation.cours.coefficient
                 somme_notes_ponderees += float(evaluation.note) * coefficient
                 somme_coefficients += coefficient
         elif matiere and trimestre and typeEvaluation:
             evaluations = etudiant.evaluations.filter(typeEvaluation__contains = typeEvaluation, trimestre__contains = trimestre, cours__matiere__nom__contains = matiere.strip())
             for evaluation in evaluations:
-                coefficient = evaluation.cours.matiere.coefficient
+                coefficient = evaluation.cours.coefficient
                 somme_notes_ponderees += float(evaluation.note) * coefficient
                 somme_coefficients += coefficient
         else:
@@ -377,7 +377,7 @@ def detailEtudiant(request, matricule, id):
     else:    
         evaluations = etudiant.evaluations.all()
         for evaluation in evaluations:
-            coefficient = evaluation.cours.matiere.coefficient
+            coefficient = evaluation.cours.coefficient
             somme_notes_ponderees += float(evaluation.note) * coefficient
             somme_coefficients += coefficient
 
@@ -582,7 +582,6 @@ def ajoutMatiere(request):
         nom = request.POST["nom"]
         # niveau = request.POST["niveau"]
         code = request.POST["code"]
-        coefficient = request.POST["coefficient"]
         description = request.POST.get("description", "")  # facultatif
         # enseignant_id = request.POST["enseignant"]
         # enseignant = Enseignant.objects.get(pk=int(enseignant_id))
@@ -594,7 +593,6 @@ def ajoutMatiere(request):
             Matiere.objects.create(
                 code =code,
                 nom=nom,
-                coefficient=coefficient,
                 description=description,
             )
             # messages.success(request, "Matière ajoutée avec succès")
@@ -615,7 +613,6 @@ def modifier_matiere(request, id):
         matiere.nom = request.POST["nom"]
         # matiere.niveau = request.POST["niveau"]
         matiere.code = request.POST["code"]
-        matiere.coefficient = request.POST["coefficient"]
         matiere.description = request.POST.get("description", "") 
 
         # enseignant_id = request.POST["enseignant"]
@@ -799,7 +796,7 @@ def emploiDuTemps(request, id1, id2):
     salle = SalleDeClasse.objects.get(id=id1)
     annee = AnneeScolaire.objects.get(id=id2)
     jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
-    heures = ["1h-2h", "2h-3h", "3h-4h", "4h-5h"]
+    heures = ["1h-2h", "2h-3h", "3h-4h", "4h-5h", "5h-6h"]
 
     emploi_dict = {}  # exemple : emploi_dict["1h-2h"]["Lundi"] = cours
 
@@ -829,7 +826,8 @@ def ajoutEmploiTemps(request, id1, id2, id3):
     classe = Classe.objects.get(id=id3)
     
     jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
-    heures = ["1h-2h", "2h-3h", "3h-4h", "4h-5h"]
+    heures = ["1h-2h", "2h-3h", "3h-4h", "4h-5h", "5h-6h"]
+    
     cours = Cours.objects.filter(classe = classe, anneeScolaire= annee)
 
     if request.method == "POST":
@@ -1057,10 +1055,8 @@ def ajoutCours(request):
         matiere_nom = request.POST["matiere"]
         enseignant_nom = request.POST["enseignant"]
         classe_nom = request.POST["classe"]
-        # date_debut = request.POST["dateDebutCours"]
-        # duree = request.POST["dureeCours"]
-        # trimestre = request.POST["trimestre"]
         etat = request.POST["etat"]
+        coefficient = request.POST["coefficient"]
         anneeScolaire = request.POST["anneeScolaire"]
 
         # Récupérer les objets liés à partir des noms
@@ -1079,6 +1075,7 @@ def ajoutCours(request):
                 enseignant=enseignant,
                 classe=classe,
                 etat=etat,
+                coefficient = coefficient,
                 anneeScolaire=anneeAcademique
             )
             messages.success(request, "Cours ajouté avec succès")
@@ -1100,7 +1097,7 @@ def modifier_cours(request, pk):
         enseignant_nom = request.POST["enseignant"]
         classe_nom = request.POST["classe"]
         # cours.dureeCours = request.POST["dureeCours"]
-        # cours.trimestre = request.POST["trimestre"]
+        cours.coefficient = request.POST["coefficient"]
         cours.etat = request.POST["etat"]
         anneeScolaire = request.POST["anneeScolaire"]
 
@@ -1469,7 +1466,7 @@ def generationBilletin(request, matricule, classe, id):
     moyennes_generales = {trimestre: 0 for trimestre in trimestres}
     
     for cours in cours_classe:
-        coefficient = cours.matiere.coefficient or 1
+        coefficient = cours.coefficient
         
         for trimestre in trimestres:
             evaluations = cours.evaluations.filter(

@@ -137,7 +137,6 @@ class Matiere(models.Model):
     # enseignant = models.ForeignKey(Enseignant, on_delete=models.CASCADE, null=True, blank=True)
     # niveau = models.ForeignKey(Classe, on_delete=models.CASCADE, null=True, blank=True, related_name='niveau')
     description = models.TextField(null=True, blank=True)
-    coefficient = models.PositiveIntegerField()
 
 
 class Inscription(models.Model):
@@ -164,6 +163,7 @@ class Cours(models.Model):
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE, null=True, blank=True, related_name="cours")
     dateDebutCours = models.DateTimeField(auto_now_add=True)
     etat = models.CharField(max_length=100, choices=[('En cours', 'En cours'), ('Effectué', 'Effectué'), ('Planifié', 'Planifié')])
+    coefficient = models.PositiveIntegerField()
 
     anneeScolaire = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE, related_name='anneeScolaire')
 

@@ -85,6 +85,7 @@
                                         <th>Matière</th>
                                         <th>Enseignant</th>
                                         <th>Classe</th>
+                                        <th>Coefficient</th>
                                         <th>Année Academique</th>
                                         <th>État</th>
                                         <th>Date creation</th>
@@ -111,7 +112,7 @@
                                         {% else %}
                                             <td>Aucune classe assigné</td>
                                         {% endif %}
-                                        {% comment %} <td>{{ cours.dureeCours }}</td> {% endcomment %}
+                                        <td>{{ cours.coefficient }}</td>
                                         <td>{{ cours.anneeScolaire.debutAnnee|date:"Y"}}- {{ cours.anneeScolaire.fintAnnee|date:"Y"}}</td>
                                         <td>{{ cours.etat }}</td>
                                         <td>{{ cours.dateDebutCours|date:"d/m/Y" }}</td>
