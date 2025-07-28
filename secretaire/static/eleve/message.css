@@ -1,0 +1,585 @@
+
+
+.filters {
+    display: flex;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    justify-content: space-between;
+}
+
+.year-select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 150px;
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+}
+
+.search-input {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 250px;
+    background-color: #e6f2ff;
+}
+
+.search-icon {
+    margin-right: 5px;
+    color: #3d7eac;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #f0f8ff;
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+    color: #3d7eac;
+    position: relative;
+}
+
+th i {
+    margin-left: 5px;
+}
+
+td {
+    padding: 10px;
+    border: 1px solid #eee;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.sort-icon::after {
+    content: "↕";
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.excellent {
+    color: #009900;
+    font-weight: bold;
+}
+
+.tres-bien {
+    color: #33aa00;
+    font-weight: bold;
+}
+
+.assez-bien {
+    color: #7cb342;
+    font-weight: bold;
+}
+
+.passable {
+    color: #ff9800;
+    font-weight: bold;
+}
+
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #3d7eac;
+    color: white;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 5px;
+    text-decoration: none;
+    opacity: 0.8;
+}
+
+.back-to-top:hover {
+    opacity: 1;
+}
+    table.dataTable thead th {
+        background-color: #f0f8ff; 
+        color: #3d7eac;
+    }
+
+/* Cacher les éléments de pagination et de recherche de DataTables */
+.dataTables_length, .dataTables_filter, .dataTables_info, .dataTables_paginate {
+    display: none !important;
+}
+
+/* Smartphones en mode paysage jusqu'aux tablettes */
+.detailEtudiant{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    margin: 20px auto;
+    border-radius: 10px;
+
+}
+
+
+
+
+
+
+
+
+.chat-container {
+width: 100%;
+max-width: 450px;
+height: 600px;
+background-color: #f9f9fb; /* couleur douce et moderne */
+border-radius: 15px;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+display: flex;
+flex-direction: column;
+margin: 40px auto 100px auto; /* centré verticalement avec espace */
+border: 1px solid #e0e0e0;
+}
+
+.chat-header {
+background-color: #ffffff;
+padding: 15px;
+display: flex;
+align-items: center;
+border-bottom: 1px solid #ddd;
+}
+
+.chat-header img {
+width: 45px;
+height: 45px;
+border-radius: 50%;
+margin-right: 12px;
+object-fit: cover;
+border: 2px solid #ddd;
+}
+
+.chat-header .student-name {
+font-weight: 600;
+font-size: 16px;
+color: #333;
+}
+
+.chat-body {
+flex: 1;
+padding: 15px;
+overflow-y: auto;
+display: flex;
+flex-direction: column;
+gap: 10px;
+background-color: #f5f7fa;
+}
+
+.message {
+max-width: 75%;
+padding: 10px 15px;
+border-radius: 20px;
+font-size: 14px;
+line-height: 1.4;
+border: 1px solid #e0e0e0;
+}
+
+.message.sent {
+align-self: flex-end;
+background-color: #d1f2eb;
+color: #2c3e50;
+}
+
+.message.received {
+align-self: flex-start;
+background-color: #ffffff;
+color: #2c3e50;
+}
+
+.chat-footer {
+padding: 10px 15px;
+display: flex;
+align-items: center;
+border-top: 1px solid #ddd;
+background-color: #fff;
+}
+
+.chat-footer input {
+flex: 1;
+padding: 10px 15px;
+border-radius: 25px;
+border: 1px solid #ccc;
+outline: none;
+font-size: 14px;
+}
+
+.chat-footer button {
+background-color: #007bff;
+border: none;
+color: #fff;
+font-size: 18px;
+margin-left: 10px;
+cursor: pointer;
+border-radius: 50%;
+width: 40px;
+height: 40px;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: background-color 0.3s ease;
+}
+
+.chat-footer button:hover {
+background-color: #0056b3;
+}
+
+
+
+
+
+
+.message {
+margin-bottom: 10px;
+max-width: 70%;
+padding: 10px;
+border-radius: 10px;
+}
+
+.sent {
+background-color: #DCF8C6;
+align-self: flex-end;
+margin-left: auto;
+}
+
+.received {
+background-color: #ECECEC;
+align-self: flex-start;
+}
+
+.message-content {
+margin-bottom: 4px;
+}
+
+.message-time {
+font-size: 0.75em;
+color: #888;
+text-align: right;
+}
+
+.chat-body {
+display: flex;
+flex-direction: column;
+padding: 15px;
+overflow-y: auto;
+height: 400px; /* Ajustez selon vos besoins */
+}
+
+
+
+
+.filters {
+    display: flex;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    justify-content: space-between;
+}
+
+.year-select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 150px;
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+}
+
+.search-input {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 250px;
+    background-color: #e6f2ff;
+}
+
+.search-icon {
+    margin-right: 5px;
+    color: #3d7eac;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #f0f8ff;
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+    color: #3d7eac;
+    position: relative;
+}
+
+th i {
+    margin-left: 5px;
+}
+
+td {
+    padding: 10px;
+    border: 1px solid #eee;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.sort-icon::after {
+    content: "↕";
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.excellent {
+    color: #009900;
+    font-weight: bold;
+}
+
+.tres-bien {
+    color: #33aa00;
+    font-weight: bold;
+}
+
+.assez-bien {
+    color: #7cb342;
+    font-weight: bold;
+}
+
+.passable {
+    color: #ff9800;
+    font-weight: bold;
+}
+
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #3d7eac;
+    color: white;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 5px;
+    text-decoration: none;
+    opacity: 0.8;
+}
+
+.back-to-top:hover {
+    opacity: 1;
+}
+    table.dataTable thead th {
+        background-color: #f0f8ff; 
+        color: #3d7eac;
+    }
+
+/* Cacher les éléments de pagination et de recherche de DataTables */
+.dataTables_length, .dataTables_filter, .dataTables_info, .dataTables_paginate {
+    display: none !important;
+}
+
+/* Smartphones en mode paysage jusqu'aux tablettes */
+.detailEtudiant{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    margin: 20px auto;
+    border-radius: 10px;
+
+}
+
+:root {
+    --primary-color: #3f51b5;
+    --secondary-color: #f5f5f5;
+    --accent-color: #ffae01;
+    --text-color: #333;
+    --light-text: #757575;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.message-container 
+{
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.student-message-card {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--primary-color);
+}
+
+.student-message-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.student-info {
+    flex-grow: 1;
+    font-weight: 500;
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.message-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    margin-left: 15px;
+    transition: all 0.3s ease;
+}
+
+.student-message-card:hover .message-icon {
+    background-color: var(--accent-color);
+    transform: scale(1.1);
+}
+
+.page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.search-box {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 20px;
+    padding-left: 40px;
+    border-radius: var(--border-radius);
+    border: 1px solid #e0e0e0;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.search-box input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+    outline: none;
+}
+
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--light-text);
+}
+
+.breadcrumbs-area {
+    background-color: #fff;
+    padding: 15px 20px;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+    box-shadow: var(--box-shadow);
+}
+
+.breadcrumbs-area h3 {
+    margin-bottom: 5px;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.breadcrumbs-area ul {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.breadcrumbs-area ul li {
+    font-size: 14px;
+    color: var(--light-text);
+}
+
+.breadcrumbs-area ul li a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.message-status {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.status-unread {
+    background-color: var(--accent-color);
+}
+
+.status-read {
+    background-color: #4CAF50;
+}
+
+.message-counter {
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 12px;
+    margin-left: 8px;
+}
+
+.no-messages {
+    text-align: center;
+    padding: 30px;
+    color: var(--light-text);
+}
+
+/* Responsive Tweaks */
+@media (max-width: 768px) {
+    .message-icon {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .student-message-card {
+        padding: 10px 12px;
+    }
+}
+
+.grandConteneur{
+    display: flex;
+    gap: 10px;
+}
+    p, span{
+    font-size: 18px!important;
+}

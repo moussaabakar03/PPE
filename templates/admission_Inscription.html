@@ -1,0 +1,837 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'accueil/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'accueil/css/style.css' %}">
+    <style>
+        :root {
+            --primary: #2c5fa8;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .bg-primary {
+            background-color: var(--primary) !important;
+        }
+        
+        .bg-secondary {
+            background-color: var(--secondary) !important;
+        }
+        
+        .bg-accent {
+            background-color: var(--accent) !important;
+        }
+        
+        .bg-light {
+            background-color: var(--light) !important;
+        }
+        
+        .bg-dark {
+            background-color: var(--dark) !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+        }
+        
+        .btn-accent {
+            background-color: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+        
+        .hero-section {
+            background: linear-gradient(rgba(44, 95, 168, 0.85), rgba(44, 95, 168, 0.9)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 40vh;
+            display: flex;
+            align-items: center;
+        }
+        
+        .admission-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 40px;
+            margin-top: -80px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .admission-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .admission-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .step-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .form-control, .form-select {
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(44, 95, 168, 0.25);
+        }
+        
+        .file-upload-area {
+            border: 2px dashed #e2e8f0;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(44, 95, 168, 0.05);
+        }
+        
+        .file-upload-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .file-preview {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .requirements-list {
+            list-style: none;
+            padding-left: 20px;
+        }
+        
+        .requirements-list li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .requirements-list li:before {
+            content: "\f00c";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+        
+        .footer {
+            background: var(--dark);
+            color: rgba(255,255,255,0.8);
+            padding-top: 70px;
+            margin-top: 80px;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            margin-right: 10px;
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 40px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--primary);
+            left: 50%;
+            margin-left: -2px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 50px;
+        }
+        
+        .timeline-content {
+            position: relative;
+            width: 45%;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content {
+            left: 0;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content {
+            left: 55%;
+        }
+        
+        .timeline-content::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content::after {
+            right: -10px;
+            border-left: 10px solid white;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content::after {
+            left: -10px;
+            border-right: 10px solid white;
+        }
+        
+        .timeline-badge {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            border-radius: 50%;
+            left: 50%;
+            margin-left: -15px;
+            top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--primary);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        /* Correction de la section FAQ */
+        .faq-container {
+            margin-top: 50px;
+        }
+        
+        .faq-item {
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+        }
+        
+        .faq-question {
+            background: white;
+            padding: 18px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            position: relative;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-question i {
+            transition: transform 0.3s ease;
+            color: var(--primary);
+        }
+        
+        .faq-question.active i {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            background: #f8fafc;
+            padding: 0 25px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        
+        .faq-answer.open {
+            padding: 20px 25px;
+            max-height: 500px;
+        }
+        
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-content {
+                width: calc(100% - 80px);
+                margin-left: 50px;
+            }
+            
+            .timeline-item:nth-child(even) .timeline-content {
+                left: 0;
+            }
+            
+            .timeline-badge {
+                left: 30px;
+            }
+            
+            .hero-section {
+                height: 50vh;
+            }
+            
+            .admission-container {
+                padding: 25px;
+            }
+        }
+    </style>
+{% endblock %}
+
+
+{% block body %}
+
+     <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 mx-auto text-center text-white">
+                    <h1 class="display-4 mb-4">Admission & Inscription</h1>
+                    <p class="lead">Rejoignez notre communauté éducative d'excellence</p>
+                    <a href="#inscription" class="btn btn-light btn-lg mt-3 px-4">Démarrer l'inscription</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="admission-container">
+                <div class="admission-header">
+                    <div class="admission-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h2 class="mb-3">Processus d'Admission au Collège acadPro</h2>
+                    <p class="text-muted">Découvrez notre procédure d'inscription et inscrivez votre enfant pour l'année scolaire prochaine</p>
+                </div>
+                
+                <!-- Processus d'admission -->
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <h3 class="mb-4 text-center">Notre Processus en 4 Étapes</h3>
+                        
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-badge">1</div>
+                                <div class="timeline-content">
+                                    <h4>Pré-inscription en ligne</h4>
+                                    <p>Remplissez notre formulaire de pré-inscription en ligne. Vous recevrez une confirmation par email avec les prochaines étapes.</p>
+                                    <p class="text-muted mb-0">Durée estimée: 15 minutes</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-badge">2</div>
+                                <div class="timeline-content">
+                                    <h4>Entretien pédagogique</h4>
+                                    <p>Nous vous contacterons pour planifier un entretien avec notre équipe pédagogique et une visite de l'établissement.</p>
+                                    <p class="text-muted mb-0">Entretien de 30-45 minutes</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-badge">3</div>
+                                <div class="timeline-content">
+                                    <h4>Dépôt des documents</h4>
+                                    <p>Fournissez les documents nécessaires via notre plateforme sécurisée ou directement au secrétariat.</p>
+                                    <p class="text-muted mb-0">Liste des documents ci-dessous</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-badge">4</div>
+                                <div class="timeline-content">
+                                    <h4>Confirmation d'admission</h4>
+                                    <p>Après examen de votre dossier, vous recevrez notre décision d'admission par courrier et email sous 10 jours.</p>
+                                    <p class="text-muted mb-0">Délai maximum: 10 jours</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Avantages AcadPro -->
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <h3 class="mb-4 text-center">Pourquoi Choisir acadPro ?</h3>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-chalkboard-teacher"></i>
+                                    </div>
+                                    <h4>Encadrement personnalisé</h4>
+                                    <p>Des classes à effectifs réduits pour un suivi individualisé de chaque élève.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-laptop-code"></i>
+                                    </div>
+                                    <h4>Technologie éducative</h4>
+                                    <p>Classes équipées de tableaux interactifs et plateforme d'apprentissage en ligne.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-globe-europe"></i>
+                                    </div>
+                                    <h4>Ouverture internationale</h4>
+                                    <p>Programmes d'échange et certifications linguistiques reconnues.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Formulaire d'inscription -->
+                <div class="row" id="inscription">
+                    <div class="col-lg-8 mx-auto">
+                        <div class="dossier-header">
+                            <h3 class="mb-4">Formulaire de Pré-inscription</h3>
+                            <p class="text-muted">Remplissez ce formulaire pour initier le processus d'admission de votre enfant. Tous les champs marqués d'un * sont obligatoires.</p>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="step-card">
+                                    <div class="step-number">1</div>
+                                    <h5>Informations élève</h5>
+                                    <p class="text-muted mb-0">Données personnelles</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="step-card">
+                                    <div class="step-number">2</div>
+                                    <h5>Informations parents</h5>
+                                    <p class="text-muted mb-0">Responsables légaux</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="step-card">
+                                    <div class="step-number">3</div>
+                                    <h5>Choix pédagogiques</h5>
+                                    <p class="text-muted mb-0">Options et niveau</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form method="post" class="" enctype="multipart/form-data">
+                            <h4 class="mb-4 border-bottom pb-2">Informations sur l'élève</h4>
+                            <div class="row gy-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nom de l'élève *</label>
+                                    <input type="text" name="nom_eleve" class="form-control" placeholder="Entrez le nom" required="">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Prénom de l'élève *</label>
+                                    <input type="text" name="prenom_eleve" class="form-control" placeholder="Entrez le prénom" required="">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Date de naissance *</label>
+                                    <input type="date" class="form-control" name="date_naissance" required="">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Lieu de naissance *</label>
+                                    <input type="text" class="form-control" name="lieu_naissance" placeholder="Ville de naissance" required="">
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <label class="form-label">Adresse de l'élève *</label>
+                                    <input type="text" class="form-control" name="adresse" placeholder="Adresse complète" required="">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Ville *</label>
+                                    <input type="text" class="form-control" name="ville" placeholder="Ville" required="">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Code postal *</label>
+                                    <input type="text" class="form-control" name="code_postal" placeholder="Code postal" required="">
+                                </div>
+                            </div>
+                            
+                            <h4 class="my-4 border-bottom pb-2">Informations sur les parents</h4>
+                            <div class="row gy-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nom du parent/tuteur *</label>
+                                    <input type="text" name="nom_parent" class="form-control" placeholder="Entrez le nom" required="">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Prénom du parent/tuteur *</label>
+                                    <input type="text" name="prenom_parent" class="form-control" placeholder="Entrez le prénom" required="">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Email *</label>
+                                    <input type="email" class="form-control" name="email" placeholder="Email de contact" required="">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Téléphone *</label>
+                                    <input type="text" class="form-control" name="telephone" placeholder="Numéro de téléphone" required="">
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <label class="form-label">Profession *</label>
+                                    <input type="text" class="form-control" name="profession" placeholder="Profession" required="">
+                                </div>
+                            </div>
+                            
+                            <h4 class="my-4 border-bottom pb-2">Informations scolaires</h4>
+                            <div class="row gy-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Niveau demandé *</label>
+                                    <select name="niveau" class="form-select" required="">
+                                        <option value="">Choisir le niveau</option>
+                                        <option value="6ème">6ème</option>
+                                        <option value="5ème">5ème</option>
+                                        <option value="4ème">4ème</option>
+                                        <option value="3ème">3ème</option>
+                                        <option value="autres">Autres</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Établissement précédent</label>
+                                    <input type="text" class="form-control" name="etablissement_precedent" placeholder="Nom de l'établissement">
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <label class="form-label">Options souhaitées</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="option_latin" id="latin">
+                                        <label class="form-check-label" for="latin">Latin</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="option_grec" id="grec">
+                                        <label class="form-check-label" for="grec">Grec ancien</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="option_euro" id="euro">
+                                        <label class="form-check-label" for="euro">Section européenne</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="option_theatre" id="theatre">
+                                        <label class="form-check-label" for="theatre">Option théâtre</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <label class="form-label">Informations complémentaires</label>
+                                    <textarea class="form-control" name="informations" rows="4" placeholder="Informations médicales, besoins particuliers, etc."></textarea>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="consent" required>
+                                        <label class="form-check-label" for="consent">
+                                            J'autorise le collège acadPro à utiliser ces informations pour le processus d'admission
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-12 mt-4 text-center">
+                                    <button class="btn btn-primary btn-lg px-5" type="submit">
+                                        <i class="fas fa-paper-plane me-2"></i>Soumettre la pré-inscription
+                                    </button>
+                                    <p class="text-muted mt-3">Vous recevrez un email de confirmation avec la suite de la procédure</p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FAQ Section -->
+            <div class="row mt-5">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white">
+                            <h4 class="mb-0"><i class="fas fa-question-circle me-2 text-primary"></i>Questions Fréquentes sur l'Admission</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="faq-container">
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span>Quels sont les délais d'inscription pour la rentrée prochaine ?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Les pré-inscriptions pour la rentrée de septembre ouvrent chaque année le 1er janvier. Nous acceptons les dossiers jusqu'au 15 juin, mais nous vous conseillons de postuler le plus tôt possible car les places sont limitées.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span>Existe-t-il des critères de sélection particuliers ?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Nous examinons chaque dossier dans sa globalité. Les principaux critères sont les résultats scolaires antérieurs, la motivation de l'élève et son adéquation avec notre projet pédagogique. Nous accordons également une attention particulière aux recommandations des enseignants précédents.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span>Proposez-vous des bourses ou aides financières ?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Oui, acadPro propose plusieurs programmes d'aide financière basés sur les revenus familiaux et le mérite scolaire. Les demandes de bourse doivent être soumises en même temps que le dossier d'inscription. Notre service financier étudie chaque demande individuellement.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span>Comment se déroule l'entretien d'admission ?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>L'entretien dure environ 45 minutes et réunit l'élève, ses parents, le directeur pédagogique et un enseignant. L'objectif est de présenter notre établissement, de comprendre les motivations de l'élève et d'évaluer son adéquation avec notre projet éducatif. Aucune préparation spécifique n'est nécessaire.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span>Quels sont les frais de scolarité ?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Les frais de scolarité annuels sont de 1 200€ pour les élèves résidant dans notre secteur. Ce montant comprend les manuels scolaires et l'accès à toutes les installations. Des tarifs réduits sont disponibles pour les familles avec plusieurs enfants inscrits.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section Documents Requis -->
+            <div class="row mt-5">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white">
+                            <h4 class="mb-0"><i class="fas fa-file-alt me-2 text-primary"></i>Documents requis pour l'inscription</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul class="requirements-list">
+                                <li>Photocopie de l'acte de naissance de l'élève</li>
+                                <li>Photocopie des bulletins scolaires de l'année précédente</li>
+                                <li>Certificat de radiation de l'établissement précédent (pour les nouveaux inscrits)</li>
+                                <li>Justificatif de domicile (moins de 3 mois)</li>
+                                <li>Photo d'identité récente de l'élève</li>
+                                <li>Photocopie du carnet de vaccination</li>
+                                <li>Formulaire médical rempli par le médecin traitant</li>
+                            </ul>
+                            
+                            <div class="alert alert-info mt-4">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Tous les documents doivent être numérisés au format PDF. Les photos doivent être en format JPG ou PNG. Vous pourrez les déposer après validation de votre pré-inscription.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+
+
+{% block script %}
+
+     <!-- Bootstrap 5 JS Bundle avec Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Correction de la FAQ - Fonctionnalité complète
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    // Fermer toutes les autres réponses
+                    faqQuestions.forEach(q => {
+                        if (q !== question) {
+                            q.classList.remove('active');
+                            q.nextElementSibling.classList.remove('open');
+                        }
+                    });
+                    
+                    // Ouvrir/fermer la réponse actuelle
+                    this.classList.toggle('active');
+                    const answer = this.nextElementSibling;
+                    answer.classList.toggle('open');
+                });
+            });
+            
+            // Animation de scroll pour les ancres
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        window.scrollTo({
+                            top: target.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Soumission du formulaire
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Animation de confirmation
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Traitement...';
+                submitBtn.disabled = true;
+                
+                // Simulation d'envoi au serveur
+                setTimeout(() => {
+                    // Création d'un message de succès
+                    const successMessage = document.createElement('div');
+                    successMessage.className = 'alert alert-success mt-4';
+                    successMessage.innerHTML = `
+                        <h4><i class="fas fa-check-circle me-2"></i>Pré-inscription soumise avec succès !</h4>
+                        <p class="mb-0">Nous avons bien reçu votre demande. Vous recevrez un email de confirmation dans les prochaines heures avec les instructions pour la suite du processus.</p>
+                    `;
+                    
+                    form.parentNode.insertBefore(successMessage, form.nextSibling);
+                    
+                    // Scroll vers le message
+                    successMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    // Réinitialisation du bouton
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    // Réinitialisation du formulaire
+                    form.reset();
+                }, 2000);
+            });
+        });
+    </script>
+   
+{% endblock %}
+
+
+

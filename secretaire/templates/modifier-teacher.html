@@ -1,0 +1,207 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AcadPro | modifier enseignant</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'secretaire/img/favicon.png' %}">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Select 2 CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/select2.min.css' %}">
+    <!-- Date Picker CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/datepicker.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+    <!-- Modernize js -->
+    <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+
+    
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+       
+         {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+
+
+            {% include 'partial/aside.html' %}
+
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Enseignant</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'secretaire:index' %}">TAbleau de Bord</a>
+                        </li>
+                        <li>Ajout Enseignant</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Add New Teacher Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Ajout enseignant</h3>
+                            </div>
+                           <div class="dropdown">
+                                <a class="dropdown-toggle" href="#" role="button" 
+                                data-toggle="dropdown" aria-expanded="false">...</a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#"><i class="fas fa-times text-orange-red"></i>Fermer</a>
+                                    <a class="dropdown-item" href="#"><i class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
+                                    <a class="dropdown-item" href="#"><i class="fas fa-redo-alt text-orange-peel"></i>Refrecher</a>
+                                </div>
+                            </div>
+                        </div>
+                        <form class="new-added-form" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label>Matricule</label>
+                                    <input type="text" name="matricule" value="{{ enseignant.matricule }}" class="form-control" readonly>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label>Nom *</label>
+                                    <input type="text" name="nom" value="{{ enseignant.nom }}" class="form-control">
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label>Prenom *</label>
+                                    <input type="text" name="prenom" value="{{ enseignant.prenom }}" class="form-control">
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label>Sexe *</label>
+                                    <select class="select2" name="sexe">
+                                        <option value="Non-specifié" {% if enseignant.sexe == "Non-specifié" %}selected{% endif %}>Please Select Gender *</option>
+                                        <option value="Masculin" {% if enseignant.sexe == "Masculin" %}selected{% endif %}>Male</option>
+                                        <option value="Feminin" {% if enseignant.sexe == "Feminin" %}selected{% endif %}>Female</option>
+                                        <option value="Autres" {% if enseignant.sexe == "Autres" %}selected{% endif %}>Others</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label>Date de naissance *</label>
+                                    <input type="date" name="date_naissance" value="{{ enseignant.date_naissance|date:'Y-m-d' }}" class="form-control">
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label>Groupe sanguin *</label>
+                                    <select class="select2" name="groupe_sanguin">
+                                        <option value="">Please Select Group *</option>
+                                        {% for groupe in groupes_sanguins %}
+                                            <option value="{{ groupe }}" {% if groupe == enseignant.groupe_sanguin %}selected{% endif %}>{{ groupe }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label>Diplome</label>
+                                    <input type="text" name="diplome" value="{{ enseignant.diplome }}" class="form-control">
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label>Profession</label>
+                                    <input type="text" name="profession" value="{{ enseignant.profession }}" class="form-control">
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label>E-Mail</label>
+                                    <input type="email" name="email" value="{{ enseignant.mail }}" class="form-control">
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label>Phone</label>
+                                    <input type="text" name="phone" value="{{ enseignant.tel }}" class="form-control">
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label>Salaire</label>
+                                    <input type="text" name="salaire" value="{{ enseignant.salaire }}" class="form-control">
+                                </div>
+                                
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label>Type de contrat</label>
+                                    <input type="text" name="typeContrat" value="{{ enseignant.typeDeContrat }}" class="form-control">
+                                </div>
+                                
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label>Date début contrat</label>
+                                    <input type="date" name="date_debut_contrat" value="{{ enseignant.date_debut_contrat|date:'Y-m-d' }}" class="form-control">
+                                </div>
+                                
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label>Date fin contrat</label>
+                                    <input type="date" name="date_fin_contrat" value="{{ enseignant.date_fin_contrat|date:'Y-m-d' }}" class="form-control">
+                                </div>
+                                
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label>Lieu de naissance</label>
+                                    <input type="text" name="lieuDeNaissance" value="{{ enseignant.lieuDeNaissance }}" class="form-control">
+                                </div>
+                                
+                                <div class="col-lg-6 col-12 form-group mg-t-30">
+                                    <label class="text-dark-medium">Upload Student Photo (150px X 150px)</label>
+                                    <input type="file" name="photo" class="form-control-file">
+                                </div>
+                                <div class="col-12 form-group mg-t-8">
+                                    <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Sauvegarder</button>
+                                    <a href="{% url 'secretaire:all_inscription' %}" type="button" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Annuler</a>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        
+                    </div>
+                </div>
+                <!-- Add New Teacher Area End Here -->
+                {% include 'partial/copyright.html' %}
+
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+   <!-- jquery-->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Select 2 Js -->
+    <script src="{% static 'secretaire/js/select2.min.js' %}"></script>
+    <!-- Date Picker Js -->
+    <script src="{% static 'secretaire/js/datepicker.min.js' %}"></script>
+    <!-- Smoothscroll Js -->
+    <script src="{% static 'secretaire/js/jquery.smoothscroll.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+
+</body>
+
+</html>

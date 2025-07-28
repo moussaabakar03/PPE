@@ -1,0 +1,152 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AKKHOR | Ajout emploi du temps</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Select 2 CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/select2.min.css' %}">
+    <!-- Date Picker CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/datepicker.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+    <!-- Modernize js -->
+    <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+
+    <style>
+    </style>
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+          
+         {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+           <div class="sidebar-main sidebar-menu-one sidebar-expand-md sidebar-color">
+               <div class="mobile-sidebar-header d-md-none">
+                    <div class="header-logo">
+                        <a href="index.html"><img src="img/logo1.png" alt="logo"></a>
+                    </div>
+               </div>
+               
+                {% include 'partial/aside.html' %}
+
+                
+            </div>
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Ajout emploi du temps</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'secretaire:index' %}">Home</a>
+                        </li>
+                         <li>
+                            <a href="{% url 'secretaire:emploiDuTemps' salle.id annee.id %}">Retour</a>
+                        </li>
+                        <li>Ajout emploi du temps</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Add New Teacher Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Ajout emploi du temps</h3>
+                            </div>
+                            <li>{{salle.niveau.classe}} {{salle.nom}}</li>
+                            <h6 style = "margin-left: 60px;">Année scolaire: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}}>> </span></h6>
+                        </div>
+                        <form class="new-added-form" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="table-responsive">
+                                <table class="table display data-table text-nowrap">
+                                   <thead>
+                                        <tr>
+                                            <th></th>
+                                            {% for jour in jours %}
+                                                <th>{{ jour }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for heure in heures %}
+                                        <tr>
+                                            <th>{{ heure }}</th>
+                                            {% for jour in jours %}
+                                            <td>
+                                                <select name="{{ jour|lower }}_{{ forloop.parentloop.counter }}" class="select2 form-control">
+                                                    <option value=""></option>
+                                                    {% for c in cours %}
+                                                        <option value="{{ c.id }}">{{ c.matiere.nom }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </td>
+                                            {% endfor %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+                                    <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Enregistrer</button>
+                                    <a href="{% url 'secretaire:emploiDuTemps' salle.id annee.id %}" type="reset" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Annuler</a>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+                <!-- Add New Teacher Area End Here -->
+                {% include 'partial/copyright.html' %}
+
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Select 2 Js -->
+    <script src="{% static 'secretaire/js/select2.min.js' %}"></script>
+    <!-- Date Picker Js -->
+    <script src="{% static 'secretaire/js/datepicker.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,176 @@
+@startuml
+
+' Configuration du style
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam classAttributeFontSize 11
+
+'===================
+' Entités principales
+'===================
+class AnneeScolaire {
+  +Date debutAnnee
+  +Date fintAnnee
+}
+
+class Classe {
+  +String classe
+}
+
+class SalleDeClasse {
+  +String nom
+  +int capacite
+  +String emplacement
+}
+
+class Parent {
+  +String nom
+  +String prenom
+  +String genre
+  +String telephone
+  +Email email
+  +String profession
+  +String lien_de_parente
+  +Image photo
+}
+
+class Utilisateur {
+  <<AbstractUser>>
+}
+
+class Etudiant {
+  +String nom
+  +String prenom
+  +String matricule
+  +String genre
+  +Date date_naissance
+  +String groupe_sanguin
+  +Email mail
+  +String niveau
+  +String telephone
+  +String nationnalite
+  +Image photo
+  +DateTime date_enregistrement
+  +String lieuDeNaissance
+  +Image cheminCodeQr
+}
+
+class Enseignant {
+  +String matricule
+  +String nom
+  +String prenom
+  +String profession
+  +String tel
+  +String diplome
+  +Date date_naissance
+  +String sexe
+  +Email mail
+  +String lieuDeNaissance
+  +DateTime date_enregistrement
+  +Decimal salaire
+  +String typeDeContrat
+  +Date date_debut_contrat
+  +Date date_fin_contrat
+}
+
+class cvEnseignant {
+  +File cv
+  +DateTime dateHeure
+}
+
+class Matiere {
+  +String code
+  +String nom
+  +Text description
+}
+
+class Inscription {
+  +DateTime dateEnregistrement
+  +Decimal montantVerse
+}
+
+class Scolarite {
+  +Decimal coutScolarite
+  +Decimal montantPaye
+  +Decimal montantRestant
+  +String etat
+}
+
+class Cours {
+  +DateTime dateDebutCours
+  +String etat
+  +int coefficient
+}
+
+class Evaluation {
+  +String trimestre
+  +String typeEvaluation
+  +DateTime dateEvaluation
+  +Decimal note
+  +Decimal pourcentage
+}
+
+class Cout {
+  +Decimal coutInscription
+  +Decimal coutScolarite
+  +Decimal fraisEtudeDossier
+  +Decimal fraisAssocie
+}
+
+class Emargement {
+  +DateTime dateHeureDebut
+  +DateTime date_heure_fin
+  +Text commentaire
+  +Boolean presence
+  +Date dateJour
+}
+
+class Messages {
+  +Text contenu
+  +DateTime date_envoi
+  +Boolean est_lu
+}
+
+class depotDossierEtudiant {
+  +String nom
+  +String prenom
+  +String niveau
+  +DateTime dateheure
+  +Email mail
+  +File dossier
+  +String numero_telephone
+}
+
+class EmploiDuTemps {
+  +String jour
+  +String heure
+}
+
+'===================
+' Relations
+'===================
+
+Utilisateur <|-- Etudiant
+Classe "1" --> "0..*" SalleDeClasse : niveau
+Parent "1" --> "0..*" Etudiant : etudiant
+Etudiant "1" --> "0..*" Inscription : inscriptions
+SalleDeClasse "1" --> "0..*" Inscription : inscris
+AnneeScolaire "1" --> "0..*" Inscription : anneeAcad
+Classe "1" --> "0..*" Scolarite
+Classe "1" --> "0..*" Cours
+Enseignant "1" --> "0..*" Cours
+Matiere "1" --> "0..*" Cours
+Cours "1" --> "0..*" Evaluation
+Etudiant "1" --> "0..*" Evaluation
+Classe "1" --> "0..*" Cout
+AnneeScolaire "1" --> "0..*" Cout
+Enseignant "1" --> "0..*" cvEnseignant
+SalleDeClasse "1" --> "0..*" Emargement
+Inscription "1" --> "0..*" Emargement
+Etudiant "1" --> "0..*" Messages : expediteur
+Etudiant "1" --> "0..*" Messages : destinataire
+Cours "1" --> "0..*" EmploiDuTemps
+SalleDeClasse "1" --> "0..*" EmploiDuTemps
+AnneeScolaire "1" --> "0..*" EmploiDuTemps
+
+@enduml

@@ -1,0 +1,210 @@
+{% load static %}
+
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>AcadPro | Messages par classe</title>
+    <meta name="description" content="Système de gestion des messages par classe">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Select 2 CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/select2.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+
+   
+     <style>
+        .chat-container {
+            width: 500px;
+            height: 600px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            margin-left: 15%;
+        }
+
+        .chat-header {
+            background-color: #fff;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .chat-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .chat-header .student-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #fafafa;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background-color: #dcf8c6;
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background-color: #f0f0f0;
+        }
+
+        .chat-footer {
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #eee;
+            background-color: #fff;
+        }
+
+        .chat-footer input {
+            flex: 1;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            outline: none;
+        }
+
+        .chat-footer button {
+            background: none;
+            border: none;
+            color: #007bff;
+            font-size: 20px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .chat-footer button:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+        <!-- Header Menu Area Start Here -->
+        {% include 'partial/header.html' %}
+        <!-- Header Menu Area End Here -->
+        
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+            {% include 'partial/aside.html' %}
+            <!-- Sidebar Area End Here -->
+            
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Communications</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'secretaire:messages' %}">Messages étudiants</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Messages Container -->
+                            
+                <div class="chat-container">
+                    <div class="chat-header">
+                        
+                        {% if etudiant.photo %}
+                           <a href="{{etudiant.photo.url}}"><img src="{{etudiant.photo.url}}" style = "object-fit: cover;" alt="Photo étudiant"></a>
+                        {% else %}
+                            <span class="text-center"><i class="fa fa-user"></i></span> 
+                        {% endif %}
+                        <a href="{% url 'secretaire:detailEtudiant' etudiant.matricule etudiant.parent.id %}" style="color: black;"><div class="student-name">{{etudiant.nom}} {{etudiant.prenom}}</div></a>
+                    </div>
+
+                    <div class="chat-body" id="chat-body">
+                        <div class="message received">Bonjour, je voulais vous poser une question.</div>
+                        <div class="message sent">Bonjour {{etudiant.nom}} ! Je vous écoute.</div>
+                        <div class="message received">C’est à propos du devoir de mathématiques.</div>
+                    </div>
+
+                    <div class="chat-footer">
+                        <input type="text" placeholder="Écrire un message..." id="messageInput">
+                        <button onclick="envoyerMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Copyright Area -->
+                {% include 'partial/copyright.html' %}
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <!-- jquery-->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Select 2 Js -->
+    <script src="{% static 'secretaire/js/select2.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+    
+   <script>
+        function envoyerMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (message) {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'message sent';
+                msgDiv.textContent = message;
+                document.getElementById('chat-body').appendChild(msgDiv);
+                input.value = '';
+                document.getElementById('chat-body').scrollTop = document.getElementById('chat-body').scrollHeight;
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,215 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AcadPro | Note individuelle</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Select 2 CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/select2.min.css' %}">
+    <!-- Date Picker CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/datepicker.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+    <!-- Modernize js -->
+    <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+    
+
+    <style>
+         .search-box {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            padding-left: 40px;
+            border-radius: var(--border-radius);
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+            outline: none;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--light-text);
+        }
+        
+    </style>
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+        
+         {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+           
+            {% include 'partial/aside.html' %}
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Evaluation</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'secretaire:all_evaluation' %}">All Evaluation</a>
+                        </li>
+                        <li>Evaluation individuelle</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Add Class Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h6>Veillez choisir l'élève dont vous voulez lui Attribuer la note.({{ salleClasse.niveau.classe }} {{ salleClasse.nom }})</h6>
+                            </div>
+                            <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                Année Scolaire
+                                <p style = "color: red;"> {{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}} </p>
+                            </div>
+                            
+                        </div>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="messageSearch" placeholder="Rechercher un étudiant...">
+                        </div>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <hr>
+                        
+                            <div class="table-responsive">
+                                <table class="table display data-table text-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">Matricule</label>
+                                                </div>
+                                            </th>
+                                            <th> Nom & Prenom </th>
+                                            <th> Action </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for inscrit in inscrits %}
+                                        
+                                            <tr class="student-message-card">
+                                                <!-- Matricule -->
+                                                <td>
+                                                    {{inscrit.etudiant.matricule}}
+                                                </td>
+                                                <!-- Nom & Prénom -->
+                                                <td>
+                                                    {{ inscrit.etudiant.nom }} {{ inscrit.etudiant.prenom }}
+                                                </td>
+                                                
+                                                <!-- Note -->
+                                                <td>
+                                                    <a href="{% url 'secretaire:ajout_note_individuelle' inscrit.etudiant.id inscrit.salleClasse.niveau.id inscrit.anneeAcademique.id %}" type="button" class="btn btn-warning attribuer-notes" style ="width: 100px; height: 100%; margin: 5px; padding: 5px; 
+                                                    border-radius: 5px; font-size: 12px;">Nouvelle Note</a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Add Class Area End Here -->
+                {% include 'partial/copyright.html' %}
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <!-- jquery-->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Select 2 Js -->
+    <script src="{% static 'secretaire/js/select2.min.js' %}"></script>
+    <!-- Date Picker Js -->
+    <script src="{% static 'secretaire/js/datepicker.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+
+    {% comment %} <script>
+        $(document).ready(function () {
+            $('.attribuer-notes').on('click', function (e) {
+                e.preventDefault();
+
+                const eleveId = $(this).data('eleve-id');
+                const salleId = $(this).data('salle-id');
+                const anneeScolaireId = $('select[name="anneeScolaire"]').val();
+
+                if (!anneeScolaireId) {
+                    alert("Veuillez sélectionner une année scolaire !");
+                    return;
+                }
+
+                // Rediriger vers l'URL avec les 3 paramètres
+                const url = `/ajout_note_individuelle/${eleveId}/${salleId}/${anneeScolaireId}/`;
+                window.location.href = url;
+            });
+        });
+    </script> {% endcomment %}
+    <script>
+        // Search functionality
+        $(document).ready(function() {
+            $("#messageSearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $(".student-message-card").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

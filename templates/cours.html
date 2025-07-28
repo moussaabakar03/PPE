@@ -1,0 +1,360 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+    
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'accueil/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'accueil/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'accueil/css/cssPersonnalise/cours.css' %}">
+
+    
+    <style>
+        .subject-img{
+            transition: transform 0.3s ease-in-out;
+        }
+        .subject-img:hover{
+            transform: scale(1.1);
+            overflow : hidden;
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(44, 95, 168, 0.85), rgba(51, 97, 160, 0.9)), url('{% static 'accueil/images/coursHero.jpg' %}');
+            background-size: cover;
+            background-position: center;
+            height: 50vh;
+            display: flex;
+            align-items: center;
+        }
+    </style>
+{% endblock %}
+
+
+{% block body %}
+ <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 mx-auto text-center text-white">
+                    <h1 class="display-4 mb-4">Nos Matières Scolaires</h1>
+                    <p class="lead">Découvrez le programme pédagogique complet du collège et les compétences développées dans chaque discipline</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <!-- Filters -->
+                    <div class="filter-section">
+                        <h3 class="filter-title">Filtrer les matières</h3>
+                        
+                        <div class="filter-group">
+                            <h5>Niveau scolaire</h5>
+                            <div class="d-flex flex-wrap">
+                                <span class="level-btn active">Tous</span>
+                                <span class="level-btn">6ème</span>
+                                <span class="level-btn">5ème</span>
+                                <span class="level-btn">4ème</span>
+                                <span class="level-btn">3ème</span>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h5>Domaine</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="domain1" checked>
+                                <label class="form-check-label" for="domain1">Scientifique</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="domain2" checked>
+                                <label class="form-check-label" for="domain2">Lettres & langues</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="domain3" checked>
+                                <label class="form-check-label" for="domain3">Sciences humaines</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="domain4" checked>
+                                <label class="form-check-label" for="domain4">Arts & sport</label>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h5>Enseignant</h5>
+                            <select class="form-control">
+                                <option>Tous les enseignants</option>
+                                <option>Sophie Martin (Français)</option>
+                                <option>Thomas Dubois (Mathématiques)</option>
+                                <option>Émilie Lambert (Histoire-Géo)</option>
+                                <option>Pierre Moreau (SVT)</option>
+                                <option>Lucie Bernard (Anglais)</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-primary btn-block mt-3">Appliquer les filtres</button>
+                    </div>
+                    
+                    <div class="bg-light p-4 rounded mt-4">
+                        <h5 class="mb-3">Accès rapide</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="#" class="text-dark"><i class="fas fa-book mr-2"></i>Programmes officiels</a></li>
+                            <li class="mb-2"><a href="#" class="text-dark"><i class="fas fa-calendar-alt mr-2"></i>Emplois du temps</a></li>
+                            <li class="mb-2"><a href="#" class="text-dark"><i class="fas fa-chalkboard-teacher mr-2"></i>Ressources pédagogiques</a></li>
+                            <li><a href="#" class="text-dark"><i class="fas fa-graduation-cap mr-2"></i>Diplôme National du Brevet</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-lg-9">
+                    <h2 class="section-title">Toutes les matières</h2>
+                    
+                    <div class="row">
+                        <!-- Mathématiques -->
+                        <div class="col-md-6">
+                            <div class="subject-card">
+                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/maths.png' %}');"></div>
+                                <div class="subject-info">
+                                    <h3 class="subject-title">Mathématiques</h3>
+                                    <div class="subject-meta">
+                                        <span><i class="fas fa-clock"></i> 4h/semaine</span>
+                                        <span><i class="fas fa-user-graduate"></i> Thomas Dubois</span>
+                                    </div>
+                                    <p class="mb-3">Développement des compétences en algèbre, géométrie et calcul. Préparation au raisonnement logique et à la résolution de problèmes complexes.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge-level">6ème</span>
+                                            <span class="badge-level">5ème</span>
+                                            <span class="badge-level">4ème</span>
+                                            <span class="badge-level">3ème</span>
+                                        </div>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">Détails</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Français -->
+                        <div class="col-md-6">
+                            <div class="subject-card">
+                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/fr.png' %}');"></div>
+                                <div class="subject-info">
+                                    <h3 class="subject-title">Français</h3>
+                                    <div class="subject-meta">
+                                        <span><i class="fas fa-clock"></i> 4h30/semaine</span>
+                                        <span><i class="fas fa-user-graduate"></i> Sophie Martin</span>
+                                    </div>
+                                    <p class="mb-3">Maîtrise de la langue française, étude de textes littéraires, expression écrite et orale. Développement de l'esprit critique et de l'argumentation.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge-level">6ème</span>
+                                            <span class="badge-level">5ème</span>
+                                            <span class="badge-level">4ème</span>
+                                            <span class="badge-level">3ème</span>
+                                        </div>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">Détails</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Histoire-Géographie -->
+                        <div class="col-md-6">
+                            <div class="subject-card">
+                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/hg.png' %}');"></div>
+                                <div class="subject-info">
+                                    <h3 class="subject-title">Histoire-Géographie</h3>
+                                    <div class="subject-meta">
+                                        <span><i class="fas fa-clock"></i> 3h/semaine</span>
+                                        <span><i class="fas fa-user-graduate"></i> Émilie Lambert</span>
+                                    </div>
+                                    <p class="mb-3">Étude des grandes périodes historiques et des enjeux géographiques contemporains. Développement de l'esprit critique et de la compréhension du monde.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge-level">6ème</span>
+                                            <span class="badge-level">5ème</span>
+                                            <span class="badge-level">4ème</span>
+                                            <span class="badge-level">3ème</span>
+                                        </div>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">Détails</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Sciences de la Vie et de la Terre -->
+                        <div class="col-md-6">
+                            <div class="subject-card">
+                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/svt.png' %}');"></div>
+                                <div class="subject-info">
+                                    <h3 class="subject-title">Sciences de la Vie et de la Terre</h3>
+                                    <div class="subject-meta">
+                                        <span><i class="fas fa-clock"></i> 1h30/semaine</span>
+                                        <span><i class="fas fa-user-graduate"></i> Pierre Moreau</span>
+                                    </div>
+                                    <p class="mb-3">Étude du vivant, de la Terre et de l'environnement. Démarche scientifique, expérimentation et développement de l'esprit d'observation.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge-level">6ème</span>
+                                            <span class="badge-level">5ème</span>
+                                            <span class="badge-level">4ème</span>
+                                            <span class="badge-level">3ème</span>
+                                        </div>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">Détails</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Physique-Chimie -->
+                        <div class="col-md-6">
+                            <div class="subject-card">
+                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/pc.png' %}');"></div>
+                                <div class="subject-info">
+                                    <h3 class="subject-title">Physique-Chimie</h3>
+                                    <div class="subject-meta">
+                                        <span><i class="fas fa-clock"></i> 1h30/semaine</span>
+                                        <span><i class="fas fa-user-graduate"></i> Marc Lefèvre</span>
+                                    </div>
+                                    <p class="mb-3">Découverte des phénomènes physiques et chimiques. Expérimentation, démarche scientifique et applications concrètes dans la vie quotidienne.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge-level">5ème</span>
+                                            <span class="badge-level">4ème</span>
+                                            <span class="badge-level">3ème</span>
+                                        </div>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">Détails</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Anglais -->
+                        <div class="col-md-6">
+                            <div class="subject-card">
+                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/ang.png' %}');"></div>
+                                <div class="subject-info">
+                                    <h3 class="subject-title">Anglais</h3>
+                                    <div class="subject-meta">
+                                        <span><i class="fas fa-clock"></i> 3h/semaine</span>
+                                        <span><i class="fas fa-user-graduate"></i> Lucie Bernard</span>
+                                    </div>
+                                    <p class="mb-3">Apprentissage de la langue anglaise à travers la compréhension orale et écrite, l'expression et l'interaction. Découverte des cultures anglophones.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge-level">6ème</span>
+                                            <span class="badge-level">5ème</span>
+                                            <span class="badge-level">4ème</span>
+                                            <span class="badge-level">3ème</span>
+                                        </div>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">Détails</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Technologie -->
+                        <div class="col-md-6">
+                            <div class="subject-card">
+                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/inf.png' %}');"></div>
+                                <div class="subject-info">
+                                    <h3 class="subject-title">Technologie</h3>
+                                    <div class="subject-meta">
+                                        <span><i class="fas fa-clock"></i> 1h30/semaine</span>
+                                        <span><i class="fas fa-user-graduate"></i> Philippe Durand</span>
+                                    </div>
+                                    <p class="mb-3">Découverte des technologies contemporaines, initiation à la programmation, conception assistée par ordinateur et projets interdisciplinaires.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge-level">6ème</span>
+                                            <span class="badge-level">5ème</span>
+                                            <span class="badge-level">4ème</span>
+                                            <span class="badge-level">3ème</span>
+                                        </div>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">Détails</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <!-- Éducation Physique et Sportive -->
+                        <div class="col-md-6">
+                            <div class="subject-card">
+                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/sport.png' %}');"></div>
+                                <div class="subject-info">
+                                    <h3 class="subject-title">Éducation Physique et Sportive</h3>
+                                    <div class="subject-meta">
+                                        <span><i class="fas fa-clock"></i> 3h/semaine</span>
+                                        <span><i class="fas fa-user-graduate"></i> Julien Petit</span>
+                                    </div>
+                                    <p class="mb-3">Développement des capacités physiques, apprentissage de sports collectifs et individuels. Éducation à la santé et au bien-être.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge-level">6ème</span>
+                                            <span class="badge-level">5ème</span>
+                                            <span class="badge-level">4ème</span>
+                                            <span class="badge-level">3ème</span>
+                                        </div>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">Détails</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <nav aria-label="Page navigation" class="mt-5">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">Précédent</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Suivant</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+
+
+{% block script %}
+    <script src="{% static 'accueil/js/jquery.min.js' %}"></script>
+    <script src="{% static 'accueil/js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        // Script pour les filtres
+        $(document).ready(function(){
+            // Activation des boutons de niveau
+            $('.level-btn').click(function(){
+                $('.level-btn').removeClass('active');
+                $(this).addClass('active');
+            });
+            
+            // Animation pour les cartes
+            $('.subject-card').hover(
+                function() {
+                    $(this).css('transform', 'translateY(-10px)');
+                    $(this).css('box-shadow', '0 15px 30px rgba(0,0,0,0.15)');
+                },
+                function() {
+                    $(this).css('transform', 'translateY(0)');
+                    $(this).css('box-shadow', '0 5px 15px rgba(0,0,0,0.1)');
+                }
+            );
+        });
+    </script>
+{% endblock %}
+
+
+

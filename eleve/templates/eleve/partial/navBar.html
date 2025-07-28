@@ -1,0 +1,89 @@
+<!-- CSS custom optionnel (ajustement des icônes et du fond) -->
+<style>
+    .offcanvas {
+        background-color: #f8f9fa;
+    }
+
+    .offcanvas .nav-link {
+        font-size: 16px;
+        font-weight: bold;
+        padding: 12px 20px;
+        color: #333;
+        transition: background-color 0.3s;
+    }
+
+    .offcanvas .nav-link:hover {
+        background-color: #ffae01;
+        border-radius: 8px;
+    }
+
+    .offcanvas .nav-link i {
+        margin-right: 8px;
+        color: #042954;
+    }
+
+    .navbar {
+        background-color: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    a{
+        text-decoration: none!important;
+    }
+    a:hover{
+    }
+    p, span {
+        font-size: 14px;
+    }
+
+    .btn:hover{
+      background-color: #042954!important;
+    }
+</style>
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Navbar avec bouton pour ouvrir le menu latéral -->
+<nav class="navbar">
+  <div class="container-fluid">
+    <button class="btn btn-outline-secondary" style = "font-size: 20px;" type="button" data-bs-toggle="offcanvas" data-bs-target="#menuSidebar" aria-controls="menuSidebar">
+      <i class="fas fa-bars"></i>
+    </button>
+    <span class="fw-bold ms-3"> Espace Étudiant: <span style = "color: #ffa001">{{etudiant.nom}} {{etudiant.prenom}}</span></span>
+  </div>
+</nav>
+
+<!-- MENU LATERAL OFFCANVAS -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="menuSidebar" aria-labelledby="menuSidebarLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="menuSidebarLabel">Navigation</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body p-0">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="#"><i class="fas fa-euro-sign"></i> Inscriptions et Payements</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'eleve:notes' %}"><i class="fas fa-sticky-note"></i> Notes</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'eleve:messagesEleves' %}"><i class="far fa-envelope"></i> Message</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'eleve:emploiDuTempsEtudiant' %}"><i class="fas fa-book"></i> Emploi du temps</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'eleve:presence' %}"><i class="fas fa-user-check"></i> Ma - Présence</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'deconnexion' %}" style = "color: red;"><i class="flaticon-turn-off"></i> Déconnexion</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- Bootstrap JS + Font Awesome -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>

@@ -1,0 +1,39 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Gestion des Notes</title>
+    {% include 'partial/head.html' %}
+
+    <style>
+        .detailEtudiant{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 50%;
+            margin: 20px auto;
+            border-radius: 10px;
+
+        }
+    </style>
+</head>
+<body>
+   
+    {% include 'eleve/partial/header.html' %}
+    <div class="container">
+        
+        <!-- Navigation Tabs -->
+        {% include 'eleve/partial/navBar.html' %}
+        <div class="detailEtudiant">
+            <div>
+                <p style = "text-align: center; margin-top: 15px;" > <span style = "font-weight: bold; color: #ffa001;">Bienvenue sur la page d'Incription & Payements</span> </p>
+            </div>
+        </div>
+       
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,104 @@
+{% load static %}
+    <link rel="stylesheet" href="{% static 'eleve/style.css' %}">
+
+    <div class="navbar navbar-expand-md header-menu-one bg-light">
+        <div class="header-logo">
+            <a href="">
+                <img src="{% static 'secretaire/img/logo.png' %}" alt="logo" class="img-fluid" style =" overflow : hidden;">
+            </a>
+        </div>
+        <div class="header-main-menu collapse navbar-collapse" id="mobile-navbar">
+            <ul class="navbar-nav">
+                <li class="navbar-item header-search-bar">
+                    <div class="input-group stylish-input-group">
+                        <span class="input-group-addon">
+                            <button type="submit">
+                                <span class="flaticon-search" aria-hidden="true"></span>
+                            </button>
+                        </span>
+                        <input type="text" class="form-control" placeholder=" . . .">
+                    </div>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="navbar-item dropdown header-message">
+                    <a class="navbar-nav-link dropdown-toggle" href="{% url 'eleve:messagesEleves' %}" role="button"
+                        >
+                        <i class="far fa-envelope"></i>
+                    </a>
+                </li>
+                <li class="navbar-item dropdown header-notification">
+                    <a class="navbar-nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="far fa-bell"></i>
+                        <div class="item-title d-md-none text-16 mg-l-10">Notification</div>
+                        <span>8</span>
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <div class="item-header">
+                            <h6 class="item-title">03 Notifiacations</h6>
+                        </div>
+                        <div class="item-content">
+                            <div class="media">
+                                <div class="item-icon bg-skyblue">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="media-body space-sm">
+                                    <div class="post-title">Complete Today Task</div>
+                                    <span>1 Mins ago</span>
+                                </div>
+                            </div>
+                            <div class="media">
+                                <div class="item-icon bg-orange">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                                <div class="media-body space-sm">
+                                    <div class="post-title">Director Metting</div>
+                                    <span>20 Mins ago</span>
+                                </div>
+                            </div>
+                            <div class="media">
+                                <div class="item-icon bg-violet-blue">
+                                    <i class="fas fa-cogs"></i>
+                                </div>
+                                <div class="media-body space-sm">
+                                    <div class="post-title">Update Password</div>
+                                    <span>45 Mins ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="navbar-item dropdown header-admin">
+                    <a class="navbar-nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                        aria-expanded="false">
+                        <div class="admin-title">
+                            <h5 class="item-title">{{etudiant.nom}} {{etudiant.prenom}}</h5>
+                            <span>Elève</span>
+                        </div>
+                        <div class="admin-img">
+                            {% if etudiant.photo %}
+                                <img src="{{ etudiant.photo.url }}" alt="logo" class="img-fluid" style =" overflow : hidden; width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
+                            {% else %}
+                                <i class="fa fa-user" style="font-size: 30px; color: #3d7eac;"></i> 
+                            {% endif %}
+                        </div>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <div class="item-header">
+                            <h6 class="item-title">AcadPro</h6>
+                        </div>
+                        <div class="item-content">
+                            <ul class="settings-list">
+                                <li><a href="#"><i class="flaticon-user"></i>Mon Profil</a></li>
+                                <li><a href="#"><i class="flaticon-chat-comment-oval-speech-bubble-with-text-lines"></i>Message</a></li>
+                                <li><a href="#"><i class="flaticon-gear-loading"></i>Paramètre</a></li>
+                                <li><a href="{% url 'deconnexion' %}"><i class="flaticon-turn-off"></i>Deconnecté</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>

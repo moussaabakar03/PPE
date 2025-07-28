@@ -1,0 +1,106 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcadPro-notes</title>
+    {% include 'partial/head.html' %}
+    <link rel="stylesheet" href="{% static 'eleve/style.css' %}">
+    <link rel="stylesheet" href="{% static 'eleve/style.css' %}">
+    <link rel="stylesheet" href="{% static 'eleve/message.css' %}">
+
+</head>
+<body>
+    <div>
+   
+        {% include 'eleve/partial/header.html' %}
+
+        <div class="dashboard-page-one">
+            <div class="container">
+                
+                <!-- Navigation Tabs -->
+                {% include 'eleve/partial/navBar.html' %}
+
+                <div class="card height-auto">
+                    <div class = "d-flex grandConteneur">
+                        <div  style="width: 40%;">
+                            <div class="search-box" style = "margin-top: 30px;">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="messageSearch" placeholder="Rechercher un étudiant...">
+                            </div>
+                            <div class="student-messages-list">
+                                {% if etudiants %}
+                                    {% for etudt in etudiants %}
+                                        <div class="student-message-card">
+                                            <div class="student-info">
+                                                <span class="message-status status-unread"></span>
+                                                {{ etudt.nom }} {{ etudt.prenom }}
+                                                {% comment %} <span class="message-counter">3</span> {% endcomment %}
+                                            </div>
+                                            <a href = "{% url 'eleve:echangeEleveEleve' etudt.id %}">
+                                                <div class="message-icon"  style = "cursor: pointer;" title = "message">
+                                                    <i class="fas fa-comment"  style = "color: with;" ></i>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="no-messages">
+                                        <i class="fas fa-inbox fa-3x mb-3"></i>
+                                        <p>Aucun élève n'est ami avec vous pour le moment</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    
+                        <div class="chat-container" style="margin-top: 40px; width: 100%; height: 430px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">    
+                            <div class="no-messages">
+                                <i class="fas fa-inbox fa-3x mb-3"></i>
+                                <p>Clique sur message d'un élève pour commencer la discussion.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+    
+        
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var chatBody = document.getElementById('chat-body');
+            chatBody.scrollTop = chatBody.scrollHeight;
+        });
+    </script>
+
+
+    
+     
+    <script>
+        // Search functionality
+        $(document).ready(function() {
+            $("#messageSearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $(".student-message-card").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+    
+</body>
+</html>

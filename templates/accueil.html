@@ -1,0 +1,443 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'accueil/css/bootstrap.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'accueil/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'accueil/css/cssPersonnalise/index.css' %}">
+
+    <style>
+        .testimonial-card{
+            transition: all 0.2s ease-in-out;
+        }
+        .testimonial-card:hover{
+            transform: translateY(-20px);
+            background-color: #3498db;
+        }
+
+        .stat-card p{
+            color: black;
+            font-weight: bold;
+        }
+
+        .nombrePlus{
+            color: #161512ff;
+            font-size: 30px;
+            font-weight: bold;
+
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(44, 95, 168, 0.85), rgba(51, 97, 160, 0.9)), url('{% static 'accueil/images/accueilHero.jpg' %}');
+            background-size: cover;
+            object-fit: cover;
+            {% comment %} background-position: center; {% endcomment %}
+            height: 85vh;
+            display: flex;
+            align-items: center;
+            background-attachment: fixed;
+        }
+
+        
+        .contact-section {
+            background: linear-gradient(rgba(72, 105, 150, 0.85), rgba(67, 96, 138, 0.9)), url('{% static 'accueil/images/contactAccueil.jpg' %}');
+            background-size: cover;
+            background-position: center;
+            padding: 80px 0;
+            background-attachment: fixed; 
+            object-fit : cover;
+        }
+
+
+    </style>
+    
+{% endblock %}
+
+
+
+{% block body %}
+      <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 mx-auto text-center text-white">
+                    <h1 class="display-4 mb-4" style="font-weight: bold;">Bienvenue sur acadPro</h1>
+                    <p class="lead mb-5">La solution complète de gestion scolaire pour les collèges - Simplifiez l'administration, améliorez la communication et optimisez le suivi pédagogique</p>
+                    <div class="d-flex justify-content-center">
+                        <a href="#" class="btn btn-light btn-lg mr-3">Découvrir la plateforme</a>
+                        <a href="#" class="btn btn-outline-light btn-lg">Espace personnel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card bg-white p-5 text-center shadow">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3>Gestion des élèves</h3>
+                        <p>Suivez les parcours scolaires, les résultats et les absences de tous vos élèves dans un environnement centralisé et sécurisé.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card bg-white p-5 text-center shadow">
+                        <div class="feature-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <h3>Suivi pédagogique</h3>
+                        <p>Planifiez les cours, gérez les emplois du temps et suivez l'avancement des programmes avec des outils dédiés aux enseignants.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card bg-white p-5 text-center shadow">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Communication parents</h3>
+                        <p>Facilitez les échanges entre l'établissement et les familles avec des notifications en temps réel et un espace dédié.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="{% static 'accueil/images/presentation.jpg' %}" alt="Collège acadPro" class="img-fluid rounded shadow">
+                </div>
+                <div class="col-md-6 pl-md-5">
+                    <h2 class="section-title">Notre plateforme acadPro</h2>
+                    <p class="lead">Une solution complète dédiée à l'administration et la gestion des collèges.</p>
+                    <p>acadPro a été conçu spécifiquement pour répondre aux besoins des établissements d'enseignement secondaire. Notre plateforme intègre tous les outils nécessaires pour simplifier le quotidien des équipes pédagogiques et administratives.</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i> Gestion centralisée des élèves et des classes</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i> Suivi des notes et des compétences</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i> Emplois du temps dynamiques</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i> Communication parents-établissement</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i> Rapports et statistiques détaillés</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary mt-3">En savoir plus</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-5 bg-primary text-white">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="stat-card">
+                        <div class="stat-number">24</div>
+                        <p>Collèges partenaires</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="stat-card">
+                        <div><span class="stat-number">8500</span><span class="nombrePlus">+</span></div>
+                        <p>Élèves suivis</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="stat-card">
+                        <div><span class="stat-number">98</span><span class="nombrePlus">%</span></div>
+                        <p>Satisfaction utilisateurs</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div><span class="stat-number">5</span><span class="nombrePlus">+</span></div>
+                        <p>Années d'expertise</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-md-8 text-center">
+                    <h2 class="section-title">Notre équipe pédagogique</h2>
+                    <p>Des professionnels dévoués à l'éducation et à la réussite de vos élèves</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-6">
+                    <div class="teacher-card">
+                        <img src="{% static 'accueil/images/fr.jpg' %}" class="img-fluid" alt="Prof de Français">
+                        <div class="p-4">
+                            <h5>Sophie Martin</h5>
+                            <p class="text-muted">Professeur de Français</p>
+                            <p class="small">15 ans d'expérience dans l'enseignement</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="teacher-card">
+                        <img src="{% static 'accueil/images/mathematique.png' %}" class="img-fluid" alt="Prof de Mathématiques">
+                        <div class="p-4">
+                            <h5>Thomas Dubois</h5>
+                            <p class="text-muted">Professeur de Mathématiques</p>
+                            <p class="small">Spécialiste en pédagogie innovante</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="teacher-card">
+                        <img src="{% static 'accueil/images/hg.jpg' %}" class="img-fluid" alt="Prof d'Histoire-Géo">
+                        <div class="p-4">
+                            <h5>Émilie Lambert</h5>
+                            <p class="text-muted">Professeur d'Histoire-Géographie</p>
+                            <p class="small">Coordinatrice du projet pédagogique</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="teacher-card">
+                        <img src="{% static 'accueil/images/ang.jpg' %}" class="img-fluid" alt="Prof de SVT">
+                        <div class="p-4">
+                            <h5>Pierre Moreau</h5>
+                            <p class="text-muted">Professeur de SVT</p>
+                            <p class="small">Responsable du laboratoire scientifique</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-md-8 text-center">
+                    <h2 class="section-title">Nos cursus scolaires</h2>
+                    <p>Des programmes adaptés à chaque niveau du collège</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="course-card">
+                        <div class="p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="mb-0">6ème</h4>
+                                <span class="badge badge-primary">Cycle 3</span>
+                            </div>
+                            <p>Programme d'adaptation au collège avec renforcement des fondamentaux et initiation aux nouvelles disciplines.</p>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success mr-2"></i> Accompagnement personnalisé</li>
+                                <li><i class="fas fa-check text-success mr-2"></i> Enseignements pratiques interdisciplinaires</li>
+                                <li><i class="fas fa-check text-success mr-2"></i> Parcours citoyen</li>
+                            </ul>
+                        </div>
+                        <div class="bg-light p-4 border-top">
+                            <a href="#" class="btn btn-primary">Détails du programme</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="course-card">
+                        <div class="p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="mb-0">4ème</h4>
+                                <span class="badge badge-secondary">Cycle 4</span>
+                            </div>
+                            <p>Approfondissement des connaissances avec orientation progressive vers les choix de parcours.</p>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success mr-2"></i> Langues vivantes renforcées</li>
+                                <li><i class="fas fa-check text-success mr-2"></i> Options technologiques</li>
+                                <li><i class="fas fa-check text-success mr-2"></i> Préparation à l'orientation</li>
+                            </ul>
+                        </div>
+                        <div class="bg-light p-4 border-top">
+                            <a href="#" class="btn btn-secondary">Détails du programme</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="course-card">
+                        <div class="p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="mb-0">3ème</h4>
+                                <span class="badge badge-accent">Cycle 4</span>
+                            </div>
+                            <p>Préparation intensive au Diplôme National du Brevet et orientation vers le lycée.</p>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success mr-2"></i> Stage en entreprise</li>
+                                <li><i class="fas fa-check text-success mr-2"></i> Préparation au DNB</li>
+                                <li><i class="fas fa-check text-success mr-2"></i> Choix d'orientation</li>
+                            </ul>
+                        </div>
+                        <div class="bg-light p-4 border-top">
+                            <a href="#" class="btn btn-accent">Détails du programme</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-md-8 text-center">
+                    <h2 class="section-title">Témoignages</h2>
+                    <p>Ce que disent les utilisateurs d'acadPro</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-4">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" class="rounded-circle mr-3" width="60" alt="Témoin 1">
+                            <div>
+                                <h5 class="mb-0">Marie Dupont</h5>
+                                <p class="text-muted mb-0">Parent d'élève</p>
+                            </div>
+                        </div>
+                        <p class="mb-0">"acadPro a révolutionné la communication avec le collège. Je reçois les informations importantes en temps réel et je peux suivre la scolarité de mon fils facilement."</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-4">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" class="rounded-circle mr-3" width="60" alt="Témoin 2">
+                            <div>
+                                <h5 class="mb-0">Jean Leroy</h5>
+                                <p class="text-muted mb-0">Professeur de physique</p>
+                            </div>
+                        </div>
+                        <p class="mb-0">"La gestion des notes et des compétences est devenue beaucoup plus simple. J'ai gagné un temps précieux dans mon travail administratif grâce à acadPro."</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-4">
+                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" class="rounded-circle mr-3" width="60" alt="Témoin 3">
+                            <div>
+                                <h5 class="mb-0">Sophie Bernard</h5>
+                                <p class="text-muted mb-0">Principale adjointe</p>
+                            </div>
+                        </div>
+                        <p class="mb-0">"Depuis l'implémentation d'acadPro, notre collège a gagné en efficacité. Les données sont centralisées, les communications fluidifiées et la coordination entre enseignants améliorée."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center text-white mb-5">
+                    <h2 class="mb-4">Vous souhaitez en savoir plus sur acadPro ?</h2>
+                    <p class="lead">Contactez-nous pour une démonstration personnalisée de notre plateforme</p>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow-lg">
+                        <div class="card-body p-5">
+                            <form>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <input type="text" class="form-control" placeholder="Votre nom">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <input type="email" class="form-control" placeholder="Votre email">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Votre établissement">
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Votre fonction">
+                                </div>
+                                <div class="form-group">
+                                    <textarea class="form-control" rows="5" placeholder="Votre message"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block btn-lg">Demander une démonstration</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+
+
+
+{% block script %}
+
+    <script src="{% static 'accueil/js/jquery.min.js' %}"></script>
+    <script src="{% static 'accueil/js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            // Flag pour suivre si l'animation a été déclenchée
+            let statsAnimated = false;
+            
+            // Fonction pour animer les compteurs
+            function animateStats() {
+                $('.stat-number').each(function() {
+                    $(this).prop('Counter',0).animate({
+                        Counter: $(this).text()
+                    }, {
+                        duration: 2000,
+                        easing: 'swing',
+                        step: function (now) {
+                            $(this).text(Math.ceil(now));
+                        }
+                    });
+                });
+                statsAnimated = true;
+            }
+
+            // Vérifier la position au chargement
+            checkStatsVisibility();
+            
+            // Vérifier lors du défilement
+            $(window).scroll(function() {
+                checkStatsVisibility();
+            });
+            
+            function checkStatsVisibility() {
+                if (statsAnimated) return;
+                
+                const statsSection = $('.bg-primary'); // Sélecteur de votre section stats
+                const windowHeight = $(window).height();
+                const scrollTop = $(window).scrollTop();
+                const sectionTop = statsSection.offset().top;
+                const sectionHeight = statsSection.outerHeight();
+                
+                // Calculer quand la section est à 80% visible
+                const triggerPoint = sectionTop + (sectionHeight * 0.2);
+                
+                if (scrollTop + windowHeight > triggerPoint) {
+                    animateStats();
+                }
+            }
+        });
+    </script>
+
+{% endblock %}

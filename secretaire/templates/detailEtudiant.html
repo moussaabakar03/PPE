@@ -1,0 +1,417 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AcadPro | élèves Details</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'secretaire/img/favicon.png' %}">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+    <!-- Modernize js -->
+    <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+
+    <style>
+        .container {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow-x: auto; /* permet le scroll horizontal si nécessaire */
+          }
+          
+        .table-wrapper {
+        overflow-x: auto;
+        width: 100%;
+        }
+
+        h2 {
+          font-size: 18px;
+          margin-bottom: 10px;
+          color: #333;
+        }
+    
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 10px;
+        }
+    
+        th, td {
+          text-align: left;
+          padding: 8px;
+        }
+    
+        th {
+          color:rgb(203, 150, 58);
+          font-weight: bold;
+          background: #f9f9f9;
+        }
+    
+        tr:nth-child(even) {
+          background: #f1f1f1;
+        }
+    
+        .action-icons img {
+          height: 24px;
+          margin-right: 10px;
+          cursor: pointer;
+        }
+    
+        .flex-boxes {
+          display: flex;
+          gap: 20px;
+          flex-wrap: wrap;
+        }
+    
+        .box {
+          flex: 1;
+          min-width: 300px;
+        }
+
+        .table-wrapper table tr {
+            height: 70px; /* augmente la hauteur des lignes */
+        }
+        .detailEtudiant{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffa001;
+            width: 50%;
+            margin: 20px auto;
+            border-radius: 10px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+       
+         {% include 'partial/header.html' %}
+
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+           
+            {% include 'partial/aside.html' %}
+
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+
+                <div class="detailEtudiant">
+                    <div>
+                        <p style = "text-align: center; margin-top: 15px;" > DETAILS ELEVE: [<span style = "font-weight: bold;">{{etudiant.nom}}</span>] </p>
+                    </div>
+                    <div> 
+                        <a href ="{% url 'secretaire:echangeMessage' etudiant.id %}">
+                            <div class="message-icon"  style = "cursor: pointer;" title = "message">Ecrire un message 
+                                <i class="fas fa-comment"  style = "color: with;" ></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Elève</h3>
+                    <ul>
+                        <li> <a href="{% url 'secretaire:all-student' %}">Elèves *</a> </li>
+                        <li> <a href ="{% url 'secretaire:students-detail' etudiant.matricule %}" ><i class="fas fa-id-card"></i>  Génerer la carte scolaire de l'étudiant</a></li>
+                        <li> <a href ="{% url 'secretaire:modifier_student' etudiant.matricule %}" ><i class='fas fa-edit'></i>  Editer les infos de l'élève</a></li>
+                        <li> <a href ="{% url 'secretaire:presenceEtudiant' etudiant.matricule %}" ><i class="fas fa-check-circle text-success"></i>  Ma présence</a></li>
+                        {% if dernierInscription is not None%}
+                            <li> <a href ="{% url 'secretaire:generationBilletin' etudiant.matricule dernierInscription.salleClasse.niveau.classe dernierInscription.anneeAcademique.id %}" >generationBilletin</a></li>
+                        {% else %}
+                            <li> <a href ="" onclick = "alert('Aucune inscription trouvée pour cet étudiant');">generationBilletin</a></li>
+                        {% endif %}
+                        {% comment %} <li> <a href ="" >generationBilletin</a></li> {% endcomment %}
+                    </ul>
+                </div>
+
+                <div class="card height-auto">
+                    <div class="container">
+                        <h2>IDENTIFICATION DE L'APPRENANT</h2>
+                        <p><small>Information personnelle</small></p>
+                        <div class="table-wrapper" style="max-height: 500px; overflow-y: auto;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                    <th>MAT</th>
+                                    <th>Photo</th>
+                                    <th>Nom</th>
+                                    <th>Prénom</th>
+                                    <th>Parent</th>
+                                    {% comment %} <th>Classe</th> {% endcomment %}
+                                    {% comment %} <th>Groupe</th> {% endcomment %}
+                                    <th>Date_naissance</th>
+                                    <th>Lieu_naissance</th>
+                                    <th>Adresse</th>
+                                    <th>Sexe</th>
+                                    <th>Nationalité</th>
+                                    <th>Mobile</th>
+                                    <th>Email</th>
+                                    <th>Password</th>
+                                    <th>Date_enregistrement</th>
+                                    <th>Groupe_sanguin</th>
+                                    <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style = "color: red; font-weight: bold;">{{etudiant.matricule}}</td>
+                                        <td>
+                                            {% if etudiant.photo %}
+                                                <a href ="{{etudiant.photo.url}}" > <img src="{{etudiant.photo.url}}" alt="Photo" style="width: 160px; height: 50px; border-radius: 7px; object-fit: cover;"></a> 
+                                            {% else %}
+                                                <p class="text-center"><i class="fa fa-user"></i></p> 
+                                            {% endif %}
+                                        </td>
+                                        <td>{{etudiant.nom}}</td>
+                                        <td>{{etudiant.prenom}}</td>
+                                        <td>{{etudiant.parent}}</td>
+                                        {% comment %} <td>{{etudiant.salleDeClasse_id.niveau.classe}}</td> {% endcomment %}
+                                        {% comment %} <td>{{etudiant.salleDeClasse_id.nom}}</td> {% endcomment %}
+                                        <td>{{etudiant.date_naissance|date:"d/m/Y" }}</td>
+                                        <td>ntsoudjini</td>
+                                        <td>ntsoudjini</td>
+                                        <td>{{etudiant.genre}}</td>
+                                        <td>{{etudiant.nationnalite}}</td>
+                                        <td>{{etudiant.telephone}}</td>
+                                        <td>{{etudiant.mail}}</td>
+                                        <td>{{etudiant.password}}</td>
+                                        <td>{{etudiant.date_enregistrement|date:"d/m/Y H:i" }}</td>
+                                        <td>{{etudiant.groupe_sanguin}}</td>
+                                        <td class="action-icons">
+                                            <a href="" onclick= "return confirm('voulez-vous vraiment supprimer ce test?')"  class='btn btn-danger btn-sm'><i class='fas fa-trash' style='font-size: 18px'></i></a>
+                                        </td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-boxes">
+                        <div class="container box">
+                            <h2>RESPONSABLE FINANCIÈRE</h2>
+                            <p><small>Information personnelle</small></p>
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Nom</th>
+                                            <th>Prénom</th>
+                                            <th>Photo</th>
+                                            <th>Profession</th>
+                                            <th>Lien_parenté</th>
+                                            <th>Mobile</th>
+                                            <th>Email</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{parent.nom}}</td>
+                                            <td>{{parent.prenom}}</td>
+                                            <td>
+                                                {% if parent.photo %}
+                                                    <img src="{{parent.photo.url}}" alt="Photo" style="width: 160px; height: 50px; border-radius: 7px; object-fit: cover;">
+                                                {% else %}
+                                                    <p class="text-center"><i class="fa fa-user"></i></p> 
+                                                {% endif %}
+                                            </td>
+                                            <td>{{parent.profession}}</td>
+                                            <td>{{etudiant.lien_de_parente}}</td>
+                                            <td>{{parent.telephone}}</td>
+                                            <td>{{parent.email}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="container box">
+                            <h2>INSCRIPTION</h2>
+                            <p><small>Détaille inscription</small></p>
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Année_Scolaire</th>
+                                            <th>Classe</th>
+                                            <th>Salle</th>
+                                            <th>Coût_Attendu.</th>
+                                            <th>Montant_Versé</th>
+                                            <th>Date_Inscription</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for inscription in inscriptions %}
+                                        <tr>
+                                            <td>{{inscription.anneeAcademique.debutAnnee|date:"Y"}}- {{ inscription.anneeAcademique.fintAnnee|date:"Y"}}</td>
+                                            <td>{{inscription.salleClasse.niveau.classe}}</td>
+                                            <td>{{inscription.salleClasse.nom}}</td>
+                                            {% with cout=inscription.salleClasse.niveau.couts.first %}
+                                                {% if cout %}
+                                                    <td>{{ cout.coutInscription }} F CFA</td>
+                                                {% else %}
+                                                    <td>Non défini</td>
+                                                {% endif %}
+                                            {% endwith %}   
+                                            <td>{{inscription.montantVerse}} FCFA</td>
+                                            <td>{{inscription.dateEnregistrement|date:"d/m/Y" }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>     
+                    </div>
+                    <div class="container">
+                        <div>
+                            <h2  style= "text-align: center;">NOTES DE L'ETUDIANT: {{etudiant.nom}} {{etudiant.prenom}}</h2>
+                            <form class="mg-b-20" method="POST">
+                                {% csrf_token %}
+                                <div class="row gutters-8">
+                                    <div class="col-3-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                        <input type="text" name="matiere" placeholder="Filtre par matière ..." class="form-control">
+                                    </div>
+                                    <div class="col-4-xxxl col-xl-4 col-lg-3 col-12 form-group">
+                                        <select class="form-control" name="trimestre">
+                                            <option value="">Filtre par trimestre ...</option>
+                                            <option value="1er trimestre">1er trimestre</option>
+                                            <option value="2e trimestre">2e trimestre</option>
+                                            <option value="3e trimestre">3e trimestre</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                        <select class="form-control" name="typeEvaluation">
+                                            <option value=""> Filtre par type evaluation ... </option>
+                                            <option value="Devoir">Devoir</option>
+                                            <option value="Interrogation">Interrogation</option>
+                                            <option value="Composition">Composition</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-1-xxxl col-xl-2 col-lg-3 col-12 form-group">
+                                        <button type="submit" class="fw-btn-fill btn-gradient-yellow">FILTRER</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="table-wrapper" style="max-height: 500px; overflow-y: auto;">
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Matière</th>
+                                            <th>Note</th>
+                                            <th>Pourcentage</th>
+                                            <th>Type.E</th>
+                                            <th>Trimestre</th>
+                                            <th>Annee Scolaire</th>
+                                            <th>Enseignant</th>
+                                            <th>Date evaluation</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for evaluation in evaluations%}
+                                            <tr>
+                                                <td>{{ evaluation.cours.matiere.nom }}</td>
+                                                {% if evaluation.note > 10  %}
+                                                    <td><span style= "font-weight: bold; color: green;">{{ evaluation.note }}</span></td>
+                                                {% elif evaluation.note == 10  %}
+                                                    <td><span style= "font-weight: bold; color: #ffa001;">{{ evaluation.note }}</span></td>
+                                                {% else %}
+                                                    <td><span style= "font-weight: bold; color: red;">{{ evaluation.note }}</span></td>
+                                                {% endif %}
+                                                <td>{{ evaluation.pourcentage }}%</td>
+                                                <td>{{ evaluation.typeEvaluation }}</td>
+                                                <td>{{ evaluation.trimestre }}</td>
+                                                <td>{{ evaluation.cours.anneeScolaire.debutAnnee|date:"Y" }}- {{ evaluation.cours.anneeScolaire.fintAnnee|date:"Y" }}</td>
+                                                <td>{{ evaluation.cours.enseignant.nom }} {{ evaluation.cours.enseignant.prenom }}</td>
+                                                <td>{{ evaluation.dateEvaluation|date:"d/m/Y" }}</td>
+                                                <td class="action-icons">
+                                                    <a href="{% url 'secretaire:supprimer_evaluation' evaluation.id %}" onclick= "return confirm('voulez-vous vraiment supprimer ce test?')"  class='btn btn-danger btn-sm'><i class='fas fa-trash' style='font-size: 18px'></i></a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        {% for message in messages %}
+                                            <div class="alert alert-warning alert-dismissible fade show" role="alert" style = "text-align: center;">
+                                                <strong >{{ message }} </strong> 
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style = "cursor: pointer;">❌</button>
+                                            </div>
+                                        {% endfor %}
+                                           
+                                        <tr>
+                                            <td colspan = "5"><strong>Moyenne générale </strong></td>
+                                            {% if moyenne >= 10 %}
+                                                <td colspan = "3" style = "color: green; text-align: center; font-weight: bold;">
+                                                    {{ moyenne|floatformat:2 }} / 20
+                                                </td>
+                                            {% elif moyenne == 0.0 %}
+                                                <td colspan = "3" style = "text-align: center; font-weight: bold; font-size: 10px;">
+                                                    Filtrer pour voir la moyenne (les champs haut.)
+                                                </td>
+                                            {% else %}
+                                                <td colspan = "3" style = "color: red; text-align: center; font-weight: bold;">
+                                                    {{ moyenne|floatformat:2 }} / 20
+                                                </td>
+                                            {% endif %}
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- etudiant Details Area End Here -->
+                {% include 'partial/copyright.html' %}
+
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+   <!-- jQuery -->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>

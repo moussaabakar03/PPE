@@ -1,0 +1,214 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AcadPro | cv enseignant</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'secretaire/img/favicon.png' %}">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+    <!-- Modernize js -->
+    <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+
+    <style>
+       
+        .container {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow-x: auto; /* permet le scroll horizontal si nécessaire */
+          }
+          
+        .table-wrapper {
+        overflow-x: auto;
+        width: 100%;
+        }
+
+        h2 {
+          font-size: 18px;
+          margin-bottom: 10px;
+          color: #333;
+        }
+       
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 10px;
+        }
+    
+        th, td {
+          text-align: left;
+          padding: 8px;
+        }
+    
+        th {
+          color:rgb(203, 150, 58);
+          font-weight: bold;
+          background: #f9f9f9;
+        }
+    
+        tr:nth-child(even) {
+          background: #f1f1f1;
+        }
+    
+        .action-icons img {
+          height: 24px;
+          margin-right: 10px;
+          cursor: pointer;
+        }
+    
+        .flex-boxes {
+          display: flex;
+          gap: 20px;
+          flex-wrap: wrap;
+        }
+    
+        .box {
+          flex: 1;
+          min-width: 300px;
+        }
+
+        .table-wrapper table tr {
+            height: 70px; /* augmente la hauteur des lignes */
+        }
+
+        .detailEtudiant{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffa001;
+          
+            width: 50%;
+            margin: 20px auto;
+            border-radius: 10px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+       
+         {% include 'partial/header.html' %}
+
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+           
+            {% include 'partial/aside.html' %}
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Enseignant</h3>
+                    <div style ="display: flex; justify-content: space-between;">
+                        <ul>
+                            <li>
+                                <a href="{% url 'secretaire:all-teacher' %}">Enseigant *</a>
+                            </li>
+                            <li><a href ="{% url 'secretaire:detailEnseignant' enseignant.matricule%}"> Retour<a></li>
+                            <li>CV enseignant</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- etudiant Details Area Start Here -->
+                <div class="card height-auto">
+                  
+                    <div class="flex-boxes">
+                        <div class="container box">
+                            <div class="row">
+                                <h2>CV de l'enseignant: [<span style ="color: #ffae01;">{{enseignant.nom}} {{enseignant.prenom}}</span>] </h2>
+
+                                {% for message in messages %}
+                                    <div class="alert alert-warning alert-dismissible fade show" role="alert" style = "text-align: center;">
+                                        <strong >{{ message }} </strong> 
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style = "cursor: pointer;">❌</button>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Date ajouter</th>
+                                            <th>CV</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if cvEnseignants %}
+                                            {% for cvEnseignant in cvEnseignants%}
+                                                <tr>
+                                                    <td>{{ cvEnseignant.dateHeure|date:"Y-m-d H:m:s" }}</td>
+                                                    <td><a href ="{{ cvEnseignant.cv.url }}" alt="cv enseignant" style ="color: #ffae01;">Voir</a></td>
+                                                    <td>
+                                                        <a href="{% url 'secretaire:suppCvEnseignant' cvEnseignant.id %}" onclick="return confirm('Voulez-vous vraiment supprimer ce CV ?')" class="btn btn-danger btn-sm">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <td colspan="3"> Il n'y a pas de cv pour cet enseignant</td>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- etudiant Details Area End Here -->
+                {% include 'partial/copyright.html' %}
+
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+   <!-- jQuery -->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+
+</body>
+
+</html>

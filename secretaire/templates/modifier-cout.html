@@ -1,0 +1,133 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+
+   {% include 'partial/head.html' %}
+
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+        
+         {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+            {% include 'partial/aside.html' %}
+            <!-- Sidebar Area End Here -->
+        
+            <div class="dashboard-content-one">
+                <!-- Breadcrumbs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Frais</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'secretaire:all_cout' %}">Tous les Frais</a>
+                        </li>
+                        <li>Modifier un Frais</li>
+                    </ul>
+                </div>
+                <!-- Breadcrumbs Area End Here -->
+        
+                <!-- Edit Cout Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Modifier le Frais</h3>
+                            </div>
+                            <div class="dropdown">
+                                <a class="dropdown-toggle" href="#" role="button" 
+                                   data-toggle="dropdown" aria-expanded="false">...</a>
+        
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#"><i class="fas fa-times text-orange-red"></i>Fermer</a>
+                                    <a class="dropdown-item" href="#"><i class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
+                                    <a class="dropdown-item" href="#"><i class="fas fa-redo-alt text-orange-peel"></i>Rafraîchir</a>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <form class="new-added-form" method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label>Classe *</label>
+                                    <select name="classe" class="select2 form-control" required>
+                                        <option value="">Sélectionnez une classe</option>
+                                        {% for classe in classe_list %}
+                                            <option value="{{ classe.id }}" {% if cout.classe.id == classe.id %}selected{% endif %}>
+                                                {{ classe.classe }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+        
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label>Frais d'inscription *</label>
+                                    <input type="number" step="0.01" name="coutInscription" class="form-control" value="{{ cout.coutInscription }}" required>
+                                </div>
+        
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label>Frais de scolarité *</label>
+                                    <input type="number" step="0.01" name="coutScolarite" class="form-control" value="{{ cout.coutScolarite }}" required>
+                                </div>
+        
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label>Frais d’étude de dossier *</label>
+                                    <input type="number" step="0.01" name="fraisEtudeDossier" class="form-control" value="{{ cout.fraisEtudeDossier }}" required>
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label>Frais Associés *</label>
+                                    <input type="number" name="fraisAssocie" class="form-control" value = "{{ cout.fraisAssocie }}" required>
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label>Année scolaire *</label>
+                                    <select name="anneeScolaire" class="select2 form-control" required>
+                                        <option value="">Sélectionnez l'année scolaire *</option>
+                                        {% for anneeScolaire in anneeScolaires %}
+                                            <option value={{anneeScolaire.id}} {% if cours.anneeScolaire.id == anneeScolaire.id %}selected{%endif%}>{{ anneeScolaire.debutAnnee|date:"Y" }}- {{ anneeScolaire.fintAnnee|date:"Y" }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-12 form-group mg-t-8">
+                                    <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Mettre à jour</button>
+                                    <a href="{% url 'secretaire:all_cout' %}" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Annuler</a>
+                                </div>
+                            </div>
+                        </form>
+        
+                    </div>
+                </div>
+                <!-- Edit Cout Area End Here -->
+        
+                {% include 'partial/copyright.html' %}
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Data Table Js -->
+    <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+</body>
+
+</html>

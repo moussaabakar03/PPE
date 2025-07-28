@@ -1,0 +1,287 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AcadPro | Details élèves</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'secretaire/img/favicon.png' %}">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+    <!-- Modernize js -->
+    <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+
+    <Link rel="stylesheet" href="{% static 'secretaire/css/styleCarteEleve.css' %}">
+ 
+    <style>        
+        @media print {
+            @page {
+                size: 85mm 55mm; /* Format carte scolaire */
+                margin: 0;        /* Pas de marge */
+            }
+
+            body * {
+                visibility: hidden !important;
+                box-shadow: none !important;
+            }
+
+            .print-section, .print-section * {
+                visibility: visible !important;
+            }
+
+            .print-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 85mm;
+                height: 55mm;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 0 auto;
+                page-break-after: avoid;
+            }
+
+            #anneeSelect, #downloadBtn, #printBtn {
+                display: none !important;
+            }
+        }
+    </style>        
+
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+       
+         {% include 'partial/header.html' %}
+
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+           
+            {% include 'partial/aside.html' %}
+
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div Class = "breadcrumbs-area" style= "display: flex; justify-content: space-between;">
+                    <div>
+                        <h3>Elèves</h3>
+                        <ul>
+                            <li>
+                                <a href="{% url 'secretaire:all-student' %}">Elèves *</a>
+                            </li>
+                             <!-- <li>
+                                <a href="{% url 'secretaire:all-student' %}">Retour</a>
+                            </li> -->
+                            <li> <a href ="{% url 'secretaire:detailEtudiant' etudiant.matricule parent.id %}" >Retour(<i class="fas fa-info-circle"></i> Mes Infos)</a></li>
+                            <li>Carte scolaire ({{etudiant.nom}} {{etudiant.prenom}})</li>
+                        </ul>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-12 form-group" style = "margin-top: 30px;">
+                        <select name="anneeScolaire" class="select2 form-control" id="anneeSelect" required>
+                            <option value=""  style= "width: 600px;">-- Choisir une année scolaire --</option>
+                            {% comment %} {% if annees %} {% endcomment %}
+                            {% for annee in annees %}
+                                {% for inscrit in inscrits %}
+                                    {% if inscrit.anneeAcademique.id == annee.id %}
+                                        <option value="{{ annee.id }}" data-classe="{{ inscrit.salleClasse.niveau.classe }}">
+                                            {{ annee.debutAnnee|date:"Y" }} - {{ annee.fintAnnee|date:"Y" }}
+                                        </option>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                            {% comment %} {% else %}
+                                <option value=""  style= "width: 600px;"> Aucune inscription trouvé pour cet élève </option>
+                            {% endif %} {% endcomment %}
+                        </select>
+                    </div>
+                    <div class="">
+                        <ul style="display: flex; gap: 15px; margin-top: 35px;">
+                            <li><a href="{% url 'secretaire:modifier_student' etudiant.matricule %}"><i class="far fa-edit" style="color: #ff9d01;"></i></a></li>
+                            <button id="printBtn" type="button"><i class="fas fa-print" style="color: #ff9d01;"></i></button>
+                            <button id="downloadBtn" type="button"><i class="fas fa-download" style="color: #ff9d01;"></i></button>
+                        </ul>
+                    </div>
+                </div>
+               
+                <div class =".body" id="content">
+                    <div class="card-container print-section" id="content">
+                        <div class="card">
+                            <div class="header">
+                                <div class="togo-map">
+                                    <img src = "{% static 'secretaire/img/togo.png' %}" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/>
+                                </div>
+                                <div class="header-center">
+                                    <div class="subtitle">REPUBLIQUE DU TOGO</div>
+                                    <div class="subtitle">Paix - Travail -Patrie</div>
+                                    <div class="title">SCOLAIRE ACAD PRO</div>
+                                    <div class="id-label">CARTE D'IDENTITÉ SCOLAIRE</div>
+                                </div>
+                                <div class="education-emblem">
+                                    <img src = "{% static 'secretaire/img/logo.png' %}" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/>
+                                </div>
+                            </div>
+                            
+                            <div class="content">
+                                <div class="photo">
+                                    <div class="face-placeholder">
+                                        
+                                        {% if etudiant.photo %}
+                                            <img src = "{{etudiant.photo.url}}" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; border-radius: 10%;"/>
+                                        {% else %}
+                                            <p class="text-center"><i class="fa fa-user"></i></p> 
+                                        {% endif %}
+                                        
+                                    </div>
+                                </div>
+                                
+                                <div class="details">
+                                    <div class="school-year">ANNÉE SCOLAIRE : 2024 - 2025</div>
+                                    
+                                    <div class="info-row">
+                                        <span class="info-label">Nom :</span>
+                                        <span class="info-value">{{etudiant.nom}}</span>
+                                    </div>
+                                    
+                                    <div class="info-row">
+                                        <span class="info-label">Prénom :</span>
+                                        <span class="info-value">{{etudiant.prenom}}</span>
+                                    </div>
+                                    
+                                    <div class="info-row">
+                                        <span class="info-label">Née le :</span>
+                                        <span class="info-value">{{etudiant.date_naissance|date:"d/m/Y"}}</span>
+                                        <span style="margin-left: 20px;">A</span>
+                                        <span class="info-value" style="margin-left: 10px;">LOME</span>
+                                    </div>
+                                    
+                                    <div class="info-row">
+                                        <span class="info-label">Sexe :</span>
+                                        <span class="info-value">{{etudiant.genre}}</span>
+                                        <span style="margin-left: 70px;">Classe: <span id = "classe"> </span></span>
+                                        {% comment %} {% for inscrit in inscrits%}
+                                            <span class="info-value" style="margin-left: 10px;">{{inscrit.salleClasse.niveau.classe}}</span>
+                                        {% endfor %} {% endcomment %}
+                                    </div>
+                                    
+                                    <div class="info-row">
+                                        <span class="info-label">Contact :</span>
+                                        <span class="info-value">{{etudiant.telephone}}</span>
+                                    </div>
+                                    
+                                    <div class="qr-code">
+                                        <!-- Simplified QR code representation -->
+                                        {% comment %} <img src = "../static/secretaire/img/qr.png" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/> {% endcomment %}
+                                        {% if etudiant.cheminCodeQr %}
+                                            <img src="{{ etudiant.cheminCodeQr.url }}" alt="QR Code" style = "width: 170px; padding: 5px; object-fit: cover; ">
+                                        {% else %}
+                                            <img src = "" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="footer">
+                                <div class="mat-number">MAT : <span style = "color: #ff9d01;">{{etudiant.matricule}}</span></div>
+                                <div>IMPRIME PAR / ACADPRO : (+228) 94.84.69.12 / 72.51.78.85 Tout droit réservé</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <!-- Student Details Area End Here -->
+                    {% include 'partial/copyright.html' %}
+
+                </div>
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    
+
+    <!-- ... reste du code ... -->
+
+    <!-- jQuery -->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+    <!-- Ajout de jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#anneeSelect').on('change', function() {
+                var classe = $('option:selected', this).data('classe');
+                $('#classe').text(classe ? classe : 'Aucune classe');
+            });
+        });
+
+         // Gestion de l'impression
+        document.getElementById('printBtn').addEventListener('click', function() {
+            window.print(); // Grâce au CSS, seule la carte formatée s'imprimera
+        });
+
+
+        document.getElementById('downloadBtn').addEventListener('click', function () {
+            const { jsPDF } = window.jspdf;
+
+            html2canvas(document.getElementById('content'), {
+                scale: 3  // améliore la qualité
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: [85, 55] // Format carte
+                });
+
+                const pdfWidth = 85;
+                const pdfHeight = 55;
+
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save('carte-scolaire.pdf');
+            });
+        });
+
+
+    </script>
+    
+</body>
+
+</html>

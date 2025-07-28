@@ -1,0 +1,105 @@
+<style>
+    .fade {
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        }
+    .fade.show {
+        opacity: 1;
+        }
+</style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<!-- Footer -->
+<footer class="footer pt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-5 mb-lg-0">
+                <h4 class="text-white mb-4">
+                    <i class="fas fa-graduation-cap mr-2"></i>acadPro
+                </h4>
+                <p>La solution complète de gestion scolaire pour les collèges. Simplifiez l'administration, améliorez la communication et optimisez le suivi pédagogique.</p>
+                <div class="social-links mt-4">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-5 mb-md-0">
+                <h5 class="text-white mb-4">Liens rapides</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#">Accueil</a></li>
+                    <li class="mb-2"><a href="#">Fonctionnalités</a></li>
+                    <li class="mb-2"><a href="#">Tarifs</a></li>
+                    <li class="mb-2"><a href="#">Témoignages</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-5 mb-md-0">
+                <h5 class="text-white mb-4">Ressources</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#">Blog</a></li>
+                    <li class="mb-2"><a href="#">Documentation</a></li>
+                    <li class="mb-2"><a href="#">FAQ</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-4">
+                <h5 class="text-white mb-4">Newsletter</h5>
+                <p>Inscrivez-vous pour recevoir nos dernières actualités et offres spéciales.</p>
+                <form class="newsletter-form">
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Votre email">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">S'inscrire</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <hr class="my-5 border-light">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-left">
+                <p class="mb-md-0">&copy; 2023 acadPro. Tous droits réservés.</p>
+            </div>
+            <div class="col-md-6 text-center text-md-right">
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item"><a href="#">Mentions légales</a></li>
+                    <li class="list-inline-item"><a href="#">Politique de confidentialité</a></li>
+                    <li class="list-inline-item"><a href="#">CGU</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<button id="scrollTopBtn" class="btn btn-primary rounded-circle shadow position-fixed fade" 
+        style="bottom: 30px; right: 30px; display: none;" title="Retour en haut">
+    <i class="bi bi-arrow-up"></i>
+</button>
+
+
+
+
+
+<script>
+    const scrollBtn = document.getElementById("scrollTopBtn");
+
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 200) {
+        scrollBtn.style.display = "block";
+        setTimeout(() => scrollBtn.classList.add("show"), 10); // Ajoute la classe après affichage
+        } else {
+        scrollBtn.classList.remove("show");
+        setTimeout(() => scrollBtn.style.display = "none", 300); // Cache après l’animation
+        }
+    });
+
+    scrollBtn.addEventListener("click", () => {
+        window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+        });
+    });
+</script>

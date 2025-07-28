@@ -1,0 +1,181 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AcadPro | modifier cours</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Select 2 CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/select2.min.css' %}">
+    <!-- Date Picker CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/datepicker.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+    <!-- Modernize js -->
+    <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+        
+         {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+            {% include 'partial/aside.html' %}
+            <!-- Sidebar Area End Here -->
+        
+            <div class="dashboard-content-one">
+                <!-- Breadcrumbs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Cours</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'secretaire:all-cours' %}">Tous les Cours</a>
+                        </li>
+                        <li>Modifier un Cours</li>
+                    </ul>
+                </div>
+                <!-- Breadcrumbs Area End Here -->
+        
+                <!-- Edit Cours Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Modifier le Cours</h3>
+                            </div>
+                            <div class="dropdown">
+                                <a class="dropdown-toggle" href="#" role="button" 
+                                   data-toggle="dropdown" aria-expanded="false">...</a>
+        
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#"><i class="fas fa-times text-orange-red"></i>Fermer</a>
+                                    <a class="dropdown-item" href="#"><i class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
+                                    <a class="dropdown-item" href="#"><i class="fas fa-redo-alt text-orange-peel"></i>Rafraîchir</a>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <form class="new-added-form" method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label>Matière *</label>
+                                    <select name="matiere" class="select2 form-control" required>
+                                        <option value="">Sélectionnez une matière *</option>
+                                        {% for matiere in matieres %}
+                                            <option value="{{ matiere.nom }}" {% if cours.matiere.nom == matiere.nom %}selected{% endif %}>
+                                                {{ matiere.nom }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+        
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label>Enseignant *</label>
+                                    <select name="enseignant" class="select2 form-control" required>
+                                        <option value="">Sélectionnez un enseignant *</option>
+                                        {% for enseignant in enseignants %}
+                                            <option value="{{ enseignant.id }}" {% if cours.enseignant.id == enseignant.id %}selected{% endif %}>
+                                                {{ enseignant.nom }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+        
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label>Classe *</label>
+                                    <select name="classe" class="select2 form-control" required>
+                                        <option value="">Sélectionnez une classe *</option>
+                                        {% for classe in classes %}
+                                            <option value="{{ classe.id }}" {% if cours.classe.id == classe.id %}selected{% endif %}>
+                                                {{ classe.classe }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label>Coefficient *</label>
+                                    <input type="number" value = "{{ cours.coefficient }}" name="coefficient" class="form-control" required min="0">
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label>État du cours *</label>
+                                    <select name="etat" class="form-control" required>
+                                        <option value="">Sélectionnez un état</option>
+                                        <option value="En cours" {% if cours.etat == "En cours" %}selected{% endif %}>En cours</option>
+                                        <option value="Effectué" {% if cours.etat == "Effectué" %}selected{% endif %}>Effectué</option>
+                                        <option value="Planifié" {% if cours.etat == "Planifié" %}selected{% endif %}>Planifié</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label>Année scolaire *</label>
+                                    <select name="anneeScolaire" class="select2 form-control" required>
+                                        <option value="">Sélectionnez l'année scolaire *</option>
+                                        {% for anneeScolaire in anneeScolaires %}
+                                            <option value={{anneeScolaire.id}} {% if cours.anneeScolaire.id == anneeScolaire.id %}selected{%endif%}>{{ anneeScolaire.debutAnnee|date:"Y" }}- {{ anneeScolaire.fintAnnee|date:"Y" }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+        
+                                <div class="col-12 form-group mg-t-8">
+                                    <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Mettre à jour</button>
+                                    <a href="{% url 'secretaire:all-cours' %}" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Annuler</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Edit Cours Area End Here -->
+        
+                {% include 'partial/copyright.html' %}
+            </div>
+        </div>
+        
+        <!-- Page Area End Here -->
+    </div>
+    <!-- jquery-->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Select 2 Js -->
+    <script src="{% static 'secretaire/js/select2.min.js' %}"></script>
+    <!-- Date Picker Js -->
+    <script src="{% static 'secretaire/js/datepicker.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+</body>
+
+</html>

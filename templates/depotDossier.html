@@ -1,0 +1,478 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+
+    <link rel="stylesheet" href="{% static 'accueil/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'accueil/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'accueil/css/cssPersonnalise/depotDossier.css' %}">
+    <link rel="stylesheet" href="{% static 'accueil/css/cssPersonnalise/depotDossier2.css' %}">
+
+    <style>
+        .hero-section {
+            background: linear-gradient(rgba(44, 95, 168, 0.85), rgba(44, 95, 168, 0.9)), url('{% static 'accueil/images/depotDossierHero.jpg' %}');
+            background-size: cover;
+            background-position: center;
+            height: 40vh;
+            display: flex;
+            align-items: center;
+        }
+    </style>
+{% endblock %}
+
+
+
+{% block body %}
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 mx-auto text-center text-white">
+                    <h1 class="display-4 mb-4">Dépôt de Dossier</h1>
+                    <p class="lead">Soumettez votre dossier d'inscription au collège acadPro</p>
+                    <a href="#formulaireDepot" class="btn btn-light btn-lg mt-3 px-4" style="margin-bottom: 40px;">Démarrer l'inscription</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="admission-container">
+                <div class="admission-header">
+                    <div class="admission-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h2 class="mb-3">Processus d'Admission au Collège acadPro</h2>
+                    <p class="text-muted">Découvrez notre procédure d'inscription et inscrivez votre enfant pour l'année scolaire prochaine</p>
+                </div>
+                
+                <!-- Processus d'admission -->
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <h3 class="mb-4 text-center">Notre Processus en 4 Étapes</h3>
+                        
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-badge">1</div>
+                                <div class="timeline-content">
+                                    <h4>Pré-inscription en ligne</h4>
+                                    <p>Remplissez notre formulaire de pré-inscription en ligne. Vous recevrez une confirmation par email avec les prochaines étapes.</p>
+                                    <p class="text-muted mb-0">Durée estimée: 15 minutes</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-badge">2</div>
+                                <div class="timeline-content">
+                                    <h4>Entretien pédagogique</h4>
+                                    <p>Nous vous contacterons pour planifier un entretien avec notre équipe pédagogique et une visite de l'établissement.</p>
+                                    <p class="text-muted mb-0">Entretien de 30-45 minutes</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-badge">3</div>
+                                <div class="timeline-content">
+                                    <h4>Dépôt des documents</h4>
+                                    <p>Fournissez les documents nécessaires via notre plateforme sécurisée ou directement au secrétariat.</p>
+                                    <p class="text-muted mb-0">Liste des documents ci-dessous</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-badge">4</div>
+                                <div class="timeline-content">
+                                    <h4>Confirmation d'admission</h4>
+                                    <p>Après examen de votre dossier, vous recevrez notre décision d'admission par courrier et email sous 10 jours.</p>
+                                    <p class="text-muted mb-0">Délai maximum: 10 jours</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dossier-container">
+                    <div class="dossier-header">
+                        <div class="dossier-icon">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <h2 class="mb-3">Formulaire de dépôt de dossier</h2>
+                        <p class="text-muted">Remplissez ce formulaire pour soumettre votre dossier d'inscription. Tous les champs marqués d'un * sont obligatoires.</p>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-lg-8 mx-auto" id="formulaireDepot">
+                            <!-- Étapes du processus -->
+                            <div class="row mb-5">
+                                <div class="col-md-4">
+                                    <div class="step-card">
+                                        <div class="step-number">1</div>
+                                        <h5>Renseignements personnels</h5>
+                                        <p class="text-muted mb-0">Fournissez vos informations de base</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="step-card">
+                                        <div class="step-number">2</div>
+                                        <h5>Téléchargement des documents</h5>
+                                        <p class="text-muted mb-0">Joignez les fichiers nécessaires</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="step-card">
+                                        <div class="step-number">3</div>
+                                        <h5>Soumission du dossier</h5>
+                                        <p class="text-muted mb-0">Envoyez votre dossier complet</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Formulaire de dépôt -->
+                            <form method="post" enctype="multipart/form-data" class= "formulaire" style="border: 1px solid #ddd; padding: 20px; border-radius: 10px;">
+                                {% csrf_token %}
+                                <div class="row gy-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nom *</label>
+                                        <input type="text" name="nom" class="form-control" placeholder="Entrez votre nom" required="">
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">Prénom *</label>
+                                        <input type="text" name="prenom" class="form-control" placeholder="Entrez votre prénom" required="">
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email *</label>
+                                        <input type="email" class="form-control" name="email" placeholder="Entrez votre mail" required="">
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">Téléphone *</label>
+                                        <input type="text" class="form-control" name="numero_telephone" placeholder="Entrez votre numéro de téléphone" required="">
+                                    </div>
+                                    
+                                    <div class="col-md-12">
+                                        <label class="form-label">Niveau scolaire *</label>
+                                        <select name="niveau" class="form-select" required="">
+                                            <option value="">Choisir votre niveau</option>
+                                            <option value="6ème">6ème</option>
+                                            <option value="5ème">5ème</option>
+                                            <option value="4ème">4ème</option>
+                                            <option value="3ème">3ème</option>
+                                            <option value="autres">Autres</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-md-12">
+                                        <label class="form-label">Documents requis *</label>
+                                        
+                                        <div class="file-upload-area" id="dropArea">
+                                            <div class="file-upload-icon">
+                                                <i class="fas fa-cloud-upload-alt"></i>
+                                            </div>
+                                            <h5>Glissez-déposez vos fichiers ici</h5>
+                                            <p class="text-muted">ou <span class="text-primary">cliquez pour parcourir</span></p>
+                                            <p class="small text-muted">Formats acceptés: PDF, JPG, PNG (max 5MB par fichier)</p>
+                                            <input type="file" class="d-none" id="fileInput" title="Vos dossiers" name="cv" required="">
+                                        </div>
+                                        
+                                        <div class="file-preview" id="filePreview">
+                                            <p><i class="fas fa-file me-2"></i> <span id="fileName">Aucun fichier sélectionné</span></p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-12">
+                                        <label class="form-label">Informations complémentaires</label>
+                                        <textarea class="form-control" name="message" rows="4" placeholder="Message (Facultatif)"></textarea>
+                                    </div>
+                                    
+                                    <div class="col-md-12">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="consent" required>
+                                            <label class="form-check-label" for="consent">
+                                                J'autorise le collège acadPro à utiliser mes informations pour traiter mon dossier d'inscription
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-12 mt-4 text-center">
+                                        <button class="btn btn-primary btn-lg px-5" type="submit">
+                                            <i class="fas fa-paper-plane me-2"></i>Envoyer le dossier
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style = "display: flex; flex-direction: column; align-items: center; padding: 20px; border: 1px solid #ddd; margin-top: 20px;" id = "messageSuccess">
+                {% if messages %}
+                    <h4><i class="fas fa-check-circle me-2" style=""></i>Pré-inscription soumise avec succès !</h4>
+                    <p class ="alert alert-success mt-4">{{message}}</p>
+                {% endif %}
+            </div>
+            
+            <!-- FAQ Section -->
+            <div class="row mt-5">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white">
+                            <h4 class="mb-0"><i class="fas fa-question-circle me-2 text-primary"></i>Questions Fréquentes sur l'Admission</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="faq-container">
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span>Quels sont les délais d'inscription pour la rentrée prochaine ?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Les pré-inscriptions pour la rentrée de septembre ouvrent chaque année le 1er janvier. Nous acceptons les dossiers jusqu'au 15 juin, mais nous vous conseillons de postuler le plus tôt possible car les places sont limitées.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span>Existe-t-il des critères de sélection particuliers ?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Nous examinons chaque dossier dans sa globalité. Les principaux critères sont les résultats scolaires antérieurs, la motivation de l'élève et son adéquation avec notre projet pédagogique. Nous accordons également une attention particulière aux recommandations des enseignants précédents.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span>Proposez-vous des bourses ou aides financières ?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Oui, acadPro propose plusieurs programmes d'aide financière basés sur les revenus familiaux et le mérite scolaire. Les demandes de bourse doivent être soumises en même temps que le dossier d'inscription. Notre service financier étudie chaque demande individuellement.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span>Comment se déroule l'entretien d'admission ?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>L'entretien dure environ 45 minutes et réunit l'élève, ses parents, le directeur pédagogique et un enseignant. L'objectif est de présenter notre établissement, de comprendre les motivations de l'élève et d'évaluer son adéquation avec notre projet éducatif. Aucune préparation spécifique n'est nécessaire.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span>Quels sont les frais de scolarité ?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Les frais de scolarité annuels sont de 1 200€ pour les élèves résidant dans notre secteur. Ce montant comprend les manuels scolaires et l'accès à toutes les installations. Des tarifs réduits sont disponibles pour les familles avec plusieurs enfants inscrits.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section Documents Requis -->
+            <div class="row mt-5">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white">
+                            <h4 class="mb-0"><i class="fas fa-file-alt me-2 text-primary"></i>Documents requis pour l'inscription</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul class="requirements-list">
+                                <li>Photocopie de l'acte de naissance de l'élève</li>
+                                <li>Photocopie des bulletins scolaires de l'année précédente</li>
+                                <li>Certificat de radiation de l'établissement précédent (pour les nouveaux inscrits)</li>
+                                <li>Justificatif de domicile (moins de 3 mois)</li>
+                                <li>Photo d'identité récente de l'élève</li>
+                                <li>Photocopie du carnet de vaccination</li>
+                                <li>Formulaire médical rempli par le médecin traitant</li>
+                            </ul>
+                            
+                            <div class="alert alert-info mt-4">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Tous les documents doivent être numérisés au format PDF. Les photos doivent être en format JPG ou PNG. Vous pourrez les déposer après validation de votre pré-inscription.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+
+
+
+{% block script %}
+
+
+     <!-- Bootstrap 5 JS Bundle avec Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Correction de la FAQ - Fonctionnalité complète
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    // Fermer toutes les autres réponses
+                    faqQuestions.forEach(q => {
+                        if (q !== question) {
+                            q.classList.remove('active');
+                            q.nextElementSibling.classList.remove('open');
+                        }
+                    });
+                    
+                    // Ouvrir/fermer la réponse actuelle
+                    this.classList.toggle('active');
+                    const answer = this.nextElementSibling;
+                    answer.classList.toggle('open');
+                });
+            });
+            
+            // Animation de scroll pour les ancres
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        window.scrollTo({
+                            top: target.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Soumission du formulaire
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                //e.preventDefault();
+                
+                // Animation de confirmation
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Traitement...';
+                submitBtn.disabled = true;
+                
+                // Simulation d'envoi au serveur
+                setTimeout(() => {
+                    // Création d'un message de succès
+                    const successMessage = document.createElement('div');
+                    successMessage.className = 'alert alert-success mt-4';
+                    successMessage.innerHTML = `
+                        <h4><i class="fas fa-check-circle me-2"></i>Pré-inscription soumise avec succès !</h4>
+                        <p class="mb-0">{{message}}</p>
+                    `;
+                    
+                    form.parentNode.insertBefore(successMessage, form.nextSibling);
+                    
+                    // Scroll vers le message
+                    successMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    // Réinitialisation du bouton
+                    //submitBtn.innerHTML = originalText;
+                    //submitBtn.disabled = false;
+                    
+                    // Réinitialisation du formulaire
+                    form.reset();
+                }, 2000);
+            });
+        });
+    </script>
+
+
+
+
+
+
+    <script src="{% static 'accueil/js/jquery.min.js' %}"></script>
+    <script src="{% static 'accueil/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion de l'upload de fichiers
+            const fileInput = document.getElementById('fileInput');
+            const dropArea = document.getElementById('dropArea');
+            const filePreview = document.getElementById('filePreview');
+            const fileName = document.getElementById('fileName');
+            
+            // Click sur la zone de dépôt
+            dropArea.addEventListener('click', () => {
+                fileInput.click();
+            });
+            
+            // Changement de fichier
+            fileInput.addEventListener('change', function() {
+                if(this.files.length > 0) {
+                    fileName.textContent = this.files[0].name;
+                    filePreview.style.display = 'block';
+                }
+            });
+            
+            // Fonctionnalité drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropArea.classList.add('bg-primary-light');
+                dropArea.style.borderColor = 'var(--primary)';
+            }
+            
+            function unhighlight() {
+                dropArea.classList.remove('bg-primary-light');
+                dropArea.style.borderColor = '#e2e8f0';
+            }
+            
+            // Gestion du drop de fichiers
+            dropArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if(files.length > 0) {
+                    fileInput.files = files;
+                    fileName.textContent = files[0].name;
+                    filePreview.style.display = 'block';
+                }
+            }
+       
+        });
+    </script>
+{% endblock %}

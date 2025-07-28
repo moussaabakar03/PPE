@@ -1,0 +1,384 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+    
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'accueil/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'accueil/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'accueil/css/cssPersonnalise/aPropos.css' %}">
+
+     <style>
+        .stat-card p{
+            color: black;
+            font-weight: bold;
+        }
+
+        .nombrePlus{
+            color: #161512ff;
+            font-size: 30px;
+            font-weight: bold;
+
+        }
+        .hero-section {
+            background: linear-gradient(rgba(44, 95, 168, 0.85), rgba(44, 95, 168, 0.9)), url('{% static "accueil/images/aproposHero.jpg" %} ');
+            background-size: cover;
+            background-position: center;
+            height: 50vh;
+            display: flex;
+            align-items: center;
+        }
+
+          .contact-section {
+            background: linear-gradient(rgba(72, 105, 150, 0.85), rgba(67, 96, 138, 0.9)), url('{% static 'accueil/images/contactAccueil.jpg' %}');
+            background-size: cover;
+            background-position: center;
+            padding: 80px 0;
+            background-attachment: fixed; 
+            object-fit : cover;
+        }
+
+    </style>
+    
+{% endblock %}
+
+
+{% block body %}
+   <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 mx-auto text-center text-white">
+                    <h1 class="display-4 mb-4">Notre Établissement</h1>
+                    <p class="lead">Découvrez l'histoire, les valeurs et l'équipe de notre collège</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <div class="history-img">
+                        <img src="{% static 'accueil/images/acad.jpg' %}" alt="Collège acadPro" class="img-fluid" style= "object-fit: cover;">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <h2 class="section-title">Bienvenue au Collège acadPro</h2>
+                    <p class="lead">Un établissement tourné vers l'excellence éducative et l'innovation pédagogique.</p>
+                    <p>Fondé en 1995, le Collège acadPro s'est imposé comme un établissement de référence dans l'éducation secondaire. Notre mission est d'accompagner chaque élève dans la construction de son parcours scolaire et personnel, en favorisant l'épanouissement intellectuel, social et citoyen.</p>
+                    <p>Avec notre plateforme acadPro, nous avons révolutionné la gestion scolaire pour offrir aux enseignants, élèves et parents un environnement numérique performant et sécurisé, facilitant les échanges et le suivi pédagogique.</p>
+                    <a href="#" class="btn btn-primary mt-3">Découvrir notre projet éducatif</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- History Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="section-title center-title">Notre Histoire</h2>
+                    <p class="mb-5">Un parcours marqué par l'innovation et l'excellence pédagogique</p>
+                </div>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item timeline-left">
+                    <div class="timeline-year">1995</div>
+                    <div class="timeline-content">
+                        <h4>Fondation du collège</h4>
+                        <p>Ouverture du Collège acadPro avec 4 classes de 6ème et 5ème. Début d'une aventure éducative tournée vers l'innovation pédagogique.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item timeline-right">
+                    <div class="timeline-year">2002</div>
+                    <div class="timeline-content">
+                        <h4>Premier laboratoire informatique</h4>
+                        <p>Création du premier laboratoire informatique pédagogique, équipé de 25 postes. Début de l'intégration du numérique dans notre enseignement.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item timeline-left">
+                    <div class="timeline-year">2010</div>
+                    <div class="timeline-content">
+                        <h4>Lancement d'acadPro</h4>
+                        <p>Développement et mise en place de notre plateforme de gestion scolaire interne, acadPro, pour moderniser l'administration et la communication.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item timeline-right">
+                    <div class="timeline-year">2015</div>
+                    <div class="timeline-content">
+                        <h4>Agrandissement des locaux</h4>
+                        <p>Construction d'un nouveau bâtiment avec 8 salles de classe supplémentaires, un CDI moderne et un laboratoire scientifique de pointe.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item timeline-left">
+                    <div class="timeline-year">2020</div>
+                    <div class="timeline-content">
+                        <h4>Prix de l'innovation éducative</h4>
+                        <p>Reconnaissance nationale pour notre approche pédagogique innovante et notre plateforme acadPro, primée au concours national des établissements innovants.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <h2 class="section-title center-title">Nos Valeurs Éducatives</h2>
+                    <p>Les principes fondamentaux qui guident notre action pédagogique</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3>Excellence académique</h3>
+                        <p>Nous visons l'excellence dans toutes les disciplines, avec un programme rigoureux et des enseignants qualifiés qui accompagnent chaque élève vers la réussite.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Communauté éducative</h3>
+                        <p>Une collaboration étroite entre enseignants, élèves et parents pour créer un environnement propice à l'apprentissage et à l'épanouissement personnel.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3>Innovation pédagogique</h3>
+                        <p>Intégration des nouvelles technologies et méthodes pédagogiques pour préparer nos élèves aux défis du 21ème siècle et stimuler leur créativité.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Sécurité et bien-être</h3>
+                        <p>Un environnement sécurisé et bienveillant où chaque élève peut s'exprimer librement et développer sa confiance en soi.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-globe-europe"></i>
+                        </div>
+                        <h3>Ouverture au monde</h3>
+                        <p>Programmes d'échange internationaux, apprentissage des langues et projets interculturels pour former des citoyens du monde.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                        <h3>Équité et inclusion</h3>
+                        <p>Un établissement accessible à tous, où chaque élève bénéficie d'un accompagnement personnalisé selon ses besoins et capacités.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-5 bg-primary text-white">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <h2 class="mb-4">Notre Collège en Chiffres</h2>
+                    <p>Des indicateurs qui témoignent de notre engagement éducatif</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="stat-card">
+                        <div class="stat-number">850</div>
+                        <p>Élèves scolarisés</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="stat-card">
+                        <div class="stat-number">45</div>
+                        <p>Enseignants qualifiés</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="stat-card">
+                        <div><span class="stat-number">98</span><span class="nombrePlus">%</span></div>
+                        <p>Réussite au DNB</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number">28</div>
+                        <p>Années d'existence</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <h2 class="section-title center-title">Témoignages</h2>
+                    <p>Ce que disent les membres de notre communauté éducative</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-4">
+                            <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" class="rounded-circle mr-3" width="60" alt="Témoin 1">
+                            <div>
+                                <h5 class="mb-0">Thomas Dubois</h5>
+                                <p class="text-muted mb-0">Professeur de Mathématiques</p>
+                            </div>
+                        </div>
+                        <p class="mb-0">"acadPro a transformé mon travail quotidien. La gestion des notes, le suivi des compétences et la communication avec les parents sont désormais simples et efficaces. Cela me permet de me concentrer sur l'essentiel : l'enseignement."</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-4">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" class="rounded-circle mr-3" width="60" alt="Témoin 2">
+                            <div>
+                                <h5 class="mb-0">Marie Dupont</h5>
+                                <p class="text-muted mb-0">Parent d'élève</p>
+                            </div>
+                        </div>
+                        <p class="mb-0">"En tant que parent, je me sens pleinement impliqué dans la scolarité de mon fils grâce à acadPro. Les informations sont accessibles en temps réel, les échanges avec les enseignants facilités, et le suivi pédagogique est transparent."</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-4">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" class="rounded-circle mr-3" width="60" alt="Témoin 3">
+                            <div>
+                                <h5 class="mb-0">Sophie Bernard</h5>
+                                <p class="text-muted mb-0">Principale adjointe</p>
+                            </div>
+                        </div>
+                        <p class="mb-0">"La plateforme acadPro a révolutionné notre gestion administrative. Centralisation des données, communication fluide, gain de temps considérable. Un outil indispensable pour un collège moderne et efficace."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center text-white mb-5">
+                    <h2 class="mb-4">Vous souhaitez en savoir plus ?</h2>
+                    <p class="lead">Contactez-nous pour une visite de notre établissement ou une démonstration de notre plateforme acadPro</p>
+                </div>
+            </div>
+            
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow-lg">
+                        <div class="card-body p-5">
+                            <form>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <input type="text" class="form-control" placeholder="Votre nom" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <input type="email" class="form-control" placeholder="Votre email" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Sujet de votre message">
+                                </div>
+                                <div class="form-group">
+                                    <select class="form-control">
+                                        <option>Sujet de votre demande</option>
+                                        <option>Visite de l'établissement</option>
+                                        <option>Démonstration acadPro</option>
+                                        <option>Informations sur l'inscription</option>
+                                        <option>Autre demande</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <textarea class="form-control" rows="5" placeholder="Votre message" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block btn-lg">Envoyer votre message</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+
+
+{% block script %}
+    <script src="{% static 'accueil/js/jquery.min.js' %}"></script>
+    <script src="{% static 'accueil/js/bootstrap.bundle.min.js' %}"></script>
+  <script>
+        // Animation pour les statistiques
+        $(document).ready(function(){
+            $('.stat-number').each(function() {
+                $(this).prop('Counter',0).animate({
+                    Counter: $(this).text()
+                }, {
+                    duration: 2000,
+                    easing: 'swing',
+                    step: function (now) {
+                        $(this).text(Math.ceil(now));
+                    }
+                });
+            });
+            
+            // Animation au défilement
+            $(window).scroll(function() {
+                $('.feature-card').each(function() {
+                    var position = $(this).offset().top;
+                    var scrollPosition = $(window).scrollTop() + $(window).height();
+                    
+                    if (position < scrollPosition - 50) {
+                        $(this).addClass('animate__animated animate__fadeInUp');
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+
+

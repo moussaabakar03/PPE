@@ -1,0 +1,224 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AKKHOR | Ajout Evaluation</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Select 2 CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/select2.min.css' %}">
+    <!-- Date Picker CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/datepicker.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+    <!-- Modernize js -->
+    <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+        
+         {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+           
+            {% include 'partial/aside.html' %}
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Evaluation</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'secretaire:all_evaluation' %}">Evaluation *</a>
+                        </li>
+                        <li>Ajout Evaluation</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Add Class Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Ajout d'une nouvelle Evaluation</h3>
+                            </div>
+                           <div class="dropdown">
+                                <a class="dropdown-toggle" href="#" role="button" 
+                                data-toggle="dropdown" aria-expanded="false">...</a>
+        
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#"><i class="fas fa-times text-orange-red"></i>Fermer</a>
+                                    <a class="dropdown-item" href="#"><i class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
+                                    <a class="dropdown-item" href="#"><i class="fas fa-redo-alt text-orange-peel"></i>Refrecher</a>
+                                </div>
+                               
+                            </div>
+                        </div>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                        
+                                <!-- Trimestre / Module -->
+                                <div class="col-md-2">
+                                    <label for="trimestre">Trimestre/Module:</label>
+                                    <select class="form-control" name="trimestre" required>
+                                        <option value="">Choisir</option>
+                                        <option value="1er trimestre">1er trimestre</option>
+                                        <option value="2e trimestre">2e trimestre</option>
+                                        <option value="3e trimestre">3e trimestre</option>
+                                    </select>
+                                </div>
+                        
+                                <!-- Classe -->
+                                <div class="col-md-2">
+                                    <label for="cours">Cours:</label>
+                                    <select class="form-control" name="cours" required>
+                                        {% for cours in cours_list %}
+                                            <option value="{{ cours.id }}">{{ cours.matiere.nom }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                        
+                                <div class="col-md-2">
+                                    <label for="cours">Etudiant:</label>
+                                    <select class="form-control" name="etudiant" required>
+                                        {% for etudiant in etudiants %}
+                                            <option value="{{ etudiant.id }}">{{ etudiant.nom }} {{ etudiant.prenom }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <!-- Matière -->
+                                {% comment %} <div class="col-md-2">
+                                    <label for="matiere">Matière:</label>
+                                    <select class="form-control" name="matiere" required>
+                                        {% for matiere in matieres %}
+                                            <option value="{{ matiere.id }}">{{ matiere.nom }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div> 
+                        
+                                <!-- Coefficient -->
+                                <div class="col-md-1">
+                                    <label for="coefficient">Coefficient:</label>
+                                    <select class="form-control" name="coefficient" required>
+                                        {% for i in 1|to:10 %}
+                                            <option value="{{ i }}">{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                {% endcomment %}
+
+                                <div class="col-md-3">
+                                    <label for="typeEvaluation">Type d'évaluation:</label>
+                                    <select class="form-control" name="typeEvaluation" required>
+                                        <option value=""> Veillez choisir le type d'évaluation</option>
+                                        <option value="Devoir">Devoir</option>
+                                        <option value="Interrogation">Interrogation</option>
+                                        <option value="Composition">Composition</option>
+                                    </select>
+                                </div>
+
+                                <!-- Date d'évaluation -->
+                                <div class="col-md-3">
+                                    <label for="dateEvaluation">Date de l'évaluation:</label>
+                                    <input type="date" name="dateEvaluation" class="form-control" required>
+                                </div>
+                        
+                                {% comment %} <!-- Bouton continuer -->
+                                <div class="col-md-2 align-self-end">
+                                    <button type="submit" class="btn btn-primary btn-block">Continuer l'insertion</button>
+                                </div> {% endcomment %}
+                            </div>
+                        
+                            <hr>
+                        
+                            <div class="row mt-3">
+                                {% for etudiant in etudiants %}
+                                    <!-- Nom & Prénom -->
+                                    <div class="col-md-3">
+                                        <label>Nom & Prénom:</label>
+                                        <input type="text" name="etudiant_nom" class="form-control" value="{{ etudiant.nom }} {{ etudiant.prenom }}" readonly>
+                                    </div>
+                            
+                                    <!-- Matricule -->
+                                    <div class="col-md-2">
+                                        <label>Matricule:</label>
+                                        <input type="text" name="matricule" class="form-control" value="{{etudiant.matricule}}" readonly>
+                                    </div>
+                            
+                                    <!-- Classe & Matière & Trimestre -->
+                                    <div class="col-md-4">
+                                        <label>Classe & Matière & Trimestre:</label>
+                                        <input type="text" name="resume" class="form-control" value="TLE Z - Sciences - 1er Module" readonly>
+                                    </div>
+                            
+                                    <!-- Note -->
+                                    <div class="col-md-2">
+                                        <label>Note (15.50 ou 13):</label>
+                                        <input type="text" name="note" class="form-control" required>
+                                    </div>
+                                
+                                    <!-- Bouton sauvegarder -->
+                                    <div class="col-md-1 align-self-end">
+                                        <button type="submit" class="btn btn-danger btn-block">Sauvegarder</button>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+                <!-- Add Class Area End Here -->
+                {% include 'partial/copyright.html' %}
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <!-- jquery-->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Select 2 Js -->
+    <script src="{% static 'secretaire/js/select2.min.js' %}"></script>
+    <!-- Date Picker Js -->
+    <script src="{% static 'secretaire/js/datepicker.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+</body>
+
+</html>
