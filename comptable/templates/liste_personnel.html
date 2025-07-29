@@ -1,0 +1,114 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AcadPro | Liste du Personnel</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    {% include 'partial/head.html' %}
+</head>
+    
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+
+    <div id="wrapper" class="wrapper bg-ash">
+
+        <!-- Header Menu Area Start Here -->
+        {% include 'comptable/partial/nav.html' %}
+        <!-- Header Menu Area End Here -->
+
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+            {% include 'comptable/partial/aside.html' %}
+            <!-- Sidebar Area End Here -->
+
+            <div class="dashboard-content-one">
+                <!-- Breadcrumbs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Liste du Personnel</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'index' %}">Tableau de Bord</a>
+                        </li>
+                        <li>Enseignants</li>
+                    </ul>
+                </div>
+                <!-- Breadcrumbs Area End Here -->
+
+                <!-- Personnel Table Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Liste des Enseignants</h3>
+                            </div>
+                            <div class="dropdown">
+                                <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">...</a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#"><i class="fas fa-print text-dark-pastel-green"></i>Imprimer</a>
+                                    <a class="dropdown-item" href="#"><i class="fas fa-download text-orange-peel"></i>Exporter</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table display data-table text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>N°</th>
+                                        <th>Nom & Prénom</th>
+                                        <th>Email</th>
+                                        <th>Spécialité</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for enseignant in enseignants %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ enseignant.nom }} {{ enseignant.prenom }}</td>
+                                        <td>{{ enseignant.email }}</td>
+                                        <td>{{ enseignant.specialite }}</td>
+                                        <td>
+                                            <a href="{% url 'ajouter_paiement_personnel' enseignant.id %}" 
+                                               class="btn btn-success btn-sm">
+                                               <i class="fas fa-money-bill-wave"></i> Paiement
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">Aucun enseignant trouvé</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Personnel Table Area End Here -->
+
+                {% include 'partial/copyright.html' %}
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+</body>
+</html>

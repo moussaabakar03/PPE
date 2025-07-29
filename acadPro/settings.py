@@ -45,6 +45,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'secretaire',
     'eleve',
+    'comptable',
     'users',
     'django.contrib.admin',
     'django.contrib.auth',

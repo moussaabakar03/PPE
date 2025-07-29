@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'partial/head.html' %}
+
+<h2>Paiement pour {{ enseignant.nom }} {{ enseignant.prenom }}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Valider le paiement</button>
+    <a href="{% url 'liste_personnel' %}" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %}
+ 

@@ -1,0 +1,170 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+
+<!-- Favicon -->
+<link rel="shortcut icon" type="image/x-icon" href="{% static 'secretaire/img/favicon.png' %}">
+<!-- Normalize CSS -->
+<link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+<!-- Main CSS -->
+<link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+<!-- Fontawesome CSS -->
+<link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+<!-- Flaticon CSS -->
+<link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+<!-- Animate CSS -->
+<link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+<!-- Data Table CSS -->
+<link rel="stylesheet" href="{% static 'secretaire/css/jquery.dataTables.min.css' %} ">
+<!-- Custom CSS -->
+<link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+<!-- Modernize js -->
+<script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+
+    <title>Sélection Salle</title>
+</head>
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+
+        <!-- Header Menu Area Start Here -->
+        {% include 'partial/nav.html' %}
+        <!-- Header Menu Area End Here -->
+
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+            {% include 'partial/asideComptable.html' %}
+            <!-- Sidebar Area End Here -->
+
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Salle</h3>
+                    <ul>
+                        <li>
+                            <a href="">Tableau de Bord</a>
+                        </li>
+                        <li>Salle de classe *</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+
+                <!-- Année Scolaire Selection Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Sélectionnez l'année scolaire</h3>
+                            </div>
+                        </div>
+                        <form method="get" action="">
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-12 form-group">
+                                    <label>Année Scolaire *</label>
+                                    <select name="anneeScolaire" class="select2 form-control" required>
+                                        <option value = "">Selectionner une Année </option>
+                                        {% for annee in annees %}
+                                            <option value="{{annee.id}}">{{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                {% comment %} <div class="col-xl-6 col-lg-6 col-12 form-group">
+                                    <button type="submit" class="fw-btn-fill btn-gradient-yellow" style="margin-top: 30px;">
+                                        Valider
+                                    </button>
+                                </div> {% endcomment %}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Année Scolaire Selection End Here -->
+
+                <!-- Class Table Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Veillez choisir la classe correspondante!</h3>
+                            </div>
+                        </div>
+                       
+                        <div class="table-responsive">
+                            <table class="table display data-table text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>Classe</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for salleClasse in SalleClasses %}
+                                    <tr>
+                                        <td>{{ salleClasse.nom }} -{{ salleClasse.niveau.classe }}</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <a href="#" class ="voirPlusSalleDeClasse" data-salle-id="{{ salleClasse.id }}">
+                                                    <i class="fas fa-clipboard-check"> </i> Selectionner la salle
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- Class Table Area End Here -->
+
+                {% include 'partial/copyright.html' %}
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+
+      
+    <script>
+        $(document).ready(function () {
+            $('.voirPlusSalleDeClasse').on('click', function (e) {
+                e.preventDefault();
+
+                const salle_id = $(this).data('salle-id');
+                const anneeScolaireId = $('select[name="anneeScolaire"]').val();
+
+                if (!anneeScolaireId) {
+                    alert("Veuillez sélectionner une année scolaire !");
+                    return;
+                }
+                const url = `/comptable/liste_eleve/${salle_id}/${anneeScolaireId}`;
+                window.location.href = url;
+            });
+        });
+    </script>
+    
+</body>
+</html>
+
+
+
+
+
+
+

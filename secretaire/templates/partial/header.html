@@ -1,9 +1,11 @@
 {% load static %}
-<div class="navbar navbar-expand-md header-menu-one bg-light">
+<div class="navbar navbar-expand-md header-menu-one bg-light" style ="height : 78px;">
     <div class="nav-bar-header-one">
         <div class="header-logo">
             <a href="{% url 'secretaire:index'%} ">
-                <img src="{% static 'secretaire/img/logo.png' %}" alt="logo" class="img-fluid" style =" overflow : hidden;">
+                {% comment %} <img src="{% static 'secretaire/img/logo.png' %}" alt="logo" class="img-fluid" style =" overflow : hidden;"> {% endcomment %}
+                {% comment %} <img src="{% static 'secretaire/img/logoAcadPro.png' %}" alt="logo" class="img-fluid" style =" overflow : hidden; " width= 90px height= 90px/> {% endcomment %}
+                <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="logo" class="img-fluid" style =" overflow : hidden; object-fit: cover; " width ="75" height="5" >
             </a>
         </div>
          <div class="toggle-button sidebar-toggle">
