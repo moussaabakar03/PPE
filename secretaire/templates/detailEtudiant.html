@@ -145,12 +145,12 @@
                         <li> <a href ="{% url 'secretaire:students-detail' etudiant.matricule %}" ><i class="fas fa-id-card"></i>  Génerer la carte scolaire de l'étudiant</a></li>
                         <li> <a href ="{% url 'secretaire:modifier_student' etudiant.matricule %}" ><i class='fas fa-edit'></i>  Editer les infos de l'élève</a></li>
                         <li> <a href ="{% url 'secretaire:presenceEtudiant' etudiant.matricule %}" ><i class="fas fa-check-circle text-success"></i>  Ma présence</a></li>
-                        {% if dernierInscription is not None%}
+                        {% if dernierInscription is not None %}
                             <li> <a href ="{% url 'secretaire:generationBilletin' etudiant.matricule dernierInscription.salleClasse.niveau.classe dernierInscription.anneeAcademique.id %}" >generationBilletin</a></li>
                         {% else %}
                             <li> <a href ="" onclick = "alert('Aucune inscription trouvée pour cet étudiant');">generationBilletin</a></li>
                         {% endif %}
-                        {% comment %} <li> <a href ="" >generationBilletin</a></li> {% endcomment %}
+                        <li> <a href ="{% url 'secretaire:affichePaiementEleve' etudiant.matricule %}" > Payements</a></li>
                     </ul>
                 </div>
 

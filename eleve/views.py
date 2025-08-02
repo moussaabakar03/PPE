@@ -10,7 +10,8 @@ from django.views.decorators.http import require_POST, require_GET
 import json
 from datetime import datetime
 
-from secretaire.models import AnneeScolaire, Emargement, EmploiDuTemps, Etudiant, Evaluation, Inscription, Messages, SalleDeClasse, depotDossierEtudiant
+from comptable.models import PaiementEleve
+from secretaire.models import AnneeScolaire, Emargement, EmploiDuTemps, Etudiant, Evaluation, Inscription, Messages, PlageHoraire, SalleDeClasse, depotDossierEtudiant
 # Create your views here.
 
 
@@ -228,12 +229,22 @@ def echangeMessageEleves(request, id):
 
 @login_required
 def affichageEmploiTemps(request, id1, id2):
+    eleve = Etudiant.objects.get(username = request.user)
     salle = SalleDeClasse.objects.get(id=id1)
     annee = AnneeScolaire.objects.get(id=id2)
     jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
-    heures = ["1h-2h", "2h-3h", "3h-4h", "4h-5h", "5h-6h"]
-
-    emploi_dict = {} 
+    
+      
+    horaires = PlageHoraire.objects.filter(salle=salle, annee=annee).first()
+        
+    heures = []
+    if horaires:
+        for h in range(horaires.debut, horaires.fin):
+            heures.append(f"{h}h- {h+1}h")
+    # else:
+    #     return render(request, 'emploiTemps.html', {'salle': salle, 'annee': annee, 'jours': jours, 'heures': heures})
+    
+    emploi_dict = {}  
 
     for heure in heures:
         emploi_dict[heure] = {}
@@ -250,6 +261,7 @@ def affichageEmploiTemps(request, id1, id2):
         'heures': heures,
         # 'emploi': emploi,
         'emploi_dict': emploi_dict,
+        'etudiant': eleve,
     }
 
     return render(request, "eleve/affichageEmploiTemps.html", contains)
@@ -297,6 +309,20 @@ def echangeEleveEleve(request, id):
     })
 
 
+
+
+@login_required
+def mesPaiement(request):
+    eleve = get_object_or_404(Etudiant, username = request.user)
+    inscriptions = eleve.inscriptions.all()
+    
+    mesPaiements = PaiementEleve.objects.filter(
+        inscription_Etudiant__in = inscriptions
+    )
+    
+    return render(request, 'eleve/mesPaiement.html', {'mesPaiements': mesPaiements , 'etudiant': eleve})
+    
+        
 
 
 

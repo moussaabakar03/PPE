@@ -3,6 +3,8 @@ from django.contrib import messages
 from datetime import timedelta, datetime
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
+
+from comptable.models import PaiementEleve
 from . models import AnneeScolaire, Classe, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, cvEnseignant, depotDossierEtudiant
 from django.utils.timezone import localtime
 from django.db.models import Q
@@ -396,7 +398,18 @@ def detailEtudiant(request, matricule, id):
         }
         return render(request, 'detailEtudiant.html', context)
 
-
+@login_required
+def affichePaiementEleve(request, matricule):
+    eleve = get_object_or_404(Etudiant, matricule=matricule)
+    inscriptions = eleve.inscriptions.all()
+    
+    mesPaiements = PaiementEleve.objects.filter(
+        inscription_Etudiant__in = inscriptions
+    )
+    
+    return render(request, 'paiementEleve.html', {'mesPaiements': mesPaiements , 'eleve': eleve})
+    
+        
 
 #teacher
 @login_required
@@ -995,6 +1008,8 @@ def ajoutInscription(request):
         etudiant_id = request.POST["etudiant"]
         salleClasse_id = request.POST["salleClasse"]
         montantVerse = request.POST["montantVerse"]
+        if not montantVerse:
+            montantVerse = 0
         anneeScolaire_id = request.POST["anneeScolaire"]
         
         etudiant = get_object_or_404(Etudiant, pk=int(etudiant_id))
@@ -1010,7 +1025,7 @@ def ajoutInscription(request):
         cout_entry = Cout.objects.filter(classe=salleDeClasse.niveau, anneeScolaire=anneeAcademique).first()
         
         if not cout_entry:
-            messages.warning(request, "Cout attendu non defini.")
+            messages.warning(request,".")
 
         # Création de l'inscription même si le coût n'existe pas
         Inscription.objects.create(
@@ -1407,9 +1422,9 @@ def modifierCout(request, id):
         cout.fraisEtudeDossier = request.POST['fraisEtudeDossier']
         cout.fraisAssocie = request.POST['fraisAssocie']
 
-        anneeScolaire = request.POST["anneeScolaire"]
-
-        cout.anneeScolaire = AnneeScolaire.objects.get(pk=int(anneeScolaire))
+        pkAnneeScolaire = request.POST["anneeScolaire"]
+        annee = get_object_or_404(AnneeScolaire, pk=pkAnneeScolaire)
+        cout.anneeScolaire = annee
 
         cout.classe = get_object_or_404(Classe, id=classe_id)
         

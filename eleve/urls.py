@@ -13,6 +13,7 @@ urlpatterns = [
     path('emploiDuTempsEtudiant/', views.emploiDuTempsEtudiant, name="emploiDuTempsEtudiant"),
     path('affichageEmploiTemps/<int:id1>/<int:id2>/', views.affichageEmploiTemps, name="affichageEmploiTemps"),
     
+    path('mesPaiement/', views.mesPaiement, name="mesPaiement"),
     
     
     path('echangeEleveEleve/<int:id>/', views.echangeEleveEleve, name="echangeEleveEleve"),

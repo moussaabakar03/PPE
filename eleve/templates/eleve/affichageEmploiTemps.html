@@ -139,7 +139,7 @@
                                         {% with emploi=ligne|dict_get:jour %}
                                             <td>
                                                 {% if emploi %}
-                                                    {{ emploi.cours.matiere.nom }}
+                                                    {{ emploi.cours.matiere.code }}
                                                 {% else %}
                                                     -
                                                 {% endif %}

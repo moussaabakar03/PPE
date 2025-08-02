@@ -38,6 +38,9 @@ urlpatterns = [
     
     path('presenceEtudiant/<str:matricule>', views.presenceEtudiant, name = 'presenceEtudiant'),
     
+    path('affichePaiementEleve/<str:matricule>', views.affichePaiementEleve, name = 'affichePaiementEleve'),
+    
+    
     # path('ajouter_etudiant/', views.ajouter_etudiant, name = 'ajouter_etudiant'),
 
     path('all-teacher/', views.all_teacher, name='all-teacher'),

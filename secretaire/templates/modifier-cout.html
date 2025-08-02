@@ -94,8 +94,10 @@
                                     <label>Année scolaire *</label>
                                     <select name="anneeScolaire" class="select2 form-control" required>
                                         <option value="">Sélectionnez l'année scolaire *</option>
-                                        {% for anneeScolaire in anneeScolaires %}
-                                            <option value={{anneeScolaire.id}} {% if cours.anneeScolaire.id == anneeScolaire.id %}selected{%endif%}>{{ anneeScolaire.debutAnnee|date:"Y" }}- {{ anneeScolaire.fintAnnee|date:"Y" }}</option>
+                                        {% for annee in anneeScolaires %}
+                                            <option value="{{ annee.id }}" {% if cout.anneeScolaire.id == annee.id %}selected{% endif %}>
+                                                {{ annee.debutAnnee|date:"Y" }}- {{ annee.fintAnnee|date:"Y" }}
+                                            </option>
                                         {% endfor %}
                                     </select>
                                 </div>

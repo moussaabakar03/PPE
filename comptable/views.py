@@ -5,6 +5,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 # from .models import Enseignant
 # from .form import PaiementPersonnelForm
 
+from comptable.models import PaiementEleve
 from secretaire.models import Cout, Inscription, Etudiant, AnneeScolaire, SalleDeClasse
 # from . form import PaiementForm, timezone
 # Create your views here.
@@ -22,19 +23,6 @@ def selectionSalle(request):
     return render(request, 'selectionSalle.html', context)
 
 
-def ajouter_paiement(request, id):
-    salleClasse = SalleDeClasse.objects.get(id=id)
-    inscrits = Inscription.objects.filter(
-        salleClasse = salleClasse
-    ).select_related('etudiant', 'salleClasse')
-   
-    context = {
-        'paiement': paiements,
-        'inscrits': inscrits,
-    }
-    return render(request, 'ajouter_paiement.html', context)
-
-
 
 
 def liste_eleve(request, id_salle, id_annee):
@@ -46,7 +34,12 @@ def liste_eleve(request, id_salle, id_annee):
         # Récupération de la salle de classe
         salleClasse = get_object_or_404(SalleDeClasse, id=id_salle)
         anneesScolaire = get_object_or_404(AnneeScolaire, id= id_annee)
-        
+        couts = Cout.objects.filter(classe=salleClasse.niveau, anneeScolaire=anneesScolaire)
+        messagesCoutNonEnregistrer = ""
+        if not couts.exists():
+            # messages.error(request, "Aucun cout n'est enregistré pour cette salle de classe ")
+            messagesCoutNonEnregistrer= "Aucun cout n'est enregistré cette année pour cette salle de classe. Pour effectuer cette opératrion, le secretaire doit ajouter les frais de cette classe"
+
         # Récupération des élèves inscrits avec optimisation des requêtes
         inscrits = Inscription.objects.filter(
             salleClasse=salleClasse,
@@ -59,6 +52,7 @@ def liste_eleve(request, id_salle, id_annee):
             "salleClasse": salleClasse,
             "anneesScolaire": anneesScolaire,
             "inscrits": inscrits,
+            "messagesCoutNonEnregistrer": messagesCoutNonEnregistrer
         }
 
     except Exception as e:
@@ -68,51 +62,87 @@ def liste_eleve(request, id_salle, id_annee):
     return render(request,  'liste_eleve.html', context)
 
 
-def ajouter_paiement(request, id_inscription):
-    inscriptionEleve = get_object_or_404(Inscription, id=id_inscription)
-    
+import json
+from collections import defaultdict
+from decimal import Decimal
+
+def ajouter_paiement(request, id_inscription, id_annee):
+    anneeScol = get_object_or_404(AnneeScolaire, id=id_annee)
+    inscriptionEleve = get_object_or_404(Inscription, id=id_inscription, anneeAcademique = anneeScol)
     classe = inscriptionEleve.salleClasse.niveau
-    annee = inscriptionEleve.anneeAcademique
     
-    cout = get_object_or_404(Cout, classe=classe, anneeScolaire=annee)
+    eleve = inscriptionEleve.etudiant
+
+    cout = get_object_or_404(Cout, anneeScolaire=anneeScol, classe=classe)
+    totalCout = cout.coutInscription + cout.coutScolarite + cout.fraisEtudeDossier + cout.fraisAssocie
+
+    paiements = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve)
+
+    totalPaye = sum(p.montantVerse for p in paiements)
+    resteTotalPaye = totalCout - totalPaye
+
+    # Paiement par type
+    dejaPayeParType = defaultdict(Decimal)
     
-    
+    for p in paiements:
+        dejaPayeParType[p.typePaiement] += p.montantVerse
+        
     if request.method == 'POST':
-        # form = PaiementForm(request.POST)
-        # if form.is_valid():
-        #     paiement = form.save(commit=False)
-        #     paiement.etudiant = eleve
-        #     paiement.save()
-        #     messages.success(request, f"Paiement enregistré pour {eleve.nom_complet()}")
-        #     return redirect('liste_eleve', id_salle=eleve.classe.salle.id, id_classe=eleve.classe.id)
-        pass
-    else:
-        # form = PaiementForm(initial={
-        #     'date_paiement': timezone.now().date(),
-        #     'mois_couvert': timezone.now().strftime("%B %Y")
-        # })
-        pass
-    
-    return render(request,  'ajouter_paiement.html', {
-        'eleve': inscriptionEleve,
+        type_paiement = request.POST.get('type_paiement')
+        montantVerse = Decimal(request.POST.get('montantVerse') or "0")
+        mode_paiement = request.POST.get('mode_paiement')
+        periodeConcerne = request.POST.get('periodeConcerne')
+
+        montantMaximum = {
+            'Frais de scolarité': cout.coutScolarite,
+            "Frais d'inscription": cout.coutInscription,
+            "Frais d'étude du dossier": cout.fraisEtudeDossier,
+            "Frais Associés": cout.fraisAssocie,
+            "Autre": 0
+        }.get(type_paiement, 0)
+
+        dejaPaye = dejaPayeParType[type_paiement]
+
+        if dejaPaye + montantVerse > montantMaximum:
+            error = "Montant versé dépasse le montant requis pour ce type de frais."
+        else:
+            PaiementEleve.objects.create(
+                inscription_Etudiant=inscriptionEleve,
+                montantVerse=montantVerse,
+                typePaiement=type_paiement,
+                modePaiment=mode_paiement,
+                periodeConcerne=periodeConcerne
+            )
+            return redirect(request.path)  # Rafraîchir la page
+
+    return render(request, 'ajouter_paiement.html', {
+        'inscriptionEleve': inscriptionEleve,
         'cout': cout,
-        'salle': inscriptionEleve.classe.salle if hasattr(inscriptionEleve, 'classe') else None
-    })
+        'paiements': paiements,
+        'totalCout': totalCout,
+        'totalPaye': totalPaye,
+        'resteTotalPaye': resteTotalPaye,
+        'dejaPayeParType_json': json.dumps({k: float(v) for k, v in dejaPayeParType.items()}),
 
-def liste_personnel(request):
-    enseignants = Enseignant.objects.all()
-    return render(request,  'liste_personnel.html', {
-        'enseignants': enseignants
-    })
-
-def detail_enseignant(request, enseignant_id):
-    enseignant = get_object_or_404(Enseignant, id=enseignant_id)
-    return render(request,  'detail_enseignant.html', {
-        'enseignant': enseignant
     })
 
 
-def ajouter_paiement_personnel(request, enseignant_id):
+
+
+# def liste_personnel(request):
+#     enseignants = Enseignant.objects.all()
+#     return render(request,  'liste_personnel.html', {
+#         'enseignants': enseignants
+#     })
+
+# def detail_enseignant(request, enseignant_id):
+#     enseignant = get_object_or_404(Enseignant, id=enseignant_id)
+#     return render(request,  'detail_enseignant.html', {
+#         'enseignant': enseignant
+#     })
+
+
+# def ajouter_paiement_personnel(request, enseignant_id):
     enseignant = get_object_or_404(Enseignant, id=enseignant_id)
 
     if request.method == 'POST':

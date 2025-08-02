@@ -1,0 +1,112 @@
+ {% load static%}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcadPro-presence</title>
+    {% include 'partial/head.html' %}
+    <link rel="stylesheet" href="{% static 'eleve/style.css' %}">
+    <style>
+      
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgb(25, 25, 103);
+            color: white;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 5px;
+            text-decoration: none;
+            opacity: 0.8;
+        }
+        
+        .back-to-top:hover {
+            opacity: 1;
+        }
+    </style> 
+</head>
+<body>
+   
+    <div>
+   
+        {% include 'eleve/partial/header.html' %}
+
+        <div class="dashboard-page-one">
+            <div class="container">
+
+                {% include 'eleve/partial/navBar.html' %}
+
+                <div class="card height-auto">
+                    <div class="table-responsive">
+                        <table id="notesTable"  class="table display data-table text-nowrap"  style="width:100%; margin-bottom: 100px; ">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Montant(FCFA)</th>
+                                    <th>periode_Concerné</th>
+                                    <th>Méthode</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if mesPaiements %}
+                                    {% for paiement in mesPaiements %}
+                                        <tr>
+                                            <td>{{ paiement.datePaiement|date:"d/m/Y" }}</td>
+                                            <td>{{ paiement.typePaiement }}</td>
+                                            <td class="paid">{{ paiement.montantVerse }}</td>
+                                            {% comment %} <td class="remaining">{{ paiement.reste_a_payer }} FCFA</td> {% endcomment %}
+                                            {% comment %} <td class="remaining">{{ paiement.periodeConcerne }}</td> {% endcomment %}
+                                            <td>{{ paiement.periodeConcerne }}</td>
+                                            <td>{{ paiement.modePaiment }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5">Aucun paiement trouvé</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <a href="#" class="back-to-top">↑</a>
+
+        <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+            {% comment %} <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> {% endcomment %}
+            <script>
+            $(document).ready(function () {
+                $('#notesTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
+                },
+                // Désactiver les fonctionnalités de pagination et recherche
+                "paging": false,
+                "searching": false,
+                "info": false,
+                "ordering": true
+                });
+            });
+        </script>
+        {% comment %} <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script> {% endcomment %}
+        <!-- Plugins js -->
+        <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+        <!-- Popper js -->
+        <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+        <!-- Bootstrap js -->
+        <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+        <!-- Scroll Up Js -->
+        <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+        <!-- Custom Js -->
+        <script src="{% static 'secretaire/js/main.js' %}"></script>
+        
+    </body>
+    </html>

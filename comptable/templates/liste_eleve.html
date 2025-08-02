@@ -71,20 +71,28 @@
                                 <tbody>
                                     {% for inscrit in inscrits %}
                                     <tr>
-                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ inscrit.id }}</td>
                                         <td>{{ inscrit.etudiant.matricule }}</td>
                                         <td>{{ inscrit.etudiant.nom }} {{ inscrit.etudiant.prenom }}</td>
                                         <td>
-                                            <a href="{%  url 'comptable:ajouter_paiement' inscrit.id %}" 
-                                               class="btn btn-success btn-sm">
-                                               <i class="fas fa-money-bill-wave"></i> Paiement
-                                            </a>
+                                            {% if messagesCoutNonEnregistrer %}
+                                                <a href="#"
+                                                    class="btn btn-success btn-sm" onclick= "alert('{{messagesCoutNonEnregistrer|escapejs }}');">
+                                                    <i class="fas fa-money-bill-wave"></i> Paiement
+                                                </a>
+                                            {% else %}
+                                                <a href="{%  url 'comptable:ajouter_paiement' inscrit.id anneesScolaire.id %}"
+                                                    class="btn btn-success btn-sm">
+                                                    <i class="fas fa-money-bill-wave"></i> Paiement
+                                                </a>
+                                            {% endif %}
+
                                         </td>
                                     </tr>
                                     {% empty %}
-                                    <tr>
-                                        <td colspan="4" class="text-center">Aucun élève dans cette classe</td>
-                                    </tr>
+                                        <tr>
+                                            <td colspan="4" class="text-center">Aucun élève dans cette classe</td>
+                                        </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
