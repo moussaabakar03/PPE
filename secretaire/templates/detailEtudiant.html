@@ -126,7 +126,7 @@
 
                 <div class="detailEtudiant">
                     <div>
-                        <p style = "text-align: center; margin-top: 15px;" > DETAILS ELEVE: [<span style = "font-weight: bold;">{{etudiant.nom}}</span>] </p>
+                        <p style = "text-align: center; margin-top: 15px;" > DETAILS ELEVE: [<span style = "font-weight: bold;">{{etudiant.nom}} {{etudiant.prenom}}</span>] </p>
                     </div>
                     <div> 
                         <a href ="{% url 'secretaire:echangeMessage' etudiant.id %}">

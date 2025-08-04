@@ -201,6 +201,63 @@
             margin-top: 10px;
             font-weight: bold;
         }
+
+             .paiement-accordeon {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .paiement-header {
+            background-color: #f8f9fa;
+            padding: 12px 16px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+        }
+
+        .paiement-header:hover {
+            background-color: rgba(163, 163, 180, 1);
+        }
+
+        .paiement-header span.icon {
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .paiement-header.open span.icon {
+            transform: rotate(90deg);
+        }
+
+        .paiement-content {
+            display: none;
+            padding: 10px 16px;
+            background-color: white;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .table th, .table td {
+            padding: 10px;
+        }
+
+        .paid {
+            color: green;
+            font-weight: bold;
+        }
+
+        .remaining {
+            color: red;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -233,8 +290,8 @@
                                 <a href="{% url 'secretaire:all-student' %}">Elèves *</a>
                             </li>
                             {% comment %} <li> <a href ="{% url 'secretaire:detailEtudiant' etudiant.matricule parent.id %}" >Retour</a></li> {% endcomment %}
-                            <li> <a href ="" >Retour</a></li>
-                            <li> Mes Paiements </li>
+                            <li> <a href ="{% url 'secretaire:detailEtudiant' eleve.matricule eleve.parent.id %}" >Retour</a></li>
+                            <li> Paiements({{eleve.nom}} {{eleve.prenom}}) </li>
                         </ul>
                     </div>
                     <div class="">
@@ -245,36 +302,49 @@
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table display data-table text-nowrap">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Type</th>
-                                <th>Montant(FCFA)</th>
-                                <th>periode_Concerné</th>
-                                <th>Méthode</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% if mesPaiements %}
-                                {% for paiement in mesPaiements %}
-                                    <tr>
-                                        <td>{{ paiement.datePaiement|date:"d/m/Y" }}</td>
-                                        <td>{{ paiement.typePaiement }}</td>
-                                        <td class="paid">{{ paiement.montantVerse }}</td>
-                                        {% comment %} <td class="remaining">{{ paiement.reste_a_payer }} FCFA</td> {% endcomment %}
-                                        {% comment %} <td class="remaining">{{ paiement.periodeConcerne }}</td> {% endcomment %}
-                                        <td>{{ paiement.periodeConcerne }}</td>
-                                        <td>{{ paiement.modePaiment }}</td>
-                                    </tr>
-                                {% endfor %}
-                            {% else %}
-                                <tr>
-                                    <td colspan="5">Aucun paiement trouvé</td>
-                                </tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
+                    <div style = "display: flex; flex-direction: column; align-items: center; padding: 20px; background-color: #f8f8f8ff; border-radius: 10px; height: 80px; width: 100%; margin-bottom: 20px;">
+                        <p style ="font-size: 30px; font-weight: bold;">Paiements</p>
+                    </div>
+                   
+                    {% if paiements_groupes %}
+                        {% for salle, paiements in paiements_groupes.items %}
+                            {% with forloop.counter as idx %}
+                                <div class="paiement-accordeon">
+                                    <div class="paiement-header" onclick="togglePaiements('{{ idx }}')" id="header-{{ idx }}">
+                                        <span class="icon" id="icon-{{ idx }}" style="color: red!important;">&#9654;</span>
+                                        Paiements pour la salle : {{ salle.niveau }}- {{ salle.nom }}
+                                    </div>
+                                    <div class="paiement-content" id="content-{{ idx }}">
+                                        <table class="table display data-table text-nowrap" style="width:100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Type</th>
+                                                    <th>Montant</th>
+                                                    <th>Mode</th>
+                                                    <th>Période</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for paiement in paiements %}
+                                                    <tr>
+                                                        <td>{{ paiement.datePaiement|date:"d/m/Y" }}</td>
+                                                        <td>{{ paiement.typePaiement }}</td>
+                                                        <td class="paid">{{ paiement.montantVerse }}</td>
+                                                        <td>{{ paiement.modePaiment }}</td>
+                                                        <td>{{ paiement.periodeConcerne }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {% endwith %}
+                        {% endfor %}
+                    {% else %}
+                        <p style="text-align: center;">Aucun paiement trouvé.</p>
+                    {% endif %}
                 </div>
 
                 <div>
@@ -299,6 +369,18 @@
     <!-- Custom Js -->
     <script src="{% static 'secretaire/js/main.js' %}"></script>
 
+
+    <script>
+        function togglePaiements(id) {
+            const content = document.getElementById("content-" + id);
+            const header = document.getElementById("header-" + id);
+            const icon = document.getElementById("icon-" + id);
+            const isVisible = content.style.display === "block";
+
+            content.style.display = isVisible ? "none" : "block";
+            header.classList.toggle("open", !isVisible);
+        }
+    </script>
 </body>
 
 </html>

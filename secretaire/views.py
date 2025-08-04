@@ -398,19 +398,35 @@ def detailEtudiant(request, matricule, id):
         }
         return render(request, 'detailEtudiant.html', context)
 
+# def affichePaiementEleve(request, matricule):
+#     eleve = get_object_or_404(Etudiant, matricule=matricule)
+#     inscriptions = eleve.inscriptions.all()
+#     parent = eleve.parent
+#     mesPaiements = PaiementEleve.objects.filter(
+#         inscription_Etudiant__in = inscriptions
+#     )
+    
+#     return render(request, 'paiementEleve.html', {'mesPaiements': mesPaiements , 'eleve': eleve, 'parent': parent})
 @login_required
 def affichePaiementEleve(request, matricule):
     eleve = get_object_or_404(Etudiant, matricule=matricule)
     inscriptions = eleve.inscriptions.all()
-    
-    mesPaiements = PaiementEleve.objects.filter(
-        inscription_Etudiant__in = inscriptions
-    )
-    
-    return render(request, 'paiementEleve.html', {'mesPaiements': mesPaiements , 'eleve': eleve})
-    
-        
+    paiements_groupes = defaultdict(list)
 
+    # Récupérer tous les paiements liés aux inscriptions de l'élève
+    paiements = PaiementEleve.objects.filter(inscription_Etudiant__in=inscriptions)
+
+    # Grouper les paiements par salleClasse
+    for paiement in paiements:
+        salle = paiement.inscription_Etudiant.salleClasse
+        paiements_groupes[salle].append(paiement)
+
+    return render(request, 'paiementEleve.html', {
+        'paiements_groupes': dict(paiements_groupes),
+        'etudiant': eleve,
+        'mesPaiements': paiements , 'eleve': eleve
+    })
+ 
 #teacher
 @login_required
 def all_teacher(request):
@@ -1576,6 +1592,8 @@ def generationBilletin(request, matricule, classe, id):
         "etudiant": etudiant,
         "inscrits": inscrits,
         "tousInscrits":tousInscrits,
+        
+        'salleClasse': salleClasse,
         
         "liste_moyennesTrimestre1": liste_moyennes["1er trimestre"],
         "liste_moyennesTrimestre2": liste_moyennes["2e trimestre"],

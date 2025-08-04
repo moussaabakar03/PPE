@@ -51,7 +51,7 @@
                                         <option value=""  style= "width: 600px; ">-- Choisir une année scolaire --</option>
                                         {% for inscrit in inscrits %}
                                             <option value="{{ inscrit.anneeAcademique.id }}" data-classe="{{ inscrit.salleClasse.niveau.classe }}">
-                                                {{ inscrit.anneeAcademique.debutAnnee|date:"Y" }} - {{ inscrit.anneeAcademique.fintAnnee|date:"Y" }}
+                                                {{ inscrit.anneeAcademique.debutAnnee|date:"Y" }} - {{ inscrit.anneeAcademique.fintAnnee|date:"Y" }} ({{inscrit.salleClasse.niveau.classe}})
                                             </option>
                                         {% endfor %}
                                     </select>
@@ -80,11 +80,13 @@
                                         <div style="font-size: 10px;">Éduquer - Produire - Se développer</div>
                                         <div style="font-size: 10px;">Tél : (+228) 63 79 77 19</div>
                                         <div style="font-size: 10px;">Ville : Lomé - Togo</div>
-                                        <div style="font-size: 10px;">Adresse : Quartier Amriguébé - Rue de 40 m</div>
+                                        <div style="font-size: 10px;">Adresse :  Agoé Assiyéyé - Rue de 40 m</div>
                                     </div>
                                     
                                     <div class="center-header">
-                                        <div class="logo"> <img src = "{% static 'secretaire/img/logo.png' %}" alt = "image" style = "object-fit: cover; " /></div>
+                                        <div>
+                                            <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="logo" style="width: 85px; height: 85px; object-fit: cover;">
+                                        </div>
                                         <div class="title-large">BULLETIN DE NOTES</div>
                                         <div class="subtitle">{{trimestre}}</div>
                                         <div style="font-size: 11px;">Paix - Travail - Progrès</div>
@@ -96,7 +98,7 @@
                                         <div style="direction: ltr;">وزارة التعليم الوطني</div>
                                         <div style="direction: ltr;">مجمع مدرسة النهضة العلمية</div>
                                         <div style="font-size: 10px; direction: ltr;">ANNÉE SCOLAIRE</div>
-                                        <div style="font-size: 10px; direction: ltr;">2024-2025</div>
+                                        <div style="font-size: 10px; direction: ltr;">{{ annee.debutAnnee|date:"Y" }}- {{ annee.fintAnnee|date:"Y" }}</div>
                                     </div>
                                 </div>
                                 
@@ -105,9 +107,8 @@
                                     <div>
                                         <strong>Nom Prénoms :</strong> {{etudiant.nom}} {{etudiant.prenom}}<br>
                                         <strong>Date de Naissance :</strong> {{etudiant.date_naissance|date:"Y-m-d"}} <strong>Sexe :</strong> {{etudiant.genre}} <br>
-                                        <strong>Lieu de Naissance :</strong> {{etudiant.lieuDeNaissance}}<br>
                                         <strong>Matricule :</strong> {{etudiant.matricule}}<br>
-                                        <strong>Classe :</strong> 3eS_1 <strong>Effectif :</strong> 45<br>
+                                        <strong>Classe :</strong> {{salleClasse.niveau.classe}} {{salleClasse.nom}} <strong>Effectif :</strong> {{tousInscrits}}<br>
                                         <strong>Redoublant (e) :</strong> {% if moyenne_generale1 > 10 %} Non {% else %} Oui {% endif %}
                                     </div>
                                     <div class="">
@@ -159,12 +160,12 @@
 
                                 
                                 <!-- Totaux et moyennes -->
-                                <div class="totals">
-                                    <div class="total-box">
-                                        <div><strong>Moyenne 1er Trimestre :</strong> {{moyenne_generale1}}</div>
-                                        <div><strong>Rang 1er Trimestre :</strong> 1 / {{tousInscrits}} </div>
+                                    <div class="" style ="background-color: white; border: 0.5px solid #ddd; padding: 10px;">
+                                        <div class="" style = "display: flex; justify-content: center; align-items: center; gap: 75px; ">
+                                            <div><strong>Moyenne 1er Trimestre :</strong> {{moyenne_generale1}}</div>
+                                            <div><strong>Rang 1er Trimestre :</strong> 1 / {{tousInscrits}}</div>
+                                        </div>
                                     </div>
-                                </div>
                                 
                                 <div style="text-align: center; margin: 20px 0;">
                                     <div><strong>Forte moyenne :</strong> 15.50</div>
@@ -217,11 +218,13 @@
                                         <div style="font-size: 10px;">Éduquer - Produire - Se développer</div>
                                         <div style="font-size: 10px;">Tél : (+228) 63 79 77 19</div>
                                         <div style="font-size: 10px;">Ville : Lomé - Togo</div>
-                                        <div style="font-size: 10px;">Adresse : Quartier Amriguébé - Rue de 40 m</div>
+                                        <div style="font-size: 10px;">Adresse :  Agoé Assiyéyé - Rue de 40 m</div>
                                     </div>
                                     
                                     <div class="center-header">
-                                        <div class="logo"> <img src = "{% static 'secretaire/img/logo.png' %}" alt = "image" style = "object-fit: cover; " /></div>
+                                        <div>
+                                            <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="logo" style="width: 85px; height: 85px; object-fit: cover;">
+                                        </div>
                                         <div class="title-large">BULLETIN DE NOTES</div>
                                         <div class="subtitle">{{trimestre}}</div>
                                         <div style="font-size: 11px;">Paix - Travail - Progrès</div>
@@ -233,7 +236,7 @@
                                         <div style="direction: ltr;">وزارة التعليم الوطني</div>
                                         <div style="direction: ltr;">مجمع مدرسة النهضة العلمية</div>
                                         <div style="font-size: 10px; direction: ltr;">ANNÉE SCOLAIRE</div>
-                                        <div style="font-size: 10px; direction: ltr;">2024-2025</div>
+                                        <div style="font-size: 10px; direction: ltr;">{{ annee.debutAnnee|date:"Y" }}- {{ annee.fintAnnee|date:"Y" }}</div>
                                     </div>
                                 </div>
                                 
@@ -242,9 +245,8 @@
                                     <div>
                                         <strong>Nom Prénoms :</strong> {{etudiant.nom}} {{etudiant.prenom}}<br>
                                         <strong>Date de Naissance :</strong> {{etudiant.date_naissance|date:"Y-m-d"}} <strong>Sexe :</strong> {{etudiant.genre}} <br>
-                                        <strong>Lieu de Naissance :</strong> {{etudiant.lieuDeNaissance}}<br>
                                         <strong>Matricule :</strong> {{etudiant.matricule}}<br>
-                                        <strong>Classe :</strong> 3eS_1 <strong>Effectif :</strong> 45<br>
+                                        <strong>Classe :</strong> {{salleClasse.niveau.classe}} {{salleClasse.nom}}  <strong>Effectif :</strong> {{tousInscrits}}<br>
                                         <strong>Redoublant (e) :</strong> {% if moyenne_generale2 > 10 %} Non {% else %} Oui {% endif %}
 
                                     </div>
@@ -296,16 +298,16 @@
 
                                 
                                 <!-- Totaux et moyennes -->
-                                <div class="totals">
-                                    <div class="total-box">
-                                        <div><strong>Moyenne 1er Trimestre :</strong> {{moyenne_generale1}}</div>
-                                        <div><strong>Rang 1er Trimestre :</strong> 1 / {{tousInscrits}}</div>
+                                    <div class="" style ="background-color: white; border: 0.5px solid #ddd; padding: 10px;">
+                                        <div class="d-flex" style = "justify-content: center; align-items: center; gap: 75px; ">
+                                            <div><strong>Moyenne 1ère Trimestre :</strong>  {{moyenne_generale1}}</div>
+                                            <div><strong>Rang 1er Trimestre :</strong> 1 / {{tousInscrits}}</div>
+                                        </div>
+                                        <div class="d-flex" style = "justify-content: center; align-items: center; gap: 75px; ">
+                                            <div><strong>Moyenne 2ème Trimestre :</strong>  {{moyenne_generale2}}</div>
+                                            <div><strong>Rang 2ème Trimestre :</strong> 1 / {{tousInscrits}}</div>
+                                        </div>
                                     </div>
-                                    <div class="total-box">
-                                        <div><strong>Moyenne 2ème Trimestre :</strong>  {{moyenne_generale2}}</div>
-                                        <div><strong>Rang 2ème Trimestre :</strong> 1 / {{tousInscrits}}</div>
-                                    </div>
-                                </div>
                                 
                                 <div style="text-align: center; margin: 20px 0;">
                                     <div><strong>Forte moyenne :</strong> 15.50</div>
@@ -358,11 +360,14 @@
                                         <div style="font-size: 10px;">Éduquer - Produire - Se développer</div>
                                         <div style="font-size: 10px;">Tél : (+228) 63 79 77 19</div>
                                         <div style="font-size: 10px;">Ville : Lomé - Togo</div>
-                                        <div style="font-size: 10px;">Adresse : Quartier Amriguébé - Rue de 40 m</div>
+                                        <div style="font-size: 10px;">Adresse :  Agoé Assiyéyé - Rue de 40 m</div>
                                     </div>
                                     
                                     <div class="center-header">
-                                        <div class="logo"> <img src = "{% static 'secretaire/img/logo.png' %}" alt = "image" style = "object-fit: cover; " /></div>
+                                        {% comment %} <div class="logo"> <img src = "{% static 'secretaire/img/logo.png' %}" alt = "image" style = "object-fit: cover; " /></div> {% endcomment %}
+                                        <div>
+                                            <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="logo" style="width: 85px; height: 85px; object-fit: cover;">
+                                        </div>
                                         <div class="title-large">BULLETIN DE NOTES</div>
                                         <div class="subtitle">{{trimestre}}</div>
                                         <div style="font-size: 11px;">Paix - Travail - Progrès</div>
@@ -374,7 +379,7 @@
                                         <div style="direction: ltr;">وزارة التعليم الوطني</div>
                                         <div style="direction: ltr;">مجمع مدرسة النهضة العلمية</div>
                                         <div style="font-size: 10px; direction: ltr;">ANNÉE SCOLAIRE</div>
-                                        <div style="font-size: 10px; direction: ltr;">2024-2025</div>
+                                        <div style="font-size: 10px; direction: ltr;">{{ annee.debutAnnee|date:"Y" }}- {{ annee.fintAnnee|date:"Y" }}</div>
                                     </div>
                                 </div>
                                 
@@ -383,9 +388,8 @@
                                     <div>
                                         <strong>Nom Prénoms :</strong> {{etudiant.nom}} {{etudiant.prenom}}<br>
                                         <strong>Date de Naissance :</strong> {{etudiant.date_naissance|date:"Y-m-d"}} <strong>Sexe :</strong> {{etudiant.genre}} <br>
-                                        <strong>Lieu de Naissance :</strong> {{etudiant.lieuDeNaissance}}<br>
                                         <strong>Matricule :</strong> {{etudiant.matricule}}<br>
-                                        <strong>Classe :</strong> 3eS_1 <strong>Effectif :</strong> 45<br>
+                                        <strong>Classe :</strong> {{salleClasse.niveau.classe}} {{salleClasse.nom}}  <strong>Effectif :</strong> {{tousInscrits}}<br>
                                         <strong>Redoublant (e) :</strong> {% if moyenne_generale3 > 10 %} Non {% else %} Oui {% endif %}
 
                                     </div>
@@ -437,16 +441,16 @@
 
                                 <div>
                                 <!-- Totaux et moyennes -->
-                                    <div class="totals">
-                                        <div class="total-box">
+                                    <div class="" style ="background-color: white; border: 0.5px solid #ddd; padding: 10px;">
+                                        <div class="" style = "display: flex; justify-content: center; align-items: center; gap: 75px; ">
                                             <div><strong>Moyenne 1er Trimestre :</strong> {{moyenne_generale1}}</div>
                                             <div><strong>Rang 1er Trimestre :</strong> 1 / {{tousInscrits}}</div>
                                         </div>
-                                        <div class="total-box">
+                                        <div class="d-flex" style = "justify-content: center; align-items: center; gap: 75px; ">
                                             <div><strong>Moyenne 2ème Trimestre :</strong>  {{moyenne_generale2}}</div>
                                             <div><strong>Rang 2ème Trimestre :</strong> 1 / {{tousInscrits}}</div>
                                         </div>
-                                        <div class="total-box">
+                                        <div class="d-flex" style = "justify-content: center; align-items: center; gap: 75px; ">
                                             <div><strong>Moyenne 3ème Trimestre :</strong>  {{moyenne_generale3}}</div>
                                             <div><strong>Rang 3ème Trimestre :</strong> 1 / {{tousInscrits}}</div>
                                         </div>

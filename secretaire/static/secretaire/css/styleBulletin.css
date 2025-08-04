@@ -31,9 +31,9 @@
     direction: rtl;
 }
 
-.logo {
-    width: 60px;
-    height: 60px;
+.logo img {
+    width: 100px;
+    height: 100px!important;
     border: 2px solid #333;
     border-radius: 50%;
     display: inline-flex;
@@ -41,6 +41,7 @@
     justify-content: center;
     font-weight: bold;
     font-size: 12px;
+    object-fit: cover;
 }
 
 .student-info {

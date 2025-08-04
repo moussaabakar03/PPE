@@ -311,18 +311,36 @@ def echangeEleveEleve(request, id):
 
 
 
-@login_required
+# @login_required
+# def mesPaiement(request):
+#     eleve = get_object_or_404(Etudiant, username = request.user)
+#     inscriptions = eleve.inscriptions.all()
+    
+#     mesPaiements = PaiementEleve.objects.filter(
+#         inscription_Etudiant__in = inscriptions, inscription_salleClasse__in = inscriptions.salleClasse
+#     )
+    
+#     return render(request, 'eleve/mesPaiement.html', {'mesPaiements': mesPaiements , 'etudiant': eleve, 'inscriptions': inscriptions})
+from collections import defaultdict
+
 def mesPaiement(request):
-    eleve = get_object_or_404(Etudiant, username = request.user)
+    eleve = get_object_or_404(Etudiant, username=request.user)
     inscriptions = eleve.inscriptions.all()
-    
-    mesPaiements = PaiementEleve.objects.filter(
-        inscription_Etudiant__in = inscriptions
-    )
-    
-    return render(request, 'eleve/mesPaiement.html', {'mesPaiements': mesPaiements , 'etudiant': eleve})
-    
-        
+    paiements_groupes = defaultdict(list)
+
+    # Récupérer tous les paiements liés aux inscriptions de l'élève
+    paiements = PaiementEleve.objects.filter(inscription_Etudiant__in=inscriptions)
+
+    # Grouper les paiements par salleClasse
+    for paiement in paiements:
+        salle = paiement.inscription_Etudiant.salleClasse
+        paiements_groupes[salle].append(paiement)
+
+    return render(request, 'eleve/mesPaiement.html', {
+        'paiements_groupes': dict(paiements_groupes),
+        'etudiant': eleve
+    })
+  
 
 
 
