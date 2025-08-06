@@ -5,13 +5,21 @@ from django.shortcuts import render, get_object_or_404, redirect
 # from .models import Enseignant
 # from .form import PaiementPersonnelForm
 
+import json
+from collections import defaultdict
+from decimal import Decimal
+
 from comptable.models import PaiementEleve
 from secretaire.models import Cout, Inscription, Etudiant, AnneeScolaire, SalleDeClasse
+from django.contrib.auth.decorators import login_required
+
+from acadPro.utils.decorators import staff_required
+
 # from . form import PaiementForm, timezone
 # Create your views here.
 
-
-
+@login_required
+@staff_required
 def selectionSalle(request):
     annees = AnneeScolaire.objects.all().order_by('-id')
     SalleDeClasses = SalleDeClasse.objects.all()
@@ -22,9 +30,8 @@ def selectionSalle(request):
     # Inclure le chemin relatif vers le template
     return render(request, 'selectionSalle.html', context)
 
-
-
-
+@login_required
+@staff_required
 def liste_eleve(request, id_salle, id_annee):
  
     # Initialisation du contexte
@@ -61,11 +68,8 @@ def liste_eleve(request, id_salle, id_annee):
     
     return render(request,  'liste_eleve.html', context)
 
-
-import json
-from collections import defaultdict
-from decimal import Decimal
-
+@login_required
+@staff_required
 def ajouter_paiement(request, id_inscription, id_annee):
     anneeScol = get_object_or_404(AnneeScolaire, id=id_annee)
     inscriptionEleve = get_object_or_404(Inscription, id=id_inscription, anneeAcademique = anneeScol)
@@ -126,8 +130,24 @@ def ajouter_paiement(request, id_inscription, id_annee):
 
     })
 
+@login_required
+@staff_required
+def indexComptable(request):
+    paiements = PaiementEleve.objects.all()
+    totalMontantPaye = sum(paiement.montantVerse for paiement in paiements)
+    
+    paiementsRecentes= PaiementEleve.objects.all()[:5]
+    return render(request, 'dashbordComptable.html', {
+        'paiements': paiements,
+        'totalPaye': totalMontantPaye,
+        'paiementsRecentes': paiementsRecentes
+    })
 
-
+@login_required
+@staff_required
+def listePaiments(request):
+    paiements = PaiementEleve.objects.all()
+    return render(request, 'listePaiments.html', {'paiements': paiements})
 
 # def liste_personnel(request):
 #     enseignants = Enseignant.objects.all()
@@ -143,19 +163,19 @@ def ajouter_paiement(request, id_inscription, id_annee):
 
 
 # def ajouter_paiement_personnel(request, enseignant_id):
-    enseignant = get_object_or_404(Enseignant, id=enseignant_id)
+    # enseignant = get_object_or_404(Enseignant, id=enseignant_id)
 
-    if request.method == 'POST':
-        form = PaiementPersonnelForm(request.POST)
-        if form.is_valid():
-            paiement = form.save(commit=False)
-            paiement.enseignant = enseignant
-            paiement.save()
-            return redirect('liste_personnel')
-    else:
-        form = PaiementPersonnelForm()
+    # if request.method == 'POST':
+    #     form = PaiementPersonnelForm(request.POST)
+    #     if form.is_valid():
+    #         paiement = form.save(commit=False)
+    #         paiement.enseignant = enseignant
+    #         paiement.save()
+    #         return redirect('liste_personnel')
+    # else:
+    #     form = PaiementPersonnelForm()
 
-    return render(request,  'ajouter_paiement_personnel.html', {
-        'form': form,
-        'enseignant': enseignant
-    })
+    # return render(request,  'ajouter_paiement_personnel.html', {
+    #     'form': form,
+    #     'enseignant': enseignant
+    # })

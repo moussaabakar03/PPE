@@ -88,10 +88,11 @@
                 <div class="breadcrumbs-area">
                     <h3>Evaluation</h3>
                     <ul>
-                        <li>
+                        {% comment %} <li>
                             <a href="{% url 'secretaire:all_evaluation' %}">All Evaluation</a>
-                        </li>
-                        <li>Evaluation individuelle</li>
+                        </li> {% endcomment %}
+                        <li> <a href ="{% url 'secretaire:selectClasse' %}" ><i class="fa fa-arrow-left"></i> Retour</a></li>
+                        <li>Evaluation individuelle({{ salleClasse.niveau.classe }} {{ salleClasse.nom }})</li>
                     </ul>
                 </div>
                 <!-- Breadcubs Area End Here -->
@@ -100,13 +101,12 @@
                     <div class="card-body">
                         <div class="heading-layout1">
                             <div class="item-title">
-                                <h6>Veillez choisir l'élève dont vous voulez lui Attribuer la note.({{ salleClasse.niveau.classe }} {{ salleClasse.nom }})</h6>
+                                <h6>Veillez choisir l'élève dont vous voulez lui Attribuer la note.</h6>
                             </div>
-                            <div class="col-xl-3 col-lg-6 col-12 form-group">
+                            <div class="col-xl-3 col-lg-6 col-6 form-group">
                                 Année Scolaire
                                 <p style = "color: red;"> {{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}} </p>
                             </div>
-                            
                         </div>
                         <div class="search-box">
                             <i class="fas fa-search"></i>

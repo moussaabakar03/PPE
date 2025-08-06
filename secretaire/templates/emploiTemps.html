@@ -134,12 +134,13 @@
             <div id="modalOverlay" class="modal-overlay">
                 <div class="modal-content-custom">
                     <div class="modal-header-custom">
-                        <h4  style="text-align: center; font-weight: bold; margin-top: 20px;">Réponse</h4>
+                        <h4  style="text-align: center; font-weight: bold; margin-top: 20px;">{{salle.niveau.classe}}- {{salle.nom}}   - {{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}}</h4>
                         <button type="button" class="modal-close" onclick="closeModal()">&times;</button>
                     </div>
-                    <div class="modal-header-custom">
-                        <h5>Veillez entre le jour dont le nombre d'heures de cours est maximal </h5>
+                    <div>
+                        <p style ="text-align: center; "> Veillez remplir les champs ci-dessous respectivement heure début et fin des cours. </p>
                     </div>
+                    
                     {% comment %} <div id="successMessage" class="success-message" style="display: none;">
                         Votre message a bien été envoyé. Merci !
                     </div> {% endcomment %}
@@ -285,7 +286,7 @@
             document.getElementById('modalOverlay').style.display = 'block';
             document.body.style.overflow = 'hidden'; // Empêche le scroll de la page
             
-            document.querySelector('.modal-header-custom h4').textContent = `Salle ${salle} annee ${annee}`;
+            //document.querySelector('.modal-header-custom h4').textContent = `Salle ${salle} annee ${annee}`;
         }
 
 

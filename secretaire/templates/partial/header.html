@@ -1,14 +1,12 @@
 {% load static %}
-<div class="navbar navbar-expand-md header-menu-one bg-light" style ="height : 78px;">
+<div class="navbar navbar-expand-md header-menu-one bg-light">
     <div class="nav-bar-header-one">
         <div class="header-logo">
             <a href="{% url 'secretaire:index'%} ">
-                {% comment %} <img src="{% static 'secretaire/img/logo.png' %}" alt="logo" class="img-fluid" style =" overflow : hidden;"> {% endcomment %}
-                {% comment %} <img src="{% static 'secretaire/img/logoAcadPro.png' %}" alt="logo" class="img-fluid" style =" overflow : hidden; " width= 90px height= 90px/> {% endcomment %}
-                <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="logo" class="img-fluid" style =" overflow : hidden; object-fit: cover; " width ="75" height="5" >
+                <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="logo"  width ="75" height="5">
             </a>
         </div>
-         <div class="toggle-button sidebar-toggle">
+            <div class="toggle-button sidebar-toggle">
             <button type="button" class="item-link">
                 <span class="btn-icon-wrap">
                     <span></span>
@@ -19,7 +17,7 @@
         </div>
     </div>
     <div class="d-md-none mobile-nav-bar">
-       <button class="navbar-toggler pulse-animation" type="button" data-toggle="collapse" data-target="#mobile-navbar" aria-expanded="false">
+        <button class="navbar-toggler pulse-animation" type="button" data-toggle="collapse" data-target="#mobile-navbar" aria-expanded="false">
             <i class="far fa-arrow-alt-circle-down"></i>
         </button>
         <button type="button" class="navbar-toggler sidebar-toggle-mobile">
@@ -35,7 +33,7 @@
                             <span class="flaticon-search" aria-hidden="true"></span>
                         </button>
                     </span>
-                    <input type="text" class="form-control" placeholder="Fitrer . . .">
+                    <input type="text" class="form-control" placeholder="Find Something . . .">
                 </div>
             </li>
         </ul>
@@ -43,28 +41,14 @@
             <li class="navbar-item dropdown header-admin">
                 <a class="navbar-nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
                     aria-expanded="false">
-                    <div class="admin-title">
+                    <div class="admin-title" style ="margin-top: 10px; margin-left: 10px;">
                         <h5 class="item-title">AcadPro</h5>
-                        <span>Admin</span>
+                        <span>Sécretaire</span>
                     </div>
                     <div class="admin-img">
-                        <img src="{% static 'secretaire/img/figure/admin.jpg' %}" alt="Admin">
+                        <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="Admin" class="img-fluid" style="object-fit: contain; width: 50px; height: 50px; border-radius: 50%; ">
                     </div>
                 </a>
-                {% comment %} <div class="dropdown-menu dropdown-menu-right">
-                    <div class="item-header">
-                        <h6 class="item-title">Steven Zone</h6>
-                    </div>
-                    <div class="item-content">
-                        <ul class="settings-list">
-                            <li><a href="#"><i class="flaticon-user"></i>My Profile</a></li>
-                            <li><a href="#"><i class="flaticon-list"></i>Task</a></li>
-                            <li><a href="#"><i class="flaticon-chat-comment-oval-speech-bubble-with-text-lines"></i>Message</a></li>
-                            <li><a href="#"><i class="flaticon-gear-loading"></i>Account Settings</a></li>
-                            <li><a href="{% url 'deconnexion' %}"><i class="flaticon-turn-off"></i>Log Out</a></li>
-                        </ul>
-                    </div>
-                </div> {% endcomment %}
                 <div class="dropdown-menu dropdown-menu-right">
                     <div class="item-header">
                         <h6 class="item-title">AcadPro</h6>
@@ -85,52 +69,9 @@
                     <i class="far fa-envelope"></i>
                 </a>
             </li>
-            <li class="navbar-item dropdown header-notification">
-                <a class="navbar-nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                    aria-expanded="false">
-                    <i class="far fa-bell"></i>
-                    <div class="item-title d-md-none text-16 mg-l-10">Notification</div>
-                    <span>8</span>
-                </a>
-
-                <div class="dropdown-menu dropdown-menu-right">
-                    <div class="item-header">
-                        <h6 class="item-title">03 Notifiacations</h6>
-                    </div>
-                    <div class="item-content">
-                        <div class="media">
-                            <div class="item-icon bg-skyblue">
-                                <i class="fas fa-check"></i>
-                            </div>
-                            <div class="media-body space-sm">
-                                <div class="post-title">Complete Today Task</div>
-                                <span>1 Mins ago</span>
-                            </div>
-                        </div>
-                        <div class="media">
-                            <div class="item-icon bg-orange">
-                                <i class="fas fa-calendar-alt"></i>
-                            </div>
-                            <div class="media-body space-sm">
-                                <div class="post-title">Director Metting</div>
-                                <span>20 Mins ago</span>
-                            </div>
-                        </div>
-                        <div class="media">
-                            <div class="item-icon bg-violet-blue">
-                                <i class="fas fa-cogs"></i>
-                            </div>
-                            <div class="media-body space-sm">
-                                <div class="post-title">Update Password</div>
-                                <span>45 Mins ago</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li>
             <li class="navbar-item dropdown header-language">
                 <a class="navbar-nav-link dropdown-toggle" href="#" role="button" 
-                data-toggle="dropdown" aria-expanded="false"><i class="fas fa-globe-americas"></i>Fr</a>
+                data-toggle="dropdown" aria-expanded="false"><i class="fas fa-globe-americas"></i>EN</a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="#">English</a>
                     <a class="dropdown-item" href="#">Français</a>
@@ -140,6 +81,4 @@
         </ul>
     </div>
 </div>
-
-
 {% block header %} {% endblock %}

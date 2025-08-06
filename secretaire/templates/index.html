@@ -55,7 +55,7 @@
                     <h3>Admin Dashboard</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'secretaire:index' %}">Home</a>
+                            <a href="{% url 'secretaire:index' %}">Accueil</a>
                         </li>
                         <li>Admin</li>
                     </ul>
@@ -135,6 +135,73 @@
                 <!-- Dashboard summery End Here -->
                 <!-- Dashboard Content Start Here -->
                 <div class="row gutters-20">
+                      <div class="col-5-xxxl col-12">
+                        <div class="card dashboard-card-twelve">
+                            <div class="card-body">
+                                <div class="heading-layout1">
+                                    <div class="item-title">
+                                        <h3>Dernières inscriptions</h3>
+                                    </div>
+                                    <div class="dropdown">
+                                        <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                                            aria-expanded="false">...</a>
+
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" href="{% url 'secretaire:index' %}"><i
+                                                    class="fas fa-redo-alt text-orange-peel"></i>Raffaichir</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="kids-details-wrap">
+                                    <div class="row">
+                                        {% for inscris in inscrisRecemments %}
+                                            <div class="col-12-xxxl col-xl-6 col-12">
+                                                <div class="kids-details-box mb-5">
+                                                    <div class="item-img">
+                                                        {% if inscris.etudiant.photo %}
+                                                            <td><img src="{{inscris.etudiant.photo.url}}" alt="Photo" style="object-fit: cover; object-position: center;"></td>
+                                                        {% else %}
+                                                            <td class="text-center"><i class="fa fa-user"></i></td> 
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="item-content table-responsive">
+                                                        <table class="table text-nowrap">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>Name:</td>
+                                                                    <td>{{inscris.etudiant.nom}} {{inscris.etudiant.prenom}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Sexe:</td>
+                                                                    <td>{{inscris.etudiant.genre}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Niveau:</td>
+                                                                    <td>{{inscris.salleClasse.niveau.classe}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Salle:</td>
+                                                                    <td>{{inscris.salleClasse.nom}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Admission Id:</td>
+                                                                    <td>00{{inscris.id}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Date d'Admission:</td>
+                                                                    <td>{{inscris.dateEnregistrement|date:"Y/m/d H:i"}}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-12 col-xl-8 col-6-xxxl">
                         <div class="card dashboard-card-one pd-b-20">
                             <div class="card-body">

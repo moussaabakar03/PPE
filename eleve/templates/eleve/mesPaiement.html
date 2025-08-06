@@ -99,45 +99,49 @@
 
                 <div class="card height-auto">
                     <div class="table-responsive">
-                        {% if paiements_groupes %}
-                            {% for salle, paiements in paiements_groupes.items %}
-                                {% with forloop.counter as idx %}
-                                    <div class="paiement-accordeon">
-                                        <div class="paiement-header" onclick="togglePaiements('{{ idx }}')" id="header-{{ idx }}">
-                                            <span class="icon" id="icon-{{ idx }}" style="color: red!important;">&#9654;</span>
-                                            Paiements pour la salle : {{ salle.niveau }}- {{ salle.nom }}
-                                        </div>
-                                        <div class="paiement-content" id="content-{{ idx }}">
-                                            <table class="table display data-table text-nowrap" style="width:100%;">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Date</th>
-                                                        <th>Type</th>
-                                                        <th>Montant</th>
-                                                        <th>Mode</th>
-                                                        <th>Période</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {% for paiement in paiements %}
-                                                        <tr>
-                                                            <td>{{ paiement.datePaiement|date:"d/m/Y" }}</td>
-                                                            <td>{{ paiement.typePaiement }}</td>
-                                                            <td class="paid">{{ paiement.montantVerse }}</td>
-                                                            <td>{{ paiement.modePaiment }}</td>
-                                                            <td>{{ paiement.periodeConcerne }}</td>
-                                                        </tr>
-                                                    {% endfor %}
-                                                    
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                {% endwith %}
-                            {% endfor %}
-                        {% else %}
-                            <p style="text-align: center;">Aucun paiement trouvé.</p>
-                        {% endif %}
+                        {% for item in paiements_par_salle %}
+                            <div class="paiement-accordeon">
+                                <div class="paiement-header" onclick="togglePaiements('{{ forloop.counter }}')" id="header-{{ forloop.counter }}">
+                                    <span class="icon" id="icon-{{ forloop.counter }}" style="color: red!important;">&#9654;</span>
+                                    Paiements pour la salle : {{ item.salle.niveau }} - {{ item.salle.nom }}
+                                </div>
+                                <div class="paiement-content" id="content-{{ forloop.counter }}">
+                                    <table class="table display data-table text-nowrap" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Type</th>
+                                                <th>Montant</th>
+                                                <th>Mode</th>
+                                                <th>Période</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for paiement in item.paiements %}
+                                                <tr>
+                                                    <td>{{ paiement.datePaiement|date:"d/m/Y" }}</td>
+                                                    <td>{{ paiement.typePaiement }}</td>
+                                                    <td class="paid">{{ paiement.montantVerse }}</td>
+                                                    <td>{{ paiement.modePaiment }}</td>
+                                                    <td>{{ paiement.periodeConcerne }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            <tr>
+                                                <td colspan="2"><strong>Total Attendu</strong></td>
+                                                <td colspan="3" class="paid"><strong>{{ item.cout_attendu }} FCFA</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2"><strong>Total payé</strong></td>
+                                                <td colspan="3" class="paid"><strong>{{ item.total_paye }} FCFA</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    <div>
+                        <h3> A revoir: toal payé, total attendu, montant verse, mode de paiement, periode de paiement</h3>
+                    </div>
                     </div>
                 </div>
             </div>

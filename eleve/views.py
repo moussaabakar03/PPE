@@ -11,7 +11,10 @@ import json
 from datetime import datetime
 
 from comptable.models import PaiementEleve
-from secretaire.models import AnneeScolaire, Emargement, EmploiDuTemps, Etudiant, Evaluation, Inscription, Messages, PlageHoraire, SalleDeClasse, depotDossierEtudiant
+from secretaire.models import AnneeScolaire, Cout, Emargement, EmploiDuTemps, Etudiant, Evaluation, Inscription, Messages, PlageHoraire, SalleDeClasse, depotDossierEtudiant
+
+from acadPro.utils.decorators import eleve_required
+
 # Create your views here.
 
 
@@ -115,6 +118,7 @@ def accueilEtudiant(request):
     return render(request, 'eleve/accueilEtudiant.html', {'etudiant': etudiant})
 
 @login_required
+@eleve_required
 def presence(request):
     if Etudiant.objects.filter(username = request.user).exists():
         etudiant = Etudiant.objects.get(username = request.user)
@@ -126,7 +130,9 @@ def presence(request):
     emargements = Emargement.objects.filter(inscrits__in=inscrits).order_by('-id')
     return render(request, 'eleve/presence.html', {"etudiant": etudiant, "emargements": emargements})
     
+
 @login_required
+@eleve_required
 def notes(request):
     if Etudiant.objects.filter(username = request.user).exists():
         etudiant = Etudiant.objects.get(username = request.user)
@@ -152,10 +158,12 @@ def notes(request):
     return render(request, 'eleve/notes.html', {'evaluations': evaluations, 'etudiant': etudiant, 'annees': AnneeScolaire.objects.all().order_by('-id')})
 
 @login_required
+@eleve_required
 def inscriptionPayement(request):
     return render(request, 'eleve/inscriptionPayement.html')
 
 @login_required
+@eleve_required
 def messagesEleves(request):
     etudiants = Etudiant.objects.exclude(username = request.user)
     etudiant = get_object_or_404(Etudiant, username = request.user)
@@ -163,6 +171,7 @@ def messagesEleves(request):
     return render(request, 'eleve/messages.html', contains)
 
 @login_required
+@eleve_required
 def emploiDuTempsEtudiant(request):
     eleve = Etudiant.objects.get(username = request.user)
     inscrits = eleve.inscriptions.all()
@@ -175,6 +184,7 @@ def emploiDuTempsEtudiant(request):
 
 #s'intégrer avec AJAX
 @login_required
+@eleve_required
 def echangeMessageEleves(request, id):
     eleve = Etudiant.objects.get(username = request.user)
     etudiant = Etudiant.objects.get(id=id)
@@ -228,6 +238,7 @@ def echangeMessageEleves(request, id):
 
 
 @login_required
+@eleve_required
 def affichageEmploiTemps(request, id1, id2):
     eleve = Etudiant.objects.get(username = request.user)
     salle = SalleDeClasse.objects.get(id=id1)
@@ -271,6 +282,7 @@ def affichageEmploiTemps(request, id1, id2):
 from django.http import JsonResponse
 
 @login_required
+@eleve_required
 def echangeEleveEleve(request, id):
     eleve = Etudiant.objects.get(username=request.user)
     etudiant = get_object_or_404(Etudiant, pk=id)
@@ -323,30 +335,64 @@ def echangeEleveEleve(request, id):
 #     return render(request, 'eleve/mesPaiement.html', {'mesPaiements': mesPaiements , 'etudiant': eleve, 'inscriptions': inscriptions})
 from collections import defaultdict
 
+@login_required
+@eleve_required
 def mesPaiement(request):
     eleve = get_object_or_404(Etudiant, username=request.user)
     inscriptions = eleve.inscriptions.all()
-    paiements_groupes = defaultdict(list)
-
-    # Récupérer tous les paiements liés aux inscriptions de l'élève
     paiements = PaiementEleve.objects.filter(inscription_Etudiant__in=inscriptions)
+    
+    annee = None
+    for inscription in inscriptions:
+        if annee is None:
+            annee = inscription.anneeAcademique
+            print (annee)
+            
+    
+    paiements_temp = defaultdict(list)
 
-    # Grouper les paiements par salleClasse
     for paiement in paiements:
         salle = paiement.inscription_Etudiant.salleClasse
-        paiements_groupes[salle].append(paiement)
+        paiements_temp[salle.id].append(paiement)
+
+    paiements_par_salle = []
+    total_paye = 0
+
+    for salle_id, paiements in paiements_temp.items():
+        salle = paiements[0].inscription_Etudiant.salleClasse
+        total_salle = sum(p.montantVerse for p in paiements)
+        total_paye += total_salle
+
+        try:
+            cout_obj = Cout.objects.get(anneeScolaire=annee, classe=salle.niveau)
+            cout_total = (
+                cout_obj.coutInscription +
+                cout_obj.coutScolarite +
+                cout_obj.fraisEtudeDossier +
+                cout_obj.fraisAssocie
+            )
+        except Cout.DoesNotExist:
+            cout_total = 0
+
+
+        paiements_par_salle.append({
+            'salle': salle,
+            'paiements': paiements,
+            'total_paye': total_salle,
+            'cout_attendu': cout_total
+        })
 
     return render(request, 'eleve/mesPaiement.html', {
-        'paiements_groupes': dict(paiements_groupes),
-        'etudiant': eleve
+        'paiements_par_salle': paiements_par_salle,
+        'etudiant': eleve,
+        'total_paye': total_paye,
     })
-  
-
 
 
 from django.utils import timezone
 
 @login_required
+@eleve_required
 def messages_api(request, id, matricule):
     last_id = int(request.GET.get("since", 0))
     destinataire = Etudiant.objects.get(username=request.user)
@@ -367,6 +413,7 @@ def messages_api(request, id, matricule):
     return JsonResponse({"messages": data})
 
 @login_required
+@eleve_required
 def marquer_message_lu(request, message_id):
     if request.method == "POST" and request.headers.get('x-requested-with') == 'XMLHttpRequest':
         message = get_object_or_404(Messages, pk=message_id, destinataire__username=request.user)

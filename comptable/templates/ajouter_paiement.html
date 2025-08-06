@@ -32,21 +32,19 @@
 {% comment %} <> {% endcomment %}
             <div class="main-content full-page-form">
                 <div class="container-fluid" style="margin-top: 50px;">
-                    <div style="display: flex; flex-direction: column; align-items: center; background-color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <div style="display: flex; flex-direction: column; align-items: center;  background-color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
                         <div style= "display: flex; gap: 50px;"> 
                             <p><i class="fas fa-chalkboard"></i> {{ inscriptionEleve.salleClasse.niveau.classe }}- {{ inscriptionEleve.salleClasse.nom }}  </p>
                             <p>📆{{ inscriptionEleve.anneeAcademique.debutAnnee|date:"Y" }} - {{ inscriptionEleve.anneeAcademique.fintAnnee|date:"Y" }} </p> 
                         </div> 
                         <p>Etudiant: <span style="margin-left: 10px; font-weight: bold;"> <i class="fas fa-user-graduate"></i> {{ inscriptionEleve.etudiant.nom }} {{ inscriptionEleve.etudiant.prenom }} </span></p>
                     </div>
-                    <div class="payment-container">
+                    <div class="conteneurPaiement" style = "display: flex; gap: 20px; flex-wrap: wrap; padding: 20px;">
                         <!-- Formulaire de paiement -->
-                        <div class="payment-form">
+                        <div class="payment-form" style =" overflow-x: auto; width: 50%!important;">
                             <div class="student-header">
                                 <h2><i class="fas fa-money-bill-wave"></i> Enregistrement de Paiement</h2>
                                 <h4 class="mt-3">
-                                    
-                                    
                                 </h4>
                             </div>
 
@@ -176,7 +174,7 @@
                         </div>
 
                         <!-- Historique des paiements -->
-                        <div class="payment-history">
+                        <div class="payment-history" style = "width: 50%;">
                             <h2><i class="fas fa-history"></i> Historique des Paiements</h2>
                             
                             <table id="payments-table">

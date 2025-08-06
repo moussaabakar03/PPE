@@ -1,14 +1,15 @@
-/* 
-.container-fluid {
-    flex: 1;
-    padding: 20px;
-    width: 100%;
-} */
 
 .payment-container {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
+}
+
+.conteneurPaiement{
+    display: flex!important;
+    justify-content: space-between!important;
+    /* gap: 20px; */
+    /* flex-wrap: wrap; */
 }
 
 .payment-form {

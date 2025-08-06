@@ -4,7 +4,8 @@ from . import views
 app_name = "comptable"
 
 urlpatterns = [
-    
+    path('', views.indexComptable, name='indexComptable'),
+    path('listePaiments/', views.listePaiments, name='listePaiments'),
     path('selectionSalle/', views.selectionSalle, name='selectionSalle'),
     path('liste_eleve/<int:id_salle>/<int:id_annee>/', views.liste_eleve, name='liste_eleve'),
     path('ajouter-paiement/<int:id_inscription>/<int:id_annee>/', views.ajouter_paiement, name='ajouter_paiement'),

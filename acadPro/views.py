@@ -18,7 +18,6 @@ from django.conf import settings
 
 
 
-
 def pageAccueil(request):
     return render(request, 'accueil.html')
 
@@ -130,7 +129,10 @@ def connexion(request):
             login(request, utilisateur)
             if utilisateur.is_superuser:
                 return redirect(reverse('secretaire:index'))
-            return redirect('eleve:notes')
+            elif utilisateur.is_staff:
+                return redirect(reverse('comptable:indexComptable'))
+            else: 
+                return redirect('eleve:notes')
         else:
             messages.error(request, "identifiant ou mot de passe incorrect")
             

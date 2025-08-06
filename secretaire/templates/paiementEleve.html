@@ -309,7 +309,7 @@
                     {% if paiements_groupes %}
                         {% for salle, paiements in paiements_groupes.items %}
                             {% with forloop.counter as idx %}
-                                <div class="paiement-accordeon">
+                                <div class="paiement-accordeon" style = "overflow-x: auto;">
                                     <div class="paiement-header" onclick="togglePaiements('{{ idx }}')" id="header-{{ idx }}">
                                         <span class="icon" id="icon-{{ idx }}" style="color: red!important;">&#9654;</span>
                                         Paiements pour la salle : {{ salle.niveau }}- {{ salle.nom }}

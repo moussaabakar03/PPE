@@ -44,23 +44,21 @@
                         </li> -->
                         <li> <a href ="{% url 'secretaire:detailEtudiant' etudiant.matricule etudiant.parent.id %}" >Retour(<i class="fas fa-info-circle"></i> Mes Infos)</a></li>
                         <li>Bulletin Scolaire ({{etudiant.nom}} {{etudiant.prenom}})</li>
-                        <li>
-                            <div>
-                                {% if inscrits %}
-                                    <select name="anneeScolaire" class="select2 form-control" id="anneeSelect" style="width: 250px;  font-size: 15px;" required>
-                                        <option value=""  style= "width: 600px; ">-- Choisir une année scolaire --</option>
-                                        {% for inscrit in inscrits %}
-                                            <option value="{{ inscrit.anneeAcademique.id }}" data-classe="{{ inscrit.salleClasse.niveau.classe }}">
-                                                {{ inscrit.anneeAcademique.debutAnnee|date:"Y" }} - {{ inscrit.anneeAcademique.fintAnnee|date:"Y" }} ({{inscrit.salleClasse.niveau.classe}})
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                {%endif %}
-                            </div>
-                        </li>
                     </ul>
                 </div>
-                <div style="display: flex; justify-content: center; align-items: center; margin-top: 40px; margin-bottom: -30px;">
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 40px; margin-bottom: -30px;">
+                    <div>
+                        {% if inscrits %}
+                            <select name="anneeScolaire" class="select2 form-control" id="anneeSelect" style="width: 250px;  font-size: 15px;" required>
+                                <option value=""  style= "width: 600px; ">-- Choisir une année scolaire --</option>
+                                {% for inscrit in inscrits %}
+                                    <option value="{{ inscrit.anneeAcademique.id }}" data-classe="{{ inscrit.salleClasse.niveau.classe }}">
+                                        {{ inscrit.anneeAcademique.debutAnnee|date:"Y" }} - {{ inscrit.anneeAcademique.fintAnnee|date:"Y" }} ({{inscrit.salleClasse.niveau.classe}})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        {%endif %}
+                    </div>
                     {% if annee %}
                         {{ annee.debutAnnee|date:"Y" }}- {{ annee.fintAnnee|date:"Y" }}
                     {%endif %}

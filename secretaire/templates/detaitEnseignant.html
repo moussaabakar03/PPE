@@ -170,8 +170,8 @@
                                         <th>Sexe</th>
                                         <th>Téléphone</th>
                                         <th>Email</th>
-                                        <th>Date Enregistrement</th>
-                                        <th>Action</th>
+                                        <th>Date_d'Enregistrement</th>
+                                        {% comment %} <th>Action</th> {% endcomment %}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -191,16 +191,16 @@
                                         <td>{{ enseignant.sexe }}</td>
                                         <td>{{ enseignant.tel }}</td>
                                         <td>{{ enseignant.mail }}</td>
-                                        <td>{{ enseignant.date_enregistrement }}</td>
+                                        <td>{{ enseignant.date_enregistrement|date:"Y/m/d H:i:s" }}</td>
                                         
-                                        <td class="action-icons" style="display: flex; gap: 15px;">
+                                        {% comment %} <td class="action-icons" style="display: flex; gap: 15px;">
                                             <a href="{% url 'secretaire:modifier_teacher' enseignant.matricule %}" class="btn btn-warning btn-sm">
                                                 <i class="fas fa-edit" style="width:100%; height: 40px;"></i>
                                             </a>
                                             <a href="" onclick="return confirm('Voulez-vous vraiment supprimer cet enseignant ?')" class="btn btn-danger btn-sm">
                                                 <i class="fas fa-trash"></i>
                                             </a>
-                                        </td>
+                                        </td> {% endcomment %}
                                     </tr>
                                 </tbody>
                             </table>

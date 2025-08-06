@@ -1,25 +1,27 @@
+{% load static %}
 <div class="sidebar-main sidebar-menu-one sidebar-expand-md sidebar-color">
     <div class="mobile-sidebar-header d-md-none">
         <div class="header-logo">
-            <a href=""><img src="img/logo1.png" alt="logo"></a>
+            {% comment %} <a href=""><img src="img/logo1.png" alt="logo"></a> {% endcomment %}
+            <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="logo"  width ="75" height="5">
         </div>
     </div>
     <div class="sidebar-menu-content">
         <ul class="nav nav-sidebar-menu sidebar-toggle-view">
-            <li class="nav-item sidebar-nav-item">
-                <a href="{%  url 'comptable:selectionSalle' %}" class="nav-link"><i class="flaticon-classmates"></i><span>Payements Elèves</span></a>
+            <li class="nav-item">
+                <a href="{% url 'comptable:indexComptable' %}" class="nav-link"><i class="flaticon-dashboard"></i><span>Tableau de Bord</span></a>
             </li>
             <li class="nav-item sidebar-nav-item">
-                <a href="#" class="nav-link"><i class="flaticon-classmates"></i><span>Payements Personnel</span></a>
+                <a href="#" class="nav-link"><i class="flaticon-classmates"></i><span>Payements Elèves</span></a>
                 <ul class="nav sub-group-menu">
                     <li class="nav-item">
 
-                    <a href="" class="nav-link">
-                        <i class="fas fa-angle-right"></i>Payements du Personnel
+                    <a href="{% url 'comptable:listePaiments' %}" class="nav-link">
+                        <i class="fas fa-angle-right"></i>Payements *
                     </a>
                     </li>
                     <li class="nav-item">
-                        <a href="" class="nav-link"><i class="fas fa-angle-right"></i>Ajout Payements</a>
+                        <a href="{%  url 'comptable:selectionSalle' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout Payements</a>
                     </li>
                 </ul>
             </li>

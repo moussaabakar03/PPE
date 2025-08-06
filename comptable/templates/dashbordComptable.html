@@ -1,0 +1,361 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AKKHOR | Home 4</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'secretaire/img/favicon.png' %}">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Data Table CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/jquery.dataTables.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+    <!-- Modernize js -->
+    <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+        <!-- Header Menu Area Start Here -->
+        
+        {% include 'partial/nav.html' %}
+
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+           
+            {% include 'partial/asideComptable.html' %}
+
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Tableau de bord</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'secretaire:index' %}">Home</a>
+                        </li>
+                        <li>Comptable</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Dashboard summery Start Here -->
+                <div class="row">
+                    <div class="col-3-xxxl col-sm-6 col-12">
+                        <div class="dashboard-summery-one">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="item-icon bg-light-red">
+                                        <i class="flaticon-money text-red"></i>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                   <div class="item-content">
+                                        <div class="item-title">Montant Total Payé</div>
+                                        <div class="item-number">
+                                            <span>FCFA</span>
+                                            <span class="counter" data-num="{{ totalPaye }}">{{ totalPaye }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3-xxxl col-sm-6 col-12">
+                        <div class="dashboard-summery-one">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="item-icon bg-light-magenta">
+                                        <i class="flaticon-shopping-list text-magenta"></i>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="item-content">
+                                        <div class="item-title">Notifications</div>
+                                        <div class="item-number"><span class="counter" data-num="12">12</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3-xxxl col-sm-6 col-12">
+                        <div class="dashboard-summery-one">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="item-icon bg-light-yellow">
+                                        <i class="flaticon-mortarboard text-orange"></i>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="item-content">
+                                        <div class="item-title">Result</div>
+                                        <div class="item-number"><span class="counter" data-num="16">16</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3-xxxl col-sm-6 col-12">
+                        <div class="dashboard-summery-one">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="item-icon bg-light-blue">
+                                        <i class="flaticon-money text-blue"></i>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="item-content">
+                                        <div class="item-title">Expenses</div>
+                                        <div class="item-number"><span>$</span><span class="counter" data-num="193000">1,93,000</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Dashboard summery End Here -->
+                <!-- Dashboard Content Start Here -->
+                <div class="row">
+                    
+                    <div class="col-12 col-xl-8 col-6-xxxl">
+                        <div class="card dashboard-card-one pd-b-20">
+                            <div class="card-body">
+                                <div class="heading-layout1">
+                                    <div class="item-title">
+                                        <h3>Earnings</h3>
+                                    </div>
+                                    <div class="dropdown">
+                                        <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                                            aria-expanded="false">...</a>
+
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" href="#"><i
+                                                    class="fas fa-times text-orange-red"></i>Close</a>
+                                            <a class="dropdown-item" href="#"><i
+                                                    class="fas fa-cogs text-dark-pastel-green"></i>Edit</a>
+                                            <a class="dropdown-item" href="#"><i
+                                                    class="fas fa-redo-alt text-orange-peel"></i>Refresh</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="earning-report">
+                                    <div class="item-content">
+                                        <div class="single-item pseudo-bg-blue">
+                                            <h4>Total Collections</h4>
+                                            <span>75,000</span>
+                                        </div>
+                                        <div class="single-item pseudo-bg-red">
+                                            <h4>Fees Collection</h4>
+                                            <span>15,000</span>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <a class="date-dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                                            aria-expanded="false">Jan 20, 2019</a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" href="#">Jan 20, 2019</a>
+                                            <a class="dropdown-item" href="#">Jan 20, 2021</a>
+                                            <a class="dropdown-item" href="#">Jan 20, 2020</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="earning-chart-wrap">
+                                    <canvas id="earning-line-chart" width="660" height="320"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-xl-4 col-3-xxxl">
+                        <div class="card dashboard-card-two pd-b-20">
+                            <div class="card-body">
+                                <div class="heading-layout1">
+                                    <div class="item-title">
+                                        <h3>Expenses</h3>
+                                    </div>
+                                    <div class="dropdown">
+                                        <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                                            aria-expanded="false">...</a>
+
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" href="#"><i
+                                                    class="fas fa-times text-orange-red"></i>Close</a>
+                                            <a class="dropdown-item" href="#"><i
+                                                    class="fas fa-cogs text-dark-pastel-green"></i>Edit</a>
+                                            <a class="dropdown-item" href="#"><i
+                                                    class="fas fa-redo-alt text-orange-peel"></i>Refresh</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="expense-report">
+                                    <div class="monthly-expense pseudo-bg-Aquamarine">
+                                        <div class="expense-date">Jan 2019</div>
+                                        <div class="expense-amount"><span>$</span> 15,000</div>
+                                    </div>
+                                    <div class="monthly-expense pseudo-bg-blue">
+                                        <div class="expense-date">Feb 2019</div>
+                                        <div class="expense-amount"><span>$</span> 10,000</div>
+                                    </div>
+                                    <div class="monthly-expense pseudo-bg-yellow">
+                                        <div class="expense-date">Mar 2019</div>
+                                        <div class="expense-amount"><span>$</span> 8,000</div>
+                                    </div>
+                                </div>
+                                <div class="expense-chart-wrap">
+                                    <canvas id="expense-bar-chart" width="100" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-7-xxxl col-12">
+                        <div class="card dashboard-card-eleven">
+                            <div class="card-body">
+                                <div class="heading-layout1">
+                                    <div class="item-title">
+                                        <h3>Paiements Recentes</h3>
+                                    </div>
+                                    <div class="dropdown">
+                                        <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                                            aria-expanded="false">...</a>
+
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" href="#"><i
+                                                    class="fas fa-times text-orange-red"></i>Close</a>
+                                            <a class="dropdown-item" href="#"><i
+                                                    class="fas fa-cogs text-dark-pastel-green"></i>Edit</a>
+                                            <a class="dropdown-item" href="#"><i
+                                                    class="fas fa-redo-alt text-orange-peel"></i>Refresh</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-box-wrap">
+                                    <form class="search-form-box">
+                                        <div class="row gutters-8">
+                                            <div class="col-lg-4 col-md-3 form-group">
+                                                <input type="text" placeholder="Search by Exam ..."
+                                                    class="form-control">
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 form-group">
+                                                <input type="text" placeholder="Search by Subject ..."
+                                                    class="form-control">
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 form-group">
+                                                <input type="text" placeholder="dd/mm/yyyy" class="form-control">
+                                            </div>
+                                            <div class="col-lg-2 col-md-3 form-group">
+                                                <button type="submit"
+                                                    class="fw-btn-fill btn-gradient-yellow">SEARCH</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <div class="table-responsive expenses-table-box">
+                                        <table class="table data-table text-nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input checkAll">
+                                                            <label class="form-check-label">ID</label>
+                                                        </div>
+                                                    </th>
+                                                    <th>E-Mail</th>
+                                                    <th>Montant</th>
+                                                    <th>Type de paiement</th>
+                                                    <th>Date</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for paiementsRecente in paiementsRecentes %}
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input">
+                                                            <label class="form-check-label">{{paiementsRecente.id}}</label>
+                                                        </div>
+                                                    </td>
+                                                    <td>{{paiementsRecente.inscription_Etudiant.etudiant.nom}} {{paiementsRecente.inscription_Etudiant.etudiant.prenom}}</td>
+                                                    <td>FCFA {{paiementsRecente.montantVerse}}</td>
+                                                    <td class="badge badge-pill badge-success d-block mg-t-8">{{paiementsRecente.typePaiement}}</td>
+                                                    <td>{{paiementsRecente.datePaiement|date:"Y/m/d"}}</td>
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                                                                aria-expanded="false">
+                                                                <span class="flaticon-more-button-of-three-dots"></span>
+                                                            </a>
+                                                            <div class="dropdown-menu dropdown-menu-right">
+                                                                <a class="dropdown-item" href="#"><i
+                                                                        class="fas fa-times text-orange-red"></i>Close</a>
+                                                                <a class="dropdown-item" href="#"><i
+                                                                        class="fas fa-cogs text-dark-pastel-green"></i>Edit</a>
+                                                                <a class="dropdown-item" href="#"><i
+                                                                        class="fas fa-redo-alt text-orange-peel"></i>Refresh</a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include 'partial/copyright.html' %}
+
+                <!-- Dashboard Content End Here -->
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <!-- jQuery -->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Counterup Js -->
+    <script src="{% static 'secretaire/js/jquery.counterup.min.js' %}"></script>
+    <!-- Waypoints Js -->
+    <script src="{% static 'secretaire/js/jquery.waypoints.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Data Table Js -->
+    <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+    <script src="{% static 'secretaire/js/moment.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/fullcalendar.min.js' %}"></script>
+    <!-- Chart Js -->
+    <script src="{% static 'secretaire/js/Chart.min.js' %}"></script>
+</body>
+
+</html>
