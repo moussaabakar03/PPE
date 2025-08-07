@@ -91,14 +91,15 @@ WSGI_APPLICATION = 'acadPro.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'basededonnee',
-        'USER': 'postgres',
-        'PASSWORD' : 'Moussa68444436@',
-        'HOST': 'localhost',
-        'PORT': '5432'
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'moussaabakar03$acadProDB',
+        'USER': 'moussaabakar03',
+        'PASSWORD': 'Oucherie1234@',
+        'HOST': 'moussaabakar03.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
     }
 }
+
 LOGIN_URL = 'connexion' 
 AUTH_USER_MODEL = 'secretaire.Utilisateur'
 
