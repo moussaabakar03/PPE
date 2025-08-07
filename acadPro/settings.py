@@ -92,10 +92,10 @@ WSGI_APPLICATION = 'acadPro.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'moussaabakar03$acadProDB',
-        'USER': 'moussaabakar03',
+        'NAME': 'acadPro$acadProDB',
+        'USER': 'acadPro',
         'PASSWORD': 'Oucherie1234@',
-        'HOST': 'moussaabakar03.mysql.pythonanywhere-services.com',
+        'HOST': 'acadPro.mysql.pythonanywhere-services.com',
         'PORT': '3306',
     }
 }
