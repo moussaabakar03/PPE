@@ -245,23 +245,206 @@ body {
     background: var(--primary);
 }
 
-@media (max-width: 768px) {
-    .timeline:before {
-        left: 30px;
+
+
+
+/* Timeline Responsive Styles */
+.timeline {
+    position: relative;
+    margin: 40px 0;
+    max-width: 100%;
+}
+
+.timeline:before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    width: 4px;
+    height: 100%;
+    background: var(--secondary);
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 30px;
+    z-index: 2;
+}
+
+.timeline-item:nth-child(even) {
+    justify-content: flex-start;
+    padding-left: 30px;
+    padding-right: 0;
+}
+
+.timeline-content {
+    position: relative;
+    width: 45%;
+    padding: 25px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.timeline-content:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+.timeline-content h4 {
+    color: var(--primary);
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.timeline-content p {
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 0;
+}
+
+.timeline-year {
+    position: absolute;
+    top: 20px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border: 4px solid white;
+}
+
+.timeline-item:nth-child(even) .timeline-content::after {
+    content: '';
+    position: absolute;
+    top: 30px;
+    right: -15px;
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left: 15px solid white;
+}
+
+.timeline-item:nth-child(odd) .timeline-content::after {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: -15px;
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-right: 15px solid white;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 992px) {
+    .timeline::before {
+        left: 40px;
+    }
+    
+    .timeline-item,
+    .timeline-item:nth-child(even) {
+        justify-content: flex-start;
+        padding-left: 80px;
+        padding-right: 0;
     }
     
     .timeline-content {
-        width: calc(100% - 80px);
-        margin-left: 80px;
-    }
-    
-    .timeline-content:after {
-        left: -10px !important;
-        right: auto !important;
+        width: 85%;
     }
     
     .timeline-year {
-        left: 30px;
+        left: 40px;
         transform: none;
     }
+    
+    .timeline-item:nth-child(even) .timeline-content::after,
+    .timeline-item:nth-child(odd) .timeline-content::after {
+        left: -15px;
+        right: auto;
+        border-right: 15px solid white;
+        border-left: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .timeline::before {
+        left: 30px;
+    }
+    
+    .timeline-item,
+    .timeline-item:nth-child(even) {
+        padding-left: 70px;
+    }
+    
+    .timeline-content {
+        width: 90%;
+        padding: 20px;
+    }
+    
+    .timeline-year {
+        width: 60px;
+        height: 60px;
+        font-size: 1.1rem;
+        left: 30px;
+    }
+    
+    .timeline-content h4 {
+        font-size: 1.2rem;
+    }
+    
+    .timeline-item:nth-child(even) .timeline-content::after,
+    .timeline-item:nth-child(odd) .timeline-content::after {
+        top: 25px;
+    }
+}
+
+
+
+
+.footer {
+    background: var(--dark);
+    color: rgba(255,255,255,0.8);
+    padding-top: 70px;
+}
+
+.footer a {
+    color: rgba(255,255,255,0.8);
+    transition: all 0.3s ease;
+}
+
+.footer a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.social-links a {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    margin-right: 10px;
+}
+
+.social-links a:hover {
+    background: var(--primary);
 }

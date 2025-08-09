@@ -14,14 +14,19 @@
     <link rel="stylesheet" href="{% static 'accueil/css/cssPersonnalise/depotDossier2.css' %}">
 
     <style>
-        .hero-section {
+        
+           .hero-section {
             background: linear-gradient(rgba(44, 95, 168, 0.85), rgba(44, 95, 168, 0.9)), url('{% static 'accueil/images/depotDossierHero.jpg' %}');
             background-size: cover;
+            object-fit: cover;
             background-position: center;
-            height: 40vh;
+            height: 55vh;
             display: flex;
             align-items: center;
+            background-attachment: fixed;
         }
+
+        
     </style>
 {% endblock %}
 
@@ -35,7 +40,7 @@
                 <div class="col-md-8 mx-auto text-center text-white">
                     <h1 class="display-4 mb-4">Dépôt de Dossier</h1>
                     <p class="lead">Soumettez votre dossier d'inscription au collège acadPro</p>
-                    <a href="#formulaireDepot" class="btn btn-light btn-lg mt-3 px-4" style="margin-bottom: 40px;">Démarrer l'inscription</a>
+                    <a href="#MonFormulaire" class="btn btn-light btn-lg mt-3 px-4" style="margin-bottom: 40px;">Démarrer l'inscription</a>
                 </div>
             </div>
         </div>
@@ -64,7 +69,7 @@
                                 <div class="timeline-content">
                                     <h4>Pré-inscription en ligne</h4>
                                     <p>Remplissez notre formulaire de pré-inscription en ligne. Vous recevrez une confirmation par email avec les prochaines étapes.</p>
-                                    <p class="text-muted mb-0">Durée estimée: 15 minutes</p>
+                                    <p class="text-muted mb-0">Durée estimée: 1 jour</p>
                                 </div>
                             </div>
                             
@@ -98,7 +103,9 @@
                     </div>
                 </div>
 
-                <div class="dossier-container">
+             
+            </div>
+               <div class="dossier-container" style ="width: 100%; ">
                     <div class="dossier-header">
                         <div class="dossier-icon">
                             <i class="fas fa-folder-open"></i>
@@ -108,7 +115,7 @@
                     </div>
                     
                     <div class="row">
-                        <div class="col-lg-8 mx-auto" id="formulaireDepot">
+                        <div class="col-lg-8 mx-auto">
                             <!-- Étapes du processus -->
                             <div class="row mb-5">
                                 <div class="col-md-4">
@@ -202,8 +209,8 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="col-md-12 mt-4 text-center">
-                                        <button class="btn btn-primary btn-lg px-5" type="submit">
+                                    <div class="col-md-12 mt-4 text-center"  id="MonFormulaire">
+                                        <button class="btn btn-primary btn-lg px-3" type="submit">
                                             <i class="fas fa-paper-plane me-2"></i>Envoyer le dossier
                                         </button>
                                     </div>
@@ -212,8 +219,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
             <div style = "display: flex; flex-direction: column; align-items: center; padding: 20px; border: 1px solid #ddd; margin-top: 20px;" id = "messageSuccess">
                 {% if messages %}
                     <h4><i class="fas fa-check-circle me-2" style=""></i>Pré-inscription soumise avec succès !</h4>
@@ -266,7 +271,7 @@
                                         <i class="fas fa-chevron-down"></i>
                                     </div>
                                     <div class="faq-answer">
-                                        <p>L'entretien dure environ 45 minutes et réunit l'élève, ses parents, le directeur pédagogique et un enseignant. L'objectif est de présenter notre établissement, de comprendre les motivations de l'élève et d'évaluer son adéquation avec notre projet éducatif. Aucune préparation spécifique n'est nécessaire.</p>
+                                        <p>L'entretien dure environ 45 minutes et réunit l'élève et le directeur pédagogique. L'objectif est de présenter notre établissement, de comprendre les motivations de l'élève et d'évaluer son adéquation avec notre projet éducatif. Aucune préparation spécifique n'est nécessaire.</p>
                                     </div>
                                 </div>
                                 
@@ -276,7 +281,7 @@
                                         <i class="fas fa-chevron-down"></i>
                                     </div>
                                     <div class="faq-answer">
-                                        <p>Les frais de scolarité annuels sont de 1 200€ pour les élèves résidant dans notre secteur. Ce montant comprend les manuels scolaires et l'accès à toutes les installations. Des tarifs réduits sont disponibles pour les familles avec plusieurs enfants inscrits.</p>
+                                        <p>Les frais de scolarité annuels sont</p>
                                     </div>
                                 </div>
                             </div>
@@ -297,7 +302,6 @@
                                 <li>Photocopie de l'acte de naissance de l'élève</li>
                                 <li>Photocopie des bulletins scolaires de l'année précédente</li>
                                 <li>Certificat de radiation de l'établissement précédent (pour les nouveaux inscrits)</li>
-                                <li>Justificatif de domicile (moins de 3 mois)</li>
                                 <li>Photo d'identité récente de l'élève</li>
                                 <li>Photocopie du carnet de vaccination</li>
                                 <li>Formulaire médical rempli par le médecin traitant</li>

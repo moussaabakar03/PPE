@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static 'accueil/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'accueil/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'accueil/css/cssPersonnalise/cours.css' %}">
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <style>
         .subject-img{
@@ -27,12 +27,339 @@
             display: flex;
             align-items: center;
         }
+
+
+
+         :root {
+            --primary: #042954;
+            --secondary: #ffae01;
+            --accent: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+        }
+        .subject-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            margin-bottom: 25px;
+        }
+        
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .subject-img {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subject-info {
+            padding: 20px;
+        }
+        
+        .subject-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #042954;
+        }
+        
+        .subject-meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .subject-meta i {
+            margin-right: 5px;
+            color: #ffae01;
+        }
+        
+        .badge-level {
+            background: #e74c3c;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 5px;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        
+        .pagination-container {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .pagination-info {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .page-item.active .page-link {
+            background-color: #042954;
+            border-color: #042954;
+        }
+        
+        .page-link {
+            color: #042954;
+        }
+        
+        .page-link:hover {
+            color: #1a4d8c;
+        }
+        
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .instructions {
+            background-color: #e3f2fd;
+            border-left: 4px solid #042954;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .subject-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+        .subject-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            background: white;
+            height: 100%;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .subject-img {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .subject-img:hover {
+            transform: scale(1.1);
+        }
+
+        .subject-info {
+            padding: 20px;
+        }
+
+        .subject-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .subject-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #666;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .subject-meta span {
+            display: flex;
+            align-items: center;
+        }
+
+        .subject-meta i {
+            margin-right: 5px;
+            color: var(--secondary);
+        }
+
+        .badge-level {
+            background: var(--accent);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: sticky;
+            top: 20px;
+        }
+
+        .filter-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .level-btn {
+            display: inline-block;
+            padding: 5px 15px;
+            margin: 0 5px 5px 0;
+            background: #f1f5f9;
+            border-radius: 20px;
+            color: var(--dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .level-btn.active, .level-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .section-title {
+            position: relative;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--secondary);
+        }
+
+        .domain-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        .scientifique {
+            background-color: #3498db;
+        }
+
+        .lettres {
+            background-color: #e74c3c;
+        }
+
+        .sciences-humaines {
+            background-color: #2ecc71;
+        }
+
+        .arts {
+            background-color: #9b59b6;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .filter-count {
+            background: var(--accent);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+
+        @media (max-width: 992px) {
+            .filter-section {
+                position: static;
+            }
+            
+            .subject-card {
+                margin-bottom: 20px;
+            }
+        }
+
+        .reset-filters {
+            cursor: pointer;
+            color: var(--accent);
+            font-weight: 500;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        
+        .reset-filters:hover {
+            text-decoration: underline;
+        }
     </style>
 {% endblock %}
 
 
 {% block body %}
- <!-- Hero Section -->
+    <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
             <div class="row">
@@ -51,52 +378,59 @@
                 <div class="col-lg-3">
                     <!-- Filters -->
                     <div class="filter-section">
-                        <h3 class="filter-title">Filtrer les matières</h3>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="filter-title">Filtrer les matières</h3>
+                            <span id="filterCount" class="filter-count">0</span>
+                        </div>
                         
                         <div class="filter-group">
                             <h5>Niveau scolaire</h5>
                             <div class="d-flex flex-wrap">
-                                <span class="level-btn active">Tous</span>
-                                <span class="level-btn">6ème</span>
-                                <span class="level-btn">5ème</span>
-                                <span class="level-btn">4ème</span>
-                                <span class="level-btn">3ème</span>
+                                <span class="level-btn active" data-level="tous">Tous</span>
+                                <span class="level-btn" data-level="6eme">6ème</span>
+                                <span class="level-btn" data-level="5eme">5ème</span>
+                                <span class="level-btn" data-level="4eme">4ème</span>
+                                <span class="level-btn" data-level="3eme">3ème</span>
                             </div>
                         </div>
                         
                         <div class="filter-group">
                             <h5>Domaine</h5>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="domain1" checked>
+                                <input class="form-check-input domain-filter" type="checkbox" id="domain1" value="scientifique" checked>
                                 <label class="form-check-label" for="domain1">Scientifique</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="domain2" checked>
+                                <input class="form-check-input domain-filter" type="checkbox" id="domain2" value="lettres" checked>
                                 <label class="form-check-label" for="domain2">Lettres & langues</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="domain3" checked>
+                                <input class="form-check-input domain-filter" type="checkbox" id="domain3" value="sciences-humaines" checked>
                                 <label class="form-check-label" for="domain3">Sciences humaines</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="domain4" checked>
+                                <input class="form-check-input domain-filter" type="checkbox" id="domain4" value="arts" checked>
                                 <label class="form-check-label" for="domain4">Arts & sport</label>
                             </div>
                         </div>
                         
                         <div class="filter-group">
                             <h5>Enseignant</h5>
-                            <select class="form-control">
-                                <option>Tous les enseignants</option>
-                                <option>Sophie Martin (Français)</option>
-                                <option>Thomas Dubois (Mathématiques)</option>
-                                <option>Émilie Lambert (Histoire-Géo)</option>
-                                <option>Pierre Moreau (SVT)</option>
-                                <option>Lucie Bernard (Anglais)</option>
+                            <select class="form-control" id="teacher-filter">
+                                <option value="tous">Tous les enseignants</option>
+                                <option value="Thomas Dubois">Thomas Dubois (Mathématiques)</option>
+                                <option value="Sophie Martin">Sophie Martin (Français)</option>
+                                <option value="Émilie Lambert">Émilie Lambert (Histoire-Géo)</option>
+                                <option value="Pierre Moreau">Pierre Moreau (SVT)</option>
+                                <option value="Marc Lefèvre">Marc Lefèvre (Physique-Chimie)</option>
+                                <option value="Lucie Bernard">Lucie Bernard (Anglais)</option>
+                                <option value="Philippe Durand">Philippe Durand (Technologie)</option>
+                                <option value="Julien Petit">Julien Petit (EPS)</option>
                             </select>
                         </div>
                         
-                        <button class="btn btn-primary btn-block mt-3">Appliquer les filtres</button>
+                        <button class="btn btn-primary btn-block mt-3" id="apply-filters">Appliquer les filtres</button>
+                        <div class="reset-filters" id="reset-filters">Réinitialiser les filtres</div>
                     </div>
                     
                     <div class="bg-light p-4 rounded mt-4">
@@ -111,13 +445,18 @@
                 </div>
                 
                 <div class="col-lg-9">
-                    <h2 class="section-title">Toutes les matières</h2>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="section-title">Toutes les matières</h2>
+                        <div class="text-muted" id="results-count">8 matières trouvées</div>
+                    </div>
                     
-                    <div class="row">
+                    <div class="row" id="subjects-container">
                         <!-- Mathématiques -->
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-4" data-levels="6eme 5eme 4eme 3eme" data-domain="scientifique" data-teacher="Thomas Dubois">
                             <div class="subject-card">
-                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/maths.png' %}');"></div>
+                                <div class="subject-img" style="background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                                    <span class="domain-indicator scientifique">Scientifique</span>
+                                </div>
                                 <div class="subject-info">
                                     <h3 class="subject-title">Mathématiques</h3>
                                     <div class="subject-meta">
@@ -139,9 +478,11 @@
                         </div>
                         
                         <!-- Français -->
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-4" data-levels="6eme 5eme 4eme 3eme" data-domain="lettres" data-teacher="Sophie Martin">
                             <div class="subject-card">
-                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/fr.png' %}');"></div>
+                                <div class="subject-img" style="background-image: url('https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                                    <span class="domain-indicator lettres">Lettres & langues</span>
+                                </div>
                                 <div class="subject-info">
                                     <h3 class="subject-title">Français</h3>
                                     <div class="subject-meta">
@@ -163,9 +504,11 @@
                         </div>
                         
                         <!-- Histoire-Géographie -->
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-4" data-levels="6eme 5eme 4eme 3eme" data-domain="sciences-humaines" data-teacher="Émilie Lambert">
                             <div class="subject-card">
-                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/hg.png' %}');"></div>
+                                <div class="subject-img" style="background-image: url('https://images.unsplash.com/photo-1580137189272-c9379f8864fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                                    <span class="domain-indicator sciences-humaines">Sciences humaines</span>
+                                </div>
                                 <div class="subject-info">
                                     <h3 class="subject-title">Histoire-Géographie</h3>
                                     <div class="subject-meta">
@@ -187,9 +530,11 @@
                         </div>
                         
                         <!-- Sciences de la Vie et de la Terre -->
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-4" data-levels="6eme 5eme 4eme 3eme" data-domain="scientifique" data-teacher="Pierre Moreau">
                             <div class="subject-card">
-                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/svt.png' %}');"></div>
+                                <div class="subject-img" style="background-image: url('https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                                    <span class="domain-indicator scientifique">Scientifique</span>
+                                </div>
                                 <div class="subject-info">
                                     <h3 class="subject-title">Sciences de la Vie et de la Terre</h3>
                                     <div class="subject-meta">
@@ -211,9 +556,11 @@
                         </div>
                         
                         <!-- Physique-Chimie -->
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-4" data-levels="5eme 4eme 3eme" data-domain="scientifique" data-teacher="Marc Lefèvre">
                             <div class="subject-card">
-                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/pc.png' %}');"></div>
+                                <div class="subject-img" style="background-image: url('https://images.unsplash.com/photo-1614730321146-b6fa91a47d17?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                                    <span class="domain-indicator scientifique">Scientifique</span>
+                                </div>
                                 <div class="subject-info">
                                     <h3 class="subject-title">Physique-Chimie</h3>
                                     <div class="subject-meta">
@@ -234,9 +581,11 @@
                         </div>
                         
                         <!-- Anglais -->
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-4" data-levels="6eme 5eme 4eme 3eme" data-domain="lettres" data-teacher="Lucie Bernard">
                             <div class="subject-card">
-                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/ang.png' %}');"></div>
+                                <div class="subject-img" style="background-image: url('https://images.unsplash.com/photo-1495815487443-2b2d92aa3b1c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                                    <span class="domain-indicator lettres">Lettres & langues</span>
+                                </div>
                                 <div class="subject-info">
                                     <h3 class="subject-title">Anglais</h3>
                                     <div class="subject-meta">
@@ -258,9 +607,11 @@
                         </div>
                         
                         <!-- Technologie -->
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-4" data-levels="6eme 5eme 4eme 3eme" data-domain="scientifique" data-teacher="Philippe Durand">
                             <div class="subject-card">
-                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/inf.png' %}');"></div>
+                                <div class="subject-img" style="background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                                    <span class="domain-indicator scientifique">Scientifique</span>
+                                </div>
                                 <div class="subject-info">
                                     <h3 class="subject-title">Technologie</h3>
                                     <div class="subject-meta">
@@ -281,11 +632,12 @@
                             </div>
                         </div>
 
-                        
                         <!-- Éducation Physique et Sportive -->
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-4" data-levels="6eme 5eme 4eme 3eme" data-domain="arts" data-teacher="Julien Petit">
                             <div class="subject-card">
-                                <div class="subject-img" style="background-image: url('{% static 'accueil/images/sport.png' %}');"></div>
+                                <div class="subject-img" style="background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                                    <span class="domain-indicator arts">Arts & sport</span>
+                                </div>
                                 <div class="subject-info">
                                     <h3 class="subject-title">Éducation Physique et Sportive</h3>
                                     <div class="subject-meta">
@@ -307,15 +659,21 @@
                         </div>
                     </div>
                     
+                    <!-- No Results Message -->
+                    <div class="no-results" id="no-results" style="display: none;">
+                        <i class="fas fa-search"></i>
+                        <h3>Aucune matière ne correspond à vos critères</h3>
+                        <p class="text-muted">Essayez d'ajuster vos filtres pour trouver ce que vous cherchez</p>
+                        <button class="btn btn-primary mt-3" id="reset-from-empty">Réinitialiser les filtres</button>
+                    </div>
+                    
                     <!-- Pagination -->
                     <nav aria-label="Page navigation" class="mt-5">
                         <ul class="pagination justify-content-center">
                             <li class="page-item disabled">
                                 <a class="page-link" href="#" tabindex="-1">Précédent</a>
                             </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item active"><a class="page-link" href="">1</a></li>
                             <li class="page-item">
                                 <a class="page-link" href="#">Suivant</a>
                             </li>
@@ -352,6 +710,148 @@
                     $(this).css('box-shadow', '0 5px 15px rgba(0,0,0,0.1)');
                 }
             );
+        });
+    </script>
+
+       <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const levelButtons = document.querySelectorAll('.level-btn');
+            const domainCheckboxes = document.querySelectorAll('.domain-filter');
+            const teacherSelect = document.getElementById('teacher-filter');
+            const applyButton = document.getElementById('apply-filters');
+            const resetButton = document.getElementById('reset-filters');
+            const resetFromEmpty = document.getElementById('reset-from-empty');
+            const subjectsContainer = document.getElementById('subjects-container');
+            const subjects = subjectsContainer.querySelectorAll('.col-md-6');
+            const noResults = document.getElementById('no-results');
+            const resultsCount = document.getElementById('results-count');
+            const filterCount = document.getElementById('filter-count');
+            
+            // Current filters
+            let currentLevel = 'tous';
+            let currentDomains = ['scientifique', 'lettres', 'sciences-humaines', 'arts'];
+            let currentTeacher = 'tous';
+            
+            // Activate level buttons
+            levelButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    levelButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentLevel = this.getAttribute('data-level');
+                    updateFilterCount();
+                });
+            });
+            
+            // Handle domain checkboxes
+            domainCheckboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    if (this.checked) {
+                        currentDomains.push(this.value);
+                    } else {
+                        currentDomains = currentDomains.filter(d => d !== this.value);
+                    }
+                    updateFilterCount();
+                });
+            });
+            
+            // Handle teacher select
+            teacherSelect.addEventListener('change', function() {
+                currentTeacher = this.value;
+                updateFilterCount();
+            });
+            
+            // Apply filters
+            applyButton.addEventListener('click', applyFilters);
+            resetButton.addEventListener('click', resetFilters);
+            resetFromEmpty.addEventListener('click', resetFilters);
+            
+            // Apply filters on page load
+            applyFilters();
+            
+            // Filter function
+            function applyFilters() {
+                let visibleCount = 0;
+                
+                subjects.forEach(subject => {
+                    const levels = subject.getAttribute('data-levels');
+                    const domain = subject.getAttribute('data-domain');
+                    const teacher = subject.getAttribute('data-teacher');
+                    
+                    // Check level filter
+                    const levelMatch = currentLevel === 'tous' || levels.includes(currentLevel);
+                    
+                    // Check domain filter
+                    const domainMatch = currentDomains.includes(domain);
+                    
+                    // Check teacher filter
+                    const teacherMatch = currentTeacher === 'tous' || teacher === currentTeacher;
+                    
+                    // Show or hide based on filters
+                    if (levelMatch && domainMatch && teacherMatch) {
+                        subject.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        subject.style.display = 'none';
+                    }
+                });
+                
+                // Show no results message if needed
+                if (visibleCount === 0) {
+                    noResults.style.display = 'block';
+                    subjectsContainer.style.display = 'none';
+                } else {
+                    noResults.style.display = 'none';
+                    subjectsContainer.style.display = 'flex';
+                }
+                
+                // Update results count
+                resultsCount.textContent = `${visibleCount} matière${visibleCount !== 1 ? 's' : ''} trouvée${visibleCount !== 1 ? 's' : ''}`;
+            }
+            
+            // Reset filters
+            function resetFilters() {
+                // Reset level
+                levelButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-level') === 'tous') {
+                        btn.classList.add('active');
+                    }
+                });
+                currentLevel = 'tous';
+                
+                // Reset domains
+                domainCheckboxes.forEach(cb => {
+                    cb.checked = true;
+                });
+                currentDomains = ['scientifique', 'lettres', 'sciences-humaines', 'arts'];
+                
+                // Reset teacher
+                teacherSelect.value = 'tous';
+                currentTeacher = 'tous';
+                
+                // Update UI and apply
+                updateFilterCount();
+                applyFilters();
+            }
+            
+            // Update filter count indicator
+            function updateFilterCount() {
+                let count = 0;
+                
+                // Level filter (if not "tous")
+                if (currentLevel !== 'tous') count++;
+                
+                // Domain filters (if any are unchecked)
+                const allDomains = ['scientifique', 'lettres', 'sciences-humaines', 'arts'];
+                const activeDomains = allDomains.filter(d => currentDomains.includes(d));
+                if (activeDomains.length < allDomains.length) count++;
+                
+                // Teacher filter (if not "tous")
+                if (currentTeacher !== 'tous') count++;
+                
+                filterCount.textContent = count;
+            }
         });
     </script>
 {% endblock %}

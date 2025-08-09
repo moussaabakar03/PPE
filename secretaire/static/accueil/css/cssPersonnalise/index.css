@@ -174,14 +174,3 @@ body {
 .social-links a:hover {
     background: var(--primary);
 }
-
-.newsletter-form .form-control {
-    border: none;
-    border-radius: 0;
-    height: 50px;
-}
-
-.newsletter-form .btn {
-    border-radius: 0;
-    height: 50px;
-}
