@@ -34,7 +34,8 @@
         }
 
         .hero-section {
-            background: linear-gradient(rgba(44, 95, 168, 0.85), rgba(51, 97, 160, 0.9)), url('{% static 'accueil/images/accueilHero.jpg' %}');
+            background: linear-gradient(rgba(55, 102, 167, 0.85), rgba(51, 97, 160, 0.9)), url('{% static 'accueil/images/accueilHero.jpg' %}');
+            {% comment %} background-image: url('{% static 'accueil/images/accueilHero.jpg' %}'); {% endcomment %}
             background-size: cover;
             object-fit: cover;
             {% comment %} background-position: center; {% endcomment %}
@@ -54,7 +55,29 @@
             object-fit : cover;
         }
 
+        
 
+        @media (max-width: 500px) {
+            .contactRapide {
+                flex-direction: column; /* Les boutons passent l’un en dessous de l’autre */
+                align-items: center; /* Centrage horizontal */
+                gap: 10px; /* Espacement entre eux */
+            }
+
+            .contactRapide a {
+                width: 100%; /* Chaque bouton prend toute la largeur disponible */
+                text-align: center;
+            }
+            {% comment %} body{
+                background-color: #49dd0eff;
+            } {% endcomment %}
+        }
+
+        {% comment %} @media(min-width: 600px){
+            body{
+                background-color: #883131ff;
+            }
+        } {% endcomment %}
     </style>
     
 {% endblock %}
@@ -69,9 +92,9 @@
                 <div class="col-md-8 mx-auto text-center text-white">
                     <h1 class="display-4 mb-4" style="font-weight: bold;">Collège AcadPro</h1>
                     <p class="lead mb-5">Excellence académique, innovation pédagogique et développement personnel depuis 1995</p>
-                    <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center col-md-12 contactRapide">
                         <a href="#" class="btn btn-light btn-lg mr-3">Découvrir notre établissement</a>
-                        <a href="#" class="btn btn-outline-light btn-lg">Inscriptions & admissions</a>
+                        <a href="{% url 'depotDossier' %}#MonFormulaire" class="btn btn-outline-light btn-lg">Inscriptions & admissions</a>
                     </div>
                 </div>
             </div>
@@ -161,7 +184,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="stat-card">
-                        <div><span class="stat-number">5</span><span class="nombrePlus">+</span></div>
+                        <div><span class="stat-number">20</span><span class="nombrePlus">+</span></div>
                         <p>Années d'expertise</p>
                     </div>
                 </div>
@@ -393,7 +416,7 @@
 
     <script src="{% static 'accueil/js/jquery.min.js' %}"></script>
     <script src="{% static 'accueil/js/bootstrap.bundle.min.js' %}"></script>
-    <script>
+    {% comment %} <script>
         $(document).ready(function(){
             // Flag pour suivre si l'animation a été déclenchée
             let statsAnimated = false;
@@ -439,6 +462,6 @@
                 }
             }
         });
-    </script>
+    </script> {% endcomment %}
 
 {% endblock %}

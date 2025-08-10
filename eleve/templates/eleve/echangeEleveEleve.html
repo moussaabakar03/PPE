@@ -200,9 +200,9 @@
                             <div>
                                 <form method="POST" id="messageForm" class ="chat-footer">
                                     {% csrf_token %}
-                                    <input type="text" placeholder="Écrire un message..." id="messageInput" name="messageEleve" autocomplete="off">
-                                    <button type="submit">
-                                        <i class="fas fa-paper-plane"></i>
+                                    <input type="text" placeholder="Écrire un message..." id="messageInput" name="messageEleve" autocomplete="off" >
+                                    <button type="submit"  id ="bouttonSoummission">
+                                        <i class="fas fa-paper-plane" id ="iconSoummission"></i>
                                     </button>
                                 </form>
                             </div>
@@ -257,8 +257,17 @@
                 e.preventDefault();
                 const formData = new FormData(messageForm);
                 const messageContent = messageInput.value.trim();
+                const bouttonSoummission = document.getElementById("bouttonSoummission");
+                const iconSoummission = document.getElementById("iconSoummission");
                 
                 if (!messageContent) {
+                    bouttonSoummission.style.backgroundColor ="gray";
+                    iconSoummission.style.color ="red";
+                    bouttonSoummission.style.border = "none";
+                    setTimeout(()=>{
+                        bouttonSoummission.style.backgroundColor = "#007bff";
+                        iconSoummission.style.color ="white";
+                    }, 1000);
                     return;
                 }
                 

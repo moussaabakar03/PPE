@@ -142,7 +142,7 @@
                             </div>
                             
                             <!-- Formulaire de dépôt -->
-                            <form method="post" enctype="multipart/form-data" class= "formulaire" style="border: 1px solid #ddd; padding: 20px; border-radius: 10px;">
+                            <form method="post" enctype="multipart/form-data" id="MonFormulaire" class= "formulaire" style="border: 1px solid #ddd; padding: 20px; border-radius: 10px;">
                                 {% csrf_token %}
                                 <div class="row gy-4">
                                     <div class="col-md-6">
@@ -209,7 +209,7 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="col-md-12 mt-4 text-center"  id="MonFormulaire">
+                                    <div class="col-md-12 mt-4 text-center">
                                         <button class="btn btn-primary btn-lg px-3" type="submit">
                                             <i class="fas fa-paper-plane me-2"></i>Envoyer le dossier
                                         </button>
