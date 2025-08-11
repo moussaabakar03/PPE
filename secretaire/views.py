@@ -1135,8 +1135,10 @@ def modifierInscription(request, id):
         salleDeClasse = request.POST["salleClasse"]
         # inscription.coutA = request.POST["coutA"]
         # inscription.montantVerse = request.POST["montantVerse"]
+        annee_id = request.POST["anneeScolaire"]
+        inscription.anneeAcademique = AnneeScolaire.objects.get(id = annee_id)
         
-        inscription.etudiant_id = Etudiant.objects.get(id =etudiant)
+        inscription.etudiant_id = Etudiant.objects.get(id = etudiant)
         inscription.salleClasse_id = SalleDeClasse.objects.get(id =salleDeClasse)
         
         inscription.save()
@@ -1144,7 +1146,8 @@ def modifierInscription(request, id):
     context = {
         'etudiants': Etudiant.objects.all(),
         'salles': SalleDeClasse.objects.all(),
-        'inscription': inscription
+        'inscription': inscription,
+        'anneeScolaires': AnneeScolaire.objects.all()
     }
     return render(request, 'modifier-inscription.html', context)
         

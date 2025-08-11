@@ -108,7 +108,15 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                        
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label>Année scolaire *</label>
+                                    <select name="anneeScolaire" class="select2 form-control" required>
+                                        <option value="">Sélectionnez l'année scolaire *</option>
+                                        {% for anneeScolaire in anneeScolaires %}
+                                            <option value={{anneeScolaire.id}} {% if inscription.anneeAcademique.id == anneeScolaire.id %}selected{%endif%}>{{ anneeScolaire.debutAnnee|date:"Y" }}- {{ anneeScolaire.fintAnnee|date:"Y" }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
                                 <!-- Montant versé -->
                                 {% comment %} <div class="col-xl-4 col-lg-6 col-12 form-group">
                                     <label>Montant versé *</label>
