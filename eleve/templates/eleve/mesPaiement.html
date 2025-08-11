@@ -86,9 +86,7 @@
 
 </head>
 <body>
-   
     <div>
-   
         {% include 'eleve/partial/header.html' %}
 
         <div class="dashboard-page-one">
@@ -104,7 +102,7 @@
                                     <span class="icon" id="icon-{{ forloop.counter }}" style="color: red!important;">&#9654;</span>
                                     Paiements pour la salle : {{ item.salle.niveau }} - {{ item.salle.nom }}
                                 </div>
-                                <div class="paiement-content" id="content-{{ forloop.counter }}">
+                                <div class="paiement-content" id="content-{{ forloop.counter }}" style ="overflow: auto;">
                                     <table class="table display data-table text-nowrap" style="width:100%;">
                                         <thead>
                                             <tr>
@@ -126,12 +124,13 @@
                                                 </tr>
                                             {% endfor %}
                                             <tr>
-                                                <td colspan="2"><strong>Total Attendu</strong></td>
-                                                <td colspan="3" class="paid"><strong>{{ item.cout_attendu }} FCFA</strong></td>
+                                                <td colspan="1"><strong>Total Attendu</strong></td>
+                                                <td colspan="2" class="paid"><strong>{{ item.cout_attendu }} FCFA</strong></td>
+                                                <td colspan="1"><strong>Total payé</strong></td>
+                                                <td colspan="1" class="paid"><strong class="paid">{{ item.total_paye }} FCFA</strong></td>
                                             </tr>
                                             <tr>
-                                                <td colspan="2"><strong>Total payé</strong></td>
-                                                <td colspan="3" class="paid"><strong>{{ item.total_paye }} FCFA</strong></td>
+                                                <td colspan="5" style ="text-align: center;"><strong>Total Reste à payer:</strong> <strong  style ="color: red;">{{ item.reste_a_payer  }} FCFA</strong></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -139,7 +138,7 @@
                             </div>
                         {% endfor %}
                     <div>
-                        <h3> A revoir</h3>
+                        {% comment %} <h3> A revoir</h3> {% endcomment %}
                         {% comment %} <h3> A revoir: toal payé, total attendu, montant verse, mode de paiement, periode de paiement</h3> {% endcomment %}
                     </div>
                     </div>

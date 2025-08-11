@@ -110,11 +110,11 @@
                                 </div>
                         
                                 <!-- Montant versé -->
-                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                {% comment %} <div class="col-xl-4 col-lg-6 col-12 form-group">
                                     <label>Montant versé *</label>
                                     <input type="number" name="montantVerse" value = {{inscription.montantVerse }} class="form-control" required step="0.01">
                                 </div>
-                        
+                         {% endcomment %}
                                 <div class="col-12 form-group mg-t-8">
                                     <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Enregistrer</button>
                                     <a href="{% url 'secretaire:all_inscription' %}" type="button" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Annuler</a>

@@ -142,7 +142,7 @@ class Inscription(models.Model):
     salleClasse = models.ForeignKey(SalleDeClasse, on_delete=models.CASCADE, null=True, blank=True, related_name='inscris')
     dateEnregistrement = models.DateTimeField(auto_now_add=True)
     # coutA = models.DecimalField(max_digits=10, decimal_places=2)
-    montantVerse = models.DecimalField(max_digits=10, decimal_places=2)
+    # montantVerse = models.DecimalField(max_digits=10, decimal_places=2)
     # montantRestant = models.DecimalField(max_digits=10, decimal_places=2)
     anneeAcademique = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE, related_name= 'anneeAcad' )
     

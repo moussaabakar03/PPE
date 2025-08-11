@@ -137,7 +137,7 @@
                                 </div>
                         
                                 <!-- Montant versé -->
-                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                {% comment %} <div class="col-xl-4 col-lg-6 col-12 form-group">
                                     <label>Montant versé *</label>
                                     <input type="number" name="montantVerse" class="form-control" step="0.1">
                                 </div>
@@ -145,7 +145,7 @@
                                 <div class="col-xl-4 col-lg-6 col-12 form-group">
                                     <label>Coût attendu *</label>
                                     <input type="number" name="coutA" id="coutA" class="form-control" required step="0.01" readonly>
-                                </div> 
+                                </div>  {% endcomment %}
 
                                 <div class="col-12 form-group mg-t-8">
                                     <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Enregistrer</button>
@@ -238,7 +238,7 @@
             updateCoutAttendu();
         });
 
-        function updateCoutAttendu() {
+        /*function updateCoutAttendu() {
             const anneeId = $('#annee-select').val();
             if (selectedClasseId && anneeId) {
                 const key = `${selectedClasseId}_${anneeId}`;
@@ -250,7 +250,7 @@
                     alert("⚠️ Aucun coût trouvé pour cette classe et cette année scolaire.");
                 }
             }
-        }
+        }*/
 
     });
 </script>

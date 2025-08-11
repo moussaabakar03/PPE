@@ -346,9 +346,7 @@ def mesPaiement(request):
     for inscription in inscriptions:
         if annee is None:
             annee = inscription.anneeAcademique
-            print (annee)
             
-    
     paiements_temp = defaultdict(list)
 
     for paiement in paiements:
@@ -356,12 +354,13 @@ def mesPaiement(request):
         paiements_temp[salle.id].append(paiement)
 
     paiements_par_salle = []
-    total_paye = 0
+    total_paye_global = 0
+    restePayer_global = 0
 
     for salle_id, paiements in paiements_temp.items():
         salle = paiements[0].inscription_Etudiant.salleClasse
         total_salle = sum(p.montantVerse for p in paiements)
-        total_paye += total_salle
+        total_paye_global += total_salle
 
         try:
             cout_obj = Cout.objects.get(anneeScolaire=annee, classe=salle.niveau)
@@ -374,19 +373,25 @@ def mesPaiement(request):
         except Cout.DoesNotExist:
             cout_total = 0
 
+        # Calcul du reste à payer pour CETTE salle
+        reste_salle = cout_total - total_salle
+        restePayer_global += max(reste_salle, 0)  # on évite les valeurs négatives
 
         paiements_par_salle.append({
             'salle': salle,
             'paiements': paiements,
             'total_paye': total_salle,
-            'cout_attendu': cout_total
+            'cout_attendu': cout_total,
+            'reste_a_payer': max(reste_salle, 0)
         })
 
     return render(request, 'eleve/mesPaiement.html', {
         'paiements_par_salle': paiements_par_salle,
         'etudiant': eleve,
-        'total_paye': total_paye,
+        'total_paye': total_paye_global,
+        'restePayer': restePayer_global
     })
+
 
 
 from django.utils import timezone

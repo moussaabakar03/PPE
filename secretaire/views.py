@@ -1079,9 +1079,9 @@ def ajoutInscription(request):
     if request.method == "POST":
         etudiant_id = request.POST["etudiant"]
         salleClasse_id = request.POST["salleClasse"]
-        montantVerse = request.POST["montantVerse"]
-        if not montantVerse:
-            montantVerse = 0
+        # montantVerse = request.POST["montantVerse"]
+        # if not montantVerse:
+        #     montantVerse = 0
         anneeScolaire_id = request.POST["anneeScolaire"]
         
         etudiant = get_object_or_404(Etudiant, pk=int(etudiant_id))
@@ -1103,7 +1103,7 @@ def ajoutInscription(request):
         Inscription.objects.create(
             etudiant=etudiant,
             salleClasse=salleDeClasse,
-            montantVerse=montantVerse,
+            # montantVerse=montantVerse,
             anneeAcademique=anneeAcademique
         )
 
@@ -1134,7 +1134,7 @@ def modifierInscription(request, id):
         etudiant = request.POST["etudiant"]
         salleDeClasse = request.POST["salleClasse"]
         # inscription.coutA = request.POST["coutA"]
-        inscription.montantVerse = request.POST["montantVerse"]
+        # inscription.montantVerse = request.POST["montantVerse"]
         
         inscription.etudiant_id = Etudiant.objects.get(id =etudiant)
         inscription.salleClasse_id = SalleDeClasse.objects.get(id =salleDeClasse)

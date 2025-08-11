@@ -109,8 +109,8 @@
                                         <th>Nom de l'étudiant</th>
                                         <th>Salle de classe</th>
                                         <th>Année scolaire</th>
-                                        <th>Coûts Attendus</th>
-                                        <th>Montant versé</th>
+                                        {% comment %} <th>Coûts Attendus</th>
+                                        <th>Montant versé</th> {% endcomment %}
                                         <th>Date d'enregistrement</th>
                                         <th>Photo</th>
                                         <th>Action</th>
@@ -128,14 +128,14 @@
                                         <td>{{inscription.etudiant.nom }} {{ inscription.etudiant.prenom }}</td>
                                         <td>{{ inscription.salleClasse.niveau.classe }} {{ inscription.salleClasse.nom }}</td>
                                         <td>{{ inscription.anneeAcademique.debutAnnee|date:"Y"}}- {{ inscription.anneeAcademique.fintAnnee|date:"Y"}}</td>
-                                        {% with cout=inscription.get_cout_inscription %}
+                                        {% comment %} {% with cout=inscription.get_cout_inscription %}
                                             {% if cout %}
                                                 <td>{{ cout.coutInscription }} F CFA</td>
                                             {% else %}
                                                 <td>Non défini</td>
                                             {% endif %}
                                         {% endwith %}
-                                        <td>{{ inscription.montantVerse }} F CFA</td>
+                                        <td>{{ inscription.montantVerse }} F CFA</td> {% endcomment %}
                                         <td>{{ inscription.dateEnregistrement|date:"d/m/Y H:i" }}</td>
                                         {% if inscription.etudiant.photo %}
                                             <td><img src="{{inscription.etudiant.photo.url}}" alt="image" width="50" height="50"></td>

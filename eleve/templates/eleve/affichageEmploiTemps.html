@@ -131,6 +131,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                          {% if heures %}
                             {% for heure in heures %}
                             <tr>
                                 <td>{{ heure }}</td>
@@ -149,6 +150,14 @@
                                 {% endfor %}
                             </tr>
                             {% endfor %}
+                          {% else %}
+                          <tr>
+                            <td colspan="7" style ="text-align: center;">
+                              Aucun emploi du temps ajouté pour le moment.
+                            </td>
+                          </tr>
+                          {% endif %}
+
                         </tbody>
                     </table>
                     <div class="col-12 form-group mg-t-8" style="display: flex; justify-content: center;">
