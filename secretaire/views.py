@@ -1615,45 +1615,41 @@ def generationBilletin(request, matricule, classe, id):
     etudiant = get_object_or_404(Etudiant, matricule=matricule)
     annee = get_object_or_404(AnneeScolaire, id=id)
     cours_classe = Cours.objects.filter(classe__classe=classe, anneeScolaire=annee)
-    
-    salleClasse = get_object_or_404(SalleDeClasse, niveau__classe = classe)
-    
+
+    salleClasse = get_object_or_404(SalleDeClasse, niveau__classe=classe)
+
     inscrits = etudiant.inscriptions.all()
-    
-    tousInscrits = Inscription.objects.filter(anneeAcademique= annee, salleClasse = salleClasse).count()
-    
+    inscrits_classe = Inscription.objects.filter(anneeAcademique=annee, salleClasse=salleClasse)
+    tousInscrits = inscrits_classe.count()
+
     trimestres = ["1er trimestre", "2e trimestre", "3e trimestre"]
-    
+
     # Structures pour stocker les résultats
-    liste_moyennes = {trimestre: [] for trimestre in trimestres}
-    moyennes_generales = {trimestre: 0 for trimestre in trimestres}
-    
+    liste_moyennes = {t: [] for t in trimestres}
+    moyennes_generales = {t: 0 for t in trimestres}
+    rangs = {t: None for t in trimestres}
+    stats_classe = {t: {"forte": 0, "faible": 0, "moyenne": 0} for t in trimestres}  # <-- Ajouté
+
+    # --- Calcul des moyennes matières de l'élève ---
     for cours in cours_classe:
         coefficient = cours.coefficient
-        
         for trimestre in trimestres:
-            evaluations = cours.evaluations.filter(
-                etudiant=etudiant, 
-                trimestre=trimestre
-            )
-            
+            evaluations = cours.evaluations.filter(etudiant=etudiant, trimestre=trimestre)
+
             total_devoir = 0.0
             total_compo = 0.0
-            
+
             for evaluation in evaluations:
                 pourcentage = float(evaluation.pourcentage) / 100
                 note_ponderee = float(evaluation.note) * pourcentage
-                
+
                 if evaluation.typeEvaluation in ['Devoir', 'Interrogation']:
                     total_devoir += note_ponderee
                 elif evaluation.typeEvaluation == 'Composition':
                     total_compo += note_ponderee
-            
-            # moyenne_matiere = float((total_devoir + total_compo)/2)   ############################
-            # Si le pourcentage est 100% par tout. On applique ceci.
-            # ###########################
-            moyenne_matiere = float((total_devoir + total_compo)/2)
-            
+
+            moyenne_matiere = float((total_devoir + total_compo) / 2)
+
             liste_moyennes[trimestre].append({
                 "matiere": cours.matiere.nom,
                 "enseignant": cours.enseignant.nom,
@@ -1662,41 +1658,83 @@ def generationBilletin(request, matricule, classe, id):
                 "moyenne_compo": round(total_compo, 2),
                 "moyenne": round(moyenne_matiere, 2),
                 "moyenne_ponderee": round(moyenne_matiere * coefficient, 2),
-                
-                "appreciation1": get_appreciation( round(moyenne_matiere, 2)),
-                "appreciation2": get_appreciation( round(moyenne_matiere, 2)),
-                "appreciation3": get_appreciation( round(moyenne_matiere, 2)),
-        
+                "appreciation1": get_appreciation(round(moyenne_matiere, 2)),
+                "appreciation2": get_appreciation(round(moyenne_matiere, 2)),
+                "appreciation3": get_appreciation(round(moyenne_matiere, 2)),
             })
-    
-    # Calcul des moyennes générales
+
+    # --- Calcul des moyennes générales de l'élève ---
     for trimestre in trimestres:
         total_pondere = sum(item['moyenne_ponderee'] for item in liste_moyennes[trimestre])
         total_coeff = sum(item['coefficient'] for item in liste_moyennes[trimestre])
-        
         if total_coeff > 0:
             moyennes_generales[trimestre] = round(total_pondere / total_coeff, 4)
-    
+
+    # --- Calcul des rangs + statistiques de classe ---
+    for trimestre in trimestres:
+        classement = []
+        for inscrit in inscrits_classe:
+            etu = inscrit.etudiant
+            cours_inscrit = Cours.objects.filter(classe__classe=classe, anneeScolaire=annee)
+
+            total_pondere_etu = 0.0
+            total_coeff_etu = 0.0
+            for cours in cours_inscrit:
+                evaluations = cours.evaluations.filter(etudiant=etu, trimestre=trimestre)
+                total_devoir = 0.0
+                total_compo = 0.0
+                for evaluation in evaluations:
+                    pourcentage = float(evaluation.pourcentage) / 100
+                    note_ponderee = float(evaluation.note) * pourcentage
+                    if evaluation.typeEvaluation in ['Devoir', 'Interrogation']:
+                        total_devoir += note_ponderee
+                    elif evaluation.typeEvaluation == 'Composition':
+                        total_compo += note_ponderee
+
+                moyenne_matiere = float((total_devoir + total_compo) / 2)
+                total_pondere_etu += moyenne_matiere * cours.coefficient
+                total_coeff_etu += cours.coefficient
+
+            moyenne_generale_etu = round(total_pondere_etu / total_coeff_etu, 4) if total_coeff_etu > 0 else 0
+            classement.append((etu.id, moyenne_generale_etu))
+
+        # Trier du plus fort au plus faible
+        classement.sort(key=lambda x: x[1], reverse=True)
+
+        # Trouver rang élève
+        rangs[trimestre] = next((i + 1 for i, (etu_id, _) in enumerate(classement) if etu_id == etudiant.id), None)
+
+        # Statistiques de classe
+        if classement:
+            notes = [m for _, m in classement]
+            stats_classe[trimestre]["forte"] = max(notes)
+            stats_classe[trimestre]["faible"] = min(notes)
+            stats_classe[trimestre]["moyenne"] = round(sum(notes) / len(notes), 2)
+
     return render(request, 'generationBilletin.html', {
         "annee": annee,
         "etudiant": etudiant,
         "inscrits": inscrits,
-        "tousInscrits":tousInscrits,
-        
-        'salleClasse': salleClasse,
-        
+        "tousInscrits": tousInscrits,
+        "salleClasse": salleClasse,
         "liste_moyennesTrimestre1": liste_moyennes["1er trimestre"],
         "liste_moyennesTrimestre2": liste_moyennes["2e trimestre"],
         "liste_moyennesTrimestre3": liste_moyennes["3e trimestre"],
         "moyenne_generale1": moyennes_generales["1er trimestre"],
         "moyenne_generale2": moyennes_generales["2e trimestre"],
         "moyenne_generale3": moyennes_generales["3e trimestre"],
+        "rang1": rangs["1er trimestre"],
+        "rang2": rangs["2e trimestre"],
+        "rang3": rangs["3e trimestre"],
+        "stats1": stats_classe["1er trimestre"],
+        "stats2": stats_classe["2e trimestre"],
+        "stats3": stats_classe["3e trimestre"],
         "trimestres": trimestres,
-        
         "appreciationGenerale1": get_appreciation(moyennes_generales["1er trimestre"]),
         "appreciationGenerale2": get_appreciation(moyennes_generales["2e trimestre"]),
         "appreciationGenerale3": get_appreciation(moyennes_generales["3e trimestre"]),
     })
+
 
 # def generationBilletin(request, matricule, classe):
 #     etudiant = Etudiant.objects.get(matricule=matricule)

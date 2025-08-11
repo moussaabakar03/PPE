@@ -161,15 +161,15 @@
                                     <div class="" style ="background-color: white; border: 0.5px solid #ddd; padding: 10px;">
                                         <div class="" style = "display: flex; justify-content: center; align-items: center; gap: 75px; ">
                                             <div><strong>Moyenne 1er Trimestre :</strong> {{moyenne_generale1}}</div>
-                                            <div><strong>Rang 1er Trimestre :</strong> 1 / {{tousInscrits}}</div>
+                                             <div><strong>Rang 1er Trimestre :</strong> {{ rang1 }} / {{ tousInscrits }}</div>
                                         </div>
                                     </div>
                                 
-                                <div style="text-align: center; margin: 20px 0;">
-                                    <div><strong>Forte moyenne :</strong> 15.50</div>
-                                    <div><strong>Moyenne de classe :</strong> 10.85</div>
-                                    <div><strong>Faible moyenne :</strong> 6.25</div>
-                                </div>
+                                    <div style="text-align: center; margin: 20px 0;">
+                                        <div><strong>Forte moyenne :</strong> {{ stats1.forte }}</div>
+                                        <div><strong>Moyenne de classe :</strong> {{ stats1.moyenne }}</div>
+                                        <div><strong>Faible moyenne :</strong> {{ stats1.faible }}</div>
+                                    </div>
                                 
                                 <div style="text-align: center; margin: 20px 0; font-size: 14px;">
                                     <strong>Appréciation du travail : {{appreciationGenerale1}}</strong>
@@ -299,19 +299,19 @@
                                     <div class="" style ="background-color: white; border: 0.5px solid #ddd; padding: 10px;">
                                         <div class="d-flex" style = "justify-content: center; align-items: center; gap: 75px; ">
                                             <div><strong>Moyenne 1ère Trimestre :</strong>  {{moyenne_generale1}}</div>
-                                            <div><strong>Rang 1er Trimestre :</strong> 1 / {{tousInscrits}}</div>
+                                            <div><strong>Rang 1er Trimestre :</strong> {{ rang1 }} / {{ tousInscrits }}</div>
                                         </div>
                                         <div class="d-flex" style = "justify-content: center; align-items: center; gap: 75px; ">
                                             <div><strong>Moyenne 2ème Trimestre :</strong>  {{moyenne_generale2}}</div>
-                                            <div><strong>Rang 2ème Trimestre :</strong> 1 / {{tousInscrits}}</div>
+                                            <div><strong>Rang 2ème Trimestre :</strong> {{ rang2 }} / {{ tousInscrits }}</div>
                                         </div>
                                     </div>
                                 
-                                <div style="text-align: center; margin: 20px 0;">
-                                    <div><strong>Forte moyenne :</strong> 15.50</div>
-                                    <div><strong>Moyenne de classe :</strong> 10.85</div>
-                                    <div><strong>Faible moyenne :</strong> 6.25</div>
-                                </div>
+                                    <div style="text-align: center; margin: 20px 0;">
+                                        <div><strong>Forte moyenne :</strong> {{ stats1.forte }}</div>
+                                        <div><strong>Moyenne de classe :</strong> {{ stats1.moyenne }}</div>
+                                        <div><strong>Faible moyenne :</strong> {{ stats1.faible }}</div>
+                                    </div>
                                 
                                 <div style="text-align: center; margin: 20px 0; font-size: 14px;">
                                     <strong>Appréciation du travail : {{appreciationGenerale2}}</strong>
@@ -442,24 +442,24 @@
                                     <div class="" style ="background-color: white; border: 0.5px solid #ddd; padding: 10px;">
                                         <div class="" style = "display: flex; justify-content: center; align-items: center; gap: 75px; ">
                                             <div><strong>Moyenne 1er Trimestre :</strong> {{moyenne_generale1}}</div>
-                                            <div><strong>Rang 1er Trimestre :</strong> 1 / {{tousInscrits}}</div>
+                                            <div><strong>Rang 1er Trimestre :</strong> {{ rang1 }} / {{ tousInscrits }}</div>
                                         </div>
                                         <div class="d-flex" style = "justify-content: center; align-items: center; gap: 75px; ">
                                             <div><strong>Moyenne 2ème Trimestre :</strong>  {{moyenne_generale2}}</div>
-                                            <div><strong>Rang 2ème Trimestre :</strong> 1 / {{tousInscrits}}</div>
+                                            <div><strong>Rang 2ème Trimestre :</strong> {{ rang2 }} / {{ tousInscrits }}</div>
                                         </div>
                                         <div class="d-flex" style = "justify-content: center; align-items: center; gap: 75px; ">
                                             <div><strong>Moyenne 3ème Trimestre :</strong>  {{moyenne_generale3}}</div>
-                                            <div><strong>Rang 3ème Trimestre :</strong> 1 / {{tousInscrits}}</div>
+                                            <div><strong>Rang 3ème Trimestre :</strong> {{ rang3 }} / {{ tousInscrits }}</div>
                                         </div>
                                     </div>
                                     
                                     <div style="text-align: center; margin: 20px 0;">
-                                        <div><strong>Forte moyenne :</strong> 15.50</div>
-                                        <div><strong>Moyenne de classe :</strong> 10.85</div>
-                                        <div><strong>Faible moyenne :</strong> 6.25</div>
+                                        <div><strong>Forte moyenne :</strong> {{ stats1.forte }}</div>
+                                        <div><strong>Moyenne de classe :</strong> {{ stats1.moyenne }}</div>
+                                        <div><strong>Faible moyenne :</strong> {{ stats1.faible }}</div>
                                     </div>
-                                
+
                                 <div style="text-align: center; margin: 20px 0; font-size: 14px;">
                                     <strong>Appréciation du travail : {{appreciationGenerale3}}</strong>
                                 </div>
