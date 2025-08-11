@@ -89,32 +89,21 @@ WSGI_APPLICATION = 'acadPro.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'acadPro$acadProDB',
-#         'USER': 'acadPro',
-#         'PASSWORD': 'Oucherie1234@',
-#         'HOST': 'acadPro.mysql.pythonanywhere-services.com',
-#         'PORT': '3306',
-#     }
-# }
-
 DATABASES = {
-    'default':{
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "basededonnee",
-        'USER': 'postgres',
-        'PASSWORD': 'Moussa68444436@',
-        'HOST': 'localhost',
-        'PORT': '5432'
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'acadPro$acadProDB',
+        'USER': 'acadPro',
+        'PASSWORD': 'Oucherie1234@',
+        'HOST': 'acadPro.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
     }
 }
 
 # DATABASES = {
-#     'default': {
+#     'default':{
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'basededonnee',
+#         'NAME': "basededonnee",
 #         'USER': 'postgres',
 #         'PASSWORD': 'Moussa68444436@',
 #         'HOST': 'localhost',
