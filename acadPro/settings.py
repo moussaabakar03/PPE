@@ -100,27 +100,27 @@ WSGI_APPLICATION = 'acadPro.wsgi.application'
 #     }
 # }
 
-# DATABASES = {
-#     'default':{
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': "basededonnee",
-#         'USER': 'postgres',
-#         'PASSWORD': 'Moussa68444436@',
-#         'HOST': 'localhost',
-#         'PORT': '5432'
-#     }
-# }
-
 DATABASES = {
-    'default': {
+    'default':{
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'basededonnee',
+        'NAME': "basededonnee",
         'USER': 'postgres',
         'PASSWORD': 'Moussa68444436@',
         'HOST': 'localhost',
         'PORT': '5432'
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'basededonnee',
+#         'USER': 'postgres',
+#         'PASSWORD': 'Moussa68444436@',
+#         'HOST': 'localhost',
+#         'PORT': '5432'
+#     }
+# }
 
 LOGIN_URL = 'connexion' 
 AUTH_USER_MODEL = 'secretaire.Utilisateur'

@@ -2,59 +2,42 @@
 
 <!doctype html>
 <html class="no-js" lang="">
-
-<head>
-
-   {% include 'partial/head.html' %}
-
-</head>
-
+    <head>
+        {% include 'partial/head.html' %}
+        <title>Enretard sur paiement</title>
+    </head>
 <body>
     <!-- Preloader Start Here -->
     <div id="preloader"></div>
     <!-- Preloader End Here -->
     <div id="wrapper" class="wrapper bg-ash">
-         <!-- Header Menu Area Start Here -->
-        
-         {% include 'partial/header.html' %}
 
+        <!-- Header Menu Area Start Here -->
+        {% include 'partial/nav.html' %}
         <!-- Header Menu Area End Here -->
+
         <!-- Page Area Start Here -->
         <div class="dashboard-page-one">
             <!-- Sidebar Area Start Here -->
-
-            {% include 'partial/aside.html' %}
-
+            {% include 'partial/asideComptable.html' %}
             <!-- Sidebar Area End Here -->
-            <div class="dashboard-content-one">
+
+            
+               <div class="dashboard-content-one">
                 <!-- Breadcubs Area Start Here -->
                 <div class="breadcrumbs-area">
-                    <h3>Inscription</h3>
+                    <h3>En retard sur les paiements</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'secretaire:index' %}">Tableau de Bord</a>
+                            <a href="{% url 'comptable:indexComptable' %}">Tableau de Bord</a>
                         </li>
-                        <li>Inscriptions *</li>
+                        <li>Verification *</li>
                     </ul>
                 </div>
                 <!-- Breadcubs Area End Here -->
                 <!-- Class Table Area Start Here -->
                 <div class="card height-auto">
                     <div class="card-body">
-                        <div class="heading-layout1">
-                            <div class="item-title">
-                                <h3>Inscriptions *</h3>
-                            </div>
-                           {% comment %} <div class="dropdown">
-                                <a class="dropdown-toggle" href="#" role="button" 
-                                data-toggle="dropdown" aria-expanded="false">...</a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#"><i class="fas fa-times text-orange-red"></i>Fermer</a>
-                                    <a class="dropdown-item" href="#"><i class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
-                                    <a class="dropdown-item" href="#"><i class="fas fa-redo-alt text-orange-peel"></i>Refrecher</a>
-                                </div>
-                            </div> {% endcomment %}
-                        </div>
                         <form class="mg-b-20" method="POST">
                             {% csrf_token %}
                             <div class="col-4-xxxl col-xl-12 col-lg-12 col-12 form-group">
@@ -66,12 +49,19 @@
                                     <option value="Non-renseigné">Autre</option>
                                 </select>
                             </div>
+                            
                             <div class="row gutters-8">
-                                <div class="col-3-xxxl col-xl-3 col-lg-3 col-12 form-group">
-                                    <input type="text" name ="matricule" placeholder="Filtrer par matricule élève ..." class="form-control">
+                                <div class="col-4-xxxl col-xl-4 col-lg-3 col-12 form-group">
+                                    <select class="form-control" name="type_paiement" id="type_paiement" required>
+                                        <option value="">-- Type de paiement --</option>
+                                        <option value="Frais de scolarité">Frais de scolarité</option>
+                                        <option value="Frais d'inscription">Frais d'inscription</option>
+                                        <option value="Frais d'étude du dossier">Frais d'étude du dossier</option>
+                                        <option value="Frais Associés">Frais Associés</option>
+                                        <option value="Autre">Autre</option>
+                                    </select>
                                 </div>
                                 <div class="col-4-xxxl col-xl-4 col-lg-3 col-12 form-group">
-                                    {% comment %} <input type="text"  name ="niveau"  placeholder="Filtrer par niveau ..." class="form-control"> {% endcomment %}
                                     <select class="select2 form-control" id="etudiant-select" name="niveau" >
                                         <option value="">Filtrer par niveau ...</option>
                                         {% for niveau in niveaux %}
@@ -79,18 +69,6 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="col-3-xxxl col-xl-3 col-lg-3 col-12 form-group">
-                                    <input type="hidden" name ="" placeholder="Filtrer par matricule élève ..." class="form-control">
-                                </div>
-                                {% comment %} <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
-                                     <select id="anneeScolaireFilter" class="select2 form-control" name="anneeScolaire" onchange="applyFilters()">
-                                        <option value="">Année scolaire *</option>
-                                        {% for anneesScolaire in anneeScolaires %}
-                                            <option value="{{ anneesScolaire.debutAnnee|date:"Y" }}- {{ anneesScolaire.fintAnnee|date:"Y" }}">{{ anneesScolaire.debutAnnee|date:"Y" }}-{{ anneesScolaire.fintAnnee|date:"Y" }}</option>
-                                        {% endfor %}
-                                        <option value="Non-renseigné">Autre</option>
-                                    </select>
-                                </div> {% endcomment %}
                                 <div class="col-1-xxxl col-xl-2 col-lg-3 col-12 form-group">
                                     <button type="submit" class="fw-btn-fill btn-gradient-yellow">Filtrer</button>
                                 </div>
@@ -109,9 +87,6 @@
                                         <th>Nom de l'étudiant</th>
                                         <th>Salle de classe</th>
                                         <th>Année scolaire</th>
-                                        <th>Coûts Attendus</th>
-                                        <th>Montant versé</th>
-                                        <th>Date d'enregistrement</th>
                                         <th>Photo</th>
                                         <th>Action</th>
                                     </tr>
@@ -174,18 +149,14 @@
         </div>
         <!-- Page Area End Here -->
     </div>
+
+    <!-- Scripts -->
     <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
-    <!-- Plugins js -->
     <script src="{% static 'secretaire/js/plugins.js' %}"></script>
-    <!-- Popper js -->
     <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
-    <!-- Bootstrap js -->
     <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
-    <!-- Scroll Up Js -->
     <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
-    <!-- Data Table Js -->
     <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
-    <!-- Custom Js -->
     <script src="{% static 'secretaire/js/main.js' %}"></script>
 
     <script>
@@ -206,5 +177,5 @@
         }
     </script>
 </body>
-
 </html>
+

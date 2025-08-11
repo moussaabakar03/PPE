@@ -62,6 +62,12 @@
                 display: none !important;
             }
         }
+
+        @media (max-width: 600px){
+            .card-container{
+                overflow-x: auto;
+            }
+        }
     </style>        
 
 </head>
@@ -120,102 +126,93 @@
                     </div>
                 </div>
 
-                <div class="col-xl-3 col-lg-6 col-12 form-group">
-                    <div id="" style = "margin: 0 auto; margin-top: 20px;">
-                        <div class="card-container print-section" id="content">
-                            <div class="card">
-                                <div class="header">
-                                    <div class="togo-map">
-                                        <img src = "{% static 'secretaire/img/togo.png' %}" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/>
-                                    </div>
-                                    <div class="header-center">
-                                        <div class="subtitle">REPUBLIQUE DU TOGO</div>
-                                        <div class="subtitle">Paix - Travail -Patrie</div>
-                                        <div class="title">SCOLAIRE ACAD PRO</div>
-                                        <div class="id-label">CARTE D'IDENTITÉ SCOLAIRE</div>
-                                    </div>
-                                    <div class="education-emblem">
-                                        {% comment %} <img src = "{% static 'secretaire/img/logo.png' %}" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/> {% endcomment %}
-                                        {% comment %} <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="logo" class="img-fluid" style =" overflow : hidden; object-fit: cover; color: red!important;" width ="95" height="25" > {% endcomment %}
-                                        <div style="overflow: hidden;">
-                                            <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="logo" style="width: 100%; height: 100%; object-fit: cover;">
-                                        </div>
+                <div class="card-container print-section" id="content">
+                    <div class="card">
+                        <div class="header">
+                            <div class="togo-map">
+                                <img src = "{% static 'secretaire/img/togo.png' %}" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/>
+                            </div>
+                            <div class="header-center">
+                                <div class="subtitle">REPUBLIQUE DU TOGO</div>
+                                <div class="subtitle">Paix - Travail -Patrie</div>
+                                <div class="title">SCOLAIRE ACAD PRO</div>
+                                <div class="id-label">CARTE D'IDENTITÉ SCOLAIRE</div>
+                            </div>
+                            <div class="education-emblem">
+                                {% comment %} <img src = "{% static 'secretaire/img/logo.png' %}" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/> {% endcomment %}
+                                {% comment %} <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="logo" class="img-fluid" style =" overflow : hidden; object-fit: cover; color: red!important;" width ="95" height="25" > {% endcomment %}
+                                <div style="overflow: hidden;">
+                                    <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="logo" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
 
-                                    </div>
-                                </div>
-                                
-                                <div class="content">
-                                    <div class="photo">
-                                        <div class="face-placeholder">
-                                            
-                                            {% if etudiant.photo %}
-                                                <img src = "{{etudiant.photo.url}}" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; border-radius: 10%;"/>
-                                            {% else %}
-                                                <p class="text-center"><i class="fa fa-user"></i></p> 
-                                            {% endif %}
-                                            
-                                        </div>
-                                    </div>
+                            </div>
+                        </div>
+                        
+                        <div class="content">
+                            <div class="photo">
+                                <div class="face-placeholder">
                                     
-                                    <div class="details">
-                                        <div class="school-year">ANNÉE SCOLAIRE : 2024 - 2025</div>
-                                        
-                                        <div class="info-row">
-                                            <span class="info-label">Nom :</span>
-                                            <span class="info-value">{{etudiant.nom}}</span>
-                                        </div>
-                                        
-                                        <div class="info-row">
-                                            <span class="info-label">Prénom :</span>
-                                            <span class="info-value">{{etudiant.prenom}}</span>
-                                        </div>
-                                        
-                                        <div class="info-row">
-                                            <span class="info-label">Née le :</span>
-                                            <span class="info-value">{{etudiant.date_naissance|date:"d/m/Y"}}</span>
-                                            <span style="margin-left: 20px;">A</span>
-                                            <span class="info-value" style="margin-left: 10px;">LOME</span>
-                                        </div>
-                                        
-                                        <div class="info-row">
-                                            <span class="info-label">Sexe :</span>
-                                            <span class="info-value">{{etudiant.genre}}</span>
-                                            <span style="margin-left: 70px;">Classe: <span id = "classe"> </span></span>
-                                            {% comment %} {% for inscrit in inscrits%}
-                                                <span class="info-value" style="margin-left: 10px;">{{inscrit.salleClasse.niveau.classe}}</span>
-                                            {% endfor %} {% endcomment %}
-                                        </div>
-                                        
-                                        <div class="info-row">
-                                            <span class="info-label">Contact :</span>
-                                            <span class="info-value">{{etudiant.telephone}}</span>
-                                        </div>
-                                        
-                                        <div class="qr-code">
-                                            <!-- Simplified QR code representation -->
-                                            {% comment %} <img src = "../static/secretaire/img/qr.png" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/> {% endcomment %}
-                                            {% if etudiant.cheminCodeQr %}
-                                                <img src="{{ etudiant.cheminCodeQr.url }}" alt="QR Code" style = "width: 170px; padding: 5px; object-fit: cover; ">
-                                            {% else %}
-                                                <img src = "" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/>
-                                            {% endif %}
-                                        </div>
-                                    </div>
+                                    {% if etudiant.photo %}
+                                        <img src = "{{etudiant.photo.url}}" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; border-radius: 10%;"/>
+                                    {% else %}
+                                        <p class="text-center"><i class="fa fa-user"></i></p> 
+                                    {% endif %}
+                                    
+                                </div>
+                            </div>
+                            
+                            <div class="details">
+                                <div class="school-year">ANNÉE SCOLAIRE : 2024 - 2025</div>
+                                
+                                <div class="info-row">
+                                    <span class="info-label">Nom :</span>
+                                    <span class="info-value">{{etudiant.nom}}</span>
                                 </div>
                                 
-                                <div class="footer">
-                                    <div class="mat-number">MAT : <span style = "color: #ff9d01;">{{etudiant.matricule}}</span></div>
-                                    <div>IMPRIME PAR / ACADPRO : (+228) 94.84.69.12 / 72.51.78.85 Tout droit réservé</div>
+                                <div class="info-row">
+                                    <span class="info-label">Prénom :</span>
+                                    <span class="info-value">{{etudiant.prenom}}</span>
+                                </div>
+                                
+                                <div class="info-row">
+                                    <span class="info-label">Née le :</span>
+                                    <span class="info-value">{{etudiant.date_naissance|date:"d/m/Y"}}</span>
+                                    <span style="margin-left: 20px;">A</span>
+                                    <span class="info-value" style="margin-left: 10px;">LOME</span>
+                                </div>
+                                
+                                <div class="info-row">
+                                    <span class="info-label">Sexe :</span>
+                                    <span class="info-value">{{etudiant.genre}}</span>
+                                    <span style="margin-left: 70px;">Classe: <span id = "classe"> </span></span>
+                                    {% comment %} {% for inscrit in inscrits%}
+                                        <span class="info-value" style="margin-left: 10px;">{{inscrit.salleClasse.niveau.classe}}</span>
+                                    {% endfor %} {% endcomment %}
+                                </div>
+                                
+                                <div class="info-row">
+                                    <span class="info-label">Contact :</span>
+                                    <span class="info-value">{{etudiant.telephone}}</span>
+                                </div>
+                                
+                                <div class="qr-code">
+                                    <!-- Simplified QR code representation -->
+                                    {% comment %} <img src = "../static/secretaire/img/qr.png" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/> {% endcomment %}
+                                    {% if etudiant.cheminCodeQr %}
+                                        <img src="{{ etudiant.cheminCodeQr.url }}" alt="QR Code" style = "width: 170px; padding: 5px; object-fit: cover; ">
+                                    {% else %}
+                                        <img src = "" alt = "image" style = "width: 160px; padding: 5px; object-fit: cover; "/>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
+                        
+                        <div class="footer">
+                            <div class="mat-number">MAT : <span style = "color: #ff9d01;">{{etudiant.matricule}}</span></div>
+                            <div>IMPRIME PAR / ACADPRO : (+228) 94.84.69.12 / 72.51.78.85 Tout droit réservé</div>
+                        </div>
                     </div>
-
                 </div>
-
-                {% comment %} <div>
-                    {% include 'partial/copyright.html' %}
-                </div> {% endcomment %}
             </div>
         </div>
         <!-- Page Area End Here -->

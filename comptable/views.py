@@ -10,7 +10,7 @@ from collections import defaultdict
 from decimal import Decimal
 
 from comptable.models import PaiementEleve
-from secretaire.models import Cout, Inscription, Etudiant, AnneeScolaire, SalleDeClasse
+from secretaire.models import Classe, Cout, Inscription, Etudiant, AnneeScolaire, SalleDeClasse
 from django.contrib.auth.decorators import login_required
 
 from acadPro.utils.decorators import staff_required
@@ -33,7 +33,6 @@ def selectionSalle(request):
 @login_required
 @staff_required
 def liste_eleve(request, id_salle, id_annee):
- 
     # Initialisation du contexte
     context = {}
     
@@ -122,6 +121,8 @@ def ajouter_paiement(request, id_inscription, id_annee):
     return render(request, 'ajouter_paiement.html', {
         'inscriptionEleve': inscriptionEleve,
         'cout': cout,
+        'anneeScol': anneeScol,
+        'salleClasse': inscriptionEleve.salleClasse,
         'paiements': paiements,
         'totalCout': totalCout,
         'totalPaye': totalPaye,
@@ -179,3 +180,46 @@ def listePaiments(request):
     #     'form': form,
     #     'enseignant': enseignant
     # })
+    
+    
+@login_required
+@staff_required    
+def enretardSurPaiement(request):
+    if request.method == "POST":
+        matricule = request.POST.get("matricule", "").strip()
+        anneeScolaire = request.POST.get("anneeScolaire", "").strip()
+        niveau = request.POST.get("niveau", "").strip()
+
+        inscriptions = Inscription.objects.all()
+
+        if matricule:
+            inscriptions = inscriptions.filter(etudiant__matricule__icontains=matricule)
+
+        if niveau:
+            try:
+                classe = Classe.objects.get(pk=int(niveau))
+                inscriptions = inscriptions.filter(salleClasse__niveau=classe)
+            except (ValueError, Classe.DoesNotExist):
+                pass
+
+        if anneeScolaire:
+            try:
+                anneeAcademique = AnneeScolaire.objects.get(pk=int(anneeScolaire))
+                inscriptions = inscriptions.filter(anneeAcademique=anneeAcademique)
+            except (ValueError, AnneeScolaire.DoesNotExist):
+                pass
+
+        return render(request, 'enretardSurPaiement.html', {
+            "inscriptions": inscriptions,
+            "anneeScolaires": AnneeScolaire.objects.all(),
+            "niveaux": Classe.objects.all()
+        })
+    
+    else:
+        inscriptions = Inscription.objects.select_related('etudiant', 'salleClasse__niveau').all()
+        contains = {
+            "inscriptions": inscriptions,
+            "anneeScolaires": AnneeScolaire.objects.all(),
+            "niveaux": Classe.objects.all()
+        }
+        return render(request, 'enretardSurPaiement.html', contains)

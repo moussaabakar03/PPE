@@ -13,6 +13,19 @@
     {% include 'partial/head.html' %}
 
     <Link rel= "stylesheet" href="{% static 'comptable/ajoutPaiementEleve.css' %}">
+
+    <style>
+        @media(min-width: 600px){
+            .mainBody{
+                {% comment %} background-color: gray; {% endcomment %}
+                width: 1050px;
+            }
+        }
+        .conteneurPaiement{
+            width: 100%;
+            {% comment %} background-color: red; {% endcomment %}
+        }
+    </style>
         
 </head>
 
@@ -27,12 +40,19 @@
         <div class="dashboard-page-one">
             <!-- Sidebar Area Start Here -->
             {% include 'partial/asideComptable.html' %}
-
             <!-- Sidebar Area End Here -->
-{% comment %} <> {% endcomment %}
-            <div class="main-content full-page-form">
-                <div class="container-fluid" style="margin-top: 50px;">
-                    <div style="display: flex; flex-direction: column; align-items: center;  background-color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+            {% comment %} <> {% endcomment %}
+            <div class="main-content full-page-form mainBody" style ="overflow: hidden;">
+                <div class="breadcrumbs-area" style = "margin-left: 40px;">
+                    <h3>Ajout Paiement</h3>
+                    <ul>
+                        <li> <a href ="{% url 'comptable:liste_eleve' salleClasse.id anneeScol.id%}" ><i class="fa fa-arrow-left"></i> Retour</a></li>
+                        <li>{{ inscriptionEleve.salleClasse.niveau.classe }}- {{ inscriptionEleve.salleClasse.nom }} </li>
+                        <li> Ajouter paiement</li>
+                    </ul>
+                </div>
+                <div class="container-fluid" style="">
+                    <div style="display: flex; flex-direction: column; align-items: center;  background-color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; overflow-x: auto;">
                         <div style= "display: flex; gap: 50px;"> 
                             <p><i class="fas fa-chalkboard"></i> {{ inscriptionEleve.salleClasse.niveau.classe }}- {{ inscriptionEleve.salleClasse.nom }}  </p>
                             <p>📆{{ inscriptionEleve.anneeAcademique.debutAnnee|date:"Y" }} - {{ inscriptionEleve.anneeAcademique.fintAnnee|date:"Y" }} </p> 
@@ -41,7 +61,7 @@
                     </div>
                     <div class="conteneurPaiement" style = "display: flex; gap: 20px; flex-wrap: wrap; padding: 20px;">
                         <!-- Formulaire de paiement -->
-                        <div class="payment-form" style =" overflow-x: auto; width: 50%!important;">
+                        <div class="payment-form" style ="overflow: auto!important; width: 50%!important;">
                             <div class="student-header">
                                 <h2><i class="fas fa-money-bill-wave"></i> Enregistrement de Paiement</h2>
                                 <h4 class="mt-3">
@@ -57,7 +77,6 @@
                             </div>
 
                             <!-- Section de calcul -->
-                                <!-- Section de calcul -->
                             <div class="calculation-box">
                                 <div class="row">
                                     <div class="col-md-12">
@@ -225,7 +244,7 @@
 
 
 
-                            <h2><i class="fas fa-history"></i> Historique des Paiements</h2>
+                            {% comment %} <h2><i class="fas fa-history"></i> Historique des Paiements</h2>
                             
                             <table id="payments-table">
                                 <thead>
@@ -240,7 +259,7 @@
                                 <tbody>
                                     
                                 </tbody>
-                            </table>
+                            </table> {% endcomment %}
                            
                         </div>
                     </div>
