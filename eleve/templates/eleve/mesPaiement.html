@@ -124,13 +124,13 @@
                                                 </tr>
                                             {% endfor %}
                                             <tr>
-                                                <td colspan="1"><strong>Total Attendu</strong></td>
-                                                <td colspan="2" class="paid"><strong>{{ item.cout_attendu }} FCFA</strong></td>
+                                                {% comment %} <td colspan="1"><strong>Total Attendu</strong></td>
+                                                <td colspan="2" class="paid"><strong>{{ item.cout_attendu }} FCFA</strong></td> {% endcomment %}
                                                 <td colspan="1"><strong>Total payé</strong></td>
                                                 <td colspan="1" class="paid"><strong class="paid">{{ item.total_paye }} FCFA</strong></td>
                                             </tr>
                                             <tr>
-                                                <td colspan="5" style ="text-align: center;"><strong>Total Reste à payer:</strong> <strong  style ="color: red;">{{ item.reste_a_payer  }} FCFA</strong></td>
+                                                {% comment %} <td colspan="5" style ="text-align: center;"><strong>Total Reste à payer:</strong> <strong  style ="color: red;">{{ item.reste_a_payer  }} FCFA</strong></td> {% endcomment %}
                                             </tr>
                                         </tbody>
                                     </table>
