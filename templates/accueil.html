@@ -330,7 +330,7 @@
                 <div class="col-md-4">
                     <div class="testimonial-card">
                         <div class="d-flex align-items-center mb-4">
-                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" class="rounded-circle mr-3" width="60" alt="Témoin 1">
+                            <img src="{% static 'accueil/images/temoigne1.jpg' %}" class="rounded-circle mr-3" width="60" alt="Témoin 1">
                             <div>
                                 <h5 class="mb-0">Marie Dupont</h5>
                                 <p class="text-muted mb-0">Parent d'élève</p>
@@ -342,7 +342,7 @@
                 <div class="col-md-4">
                     <div class="testimonial-card">
                         <div class="d-flex align-items-center mb-4">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" class="rounded-circle mr-3" width="60" alt="Témoin 2">
+                            <img src="{% static 'accueil/images/temoigne2.jpg' %}" class="rounded-circle mr-3" width="60" alt="Témoin 2">
                             <div>
                                 <h5 class="mb-0">Jean Leroy</h5>
                                 <p class="text-muted mb-0">Professeur de physique</p>
@@ -354,7 +354,7 @@
                 <div class="col-md-4">
                     <div class="testimonial-card">
                         <div class="d-flex align-items-center mb-4">
-                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" class="rounded-circle mr-3" width="60" alt="Témoin 3">
+                            <img src="{% static 'accueil/images/temoigne3.jpg' %}" class="rounded-circle mr-3" width="60" alt="Témoin 3">
                             <div>
                                 <h5 class="mb-0">Sophie Bernard</h5>
                                 <p class="text-muted mb-0">Principale adjointe</p>
@@ -373,32 +373,27 @@
             <div class="row justify-content-center">
                 <div class="col-md-8 text-center text-white mb-5">
                     <h2 class="mb-4">Vous souhaitez en savoir plus sur acadPro ?</h2>
-                    <p class="lead">Contactez-nous pour une démonstration personnalisée de notre plateforme</p>
+                    <p class="lead">Contactez-nous via le Formulaire ci-dessous.</p>
                 </div>
             </div>
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card shadow-lg">
                         <div class="card-body p-5">
-                            <form>
+                            <form method="POST">
+                                {% csrf_token %}
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
                                         <input type="text" class="form-control" placeholder="Votre nom">
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <input type="email" class="form-control" placeholder="Votre email">
+                                        <input type="email" class="form-control" placeholder="Votre email" required>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Votre établissement">
+                                    <textarea class="form-control" rows="5" placeholder="Votre message" required></textarea>
                                 </div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Votre fonction">
-                                </div>
-                                <div class="form-group">
-                                    <textarea class="form-control" rows="5" placeholder="Votre message"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-block btn-lg">Demander une démonstration</button>
+                                <button type="submit" class="btn btn-primary btn-block btn-lg">Envoyer</button>
                             </form>
                         </div>
                     </div>
