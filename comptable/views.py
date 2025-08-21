@@ -17,7 +17,6 @@ from acadPro.utils.decorators import staff_required
 
 # from . form import PaiementForm, timezone
 # Create your views here.
-
 @login_required
 @staff_required
 def selectionSalle(request):
@@ -108,6 +107,7 @@ def ajouter_paiement(request, id_inscription, id_annee):
 
         if dejaPaye + montantVerse > montantMaximum:
             error = "Montant versé dépasse le montant requis pour ce type de frais."
+            messages.error(request, f"Montant versé dépasse le montant requis pour {type_paiement}.")
         else:
             PaiementEleve.objects.create(
                 inscription_Etudiant=inscriptionEleve,
@@ -116,6 +116,7 @@ def ajouter_paiement(request, id_inscription, id_annee):
                 modePaiment=mode_paiement,
                 periodeConcerne=periodeConcerne
             )
+            messages.success(request, f"Paiement de {montantVerse} FCFA pour {eleve.nom} {eleve.prenom} enregistré avec succès.")
             return redirect(request.path)  # Rafraîchir la page
 
     return render(request, 'ajouter_paiement.html', {
@@ -191,14 +192,17 @@ def enretardSurPaiement(request):
         niveau = request.POST.get("niveau", "").strip()
 
         inscriptions = Inscription.objects.all()
+        filtres_appliques = []
 
         if matricule:
             inscriptions = inscriptions.filter(etudiant__matricule__icontains=matricule)
+            filtres_appliques.append(f"matricule: {matricule}")
 
         if niveau:
             try:
                 classe = Classe.objects.get(pk=int(niveau))
                 inscriptions = inscriptions.filter(salleClasse__niveau=classe)
+                filtres_appliques.append(f"niveau: {classe}")
             except (ValueError, Classe.DoesNotExist):
                 pass
 
@@ -206,8 +210,12 @@ def enretardSurPaiement(request):
             try:
                 anneeAcademique = AnneeScolaire.objects.get(pk=int(anneeScolaire))
                 inscriptions = inscriptions.filter(anneeAcademique=anneeAcademique)
+                filtres_appliques.append(f"année: {anneeAcademique}")
             except (ValueError, AnneeScolaire.DoesNotExist):
                 pass
+
+        if filtres_appliques:
+            messages.info(request, f"Filtres appliqués: {', '.join(filtres_appliques)}.")
 
         return render(request, 'enretardSurPaiement.html', {
             "inscriptions": inscriptions,
@@ -223,3 +231,6 @@ def enretardSurPaiement(request):
             "niveaux": Classe.objects.all()
         }
         return render(request, 'enretardSurPaiement.html', contains)
+    
+    
+    

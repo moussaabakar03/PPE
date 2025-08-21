@@ -393,6 +393,15 @@ def mesPaiement(request):
     })
 
 
+@login_required
+@eleve_required
+def profil(request):
+    eleve = get_object_or_404(Etudiant, username=request.user)
+    context = {'etudiant': eleve}
+    return render(request, 'eleve/profil.html', context)
+
+
+
 
 from django.utils import timezone
 
@@ -426,3 +435,6 @@ def marquer_message_lu(request, message_id):
         message.save()
         return JsonResponse({"status": "success"})
     return JsonResponse({"status": "error"}, status=400)
+
+
+

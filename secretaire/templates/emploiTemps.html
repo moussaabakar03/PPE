@@ -195,14 +195,6 @@
                 <div class="card height-auto">
                     <div class="flex-boxes">
                         <div class="container box">
-                            <div class="row">
-                                {% for message in messages %}
-                                    <div class="alert alert-warning alert-dismissible fade show" role="alert" style = "text-align: center;">
-                                        <strong >{{ message }} </strong> 
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style = "cursor: pointer;">❌</button>
-                                    </div>
-                                {% endfor %}
-                            </div>
 
                             <div style = "display: flex; justify-content: space-between;">
                                 <h6>Emploi du temps de la salle de classe: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{salle.niveau.classe}}  {{salle.nom}} >> </span></h6>

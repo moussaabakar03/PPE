@@ -113,8 +113,7 @@
     <div id="wrapper" class="wrapper bg-ash">
          <!-- Header Menu Area Start Here -->
        
-         {% include 'partial/header.html' %}
-
+        {% include 'partial/header.html' %}
 
         <!-- Header Menu Area End Here -->
         <!-- Page Area Start Here -->
@@ -123,6 +122,9 @@
            
             {% include 'partial/aside.html' %}
 
+                {% comment %} <div style="margin-top:110px;">
+                    {% include 'partial/messages.html' %}
+                </div> {% endcomment %}
             <!-- Sidebar Area End Here -->
             <div class="dashboard-content-one">
 
@@ -147,13 +149,6 @@
                         <div class="container box">
                             <div class="row">
                                 <h2>CV de l'enseignant: [<span style ="color: #ffae01;">{{enseignant.nom}} {{enseignant.prenom}}</span>] </h2>
-
-                                {% for message in messages %}
-                                    <div class="alert alert-warning alert-dismissible fade show" role="alert" style = "text-align: center;">
-                                        <strong >{{ message }} </strong> 
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style = "cursor: pointer;">❌</button>
-                                    </div>
-                                {% endfor %}
                             </div>
 
                             <div class="table-wrapper">

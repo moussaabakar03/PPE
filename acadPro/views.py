@@ -128,10 +128,13 @@ def connexion(request):
             utilisateur = form.get_user()
             login(request, utilisateur)
             if utilisateur.is_superuser:
+                messages.success(request, f"Bienvenue {utilisateur}")
                 return redirect(reverse('secretaire:index'))
             elif utilisateur.is_staff:
+                messages.success(request, f"Bienvenue {utilisateur}")
                 return redirect(reverse('comptable:indexComptable'))
             else: 
+                messages.success(request, f"Bienvenue {utilisateur}")
                 return redirect('eleve:notes')
         else:
             messages.error(request, "identifiant ou mot de passe incorrect")

@@ -170,6 +170,7 @@ def modifierAnneeScolaire(request, id):
 def supprimerAnneeScolaire(request, id):
     anneeScolaire = AnneeScolaire.objects.get(id=id)
     anneeScolaire.delete()
+    messages.success(request, f"Année scolaire {anneeScolaire} supprimée avec succès.")
     return redirect('secretaire:affichageAnneeScolaire')
 
 
@@ -203,7 +204,6 @@ def generate_matricule(nom):
 #     qr.save(nom_fichier)
 
 
-
 @login_required 
 @admin_required
 def admit_form(request):
@@ -223,73 +223,82 @@ def admit_form(request):
         parent = request.POST.get("parent")
         lien_de_parente = request.POST.get("lien_de_parente")
 
+        # Vérification des champs obligatoires
+        if not all([nom, prenom, genre, date_naissance, mail, telephone, parent]):
+            messages.error(request, "Veuillez remplir tous les champs obligatoires.")
+            return render(request, "admit-form.html", {"salles": salles, "parentss": parentss})
+
         # Génération du matricule
         matricule = generate_matricule(nom)
        
         # Assurer unicité du matricule
         while Etudiant.objects.filter(matricule=matricule).exists():
             matricule = generate_matricule(nom)
-            # if Etudiant.objects.filter(matricule="").exists():
-            #     vide = "vide"
-            #     matricule = generate_matricule(vide)
 
-        parent_id = Parent.objects.get(pk=int(parent))
+        try:
+            parent_id = Parent.objects.get(pk=int(parent))
+        except (Parent.DoesNotExist, ValueError):
+            messages.error(request, "Le parent sélectionné n'existe pas.")
+            return render(request, "admit-form.html", {"salles": salles, "parentss": parentss})
 
-
-        Etudiant.objects.create(
-            nom=nom,
-            prenom=prenom,
-            parent=parent_id,
-            matricule=matricule,
-            genre=genre,
-            date_naissance=date_naissance,
-            groupe_sanguin=groupe_sanguin,
-            mail=mail,
-            telephone=telephone,
-            nationnalite=nationnalite,
-            photo=photo,
-            password = make_password(telephone),
-            username = matricule,
-            lien_de_parente = lien_de_parente
-        )
-        
-        return redirect("secretaire:all-student")
+        try:
+            Etudiant.objects.create(
+                nom=nom,
+                prenom=prenom,
+                parent=parent_id,
+                matricule=matricule,
+                genre=genre,
+                date_naissance=date_naissance,
+                groupe_sanguin=groupe_sanguin,
+                mail=mail,
+                telephone=telephone,
+                nationnalite=nationnalite,
+                photo=photo,
+                password=make_password(telephone),
+                username=matricule,
+                lien_de_parente=lien_de_parente
+            )
+            messages.success(request, f"Étudiant {prenom} {nom} créé avec succès. Matricule: {matricule}")
+            return redirect("secretaire:all-student")
+        except Exception as e:
+            messages.error(request, f"Une erreur s'est produite lors de la création de l'étudiant: {str(e)}")
+            return render(request, "admit-form.html", {"salles": salles, "parentss": parentss})
 
     return render(request, "admit-form.html", {"salles": salles, "parentss": parentss})
 
 @login_required 
 @admin_required
 def modifier_student(request, matricule):
-    
-    mtrcle = mtrcle = get_object_or_404(Etudiant, matricule=matricule)
-    
+    mtrcle = get_object_or_404(Etudiant, matricule=matricule)
     groupes_sanguins = ["A+", "A-", "B+", "B-", "O+", "O-"]
     sections = SalleDeClasse.objects.all()
 
     if request.method == "POST":
-        mtrcle.nom = request.POST["nom"]
-        mtrcle.prenom = request.POST["prenom"]
-        parent_id = request.POST["parent"]
-        mtrcle.matricule = request.POST["matricule"]
-        mtrcle.genre = request.POST["genre"]
-        mtrcle.date_naissance = request.POST["date_naissance"]
-        mtrcle.groupe_sanguin = request.POST["groupe_sanguin"]
-        mtrcle.mail = request.POST["mail"]
-        # mtrcle.niveau = request.POST["niveau"]
-        mtrcle.telephone = request.POST["telephone"]
-        mtrcle.nationnalite = request.POST["nationnalite"]
-        mtrcle.photo = request.FILES.get("photo")
-        mtrcle.lien_de_parente = request.POST["lien_de_parente"]
-        
-        mtrcle.motDePasse = make_password(request.POST["telephone"])
-        # mtrcle.salleDeClasse = SalleDeClasse.objects.get(pk=int(request.POST["salleDeClasse"]))
-
-        mtrcle.parent = Parent.objects.get(pk=int(parent_id))
-        
-        mtrcle.save()
-        return redirect("secretaire:all-student")
+        try:
+            mtrcle.nom = request.POST["nom"]
+            mtrcle.prenom = request.POST["prenom"]
+            parent_id = request.POST["parent"]
+            mtrcle.matricule = request.POST["matricule"]
+            mtrcle.genre = request.POST["genre"]
+            mtrcle.date_naissance = request.POST["date_naissance"]
+            mtrcle.groupe_sanguin = request.POST["groupe_sanguin"]
+            mtrcle.mail = request.POST["mail"]
+            mtrcle.telephone = request.POST["telephone"]
+            mtrcle.nationnalite = request.POST["nationnalite"]
+            mtrcle.photo = request.FILES.get("photo")
+            mtrcle.lien_de_parente = request.POST["lien_de_parente"]
+            
+            mtrcle.motDePasse = make_password(request.POST["telephone"])
+            
+            parent_obj = Parent.objects.get(pk=int(parent_id))
+            mtrcle.parent = parent_obj
+            
+            mtrcle.save()
+            messages.success(request, f"Les informations de l'étudiant {mtrcle.prenom} {mtrcle.nom} ont été mises à jour avec succès.")
+            return redirect("secretaire:all-student")
+        except Exception as e:
+            messages.error(request, f"Une erreur s'est produite lors de la modification: {str(e)}")
     
-
     return render(request, "modifier-student.html", {
         "student": mtrcle,
         "groupes_sanguins": groupes_sanguins,
@@ -300,47 +309,62 @@ def modifier_student(request, matricule):
 @login_required 
 @admin_required
 def supprimer_student(request, matricule):
-    mtrcle = Etudiant.objects.get(matricule = matricule)
-    if request.method == "GET":
+    try:
+        mtrcle = Etudiant.objects.get(matricule=matricule)
+        nom_complet = f"{mtrcle.prenom} {mtrcle.nom}"
         mtrcle.delete()
-        return redirect("secretaire:all-student")
+        messages.success(request, f"L'étudiant {nom_complet} a été supprimé avec succès.")
+    except Etudiant.DoesNotExist:
+        messages.error(request, "L'étudiant que vous essayez de supprimer n'existe pas.")
+    except Exception as e:
+        messages.error(request, f"Une erreur s'est produite lors de la suppression: {str(e)}")
+    
+    return redirect("secretaire:all-student")
 
 @login_required 
 @admin_required
 def student_promotion(request):
+    # Ajouter ici la logique de promotion des étudiants si nécessaire
+    messages.info(request, "Page de promotion des étudiants. Fonctionnalité à implémenter.")
     return render(request, 'student-promotion.html')
 
 @login_required 
 @admin_required
 def student_detail(request, matricule):
+    try:
+        etudiant = get_object_or_404(Etudiant, matricule=matricule)
+
+        # Générer les données à inclure dans le QR
+        contenu = f"Nom: {etudiant.nom} {etudiant.prenom}\nMatricule: {etudiant.matricule}"
+
+        # Créer le répertoire s'il n'existe pas
+        dossier_qr = os.path.join(settings.MEDIA_ROOT, "qr_codes")
+        os.makedirs(dossier_qr, exist_ok=True)
+
+        # Chemin du fichier image
+        nom_fichier = f"qr_{etudiant.id}.png"
+        chemin_fichier = os.path.join(dossier_qr, nom_fichier)
+
+        # Génération du QR
+        qr = qrcode.make(contenu)
+        qr.save(chemin_fichier)
+
+        # Mise à jour du chemin dans l'étudiant
+        etudiant.cheminCodeQr = f"qr_codes/{nom_fichier}"
+        etudiant.save()
+        
+        parent = etudiant.parent
+        inscrits = etudiant.inscriptions.all()
+        annees = AnneeScolaire.objects.all().order_by("-id")
+        
+        messages.info(request, f"Profil de {etudiant.prenom} {etudiant.nom} consulté.")
+        context = {"etudiant": etudiant, "inscrits": inscrits, "annees": annees, 'parent': parent}
+        return render(request, 'student-details.html', context)
     
-    etudiant = get_object_or_404(Etudiant, matricule = matricule)
-
-    # Générer les données à inclure dans le QR
-    contenu = f"Nom: {etudiant.nom} {etudiant.prenom}\nMatricule: {etudiant.matricule}"
-
-    # Créer le répertoire s'il n'existe pas
-    dossier_qr = os.path.join(settings.MEDIA_ROOT, "qr_codes")
-    os.makedirs(dossier_qr, exist_ok=True)
-
-    # Chemin du fichier image
-    nom_fichier = f"qr_{etudiant.id}.png"
-    chemin_fichier = os.path.join(dossier_qr, nom_fichier)
-
-    # Génération du QR
-    qr = qrcode.make(contenu)
-    qr.save(chemin_fichier)
-
-    # Mise à jour du chemin dans l'étudiant
-    etudiant.cheminCodeQr = f"qr_codes/{nom_fichier}"
-    etudiant.save()
+    except Exception as e:
+        messages.error(request, f"Une erreur s'est produite lors du chargement du profil: {str(e)}")
+        return redirect("secretaire:all-student")
     
-    parent = etudiant.parent
-    inscrits = etudiant.inscriptions.all()
-    annees = AnneeScolaire.objects.all().order_by("-id")
-    context = {"etudiant": etudiant, "inscrits": inscrits, "annees": annees, 'parent': parent}
-    return render(request, 'student-details.html', context)
-
 @login_required 
 @admin_required
 def detailEtudiant(request, matricule, id):
@@ -354,7 +378,6 @@ def detailEtudiant(request, matricule, id):
     somme_coefficients = 0
     
     if request.method == "POST":
-                
         matiere = request.POST['matiere']
         trimestre = request.POST['trimestre']
         typeEvaluation = request.POST['typeEvaluation']
@@ -386,7 +409,7 @@ def detailEtudiant(request, matricule, id):
                 somme_notes_ponderees += float(evaluation.note) * coefficient
                 somme_coefficients += coefficient
         else:
-            messages.error(request, "Aucune donnée trouvées!!!")
+            messages.error(request, "Aucune donnée trouvée avec les critères de recherche spécifiés!")
         moyenne = round(somme_notes_ponderees / somme_coefficients, 2) if somme_coefficients != 0 else 0.0
         
         context = {
@@ -398,7 +421,6 @@ def detailEtudiant(request, matricule, id):
             "dernierInscription": dernierInscription,
             }
         return render(request, 'detailEtudiant.html', context)
-        
         
     else:    
         evaluations = etudiant.evaluations.all()
@@ -417,17 +439,9 @@ def detailEtudiant(request, matricule, id):
             "moyenne": moyenne,
             "dernierInscription": dernierInscription,
         }
+        messages.info(request, f"Profil de {etudiant.prenom} {etudiant.nom} consulté.")
         return render(request, 'detailEtudiant.html', context)
 
-# def affichePaiementEleve(request, matricule):
-#     eleve = get_object_or_404(Etudiant, matricule=matricule)
-#     inscriptions = eleve.inscriptions.all()
-#     parent = eleve.parent
-#     mesPaiements = PaiementEleve.objects.filter(
-#         inscription_Etudiant__in = inscriptions
-#     )
-    
-#     return render(request, 'paiementEleve.html', {'mesPaiements': mesPaiements , 'eleve': eleve, 'parent': parent})
 @login_required 
 @admin_required
 def affichePaiementEleve(request, matricule):
@@ -443,6 +457,7 @@ def affichePaiementEleve(request, matricule):
         salle = paiement.inscription_Etudiant.salleClasse
         paiements_groupes[salle].append(paiement)
 
+    messages.info(request, f"Historique des paiements de {eleve.prenom} {eleve.nom} consulté.")
     return render(request, 'paiementEleve.html', {
         'paiements_groupes': dict(paiements_groupes),
         'etudiant': eleve,
@@ -455,6 +470,7 @@ def affichePaiementEleve(request, matricule):
 def all_teacher(request):
     enseignants = Enseignant.objects.all()
     content = {"enseignants": enseignants }
+    messages.info(request, "Liste des enseignants consultée.")
     return render(request, 'all-teacher.html', content)
 
 @login_required 
@@ -480,17 +496,24 @@ def add_teacher(request):
         while (Enseignant.objects.filter( matricule = matricule).exists()):
             matricule = generate_matricule(nom)
 
+        try:
+            Enseignant.objects.create( matricule = matricule, nom = nom, prenom = prenom, profession = profession, tel = phone, 
+                                    diplome = diplome,  photo = photo , date_naissance = date_naissance, sexe = sexe, mail = email,
+                                    lieuDeNaissance= lieuDeNaissance, salaire = salaire, typeDeContrat = typeDeContrat, 
+                                    date_debut_contrat = date_debut_contrat, date_fin_contrat = date_fin_contrat)
+            messages.success(request, f"Enseignant {prenom} {nom} ajouté avec succès. Matricule: {matricule}")
+            return redirect("secretaire:all-teacher")
+        except Exception as e:
+            messages.error(request, f"Erreur lors de l'ajout de l'enseignant: {str(e)}")
+            return render(request, 'add-teacher.html')
     
-        Enseignant.objects.create( matricule = matricule, nom = nom, prenom = prenom, profession = profession, tel = phone, 
-                                diplome = diplome,  photo = photo , date_naissance = date_naissance, sexe = sexe, mail = email,
-                                lieuDeNaissance= lieuDeNaissance, salaire = salaire, typeDeContrat = typeDeContrat, 
-                                date_debut_contrat = date_debut_contrat, date_fin_contrat = date_fin_contrat)
-        return redirect("secretaire:all-teacher")
+    messages.info(request, "Formulaire d'ajout d'enseignant affiché.")
     return render(request, 'add-teacher.html')
 
 @login_required 
 @admin_required
 def teacher_detail(request):
+    messages.info(request, "Détails de l'enseignant consultés.")
     return render(request, 'teacher-details.html')
 
 @login_required 
@@ -511,20 +534,26 @@ def modifier_teacher(request, matricule):
         enseignant.typeDeContrat = request.POST["typeContrat"]
         enseignant.mail = request.POST["email"]
         enseignant.save()
+        messages.success(request, f"Informations de l'enseignant {enseignant.prenom} {enseignant.nom} mises à jour avec succès.")
         return redirect("secretaire:all-teacher")
+    
+    messages.info(request, f"Formulaire de modification de l'enseignant {enseignant.prenom} {enseignant.nom} affiché.")
     return render(request, 'modifier-teacher.html', {"enseignant": enseignant, "groupes_sanguins": groupes_sanguins})
 
 @login_required 
 @admin_required
 def supprimer_teacher(request, matricule):
     enseignant = Enseignant.objects.get(matricule = matricule)
+    nom_complet = f"{enseignant.prenom} {enseignant.nom}"
     enseignant.delete()
+    messages.success(request, f"Enseignant {nom_complet} supprimé avec succès.")
     return redirect("secretaire:all-teacher")
 
 @login_required 
 @admin_required
 def detailEnseignant(request, matricule):
     enseignant = Enseignant.objects.get(matricule = matricule)
+    messages.info(request, f"Profil de l'enseignant {enseignant.prenom} {enseignant.nom} consulté.")
     context = {"enseignant": enseignant}
     return render(request, 'detaitEnseignant.html', context)
 
@@ -539,7 +568,10 @@ def cvEnseignants(request, id):
             cv = cv,
             enseignant = enseignant
         )
+        messages.success(request, f"CV de l'enseignant {enseignant.prenom} {enseignant.nom} ajouté avec succès!")
         return redirect('secretaire:detailEnseignant', matricule = enseignant.matricule)
+    
+    messages.info(request, "Formulaire d'ajout de CV affiché.")
     return render(request, 'cvEnseignant.html')
 
 @login_required 
@@ -547,6 +579,7 @@ def cvEnseignants(request, id):
 def listeCvEnseignant(request, id):
     enseignant = Enseignant.objects.get(id = id)
     cvEnseignants = cvEnseignant.objects.filter(enseignant = enseignant)
+    messages.info(request, f"Liste des CV de l'enseignant {enseignant.prenom} {enseignant.nom} consultée.")
     return render(request, 'listeCvEnseignant.html', {"cvEnseignants" : cvEnseignants, "enseignant" : enseignant})
 
 @login_required 
@@ -555,15 +588,15 @@ def suppCvEnseignant(request, id):
     cvAsupp = cvEnseignant.objects.get(id = id)
     enseignant = cvAsupp.enseignant
     cvAsupp.delete()
-    messages.success (request, "cv supprimé avec succès")
+    messages.success(request, f"CV de l'enseignant {enseignant.prenom} {enseignant.nom} supprimé avec succès.")
     return redirect('secretaire:listeCvEnseignant', id = enseignant.id)
-
 
 #parent
 @login_required 
 @admin_required
 def all_parents(request):
     parents = Parent.objects.all()
+    messages.info(request, "Liste des parents consultée.")
     return render(request, 'all-parents.html', {"parents": parents})
 
 @login_required 
@@ -576,23 +609,28 @@ def ajout_parents(request):
         telephone = request.POST["telephone"]
         email = request.POST["email"]
         profession = request.POST.get("profession", "")
-        # lien_de_parente = request.POST["lien_de_parente"]
         photo = request.FILES.get("photo")
         
-        # Création de l'objet Parent
-        Parent.objects.create(
-            nom=nom,
-            prenom=prenom,
-            genre=genre,
-            telephone=telephone,
-            email=email,
-            profession=profession,
-            # lien_de_parente=lien_de_parente,
-            photo=photo
-        )
-
-        return redirect("secretaire:all-parents")  # Redirige vers la liste des parents (à adapter selon ton URLconf)
+        try:
+            Parent.objects.create(
+                nom=nom,
+                prenom=prenom,
+                genre=genre,
+                telephone=telephone,
+                email=email,
+                profession=profession,
+                photo=photo
+            )
+            messages.success(request, f"Parent {prenom} {nom} ajouté avec succès.")
+            return redirect("secretaire:all-parents")
+        except Exception as e:
+            messages.error(request, f"Erreur lors de l'ajout du parent: {str(e)}")
+            return render(request, 'add-parents.html')
+    
+    messages.info(request, "Formulaire d'ajout de parent affiché.")
     return render(request, 'add-parents.html')
+
+from django.contrib import messages
 
 @login_required 
 @admin_required
@@ -605,74 +643,69 @@ def modifier_parent(request, id):
         parent.telephone = request.POST["telephone"]
         parent.email = request.POST["email"]
         parent.profession = request.POST.get("profession", "")
-        # parent.lien_de_parente = request.POST["lien_de_parente"]
-
+        
         if "photo" in request.FILES:
             parent.photo = request.FILES["photo"]
         
         parent.save()
-    
+        messages.success(request, f"Informations du parent {parent.prenom} {parent.nom} mises à jour avec succès.")
         return redirect("secretaire:all-parents")
     
+    messages.info(request, f"Formulaire de modification du parent {parent.prenom} {parent.nom} affiché.")
     return render(request, 'modifierParent.html', {"parent": parent})
 
 @login_required 
 @admin_required
 def supprimer_parent(request, id):
-    Parent.objects.get(id =id).delete()
-    return redirect("secretaire:all-parents")  # Redirige vers la liste des parents
+    parent = Parent.objects.get(id=id)
+    nom_complet = f"{parent.prenom} {parent.nom}"
+    parent.delete()
+    messages.success(request, f"Parent {nom_complet} supprimé avec succès.")
+    return redirect("secretaire:all-parents")
 
-
-#Matiere
+# Matiere
 @login_required 
 @admin_required
 def all_class(request):
     if request.method == "POST":
         nom = request.POST["nom"]
-        # niveau = request.POST["niveau"]
-        # classe = Classe.objects.get(classe = niveau)
-        
-        matiere = Matiere.objects.filter(
-                nom__icontains=nom
-            )
-
+        matiere = Matiere.objects.filter(nom__icontains=nom)
+        messages.info(request, f"Recherche de matière avec le terme '{nom}' effectuée.")
         return render(request, 'all-class.html', {"matieres": matiere})
     else:
         matiere = Matiere.objects.all()
+        messages.info(request, "Liste des matières consultée.")
         return render(request, 'all-class.html', {"matieres": matiere})
 
 @login_required 
 @admin_required
 def ajoutMatiere(request):
-    # enseignants = Enseignant.objects.all()
-    # niveaux = Classe.objects.all()
-    # content = {"enseignants": enseignants, "niveaux": niveaux}
     if request.method == "POST":
         nom = request.POST["nom"]
-        # niveau = request.POST["niveau"]
         code = request.POST["code"]
-        description = request.POST.get("description", "")  # facultatif
-        # enseignant_id = request.POST["enseignant"]
-        # enseignant = Enseignant.objects.get(pk=int(enseignant_id))
-        # classe = Classe.objects.get(pk=int(niveau))
+        description = request.POST.get("description", "")
         
         if Matiere.objects.filter(nom=nom).exists():
-            messages.error(request, "Cette matière existe déjà")
+            messages.error(request, "Cette matière existe déjà.")
         else:
             Matiere.objects.create(
-                code =code,
+                code=code,
                 nom=nom,
                 description=description,
             )
-            # messages.success(request, "Matière ajoutée avec succès")
+            messages.success(request, f"Matière '{nom}' ajoutée avec succès.")
             return redirect("secretaire:all-class")
-
+    
+    messages.info(request, "Formulaire d'ajout de matière affiché.")
     return render(request, 'add-class.html')
 
 @login_required 
 @admin_required
 def supprimer_matiere(request, id):
-    Matiere.objects.get(id=id).delete()
+    matiere = Matiere.objects.get(id=id)
+    nom_matiere = matiere.nom
+    matiere.delete()
+    messages.success(request, f"Matière '{nom_matiere}' supprimée avec succès.")
     return redirect("secretaire:all-class")
 
 @login_required 
@@ -682,31 +715,23 @@ def modifier_matiere(request, id):
 
     if request.method == "POST":
         matiere.nom = request.POST["nom"]
-        # matiere.niveau = request.POST["niveau"]
         matiere.code = request.POST["code"]
-        matiere.description = request.POST.get("description", "") 
-
-        # enseignant_id = request.POST["enseignant"]
-        # matiere.enseignant = Enseignant.objects.get(pk=int(enseignant_id))
-
-        # niveau_id = request.POST["niveau"]
-        # matiere.niveau = Classe.objects.get(pk=int(niveau_id))
-
+        matiere.description = request.POST.get("description", "")
         matiere.save()
+        messages.success(request, f"Matière '{matiere.nom}' modifiée avec succès.")
         return redirect("secretaire:all-class")
-    return render(request, "modifierMatiere.html", {
-        "matiere": matiere,
-    })
+    
+    messages.info(request, f"Formulaire de modification de la matière '{matiere.nom}' affiché.")
+    return render(request, "modifierMatiere.html", {"matiere": matiere})
 
-
-
-#salle de classe
+# salle de classe
 @login_required 
 @admin_required
 def all_salle(request):
     salles = SalleDeClasse.objects.all()
     etudiant = Etudiant.objects.all()
     annees = AnneeScolaire.objects.all().order_by('-id')
+    messages.info(request, "Liste des salles de classe consultée.")
     return render(request, 'all-salle.html', {"salles": salles, "etudiants": etudiant, "annees": annees})
 
 @login_required 
@@ -716,25 +741,25 @@ def add_salle(request):
     if request.method == "POST":
         nom = request.POST["nom"]
         capacite = int(request.POST["capacite"])
-        niveau = request.POST["niveau"]
-        emplacement = request.POST.get("emplacement", "")  
-
-        classe = Classe.objects.get(pk=int(niveau))
+        niveau_id = request.POST["niveau"]
+        emplacement = request.POST.get("emplacement", "")
         
-        if SalleDeClasse.objects.filter(nom = nom, niveau=classe).exists():
-            messages.error(request, f"La salle '{nom}' dont la capacité est '{capacite}' existe deja! Veillez modifier la salle existante ou changer le nom de la salle.")
+        classe = Classe.objects.get(pk=int(niveau_id))
+        
+        if SalleDeClasse.objects.filter(nom=nom, niveau=classe).exists():
+            messages.error(request, f"La salle '{nom}' existe déjà pour ce niveau. Veuillez modifier la salle existante ou changer le nom.")
             return redirect("secretaire:add-salle")
-        
         
         SalleDeClasse.objects.create(
             nom=nom,
             capacite=capacite,
             emplacement=emplacement,
-            niveau = classe
+            niveau=classe
         )
-
-        return redirect("secretaire:all-salle") 
-
+        messages.success(request, f"Salle '{nom}' ajoutée avec succès.")
+        return redirect("secretaire:all-salle")
+    
+    messages.info(request, "Formulaire d'ajout de salle affiché.")
     return render(request, 'add-salle.html', {"niveaux": niveau})
 
 @login_required 
@@ -746,58 +771,63 @@ def modifierSalle(request, nom):
         salle.nom = request.POST["nom"]
         salle.capacite = int(request.POST["capacite"])
         niveau_id = request.POST["niveau"]
-        salle.emplacement = request.POST.get("emplacement", "")  # champ facultatif
-
+        salle.emplacement = request.POST.get("emplacement", "")
         salle.niveau = Classe.objects.get(pk=int(niveau_id))
-
         salle.save()
+        messages.success(request, f"Salle '{salle.nom}' modifiée avec succès.")
         return redirect('secretaire:all-salle')
-
+    
+    messages.info(request, f"Formulaire de modification de la salle '{salle.nom}' affiché.")
     return render(request, 'modifier_Salle.html', {"salle": salle, "niveaux": Classe.objects.all()})
 
 @login_required 
 @admin_required
 def supprimerSalle(request, id):
-    SalleDeClasse.objects.get(id=id).delete()
+    salle = SalleDeClasse.objects.get(id=id)
+    nom_salle = salle.nom
+    salle.delete()
+    messages.success(request, f"Salle '{nom_salle}' supprimée avec succès.")
     return redirect('secretaire:all-salle')
 
 @login_required 
 @admin_required
 def studentParSalle(request, id, id2):
     salle = SalleDeClasse.objects.get(pk=id)
-    anneeScolaire = AnneeScolaire.objects.get(id = id2)
+    anneeScolaire = AnneeScolaire.objects.get(id=id2)
+    
     if request.method == 'POST':
         matricule = request.POST['matricule']
-        nom = request.POST.get('nom')        
+        nom = request.POST.get('nom')
         
-        inscrit = Inscription.objects.filter(salleClasse=salle, anneeAcademique = anneeScolaire)
-        
+        inscrit = Inscription.objects.filter(salleClasse=salle, anneeAcademique=anneeScolaire)
         inscrits = inscrit.filter(etudiant__matricule__icontains=matricule, etudiant__nom__icontains=nom)
         nombre = inscrits.count()
+        
+        messages.info(request, f"Recherche d'étudiants dans la salle '{salle.nom}' effectuée.")
         return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'annee': anneeScolaire})
     else:
-        inscrits = Inscription.objects.filter(salleClasse=salle, anneeAcademique = anneeScolaire)
+        inscrits = Inscription.objects.filter(salleClasse=salle, anneeAcademique=anneeScolaire)
         nombre = inscrits.count()
+        messages.info(request, f"Liste des étudiants de la salle '{salle.nom}' consultée.")
         return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'annee': anneeScolaire})
 
 @login_required 
 @admin_required
 def listePresence(request, id, id2):
     salle = SalleDeClasse.objects.get(pk=id)
-    anneeScolaire = AnneeScolaire.objects.get(id = id2)
+    anneeScolaire = AnneeScolaire.objects.get(id=id2)
 
     if request.method == 'POST' and 'dateHeureDebut' in request.POST:
         dateHeureDebut = request.POST.get("dateHeureDebut")
         commentaire = request.POST.get("commentaire")
-
-        inscrits = Inscription.objects.filter(salleClasse=salle, anneeAcademique = anneeScolaire)
+        inscrits = Inscription.objects.filter(salleClasse=salle, anneeAcademique=anneeScolaire)
 
         for inscrit in inscrits:
             etudiant = inscrit.etudiant
             presence_key = f"presence_{etudiant.matricule}"
             presence_val = request.POST.get(presence_key)
 
-            if presence_val in ['P', 'A']: 
+            if presence_val in ['P', 'A']:
                 Emargement.objects.create(
                     salleClasse=salle,
                     inscrits=inscrit,
@@ -806,19 +836,18 @@ def listePresence(request, id, id2):
                     presence=(presence_val == 'P')
                 )
 
-        # messages.success(request, "Liste de présence enregistrée avec succès.")
-        inscrits = Inscription.objects.filter(salleClasse=salle, anneeAcademique = anneeScolaire)
-        nombre = inscrits.count()
-        # return render(request, 'listePresence.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre})
-        return redirect('secretaire:listePresencePasse', id=id, id2 =id2)
+        messages.success(request, "Liste de présence enregistrée avec succès.")
+        return redirect('secretaire:listePresencePasse', id=id, id2=id2)
 
     matricule = request.POST.get('matricule', '')
     nom = request.POST.get('nom', '')
-    inscrits = Inscription.objects.filter(salleClasse=salle, anneeAcademique = anneeScolaire).filter(
+    inscrits = Inscription.objects.filter(salleClasse=salle, anneeAcademique=anneeScolaire).filter(
         etudiant__matricule__icontains=matricule,
         etudiant__nom__icontains=nom
     )
     nombre = inscrits.count()
+    
+    messages.info(request, f"Formulaire de prise de présence pour la salle '{salle.nom}' affiché.")
     return render(request, 'listePresence.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, "annee": anneeScolaire})
 
 @login_required 
@@ -826,9 +855,7 @@ def listePresence(request, id, id2):
 def listePresencePasse(request, id, id2):
     salleClasse = SalleDeClasse.objects.get(id=id)
     anneeScolaire = AnneeScolaire.objects.get(id=id2)
-
     inscrits = Inscription.objects.filter(anneeAcademique=anneeScolaire)
-
     emargements = Emargement.objects.filter(
         salleClasse=salleClasse,
         inscrits__in=inscrits
@@ -841,13 +868,14 @@ def listePresencePasse(request, id, id2):
             Q(inscrits__etudiant__prenom__icontains=filtre) |
             Q(inscrits__etudiant__matricule__icontains=filtre)
         )
+        messages.info(request, f"Recherche dans les émargements avec le terme '{filtre}' effectuée.")
 
-    #  Regrouper les émargements par date
     emargements_par_date = defaultdict(list)
     for em in emargements:
         date_str = localtime(em.dateHeureDebut).date().strftime('%Y-%m-%d')
         emargements_par_date[date_str].append(em)
 
+    messages.info(request, f"Historique des présences de la salle '{salleClasse.nom}' consulté.")
     return render(request, 'listePresencePasse.html', {
         "emargements_par_date": dict(emargements_par_date),
         "salleClasse": salleClasse,
@@ -862,14 +890,20 @@ def presenceEtudiant(request, matricule):
     parent = etudiant.parent
     emargements = Emargement.objects.filter(inscrits__in=inscrits).order_by('-id')
     
-    
     emargements_par_date = defaultdict(list)
     for em in emargements:
         date_str = localtime(em.dateHeureDebut).date().strftime('%Y-%m-%d')
         emargements_par_date[date_str].append(em)
 
-    return render(request, 'presenceStudent.html', { "emargements_par_date": dict(emargements_par_date),"etudiant": etudiant, "emargements": emargements, 'parent': parent})
-
+    messages.info(request, f"Historique des présences de l'étudiant {etudiant.prenom} {etudiant.nom} consulté.")
+    return render(request, 'presenceStudent.html', {
+        "emargements_par_date": dict(emargements_par_date),
+        "etudiant": etudiant,
+        "emargements": emargements,
+        'parent': parent
+    })
+    
+    
 @login_required 
 @admin_required
 def emploiDuTemps(request, id1, id2):
@@ -884,12 +918,16 @@ def emploiDuTemps(request, id1, id2):
         debutHeure = request.POST.get("debutHeure")
         finHeure = request.POST.get("finHeure")
         
-        PlageHoraire.objects.create(
-            salle=salle,
-            annee=annee,
-            debut=debutHeure,
-            fin = finHeure
-        )
+        try:
+            PlageHoraire.objects.create(
+                salle=salle,
+                annee=annee,
+                debut=debutHeure,
+                fin=finHeure
+            )
+            messages.success(request, f"Plage horaire {debutHeure}h-{finHeure}h créée avec succès pour la salle {salle.nom}.")
+        except Exception as e:
+            messages.error(request, f"Erreur lors de la création de la plage horaire: {str(e)}")
         
         return redirect('secretaire:ajoutEmploiTemps', id1=id1, id2=id2, id3=salle.niveau.id)
     
@@ -897,9 +935,10 @@ def emploiDuTemps(request, id1, id2):
         for h in range(horaires.debut, horaires.fin):
             heures.append(f"{h}h- {h+1}h")
     else:
+        messages.info(request, f"Aucune plage horaire définie pour la salle {salle.nom}. Veuillez en créer une.")
         return render(request, 'emploiTemps.html', {'salle': salle, 'annee': annee, 'jours': jours, 'heures': heures})
     
-    emploi_dict = {}  # exemple : emploi_dict["1h-2h"]["Lundi"] = cours
+    emploi_dict = {}
 
     for heure in heures:
         emploi_dict[heure] = {}
@@ -914,14 +953,12 @@ def emploiDuTemps(request, id1, id2):
         'annee': annee,
         'jours': jours,
         'heures': heures,
-        # 'emploi': emploi,
         'emploi_dict': emploi_dict,
     }
 
     return render(request, "emploiTemps.html", contains)
 
-
-
+from django.contrib import messages
 
 @login_required 
 @admin_required
@@ -942,34 +979,34 @@ def ajoutEmploiTemps(request, id1, id2, id3):
     cours = Cours.objects.filter(classe = classe, anneeScolaire= annee)
 
     if request.method == "POST":
+        created_count = 0
         for i, heure in enumerate(heures, start=1):
             for jour in jours:
                 champ = f"{jour.lower()}_{i}"
                 cours_id = request.POST.get(champ)
 
                 if not cours_id:
-                    # messages.error(request, f"Le champ {champ} est requis.")
-                    continue 
+                    continue
 
                 try:
                     coursRecu = Cours.objects.get(id=cours_id)
+                    EmploiDuTemps.objects.create(
+                        cours=coursRecu,
+                        salle=salle,
+                        annee=annee,
+                        jour=jour,
+                        heure=heure
+                    )
+                    created_count += 1
                 except Cours.DoesNotExist:
-                    messages.error(request, f"Le cours avec l’ID {cours_id} n'existe pas.")
-                    continue
-
-                # if EmploiDuTemps.objects.filter(salle= salle, annee=annee, cours = coursRecu).exists():
-                #     messages.error(request, "Emploi existe déjà! Veillez la modifier si vous voullez")
-                #     return redirect("secretaire:ajoutEmploiTemps", id1= id1, id2 = id2, id3= id3)
-                # else:
-                EmploiDuTemps.objects.create(
-                    cours=coursRecu,
-                    salle=salle,
-                    annee = annee,
-                    jour=jour,
-                    heure=heure
-                )
-                # messages.error(request, f"Emploi ajouté avec succès.")
-        return redirect('secretaire:emploiDuTemps', id1 = id1, id2 = id2)
+                    messages.error(request, f"Le cours avec l'ID {cours_id} n'existe pas.")
+        
+        if created_count > 0:
+            messages.success(request, f"Emploi du temps créé avec succès ({created_count} cours ajoutés).")
+        else:
+            messages.warning(request, "Aucun cours n'a été ajouté à l'emploi du temps.")
+            
+        return redirect('secretaire:emploiDuTemps', id1=id1, id2=id2)
 
     return render(request, "ajoutEmploiTemps.html", {
         'salle': salle,
@@ -986,11 +1023,12 @@ def supprimerEmploiTemps(request, id1, id2):
     salle = get_object_or_404(SalleDeClasse, id=id1)
     annee = get_object_or_404(AnneeScolaire, id=id2)
     
-    EmploiDuTemps.objects.filter(salle=salle, annee=annee).delete()
-    return redirect('secretaire:emploiDuTemps', id1 = id1, id2 = id2)
+    deleted_count, _ = EmploiDuTemps.objects.filter(salle=salle, annee=annee).delete()
+    messages.success(request, f"Emploi du temps supprimé avec succès ({deleted_count} entrées supprimées).")
+    return redirect('secretaire:emploiDuTemps', id1=id1, id2=id2)
 
 
-#Classe(niveau)
+# Classe(niveau)
 @login_required 
 @admin_required
 def all_niveau(request):
@@ -1002,18 +1040,15 @@ def all_niveau(request):
 def add_niveau(request):
     if request.method == "POST":
         classe = request.POST["classe"]
-        # capacite = int(request.POST["capacite"])
-        # scolarite = request.POST["scolarite"]
         
-        if Classe.objects.filter(classe = classe):
-             messages.error(request, f"Ce niveau ({classe}) existe déjà")
-             return redirect("secretaire:add_niveau")
-        Classe.objects.create(
-            classe = classe,
-            # capacite = capacite,
-            # scolarite = scolarite
-        )
+        if Classe.objects.filter(classe=classe).exists():
+            messages.error(request, f"Le niveau '{classe}' existe déjà.")
+            return redirect("secretaire:add_niveau")
+            
+        Classe.objects.create(classe=classe)
+        messages.success(request, f"Niveau '{classe}' créé avec succès.")
         return redirect("secretaire:all_niveau")
+    
     return render(request, 'add-niveau.html')
 
 @login_required 
@@ -1021,15 +1056,22 @@ def add_niveau(request):
 def modifierNiveau(request, id):
     classe = Classe.objects.get(pk=id)
     if request.method == "POST":
-        classe.classe = request.POST["classe"]
+        ancien_nom = classe.classe
+        nouveau_nom = request.POST["classe"]
+        classe.classe = nouveau_nom
         classe.save()
+        messages.success(request, f"Niveau '{ancien_nom}' modifié en '{nouveau_nom}' avec succès.")
         return redirect('secretaire:all_niveau')
+    
     return render(request, 'modifier-niveau.html', {"classe": classe})
 
 @login_required 
 @admin_required
 def supprimerNiveau(request, id):
-    Classe.objects.get(pk=id).delete()
+    classe = Classe.objects.get(pk=id)
+    nom_classe = classe.classe
+    classe.delete()
+    messages.success(request, f"Niveau '{nom_classe}' supprimé avec succès.")
     return redirect('secretaire:all_niveau')
 
 @login_required 
@@ -1059,6 +1101,9 @@ def all_inscription(request):
             except (ValueError, AnneeScolaire.DoesNotExist):
                 pass
 
+        if not inscriptions.exists():
+            messages.info(request, "Aucune inscription ne correspond à vos critères de recherche.")
+            
         return render(request, 'all-inscription.html', {
             "inscriptions": inscriptions,
             "anneeScolaires": AnneeScolaire.objects.all(),
@@ -1072,7 +1117,8 @@ def all_inscription(request):
             "anneeScolaires": AnneeScolaire.objects.all(),
             "niveaux": Classe.objects.all()
         })
-
+        
+        
 @login_required 
 @admin_required
 def ajoutInscription(request):
@@ -1097,7 +1143,7 @@ def ajoutInscription(request):
         cout_entry = Cout.objects.filter(classe=salleDeClasse.niveau, anneeScolaire=anneeAcademique).first()
         
         if not cout_entry:
-            messages.warning(request,".")
+            messages.warning(request, f"Aucun coût défini pour la classe {salleDeClasse.niveau} pour l'année {anneeAcademique}.")
 
         # Création de l'inscription même si le coût n'existe pas
         Inscription.objects.create(
@@ -1107,7 +1153,7 @@ def ajoutInscription(request):
             anneeAcademique=anneeAcademique
         )
 
-        messages.success(request, "Inscription effectuée avec succès.")
+        messages.success(request, f"Inscription de {etudiant} en {salleDeClasse} effectuée avec succès.")
         return redirect("secretaire:all_inscription")
     
     context = {
@@ -1123,7 +1169,9 @@ def ajoutInscription(request):
 @admin_required 
 def delete_inscription(request, id):
     inscription = Inscription.objects.get(pk=id)
+    etudiant_nom = inscription.etudiant.nom if hasattr(inscription.etudiant, 'nom') else str(inscription.etudiant)
     inscription.delete()
+    messages.success(request, f"Inscription de {etudiant_nom} supprimée avec succès.")
     return redirect("secretaire:all_inscription")
 
 @login_required 
@@ -1142,6 +1190,7 @@ def modifierInscription(request, id):
         inscription.salleClasse_id = SalleDeClasse.objects.get(id =salleDeClasse)
         
         inscription.save()
+        messages.success(request, f"Inscription de {inscription.etudiant} modifiée avec succès.")
         return redirect("secretaire:all_inscription")
     context = {
         'etudiants': Etudiant.objects.all(),
@@ -1150,9 +1199,6 @@ def modifierInscription(request, id):
         'anneeScolaires': AnneeScolaire.objects.all()
     }
     return render(request, 'modifier-inscription.html', context)
-        
-
-
 #Cours
 @login_required 
 @admin_required
@@ -1239,6 +1285,7 @@ def modifier_cours(request, pk):
         cours.anneeScolaire = AnneeScolaire.objects.get(pk=int(anneeScolaire))
         
         cours.save()
+        messages.success(request, f"Cours {cours.matiere} modifié avec succès.")
         return redirect('secretaire:all-cours')
     context = {'cours': cours, 'matieres': Matiere.objects.all(), 'enseignants': Enseignant.objects.all(), 'classes': Classe.objects.all(), 'anneeScolaires': AnneeScolaire.objects.all()}
     return render(request, 'modifier-cours.html', context)
@@ -1246,7 +1293,10 @@ def modifier_cours(request, pk):
 @login_required 
 @admin_required
 def supprimer_cours(request, pk):
+    cours = Cours.objects.get(pk=pk)
+    matiere_nom = cours.matiere.nom
     Cours.objects.get(pk=pk).delete()
+    messages.success(request, f"Cours '{matiere_nom}' supprimé avec succès.")
     return redirect('secretaire:all-cours')
 
 
@@ -1265,7 +1315,11 @@ def all_evaluation(request):
 @login_required 
 @admin_required
 def supprimer_evaluation(request, pk):
+    evaluation = Evaluation.objects.get(pk=pk)
+    etudiant_nom = evaluation.etudiant.nom if hasattr(evaluation.etudiant, 'nom') else str(evaluation.etudiant)
+    matiere_nom = evaluation.cours.matiere.nom
     Evaluation.objects.get(pk=pk).delete()
+    messages.success(request, f"Évaluation de {etudiant_nom} en {matiere_nom} supprimée avec succès.")
     return redirect('secretaire:all_evaluation')
 
 @login_required 
@@ -1288,6 +1342,7 @@ def modifier_evaluation(request, id):
         evaluation.etudiant = get_object_or_404(Etudiant, id=etudiant_id)
 
         evaluation.save()
+        messages.success(request, f"Évaluation de {evaluation.etudiant} modifiée avec succès.")
         
         return redirect('secretaire:all_evaluation')
     
@@ -1321,6 +1376,7 @@ def evaluation_groupee(request, id, id1, id2):
         pourcentage = request.POST["pourcentage"]
         cours = Cours.objects.get(pk=int(cours_id))
 
+        evaluations_ajoutees = 0
         for inscrit in inscrits:
             note_input_name = f"note_{inscrit.etudiant.id}"
             note_val = request.POST.get(note_input_name)
@@ -1334,7 +1390,9 @@ def evaluation_groupee(request, id, id1, id2):
                     trimestre=trimestre,
                     pourcentage =pourcentage
                 )
+                evaluations_ajoutees += 1
 
+        messages.success(request, f"{evaluations_ajoutees} évaluation(s) ajoutée(s) avec succès pour le cours {cours.matiere}.")
         return redirect('secretaire:all_evaluation')  
 
     context = {
@@ -1433,6 +1491,7 @@ def ajout_note_individuelle(request, id, id1, id2):
             pourcentage = pourcentage,
             etudiant=etudiants
         )
+        messages.success(request, f"Note de {etudiants} en {cours.matiere} ajoutée avec succès.")
         return redirect('secretaire:all_evaluation')
     
     cours_list = Cours.objects.filter(classe__id = id1, anneeScolaire__id = id2)
@@ -1448,7 +1507,11 @@ def ajout_note_individuelle(request, id, id1, id2):
 @login_required 
 @admin_required
 def deleteEvaluation(request, id):
+    evaluation = Evaluation.objects.get(id=id)
+    etudiant_nom = evaluation.etudiant.nom if hasattr(evaluation.etudiant, 'nom') else str(evaluation.etudiant)
+    matiere_nom = evaluation.cours.matiere.nom
     Evaluation.objects.get(id=id).delete()
+    messages.success(request, f"Évaluation de {etudiant_nom} en {matiere_nom} supprimée avec succès.")
     return redirect('secretaire:all_evaluation')
     
      
@@ -1495,6 +1558,7 @@ def ajoutCout(request):
                 fraisAssocie=fraisAssocie,
                 anneeScolaire = anneeScolaire
                 )
+            messages.success(request, f"Coûts pour la classe {classe} ({anneeScolaire}) ajoutés avec succès.")
             return redirect('secretaire:all_cout')
     context = {'classe_list': Classe.objects.all(), 'anneeScolaires': AnneeScolaire.objects.all()}
     return render(request, 'add-cout.html', context)
@@ -1503,7 +1567,10 @@ def ajoutCout(request):
 @admin_required
 def suppCout(request, id):
     cout = get_object_or_404(Cout, id=id)
+    classe_nom = cout.classe.classe
+    annee_nom = cout.anneeScolaire.annee
     cout.delete()
+    messages.success(request, f"Coûts de la classe {classe_nom} ({annee_nom}) supprimés avec succès.")
     return redirect('secretaire:all_cout')
 
 @login_required 
@@ -1524,11 +1591,10 @@ def modifierCout(request, id):
         cout.classe = get_object_or_404(Classe, id=classe_id)
         
         cout.save()
+        messages.success(request, f"Coûts de la classe {cout.classe} modifiés avec succès.")
         return redirect('secretaire:all_cout')
     context = {'cout': cout, 'classe_list': Classe.objects.all(), 'anneeScolaires': AnneeScolaire.objects.all()}
     return render(request, 'modifier-cout.html', context)
-
-
 
 @login_required 
 @admin_required
@@ -1711,6 +1777,9 @@ def generationBilletin(request, matricule, classe, id):
             stats_classe[trimestre]["faible"] = min(notes)
             stats_classe[trimestre]["moyenne"] = round(sum(notes) / len(notes), 2)
 
+    # Message de confirmation pour la génération du bulletin
+    messages.success(request, f"Bulletin de {etudiant.nom} {etudiant.prenom} généré avec succès. Année scolaire {annee}")
+    
     return render(request, 'generationBilletin.html', {
         "annee": annee,
         "etudiant": etudiant,
@@ -1734,7 +1803,6 @@ def generationBilletin(request, matricule, classe, id):
         "appreciationGenerale2": get_appreciation(moyennes_generales["2e trimestre"]),
         "appreciationGenerale3": get_appreciation(moyennes_generales["3e trimestre"]),
     })
-
 
 # def generationBilletin(request, matricule, classe):
 #     etudiant = Etudiant.objects.get(matricule=matricule)

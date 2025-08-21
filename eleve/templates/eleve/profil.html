@@ -1,0 +1,384 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcadPro-notes</title>
+    {% include 'partial/head.html' %}
+    <link rel="stylesheet" href="{% static 'eleve/style.css' %}">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+      
+        .filters {
+            display: flex;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            justify-content: space-between;
+        }
+        
+        .year-select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 150px;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            padding: 8px 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 250px;
+            background-color: #e6f2ff;
+        }
+        
+        .search-icon {
+            margin-right: 5px;
+            color: #3d7eac;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background-color: #f0f8ff;
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+            color: #3d7eac;
+            position: relative;
+        }
+        
+        th i {
+            margin-left: 5px;
+        }
+        
+        td {
+            padding: 10px;
+            border: 1px solid #eee;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .sort-icon::after {
+            content: "↕";
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        
+        .excellent {
+            color: #009900;
+            font-weight: bold;
+        }
+        
+        .tres-bien {
+            color: #33aa00;
+            font-weight: bold;
+        }
+        
+        .assez-bien {
+            color: #7cb342;
+            font-weight: bold;
+        }
+        
+        .passable {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgb(25, 25, 103);
+            color: white;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 5px;
+            text-decoration: none;
+            opacity: 0.8;
+        }
+        
+        .back-to-top:hover {
+            opacity: 1;
+        }
+         table.dataTable thead th {
+              background-color: #f0f8ff; 
+              color: #042954;
+            }
+        
+        /* Cacher les éléments de pagination et de recherche de DataTables */
+        .dataTables_length, .dataTables_filter, .dataTables_info, .dataTables_paginate {
+            display: none !important;
+        }
+
+        /* Smartphones en mode paysage jusqu'aux tablettes */
+        .detailEtudiant{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 50%;
+            margin: 20px auto;
+            border-radius: 10px;
+
+        }
+        {% comment %} .info-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        } {% endcomment %}
+        label{
+            font-size: 20px;
+        }
+        input[type="text"], input[type="email"], input[type="date"], input[type="tel"] {
+            font-size: 18px;
+        }
+        option, select, textarea, .tailChamps{
+            font-size: 18px;
+        }
+
+    </style>
+</head>
+<body>
+    <div>
+   
+        {% include 'eleve/partial/header.html' %}
+
+        <div class="dashboard-page-one">
+            <div class="container">
+                
+                <!-- Navigation Tabs -->
+                {% include 'eleve/partial/navBar.html' %}
+
+                <div class="card height-auto">
+                    <div class="row justify-content-center w-100" style="margin-top: 10px;">
+                        <div class="col-lg-10 col-xl-8">
+                            <div class="card">
+                                <div class="profile-header text-center">
+                                    <div class="d-flex justify-content-between align-items-start mb-5">
+                                       
+                                    </div>
+                                    
+                                    <div class="photo-container mb-3">
+                                        {% if etudiant.photo %}
+                                            <img src="{{ etudiant.photo.url }}" alt="logo" 
+                                                class="img-fluid rounded-0"  style="width:150px; height:150px; object-fit:cover; border-radius: 20px!important;">
+                                        {% else %}
+                                            <i class="fa fa-user" style="font-size: 30px; color: #3d7eac;"></i> 
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="card-body p-4">
+                                    <form id="profileForm">
+                                        <hr>
+                                        <!-- Informations personnelles -->
+                                        <h4 class="section-title">
+                                            <i class="fas fa-user me-2"></i>Informations personnelles
+                                        </h4>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="nom" class="form-label">
+                                                    <i class="fas fa-user me-1"></i>Nom de famille
+                                                </label>
+                                                <input type="text" class="form-control readonly-field" id="nom" name="nom" value="{{etudiant.nom}}" readonly>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="prenom" class="form-label">
+                                                    <i class="fas fa-user me-1"></i>Prénom(s)
+                                                </label>
+                                                <input type="text" class="form-control readonly-field" id="prenom" name="prenom" value="{{etudiant.prenom}}" readonly>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="sexe" class="form-label">
+                                                    <i class="fas fa-venus-mars me-1"></i>Sexe
+                                                </label>
+                                                <input type="text" class="form-control" id="" name="" value="{{etudiant.genre}}" readonly>
+                                                {% comment %} <select class="form-select readonly-field tailChamps" style = "font-size: 16px;" id="sexe" name="sexe" disabled>
+                                                    <option value="" selected>{{etudiant.genre}} </option>
+                                                </select> {% endcomment %}
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="dateNaissance" class="form-label">
+                                                    <i class="fas fa-calendar-alt me-1"></i>Date de naissance
+                                                </label>
+                                                <input type="text" class="form-control" id="dateNaissance" name="dateNaissance" value="{{etudiant.date_naissance|date:"Y/m/d"}}" readonly>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="lieuNaissance" class="form-label">
+                                                    <i class="fas fa-map-marker-alt me-1"></i>Lieu de naissance
+                                                </label>
+                                                <input type="text" class="form-control readonly-field" id="lieuNaissance" name="lieuNaissance" value="Lomé, Togo" readonly>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="nationalite" class="form-label">
+                                                    <i class="fas fa-flag me-1"></i>Nationalité
+                                                </label>
+                                                <input type="text" class="form-control" id="" name="" value="{{etudiant.nationnalite}}" readonly>
+
+                                                {% comment %} <select class="form-select readonly-field tailChamps" style = "font-size: 18px;" id="nationalite" name="nationalite" disabled>
+                                                    <option value="ivoirienne" selected>{{etudiant.nationnalite}}</option>
+                                                </select> {% endcomment %}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Contact -->
+                                        <hr class="mt-5">
+                                        <h4 class="section-title">
+                                            <i class="fas fa-address-book me-2"></i>Informations de contact
+                                        </h4>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="email" class="form-label">
+                                                    <i class="fas fa-envelope me-1"></i>Adresse e-mail
+                                                </label>
+                                                <input type="email" class="form-control" id="email" name="email" value="{{etudiant.mail}}">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="telephone" class="form-label">
+                                                    <i class="fas fa-phone me-1"></i>Numéro de téléphone
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text" style = "font-size: 10px;">+228</span>
+                                                    <input type="tel" class="form-control" style = "font-size: 18px;" id="telephone" name="telephone" value="{{etudiant.telephone}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="adresse" class="form-label">
+                                                <i class="fas fa-home me-1"></i>Adresse domicile
+                                            </label>
+                                            <textarea class="form-control tailChamps" style = "font-size: 18px;" id="adresse" name="{{etudiant.nationnalite}}" rows="2">Quartier Bè, Rue des Écoles, Maison n°45, Lomé</textarea>
+                                        </div>
+                                        
+                                        <!-- Tuteur légal -->
+                                        <hr class="mt-5">
+                                        <h4 class="section-title">
+                                            <i class="fas fa-user-shield me-2"></i>Tuteur légal / Responsable
+                                        </h4>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="tuteurNom" class="form-label">
+                                                    <i class="fas fa-user me-1"></i>Nom complet du tuteur
+                                                </label>
+                                                <input type="text" class="form-control" id="tuteurNom" name="tuteurNom" value="{{etudiant.parent.nom}} {{etudiant.parent.prenom}}">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="tuteurTel" class="form-label">
+                                                    <i class="fas fa-phone me-1"></i>Téléphone du tuteur
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">+228</span>
+                                                    <input type="tel" class="form-control" id="tuteurTel" name="tuteurTel" value="{{etudiant.parent.telephone}}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="tuteurNom" class="form-label">
+                                                    <i class="fas fa-user me-1"></i>Lien de parenté
+                                                </label>
+                                                <input type="text" class="form-control" id="tuteurNom" name="tuteurNom" value="{{etudiant.lien_de_parente}}">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 15px;">
+                                    <h3 class="text-danger"> Pour toute erreur veillez <a href="">Nous contactez!</a></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script>
+        $(document).ready(function () {
+        $('#notesTable').DataTable({
+            "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
+            },
+            // Désactiver les fonctionnalités de pagination et recherche
+            "paging": false,
+            "searching": false,
+            "info": false,
+            "ordering": true
+        });
+        });
+    </script>
+
+     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script>
+        $(document).ready(function () {
+        $('#notesTable').DataTable({
+            "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
+            },
+            // Désactiver les fonctionnalités de pagination et recherche
+            "paging": false,
+            "searching": false,
+            "info": false,
+            "ordering": true
+        });
+        });
+    </script>
+    
+    <!-- Back to top button -->
+    <a href="#" class="back-to-top">↑</a>
+
+    {% comment %} <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script> {% endcomment %}
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+    
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    
+</body>
+</html>
+
+

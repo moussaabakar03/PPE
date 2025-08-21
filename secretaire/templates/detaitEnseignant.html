@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
     <!-- Modernize js -->
     <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
        
@@ -123,16 +124,17 @@
            
             {% include 'partial/aside.html' %}
 
-
+           
             <!-- Sidebar Area End Here -->
             <div class="dashboard-content-one">
+               
 
                 <div class="detailEtudiant">
                     <div>
                         <p style = "text-align: center; margin-top: 15px;" > DETAILS ENSEIGNANT: [<span style = "font-weight: bold;">{{enseignant.nom}}</span>] </p>
                     </div>
                 </div>
-
+              
                 <!-- Breadcubs Area Start Here -->
                 <div class="breadcrumbs-area">
                     <h3>Enseignant</h3>
@@ -151,6 +153,7 @@
                         </div>
                     </div>
                 </div>
+                 
                 <!-- Breadcubs Area End Here -->
                 <!-- etudiant Details Area Start Here -->
                 <div class="card height-auto">

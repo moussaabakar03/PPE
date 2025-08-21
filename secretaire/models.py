@@ -8,10 +8,11 @@ from django.db import models
 class AnneeScolaire(models.Model):
     debutAnnee = models.DateField()
     fintAnnee = models.DateField()
-
+    
     def __str__(self):
-        return f"{self.debutAnnee}/{self.fintAnnee}"
-
+        return f"{self.debutAnnee.year}-{self.fintAnnee.year}"
+    
+    
 class Classe(models.Model):
     classe = models.CharField(max_length=100, unique=True)
     # capacite = models.PositiveIntegerField(default=1)  
@@ -122,31 +123,32 @@ class Enseignant(models.Model):
     def __str__(self):
         return f"{self.nom} {self.prenom}"
 
-
 class cvEnseignant(models.Model):
     cv = models.FileField(upload_to='cvEnseignant')
     dateHeure = models.DateTimeField(auto_now_add=True)
     enseignant = models.ForeignKey(Enseignant, on_delete=models.CASCADE, null=True, blank=True, related_name="cvEnseignant")
+    
+    def __str__(self):
+        return f"CV de {self.enseignant} - {self.dateHeure.strftime('%d/%m/%Y %H:%M')}"
 
 
 class Matiere(models.Model):
     code = models.CharField(max_length=10)
     nom = models.CharField(max_length=100)
-    # enseignant = models.ForeignKey(Enseignant, on_delete=models.CASCADE, null=True, blank=True)
-    # niveau = models.ForeignKey(Classe, on_delete=models.CASCADE, null=True, blank=True, related_name='niveau')
     description = models.TextField(null=True, blank=True)
+    
+    def __str__(self):
+        return f"{self.code} - {self.nom}"
 
 
 class Inscription(models.Model):
     etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE, null=True, blank=True,  related_name='inscriptions')
     salleClasse = models.ForeignKey(SalleDeClasse, on_delete=models.CASCADE, null=True, blank=True, related_name='inscris')
     dateEnregistrement = models.DateTimeField(auto_now_add=True)
-    # coutA = models.DecimalField(max_digits=10, decimal_places=2)
-    # montantVerse = models.DecimalField(max_digits=10, decimal_places=2)
-    # montantRestant = models.DecimalField(max_digits=10, decimal_places=2)
     anneeAcademique = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE, related_name= 'anneeAcad' )
     
-    
+    def __str__(self):
+        return f"Inscription: {self.etudiant} en {self.salleClasse} ({self.anneeAcademique})"
     
     def get_cout_inscription(self):
         return Cout.objects.filter(
@@ -154,8 +156,7 @@ class Inscription(models.Model):
             anneeScolaire=self.anneeAcademique
         ).first()
 
-    
-    
+
 class Scolarite(models.Model):
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE, null=True, blank=True)
     coutScolarite = models.DecimalField(max_digits=10, decimal_places=2)
@@ -163,7 +164,10 @@ class Scolarite(models.Model):
     montantRestant = models.DecimalField(max_digits=10, decimal_places=2)
     etat = models.CharField(max_length=100, choices=[('Reglé', 'Reglé'), ('A completé', 'A completé')])
     
-    
+    def __str__(self):
+        return f"Scolarité {self.classe} - {self.etat} - Restant: {self.montantRestant}"
+
+
 class Cours(models.Model):
     matiere = models.ForeignKey(Matiere, on_delete=models.CASCADE, null=True, blank=True, related_name='cours')
     enseignant = models.ForeignKey(Enseignant, on_delete=models.CASCADE, null=True, blank=True, related_name="cours")
@@ -171,8 +175,10 @@ class Cours(models.Model):
     dateDebutCours = models.DateTimeField(auto_now_add=True)
     etat = models.CharField(max_length=100, choices=[('En cours', 'En cours'), ('Effectué', 'Effectué'), ('Planifié', 'Planifié')])
     coefficient = models.PositiveIntegerField()
-
     anneeScolaire = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE, related_name='anneeScolaire')
+
+    def __str__(self):
+        return f"{self.matiere} par {self.enseignant} - {self.classe} ({self.anneeScolaire})"
 
 
 class Evaluation(models.Model):
@@ -181,9 +187,12 @@ class Evaluation(models.Model):
     typeEvaluation = models.CharField(max_length=100, choices=[('Devoir', 'Devoir'), ('Interrogation', 'Interrogation'), ('Composition', 'Composition')])
     dateEvaluation = models.DateTimeField(auto_now_add=True)
     note = models.DecimalField(max_digits=10, decimal_places=2)
-    pourcentage = models.DecimalField (max_digits=10, decimal_places=2)
+    pourcentage = models.DecimalField(max_digits=10, decimal_places=2)
     etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE, null=True, blank=True, related_name='evaluations')
     
+    def __str__(self):
+        return f"Évaluation {self.typeEvaluation} - {self.etudiant} - Note: {self.note}/{self.pourcentage}"
+
 
 class Cout(models.Model):
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE, null=True, blank=True, related_name='couts')
@@ -192,17 +201,22 @@ class Cout(models.Model):
     coutScolarite = models.DecimalField(max_digits=10, decimal_places=2)
     fraisEtudeDossier = models.DecimalField(max_digits=10, decimal_places=2)
     fraisAssocie = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    def __str__(self):
+        return f"Coûts {self.classe} - {self.anneeScolaire}"
 
 
 class Emargement(models.Model):
     salleClasse = models.ForeignKey(SalleDeClasse, on_delete=models.CASCADE, null=True, blank=True, related_name='emargements')
-    # etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE, null=True, blank=True, related_name ='emargements')
     inscrits = models.ForeignKey(Inscription, on_delete=models.CASCADE, null=True, blank=True, related_name='emargements')
     dateHeureDebut = models.DateTimeField()
     date_heure_fin = models.DateTimeField(auto_now_add=True)
-    commentaire = models.TextField( blank=True, null=True)
+    commentaire = models.TextField(blank=True, null=True)
     presence = models.BooleanField(default=False)
     dateJour = models.DateField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Émargement {self.inscrits} - {self.dateJour} - Présent: {self.presence}"
 
 
 class Messages(models.Model):
@@ -224,12 +238,14 @@ class depotDossierEtudiant(models.Model):
     mail = models.EmailField()
     dossier = models.FileField(upload_to='dossiers_etudiants')
     numero_telephone = models.CharField(max_length=20)
-
+    
+    def __str__(self):
+        return f"Dossier de {self.prenom} {self.nom} - {self.niveau}"
 
 
 class PlageHoraire(models.Model):
-    salle = models.ForeignKey(SalleDeClasse, on_delete = models.CASCADE, null=True)
-    annee = models.ForeignKey(AnneeScolaire, on_delete = models.CASCADE, null=True)
+    salle = models.ForeignKey(SalleDeClasse, on_delete=models.CASCADE, null=True)
+    annee = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE, null=True)
     debut = models.PositiveIntegerField()
     fin = models.PositiveIntegerField()
 
@@ -239,8 +255,10 @@ class PlageHoraire(models.Model):
 
 class EmploiDuTemps(models.Model):
     cours = models.ForeignKey(Cours, on_delete=models.CASCADE)
-    salle = models.ForeignKey(SalleDeClasse, on_delete = models.CASCADE, null=True)
-    annee = models.ForeignKey(AnneeScolaire, on_delete = models.CASCADE, null=True)
-    # heure = models.ForeignKey(PlageHoraire, on_delete=models.CASCADE, null=True)
+    salle = models.ForeignKey(SalleDeClasse, on_delete=models.CASCADE, null=True)
+    annee = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE, null=True)
     heure = models.CharField(max_length=30)
     jour = models.CharField(max_length=30)
+    
+    def __str__(self):
+        return f"{self.cours} - {self.jour} à {self.heure}"

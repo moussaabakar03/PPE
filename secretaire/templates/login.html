@@ -41,13 +41,7 @@
                     <img src="{% static 'secretaire/img/logo1.png' %}" alt="logo" class="img-fluid" style ="width: 100px; height: 100px; margin-top: 50px; "/>
                     
                 </div>
-                {% if messages %}
-                <div class="error-messages">
-                    {% for message in messages %}
-                    <p class="error">{{ message }}</p>
-                    {% endfor %}
-                </div>
-                {% endif %}
+                
                 <form action="{% url 'secretaire:login' %}" method="POST" class="login-form">
                     {% csrf_token %}
                     <div class="form-group">

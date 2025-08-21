@@ -26,7 +26,7 @@
     </div>
     <div class="header-main-menu collapse navbar-collapse" id="mobile-navbar">
         <ul class="navbar-nav">
-            <li class="navbar-item header-search-bar">
+            <li class="navbar-item header-search-bar"  style="display: flex; justify-content: space-between;">
                 <div class="input-group stylish-input-group">
                     <span class="input-group-addon">
                         <button type="submit">
@@ -34,6 +34,9 @@
                         </button>
                     </span>
                     <input type="text" class="form-control" placeholder="Rechercher . . .">
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    {% include 'partial/messages.html' %}
                 </div>
             </li>
         </ul>
