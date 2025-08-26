@@ -106,7 +106,7 @@
                                                 <select name="{{ jour|lower }}_{{ forloop.parentloop.counter }}" class="select2 form-control">
                                                     <option value=""></option>
                                                     {% for c in cours %}
-                                                        <option value="{{ c.id }}">{{ c.matiere.nom }}</option>
+                                                        <option value="{{ c.id }}">{{ c.matiere.code }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </td>

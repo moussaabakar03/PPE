@@ -93,7 +93,7 @@ def ajouter_paiement(request, id_inscription, id_annee):
         type_paiement = request.POST.get('type_paiement')
         montantVerse = Decimal(request.POST.get('montantVerse') or "0")
         mode_paiement = request.POST.get('mode_paiement')
-        periodeConcerne = request.POST.get('periodeConcerne')
+        # periodeConcerne = request.POST.get('periodeConcerne')
 
         montantMaximum = {
             'Frais de scolarité': cout.coutScolarite,
@@ -114,7 +114,6 @@ def ajouter_paiement(request, id_inscription, id_annee):
                 montantVerse=montantVerse,
                 typePaiement=type_paiement,
                 modePaiment=mode_paiement,
-                periodeConcerne=periodeConcerne
             )
             messages.success(request, f"Paiement de {montantVerse} FCFA pour {eleve.nom} {eleve.prenom} enregistré avec succès.")
             return redirect(request.path)  # Rafraîchir la page

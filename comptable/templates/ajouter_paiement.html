@@ -152,16 +152,6 @@
                                     </div>
                                 </div>
 
-                                <div class="form-section">
-                                    <hr>
-                                    <h5><i class="fas fa-calendar-alt"></i> Période concernée</h5>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <label for="mois" class="form-label">Période concerné:</label>
-                                            <input type="text" name="periodeConcerne" class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
 
                                 <div class="form-section">
                                     <hr>
@@ -175,16 +165,16 @@
                                 </div>
 
                                 <div class="row mt-4">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <button type="submit" class="btn btn-submit btn-lg w-100 text-white">
                                             <i class="fas fa-save"></i> Enregistrer le paiement
                                         </button>
                                     </div>
-                                    <div class="col-md-6">
+                                    {% comment %} <div class="col-md-6">
                                         <a href="#" class="btn btn-danger btn-lg w-100">
                                             <i class="fas fa-times"></i> Annuler
                                         </a>
-                                    </div>
+                                    </div> {% endcomment %}
                                 </div>
 
                                 <!-- Champ caché pour l'étudiant -->
@@ -202,7 +192,6 @@
                                         <th>Date</th>
                                         <th>Type</th>
                                         <th>Montant(FCFA)</th>
-                                        <th>periode_Concerné</th>
                                         <th>Méthode</th>
                                     </tr>
                                 </thead>
@@ -214,7 +203,6 @@
                                             <td class="paid">{{ paiement.montantVerse }}</td>
                                             {% comment %} <td class="remaining">{{ paiement.reste_a_payer }} FCFA</td> {% endcomment %}
                                             {% comment %} <td class="remaining">{{ paiement.periodeConcerne }}</td> {% endcomment %}
-                                            <td>{{ paiement.periodeConcerne }}</td>
                                             <td>{{ paiement.modePaiment }}</td>
                                         </tr>
                                     {% endfor %}
@@ -329,10 +317,45 @@
             }
         });
 
+        function controleChampsNegatif() {
+            const type = typePaiementSelect.value;
+            const montantType = frais[type] || 0;
+            const dejaPaye = dejaPayeParType[type] || 0;
+            const verser = parseFloat(montantVerseInput.value || 0);
+
+            // Calcul du reste
+            let reste = montantType - dejaPaye - verser;
+
+            // Si l’utilisateur saisit plus que le reste
+            if (verser + dejaPaye > montantType) {
+                alert("Le montant versé dépasse le reste à payer !");
+                montantVerseInput.value = "";
+                reste = montantType - dejaPaye; // rétablir le reste correct
+            }
+
+            // Bloquer à 0 pour éviter les négatifs
+            if (reste < 0) {
+                reste = 0;
+            }
+
+            resteAPayerInput.value = reste.toFixed(2);
+
+            // Désactiver si tout est payé
+            if (reste === 0) {
+                montantVerseInput.disabled = true;
+                alert("Paiement complet effectué !");
+            } else {
+                montantVerseInput.disabled = false;
+            }
+        }
+
+
         typePaiementSelect.addEventListener('change', mettreAJourMontants);
         montantVerseInput.addEventListener('input', mettreAJourMontants);
+        montantVerseInput.addEventListener('input', controleChampsNegatif);
 
         document.addEventListener('DOMContentLoaded', mettreAJourMontants);
+
     </script>
 
 </body>

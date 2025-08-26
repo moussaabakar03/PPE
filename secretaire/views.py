@@ -1024,6 +1024,7 @@ def supprimerEmploiTemps(request, id1, id2):
     annee = get_object_or_404(AnneeScolaire, id=id2)
     
     deleted_count, _ = EmploiDuTemps.objects.filter(salle=salle, annee=annee).delete()
+    PlageHoraire.objects.filter(salle = salle, annee = annee).delete()
     messages.success(request, f"Emploi du temps supprimé avec succès ({deleted_count} entrées supprimées).")
     return redirect('secretaire:emploiDuTemps', id1=id1, id2=id2)
 

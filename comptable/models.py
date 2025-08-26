@@ -12,7 +12,7 @@ class PaiementEleve(models.Model):
     datePaiement = models.DateField(editable=False, auto_now_add=True)
     typePaiement = models.CharField(max_length=150)
     modePaiment = models.CharField(max_length=150)
-    periodeConcerne = models.CharField(max_length=150)
+    # periodeConcerne = models.CharField(max_length=150)
     
     def __str__(self):
         return f"Paiement #{self.id} - {self.etudiant} ({self.montant}€)"
