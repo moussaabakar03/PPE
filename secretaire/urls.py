@@ -74,6 +74,8 @@ urlpatterns = [
     path('emploiDuTemps/<int:id1>/<int:id2>', views.emploiDuTemps, name='emploiDuTemps'),
     path('ajoutEmploiTemps/<int:id1>/<int:id2>/<int:id3>', views.ajoutEmploiTemps, name='ajoutEmploiTemps'),
     path('supprimerEmploiTemps/<int:id1>/<int:id2>', views.supprimerEmploiTemps, name='supprimerEmploiTemps'),
+    path('bulletinsSalleDeClasse/', views.bulletinsSalleDeClasse, name='bulletinsSalleDeClasse'),
+    
     
 
     path('all_niveau/', views.all_niveau, name='all_niveau'),

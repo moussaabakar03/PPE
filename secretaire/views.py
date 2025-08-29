@@ -1029,6 +1029,13 @@ def supprimerEmploiTemps(request, id1, id2):
     return redirect('secretaire:emploiDuTemps', id1=id1, id2=id2)
 
 
+@login_required 
+@admin_required
+def bulletinsSalleDeClasse(request):
+    return render(request, 'bulletinsSalleDeClasse.html')
+
+
+
 # Classe(niveau)
 @login_required 
 @admin_required

@@ -264,8 +264,6 @@
                                             <th>Année_Scolaire</th>
                                             <th>Classe</th>
                                             <th>Salle</th>
-                                            <th>Coût_Attendu.</th>
-                                            <th>Montant_Versé</th>
                                             <th>Date_Inscription</th>
                                         </tr>
                                     </thead>
@@ -275,14 +273,14 @@
                                             <td>{{inscription.anneeAcademique.debutAnnee|date:"Y"}}- {{ inscription.anneeAcademique.fintAnnee|date:"Y"}}</td>
                                             <td>{{inscription.salleClasse.niveau.classe}}</td>
                                             <td>{{inscription.salleClasse.nom}}</td>
-                                            {% with cout=inscription.salleClasse.niveau.couts.first %}
+                                            {% comment %} {% with cout=inscription.salleClasse.niveau.couts.first %}
                                                 {% if cout %}
                                                     <td>{{ cout.coutInscription }} F CFA</td>
                                                 {% else %}
                                                     <td>Non défini</td>
                                                 {% endif %}
                                             {% endwith %}   
-                                            <td>{{inscription.montantVerse}} FCFA</td>
+                                            <td>{{inscription.montantVerse}} FCFA</td> {% endcomment %}
                                             <td>{{inscription.dateEnregistrement|date:"d/m/Y" }}</td>
                                         </tr>
                                         {% endfor %}

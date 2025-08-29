@@ -48,8 +48,11 @@
                             <a href="{% url 'secretaire:listePresence' salle.id annee.id %}"><i class="fa fa-user-check" style = "color: #ffaa01;"></i> Créer une liste d'appel de présence </a>
                         </li>
                         <li>
-                            <a href="{% url 'secretaire:emploiDuTemps' salle.id annee.id %}">Emploi du Temps</a>
+                            <a href="{% url 'secretaire:emploiDuTemps' salle.id annee.id %}"><i class="fa-solid fa-calendar-days" aria-label="Emploi du temps" style = "color: #ffaa01; padding-left: -10px;"></i><span style = "padding-left: 5px;"></span>Emploi du Temps</a>
                         </li>
+                        {% comment %} <li>
+                            <a href="{% url 'secretaire:bulletinsSalleDeClasse'%}"><i class="fa-solid fa-clipboard-list" aria-label="Bulletin" style = "color: #ffaa01;"></i><span style = "padding-left: 5px;"></span>Bulletins</a>
+                        </li> {% endcomment %}
                     </ul>
                 </div>
                 <!-- Breadcubs Area End Here -->

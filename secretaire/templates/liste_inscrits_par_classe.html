@@ -79,10 +79,10 @@
                             <div class="row">
                         
                                 <!-- Trimestre / Module -->
-                                <div class="col-md-2">
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label for="trimestre">Trimestre/Module:</label>
-                                    <select class="form-control" name="trimestre" required>
-                                        <option value="">Choisir</option>
+                                    <select class="select2" name="trimestre" required>
+                                        <option value="">Choisir trimestre</option>
                                         <option value="1er trimestre">1er trimestre</option>
                                         <option value="2e trimestre">2e trimestre</option>
                                         <option value="3e trimestre">3e trimestre</option>
@@ -90,9 +90,9 @@
                                 </div>
                         
                                 <!-- Classe -->
-                                <div class="col-md-2">
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label for="cours">Cours:</label>
-                                    <select class="form-control" name="cours" required>
+                                    <select class="select2" name="cours" required>
                                         <option value = ""> Veillez Choisir une matière</option>
                                         {% for cours in courrs %}
                                             <option value="{{ cours.id }}"> {{ cours.matiere.nom }}</option>
@@ -100,9 +100,9 @@
                                     </select>
                                 </div>
 
-                                <div class="col-md-3">
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label for="typeEvaluation">Type d'évaluation:</label>
-                                    <select class="form-control" name="typeEvaluation" required>
+                                    <select class="select2" name="typeEvaluation" required>
                                         <option value=""> Veillez choisir le type d'évaluation</option>
                                         <option value="Devoir">Devoir</option>
                                         <option value="Interrogation">Interrogation</option>
@@ -116,7 +116,7 @@
                                     <input type="date" name="dateEvaluation" class="form-control" required>
                                 </div> {% endcomment %}
                         
-                                <div class="col-md-3">
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label for="pourcentage">Pourcentage:</label>
                                     <input type="number" name="pourcentage" class="form-control" required min="0" step="0.1">
                                 </div>
@@ -151,7 +151,7 @@
                                                 
                                                 <!-- Note -->
                                                 <td>
-                                                    <input type="number" name="note_{{ inscrit.etudiant.id }}" class="form-control" required min="0" max="20">
+                                                    <input type="number" name="note_{{ inscrit.etudiant.id }}" class="form-control" style ="border: 0.5px solid #6e6b6bff;" required min="0" max="20">
                                                 </td>
                                             </tr>
                                         {% endfor %}
