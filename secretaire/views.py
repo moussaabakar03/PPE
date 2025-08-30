@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
 
 from comptable.models import PaiementEleve
+from secretaire.forms import ContactForm
 from . models import AnneeScolaire, Classe, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, cvEnseignant, depotDossierEtudiant
 from django.utils.timezone import localtime
 from django.db.models import Q
@@ -27,6 +28,9 @@ from django.contrib.auth.decorators import login_required
 
 from acadPro.utils.decorators import admin_required
 
+
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 
@@ -595,9 +599,34 @@ def suppCvEnseignant(request, id):
 @login_required 
 @admin_required
 def all_parents(request):
+    
+    form = ContactForm()
+    message_envoye = False
+
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            sujet = form.cleaned_data['sujet']
+            message = form.cleaned_data['message']
+
+            contenu_message = f"De: <{email}>\n\n{message}"
+
+            send_mail(
+                sujet,
+                contenu_message,
+                settings.EMAIL_HOST_USER,
+                [email],# Mets ici ton adresse de réception
+                fail_silently=False,
+            )
+            messages.success(request, "Message envoyé avec succès!")
+            message_envoye = True
+            
+    
     parents = Parent.objects.all()
     messages.info(request, "Liste des parents consultée.")
-    return render(request, 'all-parents.html', {"parents": parents})
+    
+    return render(request, 'all-parents.html', {"parents": parents, 'form': form, 'message_envoye': message_envoye})
 
 @login_required 
 @admin_required
