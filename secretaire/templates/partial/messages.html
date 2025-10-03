@@ -223,38 +223,38 @@
 
 <div class="message-container position-fixed top-0 end-0 p-3" style="z-index: 1100; max-width: 400px;">
     {% for message in messages %}
-    <div class="alert alert-dismissible fade show {% if message.tags %}{{ message.tags }}{% endif %}" role="alert">
-        <div class="d-flex align-items-center">
-            <!-- Icône selon le type de message -->
-            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                <div class="icon-wrapper bg-success bg-opacity-25 rounded-circle p-2 me-3">
-                    <i class="fa-solid fa-check-circle fs-4 text-success"></i>
-                </div>
-                {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                <div class="icon-wrapper bg-danger bg-opacity-25 rounded-circle p-2 me-3">
-                    <i class="fa-solid fa-triangle-exclamation fs-4 text-danger"></i>
-                </div>
-                {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
-                <div class="icon-wrapper bg-warning bg-opacity-25 rounded-circle p-2 me-3">
-                    <i class="fa-solid fa-circle-exclamation fs-4 text-warning"></i>
-                </div>
-                {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
-                <div class="icon-wrapper bg-info bg-opacity-25 rounded-circle p-2 me-3">
-                    <i class="fa-solid fa-circle-info fs-4 text-info"></i>
-                </div>
-                {% else %}
-                <div class="icon-wrapper bg-primary bg-opacity-25 rounded-circle p-2 me-3">
-                    <i class="fa-solid fa-circle-info fs-4 text-primary"></i>
-                </div>
-            {% endif %}
+        <div class="alert alert-dismissible fade show {% if message.tags %}{{ message.tags }}{% endif %}" role="alert">
+            <div class="d-flex align-items-center">
+                <!-- Icône selon le type de message -->
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    <div class="icon-wrapper bg-success bg-opacity-25 rounded-circle p-2 me-3">
+                        <i class="fa-solid fa-check-circle fs-4 text-success"></i>
+                    </div>
+                    {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <div class="icon-wrapper bg-danger bg-opacity-25 rounded-circle p-2 me-3">
+                        <i class="fa-solid fa-triangle-exclamation fs-4 text-danger"></i>
+                    </div>
+                    {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+                    <div class="icon-wrapper bg-warning bg-opacity-25 rounded-circle p-2 me-3">
+                        <i class="fa-solid fa-circle-exclamation fs-4 text-warning"></i>
+                    </div>
+                    {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+                    <div class="icon-wrapper bg-info bg-opacity-25 rounded-circle p-2 me-3">
+                        <i class="fa-solid fa-circle-info fs-4 text-info"></i>
+                    </div>
+                    {% else %}
+                    <div class="icon-wrapper bg-primary bg-opacity-25 rounded-circle p-2 me-3">
+                        <i class="fa-solid fa-circle-info fs-4 text-primary"></i>
+                    </div>
+                {% endif %}
 
-            <div class="flex-grow-1">
-                <p class="mb-0 fw-medium">{{ message }}</p>
+                <div class="flex-grow-1">
+                    <p class="mb-0 fw-medium">{{ message }}</p>
+                </div>
+                
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    </div>
     {% endfor %}
 </div>
 

@@ -120,9 +120,13 @@
                                
                                 <div class="col-lg-6 col-12 form-group mg-t-30">
                                     <label class="text-dark-medium">Photo du parent</label>
-                                    <input type="file" name="photo" value = "{{parent.photo.url}}" class="form-control-file">
                                     {% if parent.photo %} 
+                                        <input type="file" name="photo" value = "{{parent.photo.url}}" class="form-control-file">
                                         <small class="form-text text-muted">Photo actuelle : {{ parent.photo.name }}</small>
+                                    {% else %}
+                                        <input type="file" name="photo" class="form-control-file">
+                                        <small class="form-text text-muted">Aucune photo au par avant</small>
+
                                     {% endif %}
                                 </div>
                                 <div class="col-12 form-group mg-t-8">

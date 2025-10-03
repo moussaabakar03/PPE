@@ -41,6 +41,7 @@
                         <ul>
                             <li>Nom SAllle</li>
                             <li><a href =""> Retour<a></li>
+                            {% comment %} <li><a href ="{% url 'secretaire:studentParSalle' salle.id annee.id %}"> Retour<a></li> {% endcomment %}
                             <li> Bulletins scolaire</li>
                         </ul>
                         <ul>
@@ -59,7 +60,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
-                             <table id="notesTable"  class="table display data-table text-nowrap">
+                             {% comment %} <table id="notesTable"  class="table display data-table text-nowrap">
                             <thead>
                                 <tr>
                                     <th>Année</th>
@@ -84,7 +85,7 @@
                                     </tr>
                                 {% endif %}
                             </tbody>
-                        </table>
+                        </table> {% endcomment %}
                         </div>
                     </div>
                 </div>

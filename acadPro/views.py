@@ -134,7 +134,7 @@ def connexion(request):
                 messages.success(request, f"Bienvenue {utilisateur}")
                 return redirect(reverse('comptable:indexComptable'))
             else: 
-                messages.success(request, f"Bienvenue {utilisateur}")
+                messages.success(request, f"Bienvenue {utilisateur.username}")
                 return redirect('eleve:notes')
         else:
             messages.error(request, "identifiant ou mot de passe incorrect")

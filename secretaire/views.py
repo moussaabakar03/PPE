@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
 
 from comptable.models import PaiementEleve
-from secretaire.forms import ContactForm
+from secretaire.forms import ContactForm, FormMessageCommun
 from . models import AnneeScolaire, Classe, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, cvEnseignant, depotDossierEtudiant
 from django.utils.timezone import localtime
 from django.db.models import Q
@@ -671,6 +671,11 @@ def modifier_parent(request, id):
         parent.genre = request.POST["genre"]
         parent.telephone = request.POST["telephone"]
         parent.email = request.POST["email"]
+        
+        if Parent.objects.filter(email = request.POST["email"]).exists():
+            messages.error(request, "Veillez revoir, y a un parent qui à le même email que vous!")
+            return redirect("secretaire:modifier_parent", id = id)
+        
         parent.profession = request.POST.get("profession", "")
         
         if "photo" in request.FILES:
@@ -680,7 +685,7 @@ def modifier_parent(request, id):
         messages.success(request, f"Informations du parent {parent.prenom} {parent.nom} mises à jour avec succès.")
         return redirect("secretaire:all-parents")
     
-    messages.info(request, f"Formulaire de modification du parent {parent.prenom} {parent.nom} affiché.")
+    # messages.info(request, f"Formulaire de modification du parent {parent.prenom} {parent.nom} affiché.")
     return render(request, 'modifierParent.html', {"parent": parent})
 
 @login_required 
@@ -791,6 +796,30 @@ def add_salle(request):
     messages.info(request, "Formulaire d'ajout de salle affiché.")
     return render(request, 'add-salle.html', {"niveaux": niveau})
 
+
+def etendreSalleClasse(request, idEleve, idSalleClasse, idAnnee): 
+    
+    eleve = get_object_or_404(Etudiant, id = idEleve)
+    salleClasse = get_object_or_404(SalleDeClasse, id = idSalleClasse)
+    anneeScolaire = get_object_or_404(AnneeScolaire, id = idAnnee)
+    
+    if Inscription.objects.filter(etudiant=eleve, anneeAcademique=anneeScolaire).exists():
+        messages.error(request, "Cet élève est déjà inscrit pour cette année scolaire.")
+        return redirect("secretaire:add_inscription")
+    
+    Inscription.objects.create(
+        etudiant=eleve,
+        salleClasse=salleClasse,
+        anneeAcademique=anneeScolaire
+    )
+    
+    salleClasse.capacite +=1
+    salleClasse.save()
+    messages.success(request, f"La salle {salleClasse.nom} a été étendue et {eleve.nom} a été inscrit avec succès.")
+    
+    return redirect("secretaire:all_inscription")
+
+
 @login_required 
 @admin_required
 def modifierSalle(request, nom):
@@ -824,6 +853,9 @@ def studentParSalle(request, id, id2):
     salle = SalleDeClasse.objects.get(pk=id)
     anneeScolaire = AnneeScolaire.objects.get(id=id2)
     
+    form = ContactForm()
+    message_envoye = False
+    
     if request.method == 'POST':
         matricule = request.POST['matricule']
         nom = request.POST.get('nom')
@@ -833,12 +865,90 @@ def studentParSalle(request, id, id2):
         nombre = inscrits.count()
         
         messages.info(request, f"Recherche d'étudiants dans la salle '{salle.nom}' effectuée.")
-        return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'annee': anneeScolaire})
+        
+        
+        
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            sujet = form.cleaned_data['sujet']
+            message = form.cleaned_data['message']
+
+            contenu_message = f"De: <{email}>\n\n{message}"
+
+            send_mail(
+                sujet,
+                contenu_message,
+                settings.EMAIL_HOST_USER,
+                [email],# Mets ici ton adresse de réception
+                fail_silently=False,
+            )
+            messages.success(request, "Message envoyé avec succès!")
+            message_envoye = True
+            
+        return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'annee': anneeScolaire, 'form': form, 'message_envoye': message_envoye})
+    
     else:
         inscrits = Inscription.objects.filter(salleClasse=salle, anneeAcademique=anneeScolaire)
         nombre = inscrits.count()
         messages.info(request, f"Liste des étudiants de la salle '{salle.nom}' consultée.")
-        return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'annee': anneeScolaire})
+        form = ContactForm()
+        
+    return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'annee': anneeScolaire, 'form': form, 'message_envoye': message_envoye})
+
+@login_required 
+@admin_required
+def messageCommunParent(request, id1, id2):
+    salle = get_object_or_404(SalleDeClasse, id=id1)
+    anneeScolaire = get_object_or_404(AnneeScolaire, id=id2)
+    
+    inscrits = Inscription.objects.filter(salleClasse=salle, anneeAcademique=anneeScolaire)
+    
+    message_envoye = False
+    
+    if request.method == 'POST':
+        form = FormMessageCommun(request.POST)
+        if form.is_valid():
+            sujet = form.cleaned_data['sujet']
+            message = form.cleaned_data['message']
+            
+            emails_envoyes = 0
+            for emailParent in inscrits:
+                email = emailParent.etudiant.parent.email
+                if email:
+                    contenu_message = f"De la part de votre enfant: {emailParent.etudiant.nom} {emailParent.etudiant.prenom}\n\n{message}"
+                    
+                    try:
+                        send_mail(
+                            sujet,
+                            contenu_message,
+                            settings.EMAIL_HOST_USER,
+                            [email],
+                            fail_silently=False,
+                        )
+                        emails_envoyes += 1
+                        print(f"Email envoyé à: {email}")
+                    except Exception as e:
+                        print(f"Erreur lors de l'envoi à {email}: {str(e)}")
+                        messages.error(request, f"Erreur avec {email}: {str(e)}")
+            
+            if emails_envoyes > 0:
+                messages.success(request, f"{emails_envoyes} message(s) envoyé(s) avec succès!")
+            else:
+                messages.warning(request, "Aucun email n'a pu être envoyé.")
+            
+            return redirect("secretaire:studentParSalle", id=id1, id2=id2)
+    else:
+        form = FormMessageCommun()
+    
+    context = {
+        "form": form,
+        "salle": salle,
+        "anneeScolaire": anneeScolaire,
+        "inscrits": inscrits
+    }
+    return render(request, "messageCommunParent.html", context)
+
 
 @login_required 
 @admin_required
@@ -1159,6 +1269,10 @@ def all_inscription(request):
 @login_required 
 @admin_required
 def ajoutInscription(request):
+    etudiant = None
+    salleDeClasse = None
+    anneeAcademique = None
+    
     if request.method == "POST":
         etudiant_id = request.POST["etudiant"]
         salleClasse_id = request.POST["salleClasse"]
@@ -1171,6 +1285,8 @@ def ajoutInscription(request):
         salleDeClasse = get_object_or_404(SalleDeClasse, pk=int(salleClasse_id))
         anneeAcademique = get_object_or_404(AnneeScolaire, pk=int(anneeScolaire_id))
         
+       
+        
         # Vérification doublon
         if Inscription.objects.filter(etudiant=etudiant, anneeAcademique=anneeAcademique).exists():
             messages.error(request, "Cet élève est déjà inscrit pour cette année scolaire.")
@@ -1179,25 +1295,35 @@ def ajoutInscription(request):
         # Recherche du coût (s'il existe)
         cout_entry = Cout.objects.filter(classe=salleDeClasse.niveau, anneeScolaire=anneeAcademique).first()
         
-        if not cout_entry:
-            messages.warning(request, f"Aucun coût défini pour la classe {salleDeClasse.niveau} pour l'année {anneeAcademique}.")
+        
+        inscris = Inscription.objects.filter(salleClasse = salleDeClasse, anneeAcademique = anneeAcademique).count()
+  
+        if inscris < salleDeClasse.capacite:
+            # Création de l'inscription seulement si la salle n'est pas pleine
+            Inscription.objects.create(
+                etudiant=etudiant,
+                salleClasse=salleDeClasse,
+                anneeAcademique=anneeAcademique
+            )
+            messages.success(request, f"Inscription de {etudiant.nom} en {salleDeClasse.nom} effectuée avec succès.")
+            if not cout_entry:
+                messages.warning(request, f"Aucun coût défini pour cette classe cette année.")
 
-        # Création de l'inscription même si le coût n'existe pas
-        Inscription.objects.create(
-            etudiant=etudiant,
-            salleClasse=salleDeClasse,
-            # montantVerse=montantVerse,
-            anneeAcademique=anneeAcademique
-        )
-
-        messages.success(request, f"Inscription de {etudiant} en {salleDeClasse} effectuée avec succès.")
-        return redirect("secretaire:all_inscription")
+            return redirect("secretaire:all_inscription")
+        else:
+            messages.warning(request, f"Cette salle de classe est pleine. Voullez-vous ")
+           
+            # return redirect("secretaire:add_inscription")
     
+            
     context = {
         'etudiants': Etudiant.objects.all(),
         'salles': SalleDeClasse.objects.select_related("niveau").all(),
         'anneeScolaires': AnneeScolaire.objects.all(),
-        'couts': Cout.objects.select_related("classe", "anneeScolaire").all(),  # pour JS si besoin
+        'couts': Cout.objects.select_related("classe", "anneeScolaire").all(), 
+        "salle": salleDeClasse,
+        "etudiant": etudiant,
+        "anneeAcademique": anneeAcademique,
     }
     return render(request, 'add-inscription.html', context)
 

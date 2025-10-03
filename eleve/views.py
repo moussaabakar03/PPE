@@ -165,10 +165,27 @@ def inscriptionPayement(request):
 @login_required
 @eleve_required
 def messagesEleves(request):
-    etudiants = Etudiant.objects.exclude(username = request.user)
-    etudiant = get_object_or_404(Etudiant, username = request.user)
-    contains = {"etudiants": etudiants, "etudiant": etudiant}
-    return render(request, 'eleve/messages.html', contains)
+    etudiants = Etudiant.objects.exclude(username=request.user)
+    etudiant = get_object_or_404(Etudiant, username=request.user)
+
+    # dictionnaire {id_etudiant: dernier_message}
+    derniers_messages = {}
+
+    for etudt in etudiants:
+        dernier = Messages.objects.filter(
+            Q(expediteur=etudiant, destinataire=etudt) |
+            Q(expediteur=etudt, destinataire=etudiant)
+        ).order_by("-date_envoi").first()
+
+        derniers_messages[etudt.id] = dernier
+
+    context = {
+        "etudiants": etudiants, 
+        "etudiant": etudiant,
+        "derniers_messages": derniers_messages
+    }
+    return render(request, 'eleve/messages.html', context)
+
 
 @login_required
 @eleve_required
@@ -227,6 +244,7 @@ def echangeMessageEleves(request, id):
     
     # Marquer les messages comme lus quand la page est chargée
     Messages.objects.filter(expediteur=etudiant, destinataire=eleve, est_lu=False).update(est_lu=True)
+    
     
     contains = {
         'etudiant': etudiant, 

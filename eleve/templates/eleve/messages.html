@@ -1,4 +1,6 @@
-{% load static%}
+{% load dict_extras %}
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -37,6 +39,19 @@
                                                 <span class="message-status status-unread"></span>
                                                 {{ etudt.nom }} {{ etudt.prenom }}
                                                 {% comment %} <span class="message-counter">3</span> {% endcomment %}
+                                                 <!-- Dernier message -->
+                                                <div class="last-message text-muted small mt-1 d-flex justify-content-between">
+                                                    {% with msg=derniers_messages|get_item:etudt.id %}
+                                                        {% if msg %}
+                                                            <span class="message-text">{{ msg.contenu|truncatechars:15 }}</span>
+                                                            <span class="message-date small text-muted ms-2">
+                                                                {{ msg.date_envoi|date:"d/m H:i" }}
+                                                            </span>
+                                                        {% else %}
+                                                            <em>Aucun message échangé</em>
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                </div>
                                             </div>
                                             <a href = "{% url 'eleve:echangeEleveEleve' etudt.id %}">
                                                 <div class="message-icon"  style = "cursor: pointer;" title = "message">

@@ -10,6 +10,7 @@
     <title>AcadPro | Elèves par salle de classe</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'accueil/css/cssPersonnalise/receptionDepotDossier.css' %}">
     
     {% include 'partial/head.html' %}
 </head>
@@ -38,11 +39,12 @@
                     <h3>Elèves</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'secretaire:all-salle' %}">Elèves par salles de classe</a>
+                            <a href="{% url 'secretaire:all-salle' %}">Salles de classe *</a>
                         </li>
                         <li>{{salle.niveau.classe}} {{salle.nom}}</li>
                         <li>
-                            <a href=""><i class="fa fa-print" style = "color: #ffaa01;"></i> Imprimer </a>
+                            {% comment %} <a href=""><i class="fa fa-print" style = "color: #ffaa01;"></i> Imprimer </a> {% endcomment %}
+                            <a href=""><i class="fa fa-print" style = "color: #ffaa01;"></i></a>
                         </li>
                         <li>
                             <a href="{% url 'secretaire:listePresence' salle.id annee.id %}"><i class="fa fa-user-check" style = "color: #ffaa01;"></i> Créer une liste d'appel de présence </a>
@@ -50,9 +52,15 @@
                         <li>
                             <a href="{% url 'secretaire:emploiDuTemps' salle.id annee.id %}"><i class="fa-solid fa-calendar-days" aria-label="Emploi du temps" style = "color: #ffaa01; padding-left: -10px;"></i><span style = "padding-left: 5px;"></span>Emploi du Temps</a>
                         </li>
-                        {% comment %} <li>
+                        <li>
                             <a href="{% url 'secretaire:bulletinsSalleDeClasse'%}"><i class="fa-solid fa-clipboard-list" aria-label="Bulletin" style = "color: #ffaa01;"></i><span style = "padding-left: 5px;"></span>Bulletins</a>
-                        </li> {% endcomment %}
+                        </li>
+                        <li>
+                            <a href="{% url 'secretaire:messageCommunParent' salle.id annee.id %}"> <i class="fa-regular fa-envelope" style="color: #ffaa01;"></i>
+                                <span style="padding-left: 5px;"></span>Message
+                            </a>
+                        </li>
+
                     </ul>
                 </div>
                 <!-- Breadcubs Area End Here -->
@@ -95,6 +103,7 @@
                                 </div>
                             </div>
                         </form>
+                        
                         <div class="table-responsive">
                             <table class="table display data-table text-nowrap">
                                 <thead>
@@ -160,6 +169,45 @@
     <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
     <!-- Custom Js -->
     <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+
+    
+    <script>
+         // Fonction pour ouvrir la modal
+        function openModal(receptionId, nom, prenom, mail) {
+            document.getElementById('receptionId').value = receptionId;
+            document.getElementById('id_email').value = mail; // ← Preremplit le champ email
+            document.getElementById('modalOverlay').style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Empêche le scroll de la page
+            
+            document.querySelector('.modal-header-custom h4').textContent = `Répondre à ${nom} ${prenom}`;
+        }
+
+
+        // Fonction pour fermer la modal
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Réactive le scroll
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('responseForm').reset();
+        }
+
+        // Fermer la modal en cliquant sur l'overlay
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+
+        // Fermer avec la touche Échap
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+        
 
 </body>
 

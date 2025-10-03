@@ -32,6 +32,9 @@ urlpatterns = [
     path('modifier_student/<str:matricule>', views.modifier_student, name = 'modifier_student'),
     path('supprimer_student/<str:matricule>', views.supprimer_student, name = 'supprimer_student'),
     path('studentParSalle/<int:id>/<int:id2>', views.studentParSalle, name = 'studentParSalle'),
+    path('messageCommunParent/<int:id1>/<int:id2>', views.messageCommunParent, name = 'messageCommunParent'),
+    
+    
     
     path('listePresence/<int:id>/<int:id2>', views.listePresence, name = 'listePresence'),
     path('listePresencePasse/<int:id>/<int:id2>', views.listePresencePasse, name = 'listePresencePasse'),
@@ -75,6 +78,9 @@ urlpatterns = [
     path('ajoutEmploiTemps/<int:id1>/<int:id2>/<int:id3>', views.ajoutEmploiTemps, name='ajoutEmploiTemps'),
     path('supprimerEmploiTemps/<int:id1>/<int:id2>', views.supprimerEmploiTemps, name='supprimerEmploiTemps'),
     path('bulletinsSalleDeClasse/', views.bulletinsSalleDeClasse, name='bulletinsSalleDeClasse'),
+    path("etendre-salle/<int:idEleve>/<int:idSalleClasse>/<int:idAnnee>/", views.etendreSalleClasse, name="etendreSalleClasse"),
+
+    
     
     
 
