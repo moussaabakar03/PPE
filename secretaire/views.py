@@ -1296,6 +1296,7 @@ def ajoutInscription(request):
         cout_entry = Cout.objects.filter(classe=salleDeClasse.niveau, anneeScolaire=anneeAcademique).first()
         
         
+        # inscris = Inscription.objects.filter(salleClasse = salleDeClasse, anneeAcademique = anneeAcademique).count()
         inscris = Inscription.objects.filter(salleClasse = salleDeClasse, anneeAcademique = anneeAcademique).count()
   
         if inscris < salleDeClasse.capacite:
