@@ -60,6 +60,9 @@
                         <li>
                             <a href="{% url 'secretaire:index' %}">Tableau Bord</a>
                         </li>
+                        <li>
+                            <a href="{% url 'secretaire:studentParSalle' salle.id anneeScolaire.id %}">Retour</a>
+                        </li>
                         <li>Message</li>
                     </ul>
                 </div>
@@ -75,39 +78,25 @@
                         <form class="new-added-form" method="POST">
                             {% csrf_token %}
                             <div class="row">
-                                
-                                <!-- Modal de réponse -->
-                                <div id="modalOverlay" class="modal-overlay">
-                                    <div class="modal-content-custom">
-                                       
-                                        <form id="responseForm" method="post">
-                                            {% csrf_token %}
-                                            <input type="hidden" id="receptionId" name="reception_id" value="">
-                                            
-                                            {% comment %} <div class="form-group">
-                                                <label for="id_email">{{ form.email.label }}</label>
-                                                {{ form.email }}
-                                            </div> {% endcomment %}
-                                            
-                                            <div class="form-group">
-                                                <label for="id_sujet">{{ form.sujet.label }}</label>
-                                                {{ form.sujet }}
-                                            </div>
-                                            
-                                            <div class="form-group">
-                                                <label for="id_message">{{ form.message.label }}</label>
-                                                {{ form.message }}
-                                            </div>
-                                            
-                                            <div class="col-12 form-group mg-t-8">
-                                                <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Envoyer</button>
-                                            </div>
-                                        </form>
-                                    </div>
+                                <input type="hidden" id="receptionId" name="reception_id" value="">
+                            
+                                {% comment %} <div class="form-group">
+                                    <label for="id_email">{{ form.email.label }}</label>
+                                    {{ form.email }}
+                                </div> {% endcomment %}
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label for="id_sujet">{{ form.sujet.label }}</label>
+                                    {{ form.sujet }}
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label for="id_message">{{ form.message.label }}</label>
+                                    {{ form.message }}
+                                </div>
+                                <div class="col-12 form-group mg-t-8">
+                                    <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Envoyer</button>
                                 </div>
                             </div>
                         </form>
-                        
                     </div>
                 </div>
                 <!-- Add New Teacher Area End Here -->

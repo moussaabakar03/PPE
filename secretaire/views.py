@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 
 from comptable.models import PaiementEleve
 from secretaire.forms import ContactForm, FormMessageCommun
-from . models import AnneeScolaire, Classe, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, cvEnseignant, depotDossierEtudiant
+from . models import AnneeScolaire, Classe, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, Utilisateur, cvEnseignant, depotDossierEtudiant
 from django.utils.timezone import localtime
 from django.db.models import Q
 
@@ -246,7 +246,19 @@ def admit_form(request):
             return render(request, "admit-form.html", {"salles": salles, "parentss": parentss})
 
         try:
+            
+            utilisateur = Utilisateur.objects.create(
+                username=matricule,
+                password=make_password(telephone),
+                email=mail,
+                first_name=prenom,
+                last_name=nom,
+                role="eleve",
+                is_active=True,
+            )
+            
             Etudiant.objects.create(
+                utilisateur = utilisateur,
                 nom=nom,
                 prenom=prenom,
                 parent=parent_id,
@@ -258,9 +270,7 @@ def admit_form(request):
                 telephone=telephone,
                 nationnalite=nationnalite,
                 photo=photo,
-                password=make_password(telephone),
-                username=matricule,
-                lien_de_parente=lien_de_parente
+                lien_de_parente=lien_de_parente,
             )
             messages.success(request, f"Étudiant {prenom} {nom} créé avec succès. Matricule: {matricule}")
             return redirect("secretaire:all-student")
@@ -269,6 +279,7 @@ def admit_form(request):
             return render(request, "admit-form.html", {"salles": salles, "parentss": parentss})
 
     return render(request, "admit-form.html", {"salles": salles, "parentss": parentss})
+
 
 @login_required 
 @admin_required
@@ -501,7 +512,16 @@ def add_teacher(request):
             matricule = generate_matricule(nom)
 
         try:
-            Enseignant.objects.create( matricule = matricule, nom = nom, prenom = prenom, profession = profession, tel = phone, 
+            utilisateur = Utilisateur.objects.create(
+                username=email,
+                password=make_password(phone),
+                email=email,
+                first_name=prenom,
+                last_name=nom,
+                role="enseignant",
+                is_active=True,
+            )
+            Enseignant.objects.create(utilisateur = utilisateur, matricule = matricule, nom = nom, prenom = prenom, profession = profession, tel = phone, 
                                     diplome = diplome,  photo = photo , date_naissance = date_naissance, sexe = sexe, mail = email,
                                     lieuDeNaissance= lieuDeNaissance, salaire = salaire, typeDeContrat = typeDeContrat, 
                                     date_debut_contrat = date_debut_contrat, date_fin_contrat = date_fin_contrat)
@@ -641,7 +661,18 @@ def ajout_parents(request):
         photo = request.FILES.get("photo")
         
         try:
+            utilisateur = Utilisateur.objects.create(
+                username=email,
+                password=make_password(telephone),
+                email=email,
+                first_name=prenom,
+                last_name=nom,
+                role="parent",
+                is_active=True,
+            )
+            
             Parent.objects.create(
+                utilisateur = utilisateur,
                 nom=nom,
                 prenom=prenom,
                 genre=genre,
@@ -826,17 +857,44 @@ def modifierSalle(request, nom):
     salle = SalleDeClasse.objects.get(nom=nom)
 
     if request.method == "POST":
+        # --- Récupération des champs du formulaire ---
         salle.nom = request.POST["nom"]
-        salle.capacite = int(request.POST["capacite"])
         niveau_id = request.POST["niveau"]
         salle.emplacement = request.POST.get("emplacement", "")
-        salle.niveau = Classe.objects.get(pk=int(niveau_id))
+        niveau = Classe.objects.get(pk=int(niveau_id))
+        salle.niveau = niveau
+
+        nouvelle_capacite = int(request.POST["capacite"])
+        annees = AnneeScolaire.objects.all()
+
+        # --- Vérification de la capacité pour chaque année ---
+        for annee in annees:
+            nb_inscrits = Inscription.objects.filter(
+                salleClasse=salle,
+                anneeAcademique=annee
+            ).count()
+
+            if nb_inscrits > nouvelle_capacite:
+                messages.error(
+                    request,
+                    f"Impossible de fixer la capacité à {nouvelle_capacite}. "
+                    f"Pour l’année {annee}, il y a déjà {nb_inscrits} élèves inscrits."
+                )
+                return redirect("secretaire:modifierSalle", nom=salle.nom)
+
+        # --- Si tout est valide, on sauvegarde ---
+        salle.capacite = nouvelle_capacite
         salle.save()
+
         messages.success(request, f"Salle '{salle.nom}' modifiée avec succès.")
         return redirect('secretaire:all-salle')
-    
-    messages.info(request, f"Formulaire de modification de la salle '{salle.nom}' affiché.")
-    return render(request, 'modifier_Salle.html', {"salle": salle, "niveaux": Classe.objects.all()})
+
+    # --- Si GET, on affiche le formulaire ---
+    return render(request, 'modifier_Salle.html', {
+        "salle": salle,
+        "niveaux": Classe.objects.all()
+    })
+
 
 @login_required 
 @admin_required
@@ -889,6 +947,8 @@ def studentParSalle(request, id, id2):
         return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'annee': anneeScolaire, 'form': form, 'message_envoye': message_envoye})
     
     else:
+        
+        # nom = request.GET.get("nom", "")
         inscrits = Inscription.objects.filter(salleClasse=salle, anneeAcademique=anneeScolaire)
         nombre = inscrits.count()
         messages.info(request, f"Liste des étudiants de la salle '{salle.nom}' consultée.")

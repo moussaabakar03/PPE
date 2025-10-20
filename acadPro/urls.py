@@ -53,6 +53,12 @@ urlpatterns = [
     path('prixDeClasse/', views.prixDeClasse, name="prixDeClasse"),
     
     path('sendMail/', views.contact_view, name='sendMail'),
+    
+    
+    
+    
+    path('parent/', views.parent, name='parent'),
+    path('enseignant/', views.enseignant, name='enseignant'),
 
 ]
 

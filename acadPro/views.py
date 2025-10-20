@@ -9,7 +9,8 @@ from django.urls import reverse
 from django.contrib import messages
 
 from acadPro.forms import ConnexionForm
-from secretaire.models import AnneeScolaire, Classe, Cout, Enseignant, Etudiant, depotDossierEtudiant
+from secretaire.models import AnneeScolaire, Classe, Cout, Enseignant, Etudiant, Parent, depotDossierEtudiant
+from acadPro.utils.decorators import parent_required, enseignant_required
 
 
 
@@ -133,8 +134,18 @@ def connexion(request):
             elif utilisateur.is_staff:
                 messages.success(request, f"Bienvenue {utilisateur}")
                 return redirect(reverse('comptable:indexComptable'))
-            else: 
-                messages.success(request, f"Bienvenue {utilisateur.username}")
+            elif utilisateur.role == "parent":
+                parent = Parent.objects.get(utilisateur = utilisateur)
+                messages.success(request, f"Bienvenue {parent.nom} {parent.prenom}")
+                return redirect("parent")
+            elif utilisateur.role == "enseignant":
+                enseignant = Enseignant.objects.get(utilisateur = utilisateur)
+                messages.success(request, f"Bienvenue {enseignant.nom} {enseignant.prenom}")
+                return redirect("enseignant")
+            elif utilisateur.role == "eleve":
+                eleve = Etudiant.objects.get(utilisateur = utilisateur)
+                
+                messages.success(request, f"Bienvenue {eleve.nom} {eleve.prenom}")
                 return redirect('eleve:notes')
         else:
             messages.error(request, "identifiant ou mot de passe incorrect")
@@ -193,8 +204,15 @@ def prixDeClasse(request):
     return render(request, 'accueil/prixDeClasse.html', contains)
 
 
+@login_required
+@parent_required 
+def parent(request):
+    return render(request, "parent.html")
 
 
 
-
+@login_required
+@enseignant_required 
+def enseignant(request):
+    return render(request, "enseignant.html")
 

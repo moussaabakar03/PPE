@@ -103,7 +103,7 @@ WSGI_APPLICATION = 'acadPro.wsgi.application'
 DATABASES = {
     'default':{
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "basededonnee",
+        'NAME': "basededonnee2",
         'USER': 'postgres',
         'PASSWORD': 'Moussa68444436@',
         'HOST': 'localhost',

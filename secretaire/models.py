@@ -29,9 +29,40 @@ class SalleDeClasse(models.Model):
     emplacement = models.CharField(max_length=100, null=True, blank=True)
     def __str__(self):
         return f"{self.niveau}- {self.nom}- {self.capacite}"
+
+    
+class Utilisateur(AbstractUser):
+    ROLE_CHOICES = [
+        ('parent', 'Parent'),
+        ('eleve', 'Eleve'),
+        ('enseignant', 'Enseignant'),
+        ('admin', 'Administrateur'),
+        ('secretaire', 'Secretaire'),
+        ('comptable', 'Comptable'),
+    ]
+    
+    groups = models.ManyToManyField( 
+        Group, 
+        related_name='utilisateur_groups', 
+        blank=True, 
+        help_text='The groups this user belongs to.', 
+        verbose_name='groups' ) 
+    user_permissions = models.ManyToManyField( 
+        Permission, 
+        related_name='utilisateur_user_permissions', 
+        blank=True, 
+        help_text='Specific permissions for this user.', 
+        verbose_name='user permissions' )
     
     
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+
+    def __str__(self):
+        return f"{self.username} ({self.role})"
+        
+        
 class Parent(models.Model):
+    utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE, null=True, blank=True, related_name="parent")
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
     genre = models.CharField(max_length=10, choices=[('M', 'Masculin'), ('F', 'Féminin')])
@@ -44,27 +75,9 @@ class Parent(models.Model):
     def __str__(self):
         return f"{self.prenom} {self.nom}"  
     
-class Utilisateur(AbstractUser):
-    groups = models.ManyToManyField(
-        Group,
-        related_name='utilisateur_groups',
-        blank=True,
-        help_text='The groups this user belongs to.',
-        verbose_name='groups'
-    )
-
-    user_permissions = models.ManyToManyField(
-        Permission,
-        related_name='utilisateur_user_permissions',
-        blank=True,
-        help_text='Specific permissions for this user.',
-        verbose_name='user permissions'
-    )
-        
-        
-class Etudiant(Utilisateur):
+class Etudiant(models.Model):
+    utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE, related_name="eleve", null=True, blank=True)
     parent = models.ForeignKey(Parent, on_delete=models.CASCADE, null=True, blank=True, related_name= 'etudiant')
-    # salleDeClasse_id = models.ForeignKey(SalleDeClasse, on_delete=models.CASCADE, null=True, blank=True)
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
     matricule = models.CharField(max_length=50, unique=True, null=True, blank=True)
@@ -96,13 +109,14 @@ class Etudiant(Utilisateur):
     )
     
     def __str__(self):
-        return f"{self.username}"
+        return f"{self.matricule}"
     
     def detailEtudiant(self):
         return reverse("detailEtudiant", kwargs={"matricule": self.matricule, "id": self.parent.id})
     
 
 class Enseignant(models.Model):
+    utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE, null=True, blank=True, related_name="enseignant")
     matricule = models.CharField(max_length=50, unique=True)
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
@@ -262,3 +276,7 @@ class EmploiDuTemps(models.Model):
     
     def __str__(self):
         return f"{self.cours} - {self.jour} à {self.heure}"
+    
+    
+    
+    

@@ -7,7 +7,7 @@ from secretaire.models import Etudiant, Inscription
 
 
 class PaiementEleve(models.Model):
-    inscription_Etudiant = models.ForeignKey(Inscription, on_delete=models.CASCADE, related_name='paiements')
+    inscription_Etudiant = models.ForeignKey(Inscription, on_delete=models.CASCADE, related_name='paiements', null = True, blank=  True)
     montantVerse = models.DecimalField(max_digits=10, decimal_places=2)
     datePaiement = models.DateField(editable=False, auto_now_add=True)
     typePaiement = models.CharField(max_length=150)

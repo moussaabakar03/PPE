@@ -120,10 +120,10 @@ def accueilEtudiant(request):
 @login_required
 @eleve_required
 def presence(request):
-    if Etudiant.objects.filter(username = request.user).exists():
-        etudiant = Etudiant.objects.get(username = request.user)
-    else:
-        messages.error(request, "Veillez vous authentifier")
+    try:
+        etudiant = Etudiant.objects.get(utilisateur__username=request.user.username)
+    except Etudiant.DoesNotExist:
+        messages.error(request, "Les identifiants sont incorrects !")
         return redirect('connexion')
     inscrits = Inscription.objects.filter(etudiant =etudiant)
     # parent = Etudiant.objects.get(parent = etudiant.parent)
@@ -134,28 +134,33 @@ def presence(request):
 @login_required
 @eleve_required
 def notes(request):
-    if Etudiant.objects.filter(username = request.user).exists():
-        etudiant = Etudiant.objects.get(username = request.user)
-    else:
-        messages.error(request, "Les identifiants sont incorrect!")
+    try:
+        etudiant = Etudiant.objects.get(utilisateur__username=request.user.username)
+    except Etudiant.DoesNotExist:
+        messages.error(request, "Les identifiants sont incorrects !")
         return redirect('connexion')
 
-    # inscriptions = etudiant.inscriptions.all()
+    evaluations = None
+
     if request.method == "POST":
-        annee = request.POST['annee']
+        annee = request.POST.get('annee')
         if annee:
             anneeScolaire = AnneeScolaire.objects.get(pk=int(annee))
-            if etudiant:
-                evaluations = Evaluation.objects.filter(cours__anneeScolaire = anneeScolaire, etudiant = etudiant)
-                return render(request, 'eleve/notes.html', {'evaluations': evaluations, 'etudiant': etudiant, 'annees': AnneeScolaire.objects.all().order_by('-id')})
-            else:
-                return HttpResponse("Aucun étudiant trouvé")
-        else:
-            evaluations = None
-    else:
-        evaluations = None
-    
-    return render(request, 'eleve/notes.html', {'evaluations': evaluations, 'etudiant': etudiant, 'annees': AnneeScolaire.objects.all().order_by('-id')})
+            evaluations = Evaluation.objects.filter(
+                cours__anneeScolaire=anneeScolaire,
+                etudiant=etudiant
+            )
+
+    return render(
+        request,
+        'eleve/notes.html',
+        {
+            'evaluations': evaluations,
+            'etudiant': etudiant,
+            'annees': AnneeScolaire.objects.all().order_by('-id')
+        }
+    )
+
 
 @login_required
 @eleve_required
@@ -165,9 +170,13 @@ def inscriptionPayement(request):
 @login_required
 @eleve_required
 def messagesEleves(request):
-    etudiants = Etudiant.objects.exclude(username=request.user)
-    etudiant = get_object_or_404(Etudiant, username=request.user)
-
+    try:
+        etudiants = Etudiant.objects.exclude(utilisateur__username=request.user.username)
+        
+        etudiant = Etudiant.objects.get(utilisateur__username=request.user.username)
+    except Etudiant.DoesNotExist:
+        messages.error(request, "Les identifiants sont incorrects !")
+        return redirect('connexion')
     # dictionnaire {id_etudiant: dernier_message}
     derniers_messages = {}
 
@@ -190,75 +199,27 @@ def messagesEleves(request):
 @login_required
 @eleve_required
 def emploiDuTempsEtudiant(request):
-    eleve = Etudiant.objects.get(username = request.user)
+    try:
+        eleve = Etudiant.objects.get(utilisateur__username=request.user.username)
+    except Etudiant.DoesNotExist:
+        messages.error(request, "Les identifiants sont incorrects !")
+        return redirect('connexion')
+    
     inscrits = eleve.inscriptions.all()
     containts = {"inscrits": inscrits, "etudiant": eleve}
     return render(request, "eleve/emploi_temps_etudiant.html", containts)
 
     
 
-
-
-#s'intégrer avec AJAX
-@login_required
-@eleve_required
-def echangeMessageEleves(request, id):
-    eleve = Etudiant.objects.get(username = request.user)
-    etudiant = Etudiant.objects.get(id=id)
-    
-    etudiants = Etudiant.objects.exclude(username = request.user)
-    
-    if request.method == "POST" and not request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        print(request.POST)  # Pour debug
-        contenu_message = request.POST['message']
-        if contenu_message != '':
-            message = Messages.objects.create(contenu=contenu_message, expediteur=eleve, destinataire=etudiant, est_lu=False)
-            message.save()
-        else:
-            messages = Messages.objects.filter(expediteur=eleve, destinataire=etudiant)
-            for message in messages:
-                message.est_lu = True
-                message.save()
-                return redirect('echangeMessageEleves', id=id)
-            return redirect('echangeMessageEleves', id=id)
-        
-        return redirect('echangeMessageEleves', id=id)
-    
-    #   if request.method == "POST":
-    #     contenu_message = request.POST.get('message') or json.loads(request.body).get('message')
-    #     if contenu_message:
-    #         message = Messages.objects.create(contenu=contenu_message, expediteur=eleve, destinataire=etudiant, est_lu=False)
-    #         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-    #             return JsonResponse({
-    #                 'success': True,
-    #                 'message_id': message.id,
-    #                 'date_envoi': message.date_envoi.strftime('%H:%M:%S'),
-    #             })
-    #         else:
-    #             return redirect('echangeMessageEleves', id=id)
-    # # Récupérer tous les messages entre ces deux utilisateurs
-    tous_messages = Messages.objects.filter(
-        (Q(expediteur=eleve) & Q(destinataire=etudiant)) | 
-        (Q(expediteur=etudiant) & Q(destinataire=eleve))
-    ).order_by('date_envoi')
-    
-    # Marquer les messages comme lus quand la page est chargée
-    Messages.objects.filter(expediteur=etudiant, destinataire=eleve, est_lu=False).update(est_lu=True)
-    
-    
-    contains = {
-        'etudiant': etudiant, 
-        'eleve': eleve, 
-        'tous_messages': tous_messages,
-        "etudiants": etudiants,
-    }
-    return render(request, 'eleve/echangeMessageEleves.html', contains)
-
-
 @login_required
 @eleve_required
 def affichageEmploiTemps(request, id1, id2):
-    eleve = Etudiant.objects.get(username = request.user)
+    try:
+        eleve = Etudiant.objects.get(utilisateur__username=request.user.username)
+    except Etudiant.DoesNotExist:
+        messages.error(request, "Les identifiants sont incorrects !")
+        return redirect('connexion')
+    
     salle = SalleDeClasse.objects.get(id=id1)
     annee = AnneeScolaire.objects.get(id=id2)
     jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
@@ -302,7 +263,12 @@ from django.http import JsonResponse
 @login_required
 @eleve_required
 def echangeEleveEleve(request, id):
-    eleve = Etudiant.objects.get(username=request.user)
+    try:
+        eleve = Etudiant.objects.get(utilisateur__username=request.user.username)
+    except Etudiant.DoesNotExist:
+        messages.error(request, "Les identifiants sont incorrects !")
+        return redirect('connexion')
+    
     etudiant = get_object_or_404(Etudiant, pk=id)
 
     if request.method == "POST" and request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -329,7 +295,7 @@ def echangeEleveEleve(request, id):
         Q(expediteur=etudiant, destinataire=eleve)
     ).order_by('date_envoi')
 
-    etudiants = Etudiant.objects.exclude(username=request.user)
+    etudiants = Etudiant.objects.exclude(utilisateur__username=request.user.username)
 
     return render(request, 'eleve/echangeEleveEleve.html', {
         'etudiant': etudiant,
@@ -356,7 +322,13 @@ from collections import defaultdict
 @login_required
 @eleve_required
 def mesPaiement(request):
-    eleve = get_object_or_404(Etudiant, username=request.user)
+    
+    try:
+        eleve = Etudiant.objects.get(utilisateur__username=request.user.username)
+    except Etudiant.DoesNotExist:
+        messages.error(request, "Les identifiants sont incorrects !")
+        return redirect('connexion')
+    
     inscriptions = eleve.inscriptions.all()
     paiements = PaiementEleve.objects.filter(inscription_Etudiant__in=inscriptions)
     
@@ -414,8 +386,13 @@ def mesPaiement(request):
 @login_required
 @eleve_required
 def profil(request):
-    eleve = get_object_or_404(Etudiant, username=request.user)
-    context = {'etudiant': eleve}
+    try:
+        etudiant = Etudiant.objects.get(utilisateur__username=request.user.username)
+    except Etudiant.DoesNotExist:
+        messages.error(request, "Les identifiants sont incorrects !")
+        return redirect('connexion')
+    context = {'etudiant': etudiant}
+    
     return render(request, 'eleve/profil.html', context)
 
 

@@ -20,7 +20,25 @@ def staff_required(view_func):
 
 def eleve_required(view_func):
     def wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated and not request.user.is_staff and not request.user.is_superuser:
+        if request.user.is_authenticated and request.user.role == "eleve":
+            return view_func(request, *args, **kwargs)
+        messages.error(request, ' Vous n\'avez pas les droits pour accéder à cette page')
+        return redirect('connexion') 
+    return wrapper
+
+
+def parent_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.role == "parent":
+            return view_func(request, *args, **kwargs)
+        messages.error(request, ' Vous n\'avez pas les droits pour accéder à cette page')
+        return redirect('connexion') 
+    return wrapper
+
+
+def enseignant_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.role == "enseignant":
             return view_func(request, *args, **kwargs)
         messages.error(request, ' Vous n\'avez pas les droits pour accéder à cette page')
         return redirect('connexion') 
