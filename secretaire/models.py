@@ -59,7 +59,13 @@ class Utilisateur(AbstractUser):
 
     def __str__(self):
         return f"{self.username} ({self.role})"
-        
+
+class Comptable(models.Model):
+    utilisateur = models.OneToOneField(Utilisateur, on_delete= models.CASCADE, null = True, blank= True, related_name= "comptable")
+    email = models.EmailField(max_length=165)
+    telephone = models.CharField(max_length=65)    
+    date_ajout = models.DateTimeField(auto_now_add = True)
+    date_modification = models.DateTimeField(auto_now= True)        
         
 class Parent(models.Model):
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE, null=True, blank=True, related_name="parent")
@@ -136,6 +142,7 @@ class Enseignant(models.Model):
     
     def __str__(self):
         return f"{self.nom} {self.prenom}"
+
 
 class cvEnseignant(models.Model):
     cv = models.FileField(upload_to='cvEnseignant')

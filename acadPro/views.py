@@ -1,5 +1,5 @@
 
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 
@@ -119,15 +119,16 @@ def contact_view(request):
 
     return render(request, 'accueil/sendMail.html', {'form': form, 'message_envoye': message_envoye})
 
+
+
 def connexion(request):
     if request.method == "POST":
-        form = ConnexionForm(request.POST)
-        # matricule = request.POST['matricule']
-        # nom = request.POST['password']
-        
+        form = ConnexionForm(request.POST, request=request)  # ✅ on passe request ici
+
         if form.is_valid():
             utilisateur = form.get_user()
             login(request, utilisateur)
+
             if utilisateur.is_superuser:
                 messages.success(request, f"Bienvenue {utilisateur}")
                 return redirect(reverse('secretaire:index'))
@@ -135,34 +136,26 @@ def connexion(request):
                 messages.success(request, f"Bienvenue {utilisateur}")
                 return redirect(reverse('comptable:indexComptable'))
             elif utilisateur.role == "parent":
-                parent = Parent.objects.get(utilisateur = utilisateur)
+                parent = get_object_or_404(Parent, utilisateur=utilisateur)
                 messages.success(request, f"Bienvenue {parent.nom} {parent.prenom}")
                 return redirect("parent")
             elif utilisateur.role == "enseignant":
-                enseignant = Enseignant.objects.get(utilisateur = utilisateur)
+                enseignant = Enseignant.objects.get(utilisateur=utilisateur)
                 messages.success(request, f"Bienvenue {enseignant.nom} {enseignant.prenom}")
                 return redirect("enseignant")
             elif utilisateur.role == "eleve":
-                eleve = Etudiant.objects.get(utilisateur = utilisateur)
-                
+                eleve = Etudiant.objects.get(utilisateur=utilisateur)
                 messages.success(request, f"Bienvenue {eleve.nom} {eleve.prenom}")
                 return redirect('eleve:notes')
         else:
-            messages.error(request, "identifiant ou mot de passe incorrect")
-            
-            
+            messages.error(request, "Identifiant ou mot de passe incorrect")
+
     else:
         form = ConnexionForm()
+    
     return render(request, 'connexion.html', {"form": form})
-        
-    #     try:
-    #         eleve = Etudiant.objects.get(matricule=matricule, nom=nom)
-    #         # request.session['matricule'] = eleve.matricule  
-    #         return redirect('eleve:notes', matricule=eleve.matricule)
-    #     except Etudiant.DoesNotExist:
-    #         # Gérer l'erreur si l'étudiant n'existe pas
-    #         return render(request, 'accueil/connexion.html', {'erreur': "Identifiants incorrects"})
-    # return render(request, 'accueil/connexion.html')
+
+
 
 def deconnexion(request):
     logout(request)
@@ -207,7 +200,14 @@ def prixDeClasse(request):
 @login_required
 @parent_required 
 def parent(request):
-    return render(request, "parent.html")
+    
+    # parent = get_object_or_404(Parent, utilisateur = request.user)
+    # enfants = parent.etudiant.all()
+    
+    parent = Parent.objects.get(utilisateur=request.user)
+    enfants = parent.etudiant.all()
+    
+    return render(request, "parent.html", {"parent": parent, "enfants": enfants})
 
 
 

@@ -34,6 +34,8 @@ urlpatterns = [
     path('studentParSalle/<int:id>/<int:id2>/', views.studentParSalle, name = 'studentParSalle'),
     path('messageCommunParent/<int:id1>/<int:id2>/', views.messageCommunParent, name = 'messageCommunParent'),
     
+    path('export-excel/<int:salle_id>/<int:annee_id>/', views.export_excel, name='export_excel'),
+    path('export-pdf/<int:salle_id>/<int:annee_id>/', views.export_pdf, name='export_pdf'),
     
     
     path('listePresence/<int:id>/<int:id2>/', views.listePresence, name = 'listePresence'),
@@ -153,5 +155,8 @@ urlpatterns = [
     # path('api/messages/<int:id>/<str:matricule>/', views.get_new_messages, name='get_new_messages'),
     # path('api/messages/<int:id>/<str:matricule>/read/', views.mark_messages_as_read, name='mark_messages_as_read'),
     # path('api/messages/<int:id>/<str:matricule>/send/', views.send_message, name='send_message'),
+    
+    path('ajoutComptable/', views.ajoutComptable, name='ajoutComptable'),
+    
 ]
 

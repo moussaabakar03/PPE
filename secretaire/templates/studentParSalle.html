@@ -1,6 +1,4 @@
 {% load static %}
-
-
 <!doctype html>
 <html class="no-js" lang="">
 
@@ -39,15 +37,11 @@
                     <h3>Elèves</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'secretaire:all-salle' %}">Salles de classe *</a>
+                            <a href="{% url 'secretaire:all-salle' %}">Salles *</a>
                         </li>
                         <li>{{salle.niveau.classe}} {{salle.nom}}</li>
                         <li>
-                            {% comment %} <a href=""><i class="fa fa-print" style = "color: #ffaa01;"></i> Imprimer </a> {% endcomment %}
-                            <a href=""><i class="fa fa-print" style = "color: #ffaa01;"></i></a>
-                        </li>
-                        <li>
-                            <a href="{% url 'secretaire:listePresence' salle.id annee.id %}"><i class="fa fa-user-check" style = "color: #ffaa01;"></i> Créer une liste d'appel de présence </a>
+                            <a href="{% url 'secretaire:listePresence' salle.id annee.id %}"><i class="fa fa-user-check" style = "color: #ffaa01;"></i> Créer liste de présence </a>
                         </li>
                         <li>
                             <a href="{% url 'secretaire:emploiDuTemps' salle.id annee.id %}"><i class="fa-solid fa-calendar-days" aria-label="Emploi du temps" style = "color: #ffaa01; padding-left: -10px;"></i><span style = "padding-left: 5px;"></span>Emploi du Temps</a>
@@ -55,11 +49,29 @@
                         <li>
                             <a href="{% url 'secretaire:bulletinsSalleDeClasse'%}"><i class="fa-solid fa-clipboard-list" aria-label="Bulletin" style = "color: #ffaa01;"></i><span style = "padding-left: 5px;"></span>Bulletins</a>
                         </li>
+                    
                         <li>
                             <a href="{% url 'secretaire:messageCommunParent' salle.id annee.id %}"> <i class="fa-regular fa-envelope" style="color: #ffaa01;"></i>
-                                <span style="padding-left: 5px;"></span>Message
+                                <span style="padding-left: 5px;"></span>Message aux parents
                             </a>
                         </li>
+                        <li>
+                            <div class="dropdown">
+                                <i class="fa fa-download"></i>
+                                <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                                    aria-expanded="false">Exporter</a>
+
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="{% url 'secretaire:export_excel' salle.id annee.id %}">
+                                        <i class="fas fa-file-excel" style="color: green;"></i> Exporter en Excel
+                                    </a>
+                                    <a class="dropdown-item" href="{% url 'secretaire:export_pdf' salle.id annee.id %}">
+                                        <i class="fas fa-file-pdf" style="color: red;"></i> Exporter en PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+
 
                     </ul>
                 </div>
@@ -73,9 +85,13 @@
                                     <h6>Liste de tous les élèves inscrit dans la salle de classe: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{salle.niveau.classe}}  {{salle.nom}} >> </span></h6>
                                     <h6 style = "margin-left: 20px;">Année scolaire: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}}>> </span></h6>
                                 </div>
-                                <h6> <i class="fa fa-list"></i>  Total des élèves <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> <<{{nombre}}>> </span></h6>
+                                <h6> <i class="fa fa-list"></i>  
+                                    Total des élèves <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> <<{{nombre}}>> </span> 
+                                    (M <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> <<{{nombreMasculin}}>> </span>
+                                    F <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> <<{{nombreFeminin}}>> </span>)
+                                </h6>
                             </div>
-                            
+
                             <div class="dropdown">
                                 <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown"
                                     aria-expanded="false">...</a>

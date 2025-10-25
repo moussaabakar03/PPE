@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    'axes',
 ]
 
 MIDDLEWARE = [
@@ -61,6 +63,9 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    
+    'axes.middleware.AxesMiddleware',
+    
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -183,3 +188,34 @@ MEDIA_ROOT = BASE_DIR / 'media'
 #pythonanywhere.
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+
+
+
+
+# ##################### # 🔒 Sécurité - django-axes (Controller les nombres de tentative) ;   #################
+from datetime import timedelta
+
+# Nombre maximal d'essais avant blocage
+AXES_FAILURE_LIMIT = 3
+
+# Durée du blocage (ex. 3 minutes)
+AXES_COOLOFF_TIME = timedelta(minutes=1)
+
+# 🔒 On ne bloque QUE par nom d'utilisateur (pas par IP)
+AXES_LOCKOUT_PARAMETERS = ['username']
+
+# Ne pas compter les échecs d’admin
+AXES_ONLY_USER_FAILURES = True
+
+# Ne pas bloquer tout le monde à cause d’une IP commune
+AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = False
+
+# Active le backend Axes
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
+##################################

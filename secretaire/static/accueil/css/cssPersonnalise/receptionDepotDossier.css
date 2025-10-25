@@ -208,3 +208,61 @@
 }
 
 
+/* ################################################# */
+
+/* Style du bouton Exporter */
+.export-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.export-btn {
+    background: linear-gradient(90deg, #ffaa01, #ff8801);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: 600;
+}
+
+.export-btn:hover {
+    background: #ff8801;
+    transform: scale(1.05);
+}
+
+/* Style du menu déroulant */
+.export-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    min-width: 180px;
+    z-index: 10;
+    overflow: hidden;
+}
+
+.export-menu a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #333;
+    padding: 10px 14px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.export-menu a:hover {
+    background-color: #fff4e0;
+    color: #ff8801;
+}
+
+/* Affichage au clic */
+.export-dropdown:hover .export-menu {
+    display: block;
+}

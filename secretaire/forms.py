@@ -24,4 +24,7 @@ class FormMessageCommun(forms.Form):
 )
 
 
+class FormComptable(forms.Form):
+    email = forms.EmailField(label="Email", widget=forms.EmailInput(attrs={"class": "form-control"}))
+    telephone = forms.CharField(label="Téléphone", widget=forms.TextInput(attrs={"class": "form-control"}))
 

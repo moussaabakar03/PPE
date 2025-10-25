@@ -1,0 +1,18 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+<form class="new-added-form" method="POST">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-xl-4 col-lg-6 col-12 form-group">
+            <label for="id_sujet">{{ form.email.label }}</label>
+            {{ form.email }}
+        </div>
+        <div class="col-xl-4 col-lg-6 col-12 form-group">
+            <label for="id_message">{{ form.telephone.label }}</label>
+            {{ form.telephone }}
+        </div>
+        <div class="col-12 form-group mg-t-8">
+            <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Envoyer</button>
+        </div>
+    </div>
+</form>

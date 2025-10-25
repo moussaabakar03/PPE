@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    {% include 'partial/head.html' %}
 </head>
 <body>
     
 
-    {% include 'comptable/partial/nav.html' %}
-    {% include 'comptable/partial/aside.html' %}
+    {% comment %} {% include 'comptable/partial/nav.html' %}
+    {% include 'comptable/partial/aside.html' %} {% endcomment %}
+    {% block body %}{% endblock %}
 
 </body>
 </html>

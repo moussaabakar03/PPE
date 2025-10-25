@@ -5,8 +5,8 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
 
 from comptable.models import PaiementEleve
-from secretaire.forms import ContactForm, FormMessageCommun
-from . models import AnneeScolaire, Classe, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, Utilisateur, cvEnseignant, depotDossierEtudiant
+from secretaire.forms import ContactForm, FormComptable, FormMessageCommun
+from . models import AnneeScolaire, Classe, Comptable, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, Utilisateur, cvEnseignant, depotDossierEtudiant
 from django.utils.timezone import localtime
 from django.db.models import Q
 
@@ -922,6 +922,12 @@ def studentParSalle(request, id, id2):
         inscrits = inscrit.filter(etudiant__matricule__icontains=matricule, etudiant__nom__icontains=nom)
         nombre = inscrits.count()
         
+        # Compter le nombre de garçons
+        nombreMasculin = sum(1 for i in inscrits if i.etudiant.genre == "Masculin")
+
+        # Compter le nombre de filles
+        nombreFeminin = sum(1 for i in inscrits if i.etudiant.genre == "Feminin")
+        
         messages.info(request, f"Recherche d'étudiants dans la salle '{salle.nom}' effectuée.")
         
         
@@ -944,17 +950,101 @@ def studentParSalle(request, id, id2):
             messages.success(request, "Message envoyé avec succès!")
             message_envoye = True
             
-        return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'annee': anneeScolaire, 'form': form, 'message_envoye': message_envoye})
+        return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'nombreMasculin': nombreMasculin,'nombreFeminin': nombreFeminin, 'annee': anneeScolaire, 'form': form, 'message_envoye': message_envoye})
     
     else:
         
         # nom = request.GET.get("nom", "")
         inscrits = Inscription.objects.filter(salleClasse=salle, anneeAcademique=anneeScolaire)
         nombre = inscrits.count()
+        
+        # Compter le nombre de garçons
+        nombreMasculin = sum(1 for i in inscrits if i.etudiant.genre == "Masculin")
+
+        # Compter le nombre de filles
+        nombreFeminin = sum(1 for i in inscrits if i.etudiant.genre == "Feminin")
+      
+        
         messages.info(request, f"Liste des étudiants de la salle '{salle.nom}' consultée.")
         form = ContactForm()
         
-    return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'annee': anneeScolaire, 'form': form, 'message_envoye': message_envoye})
+    return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'nombreMasculin': nombreMasculin,'nombreFeminin': nombreFeminin, 'annee': anneeScolaire, 'form': form, 'message_envoye': message_envoye})
+
+
+import openpyxl
+
+def export_excel(request, salle_id, annee_id):
+    inscriptions = Inscription.objects.filter(salleClasse_id=salle_id, anneeAcademique_id=annee_id)
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Liste des élèves"
+
+    # En-têtes
+    ws.append(["Matricule", "Nom", "Prénom", "Genre", "Salle", "Email"])
+
+    # Données
+    for ins in inscriptions:
+        etu = ins.etudiant
+        ws.append([
+            etu.matricule,
+            etu.nom,
+            etu.prenom,
+            etu.genre,
+            f"{ins.salleClasse.niveau.classe} {ins.salleClasse.nom}",
+            etu.mail
+        ])
+
+    # Réponse HTTP
+    response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    filename = "Liste_eleves.xlsx"
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+    wb.save(response)
+    return response
+
+
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+
+def export_pdf(request, salle_id, annee_id):
+    inscriptions = Inscription.objects.filter(salleClasse_id=salle_id, anneeAcademique_id=annee_id)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="Liste_eleves.pdf"'
+
+    doc = SimpleDocTemplate(response, pagesize=A4)
+    elements = []
+    styles = getSampleStyleSheet()
+
+    elements.append(Paragraph("Liste des élèves", styles["Title"]))
+    elements.append(Spacer(1, 12))
+
+    data = [["Matricule", "Nom", "Prénom", "Genre", "Salle", "Email"]]
+    for ins in inscriptions:
+        etu = ins.etudiant
+        data.append([
+            etu.matricule,
+            etu.nom,
+            etu.prenom,
+            etu.genre,
+            f"{ins.salleClasse.niveau.classe} {ins.salleClasse.nom}",
+            etu.mail
+        ])
+
+    table = Table(data)
+    table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+        ("GRID", (0, 0), (-1, -1), 1, colors.black),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+    ]))
+
+    elements.append(table)
+    doc.build(elements)
+    return response
+
 
 @login_required 
 @admin_required
@@ -1410,8 +1500,8 @@ def modifierInscription(request, id):
         annee_id = request.POST["anneeScolaire"]
         inscription.anneeAcademique = AnneeScolaire.objects.get(id = annee_id)
         
-        inscription.etudiant_id = Etudiant.objects.get(id = etudiant)
-        inscription.salleClasse_id = SalleDeClasse.objects.get(id =salleDeClasse)
+        inscription.etudiant = Etudiant.objects.get(id = etudiant)
+        inscription.salleClasse = SalleDeClasse.objects.get(id =salleDeClasse)
         
         inscription.save()
         messages.success(request, f"Inscription de {inscription.etudiant} modifiée avec succès.")
@@ -1423,6 +1513,8 @@ def modifierInscription(request, id):
         'anneeScolaires': AnneeScolaire.objects.all()
     }
     return render(request, 'modifier-inscription.html', context)
+
+
 #Cours
 @login_required 
 @admin_required
@@ -2308,5 +2400,42 @@ def send_message(request, id, matricule):
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
     
+
     
+
+
+
+# COMPTABLE
+
+def ajoutComptable(request): 
+    form = FormComptable()
     
+    if request.method == "POST":
+        form = FormComptable(request.POST)
+        
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            telephone = form.cleaned_data["telephone"]
+            
+            
+            utilisateur = Utilisateur.objects.create(
+                username=email,
+                password=make_password(telephone),
+                email=email,
+                first_name="",
+                last_name="",
+                role="comptable",
+                is_active=True,
+                is_staff = True
+            )
+            
+            comptable = Comptable.objects.create(
+                email=email,
+                utilisateur=utilisateur
+            )
+            
+            
+            return HttpResponse("Comptable ajouté avec succès!!")
+    return render(request, "ajoutComptable.html", {"form": form})
+
+
