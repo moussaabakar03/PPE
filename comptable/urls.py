@@ -11,6 +11,9 @@ urlpatterns = [
     path('ajouter-paiement/<int:id_inscription>/<int:id_annee>/', views.ajouter_paiement, name='ajouter_paiement'),
     path('enretardSurPaiement/', views.enretardSurPaiement, name='enretardSurPaiement'),
     
+    path('paiement/pdf/<int:id_inscription>/<int:id_annee>/', 
+         views.export_paiement_pdf, 
+         name='export_paiement_pdf'),
     
     
     # path('liste-personnel/', views.liste_personnel, name='liste_personnel'),

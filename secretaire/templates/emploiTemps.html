@@ -180,7 +180,7 @@
                     <div style ="display: flex; justify-content: space-between;">
                         <ul>
                             <li>{{salle.niveau.classe}}- {{salle.nom}}</li>
-                            <li><a href ="{% url 'secretaire:studentParSalle' salle.id annee.id %}"> Retour<a></li>
+                            <li><a href ="{% url 'secretaire:studentParSalle' salle.id %}"> Retour<a></li>
                             <li> Emploi du temps</li>
                         </ul>
                         <ul>
@@ -239,7 +239,7 @@
                              </table>
                              <div class="col-12 form-group mg-t-8" style="display: flex; justify-content: center; gap: 10px;">
                                 <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Mettre à jour</button>
-                                <a href="{% url 'secretaire:supprimerEmploiTemps' salle.id annee.id %}" class="btn-fill-lg bg-blue-dark btn-hover-yellow" onclick="return confirm('Voulez-vous vraiment supprimer cet emploi du temps?')">Supprimer</a>
+                                <a href="{% url 'secretaire:supprimerEmploiTemps' salle.id  %}" class="btn-fill-lg bg-blue-dark btn-hover-yellow" onclick="return confirm('Voulez-vous vraiment supprimer cet emploi du temps?')">Supprimer</a>
                             </div>
                             </div>
 

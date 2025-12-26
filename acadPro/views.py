@@ -36,7 +36,8 @@ def depotDossier(request):
         # cv = request.FILES["cv"]
         cv = request.FILES.get("cv")
         if not cv:
-            return render(request, "depotDossier.html", {"erreur": "Veuillez télécharger votre CV."})
+            messages.info(request,"Veuillez télécharger votre CV.")
+            return render(request, "depotDossier.html")
 
         niveau = request.POST["niveau"]
         numero_telephone = request.POST["numero_telephone"]
@@ -53,11 +54,10 @@ def depotDossier(request):
             niveau=niveau,
             numero_telephone=numero_telephone
         )
-        
+        messages.success(request,"Nous avons bien reçu votre demande. Vous recevrez un email de confirmation dans les prochaines heures avec les instructions pour la suite du processus.")
         return redirect('depotDossier')
-    message = "Nous avons bien reçu votre demande. Vous recevrez un email de confirmation dans les prochaines heures avec les instructions pour la suite du processus."
     
-    return render(request, "depotDossier.html", {"message": message})
+    return render(request, "depotDossier.html")
 
 def receptionDossierStudent(request):
     form = ContactForm()

@@ -71,7 +71,7 @@
                                 </div>
                             </div>
                         </form>
-                        <div class="col-xl-3 col-lg-6 col-12 form-group" style = "margin: 0 auto; margin-bottom: 20px;">
+                        {% comment %} <div class="col-xl-3 col-lg-6 col-12 form-group" style = "margin: 0 auto; margin-bottom: 20px;">
                             <label style="color: red;">Année Scolaire *</label>
                             <select name="anneeScolaire" class="select2 form-control" required>
                                 <option value = "">Selectionner une Année </option>
@@ -79,7 +79,7 @@
                                     <option value="{{annee.id}}">{{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}}</option>
                                 {% endfor %}
                             </select>
-                        </div>
+                        </div> {% endcomment %}
                         <div class="table-responsive">
                             <table class="table display data-table text-nowrap">
                                 <thead>
@@ -93,6 +93,7 @@
                                         <th>Niveau</th>
                                         <th>Nom</th>
                                         <th>Capacité d'accueil</th>
+                                        {% comment %} <th>Capacité capacite_etendue</th> {% endcomment %}
                                         <th>Emplacement</th>
                                         <th>Action</th>
                                     </tr>
@@ -110,6 +111,7 @@
                                         <td>{{salle.niveau}}</td>
                                         <td>{{salle.nom}}</td>
                                         <td>{{salle.capacite}}</td>
+                                        {% comment %} <td>{{salle.capacite_etendue}}</td> {% endcomment %}
                                         <td>{{salle.emplacement}}</td>
                                          <td>
                                             <div class="dropdown">
@@ -119,7 +121,7 @@
                                                 <div class="dropdown-menu dropdown-menu-right">
                                                     <a class="dropdown-item" href="{% url 'secretaire:supprimerSalle' salle.id %}" onclick = "return confirm('Voulez-vous vraiment supprimer cette salle de classe?');"><i class="fas fa-times text-orange-red"></i>Supprimer</a>
                                                     <a class="dropdown-item" href="{% url 'secretaire:modifierSalle' salle.nom %}"><i class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
-                                                    <a class="dropdown-item voirPlusSalleDeClasse" href="#" data-salle-id="{{ salle.id }}"  ><i class="fas fa-eye" title = "voir plus"></i>voir plus</a>
+                                                    <a class="dropdown-item" href="{% url 'secretaire:studentParSalle' salle.id %}" ><i class="fas fa-eye" title = "voir plus"></i>voir plus</a>
                                                 </div>
                                             </div>
                                         </td>
@@ -154,7 +156,7 @@
 
 
     
-    <script>
+    {% comment %} <script>
         $(document).ready(function () {
             $('.voirPlusSalleDeClasse').on('click', function (e) {
                 e.preventDefault();
@@ -170,7 +172,7 @@
                 window.location.href = url;
             });
         });
-    </script>
+    </script> {% endcomment %}
 </body>
 
 </html>

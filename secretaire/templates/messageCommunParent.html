@@ -61,7 +61,7 @@
                             <a href="{% url 'secretaire:index' %}">Tableau Bord</a>
                         </li>
                         <li>
-                            <a href="{% url 'secretaire:studentParSalle' salle.id anneeScolaire.id %}">Retour</a>
+                            <a href="{% url 'secretaire:studentParSalle' salle.id %}">Retour</a>
                         </li>
                         <li>Message</li>
                     </ul>
@@ -80,20 +80,16 @@
                             <div class="row">
                                 <input type="hidden" id="receptionId" name="reception_id" value="">
                             
-                                {% comment %} <div class="form-group">
-                                    <label for="id_email">{{ form.email.label }}</label>
-                                    {{ form.email }}
-                                </div> {% endcomment %}
-                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                <div class="col-xl-12 col-lg-6 col-12 form-group">
                                     <label for="id_sujet">{{ form.sujet.label }}</label>
                                     {{ form.sujet }}
                                 </div>
-                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                <div class="col-xl-12 col-lg-6 col-12 form-group">
                                     <label for="id_message">{{ form.message.label }}</label>
                                     {{ form.message }}
                                 </div>
-                                <div class="col-12 form-group mg-t-8">
-                                    <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Envoyer</button>
+                                <div class="col-12 form-group col-xl-12 mg-t-8">
+                                    <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark w-100">Envoyer</button>
                                 </div>
                             </div>
                         </form>

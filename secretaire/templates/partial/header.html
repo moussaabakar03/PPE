@@ -35,6 +35,10 @@
                     </span>
                     <input type="text" class="form-control" placeholder="Rechercher . . .">
                 </div>
+                <div>
+                    <i style = "color: #ffae01" class="fas fa-clock"></i> <span style="color: #042954; font-weight: bold;">{% now "H:i" %}</span>
+                </div>
+
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
                     {% include 'partial/messages.html' %}
                 </div>
@@ -70,12 +74,31 @@
                     <i class="far fa-envelope"></i>
                 </a>
             </li>
-            <li class="navbar-item dropdown header-language">
+            {% comment %} <li class="navbar-item dropdown header-language">
                 <a class="navbar-nav-link dropdown-toggle" href="#" role="button" 
                 data-toggle="dropdown" aria-expanded="false"><i class="fas fa-globe-americas"></i>FR</a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="#">Français</a>
                     <a class="dropdown-item" href="#">English</a>
+                </div>
+            </li> {% endcomment %}  
+
+            <li class="navbar-item dropdown header-language">
+                <a class="navbar-nav-link dropdown-toggle" href="#" role="button" 
+                data-toggle="dropdown" aria-expanded="false"><i class="fas fa-calendar-week"></i>ANNEE</a>
+                <div class="dropdown-menu dropdown-menu-right">
+                {% if annees %}
+                    {% for annee in annees %}
+                        <a class="dropdown-item"
+                        href="{% url 'secretaire:changer_annee_active' annee.id %}">
+                        {{ annee }}
+                        {% if annee.est_active %} ✅ {% endif %}
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <a class="dropdown-item">Aucune année trouvée</a>
+                {% endif %}
+
                 </div>
             </li>
         </ul>

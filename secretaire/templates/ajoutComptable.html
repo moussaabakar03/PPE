@@ -16,3 +16,22 @@
         </div>
     </div>
 </form>
+
+
+<table>
+    <thead>
+        <tr>
+            <td>nom</td>
+            <td>motpass</td>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for comptable in comptables %}
+            <tr>
+                <td>{{ comptable.email }}</td>
+                <td>{{ comptable.telephone }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -41,7 +41,7 @@
                 <!-- Class Table Area Start Here -->
                 <div class="card height-auto">
                     <div class="card-body">
-                        <div class="heading-layout1">
+                        {% comment %} <div class="heading-layout1">
                             <div class="item-title">
                                 <h3>Veillez choisir la classe correspondante!</h3>
                             </div>
@@ -56,7 +56,7 @@
                         </div>
                         <div>
                             <p  style="text-align: center;"> Veillez vouloir bien choisir l'<span  style="color: red; font-weight: bold;">année scolaire</span> correspondante!</p>
-                        </div>
+                        </div> {% endcomment %}
                        
                         <div class="table-responsive">
                             <table class="table display data-table text-nowrap">
@@ -72,9 +72,7 @@
                                         <td>{{ salleClasse.nom }} -{{ salleClasse.niveau.classe }}</td>
                                         <td>
                                             <div class="dropdown">
-                                               <a href="#" class="attribuer-notes" 
-                                                    data-salle-id="{{ salleClasse.id }}" 
-                                                    data-classe-id="{{ salleClasse.niveau.id }}">
+                                               <a href="{% url 'secretaire:evaluation_groupee' salleClasse.id salleClasse.niveau.id %}" class="attribuer-notes">
                                                     <i class="fas fa-clipboard-check"> </i> Attribuer Notes
                                                 </a>
 
@@ -113,7 +111,7 @@
 
 
 
-    <script>
+    {% comment %} <script>
         $(document).ready(function () {
             $('.attribuer-notes').on('click', function (e) {
                 e.preventDefault();
@@ -132,7 +130,7 @@
                 window.location.href = url;
             });
         });
-    </script>
+    </script> {% endcomment %}
 
 </body>
 

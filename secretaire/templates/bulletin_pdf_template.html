@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Bulletin - {{ etudiant.nom }} {{ trimestre }}</title>
+    <style>
+        /* CSS critiques pour la mise en page (ex: flex, grid, largeur) */
+        body { font-family: 'Arial', sans-serif; font-size: 10pt; margin: 0; padding: 0; }
+        .bulletin { 
+            width: 100%; 
+            padding: 15px; 
+            border: 1px solid #000; 
+            box-sizing: border-box;
+        }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .subjects-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .subjects-table th, .subjects-table td { border: 1px solid #ddd; padding: 4px 6px; text-align: center; }
+        .subjects-table th { background-color: #f8f9fa; }
+        /* Ajoutez tous vos autres styles spécifiques ici */
+        /* Exemple pour l'image du logo: */
+        .center-header img { width: 70px; height: 70px; object-fit: cover; }
+        .student-info img { width: 100px; height: 100px; border-radius: 7px; object-fit: cover; }
+        
+        /* Styles d'impression essentiels pour assurer une bonne mise en page */
+        @page { size: A4; margin: 10mm; }
+        .bulletin { page-break-after: always; }
+        /* Copiez ici le contenu de vos fichiers CSS externes si WeasyPrint ne les charge pas */
+    </style>
+</head>
+<body>
+    <div class="bulletin">
+        <div class="header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <div class="left-header" style="flex: 1; text-align: left;">
+                <div>République du Togo</div>
+                </div>
+            <div class="center-header" style="flex: 1; text-align: center;">
+                <div>
+                    <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="logo">
+                </div>
+                <div class="title-large">BULLETIN DE NOTES</div>
+                <div class="subtitle">{{ trimestre }}</div>
+                </div>
+            <div class="right-header" style="flex: 1; text-align: right;">
+                </div>
+        </div>
+
+        <div class="student-info" style="display: flex; justify-content: space-between; margin: 15px 0; padding: 10px; border: 1px solid #ddd;">
+            <div style="flex: 3;">
+                <strong>Nom Prénoms :</strong> {{ etudiant.nom }} {{ etudiant.prenom }}<br>
+                <strong>Classe :</strong> {{ salleClasse.niveau.classe }} {{ salleClasse.nom }} <strong>Effectif :</strong> {{ tousInscrits }}<br>
+            </div>
+            <div style="flex: 1; text-align: right;">
+                {% if etudiant.photo %}
+                    <img src="{{ etudiant.photo.url }}" alt="Photo">
+                {% else %}
+                    <p class="text-center">Photo</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <table class="subjects-table">
+            <thead>
+                </thead>
+            <tbody>
+                {% for item in bulletin_data.liste_moyennes %}
+                <tr>
+                    <td style="padding: 6px; border: 1px solid #ddd;">{{ item.matiere }}</td>
+                    </tr>
+                {% endfor %}
+                <tr style="background-color: #f0f0f0;">
+                    <td colspan="3"><strong>Moyenne Générale</strong></td>
+                    <td colspan="6" style="text-align: center;"><strong>{{ bulletin_data.moyenne_generale_trimestre }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div>
+            <div><strong>Rang {{ trimestre }} :</strong> {{ bulletin_data.rang_trimestre }} / {{ tousInscrits }}</div>
+        </div>
+
+        </div>
+</body>
+</html>

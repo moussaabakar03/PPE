@@ -83,6 +83,7 @@
             font-weight: bold;
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 </head>
 <body>
@@ -98,47 +99,77 @@
                     <div class="table-responsive">
                         {% for item in paiements_par_salle %}
                             <div class="paiement-accordeon">
-                                <div class="paiement-header" onclick="togglePaiements('{{ forloop.counter }}')" id="header-{{ forloop.counter }}">
-                                    <span class="icon" id="icon-{{ forloop.counter }}" style="color: red!important;">&#9654;</span>
-                                    Paiements pour la salle : {{ item.salle.niveau }} - {{ item.salle.nom }}
+
+                                <div class="paiement-header" onclick="togglePaiements('{{ forloop.counter }}')" id="header-{{ forloop.counter }}"
+                                 style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+
+
+                                    <div>
+                                        <span class="icon" id="icon-{{ forloop.counter }}" style="color:red!important;">&#9654;</span>
+                                        Paiements pour la salle : {{ item.salle.niveau }} - {{ item.salle.nom }}
+                                    </div>
+
+                                    <!-- Icône PDF -->
+                                    <a href="{% url 'eleve:export_paiement_pdf' item.salle.id %}" title="Exporter en PDF"> Exporter en pdf
+                                          <i class="fa-solid fa-file-pdf" style="color:#e63946;"></i>
+                                    </a>
                                 </div>
-                                <div class="paiement-content" id="content-{{ forloop.counter }}" style ="overflow: auto;">
+
+                                <div class="paiement-content" id="content-{{ forloop.counter }}" style="overflow:auto; display:none;">
+                                   
                                     <table class="table display data-table text-nowrap" style="width:100%;">
                                         <thead>
                                             <tr>
-                                                <th>Date</th>
                                                 <th>Type</th>
-                                                <th>Montant</th>
-                                                <th>Mode</th>
+                                                <th>Payé (FCFA)</th>
+                                                <th>Attendu</th>
+                                                <th>Reste</th>
                                             </tr>
                                         </thead>
+
                                         <tbody>
-                                            {% for paiement in item.paiements %}
-                                                <tr>
-                                                    <td>{{ paiement.datePaiement|date:"d/m/Y" }}</td>
-                                                    <td>{{ paiement.typePaiement }}</td>
-                                                    <td class="paid">{{ paiement.montantVerse }}</td>
-                                                    <td>{{ paiement.modePaiment }}</td>
-                                                </tr>
-                                            {% endfor %}
                                             <tr>
-                                                {% comment %} <td colspan="1"><strong>Total Attendu</strong></td>
-                                                <td colspan="2" class="paid"><strong>{{ item.cout_attendu }} FCFA</strong></td> {% endcomment %}
-                                                <td colspan="1"><strong>Total payé</strong></td>
-                                                <td colspan="1" class="paid"><strong class="paid">{{ item.total_paye }} FCFA</strong></td>
+                                                <td>Frais d'inscription</td>
+                                                <td>{{ item.totalInscription }}</td>
+                                                <td>{{ item.coutInscription }}</td>
+                                                <td>{{ item.coutInscription|floatformat:0|add:"-"|add:item.totalInscription }}</td>
                                             </tr>
+
                                             <tr>
-                                                {% comment %} <td colspan="5" style ="text-align: center;"><strong>Total Reste à payer:</strong> <strong  style ="color: red;">{{ item.reste_a_payer  }} FCFA</strong></td> {% endcomment %}
+                                                <td>Frais étude dossier</td>
+                                                <td>{{ item.totalEtudeDossier }}</td>
+                                                <td>{{ item.coutEtudeDossier }}</td>
+                                                <td>{{ item.coutEtudeDossier|floatformat:0|add:"-"|add:item.totalEtudeDossier }}</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>Frais scolarité</td>
+                                                <td>{{ item.totalScolarite }}</td>
+                                                <td>{{ item.coutScolarite }}</td>
+                                                <td>{{ item.coutScolarite|floatformat:0|add:"-"|add:item.totalScolarite }}</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>Frais associés</td>
+                                                <td>{{ item.totalFraisAssocie }}</td>
+                                                <td>{{ item.coutFraisAssocie }}</td>
+                                                <td>{{ item.coutFraisAssocie|floatformat:0|add:"-"|add:item.totalFraisAssocie }}</td>
+                                            </tr>
+
+                                            <!-- TOTAL -->
+                                            <tr style="font-weight:bold;">
+                                                <td>TOTAL</td>
+                                                <td>{{ item.total_paye }}</td>
+                                                <td>{{ item.cout_attendu }}</td>
+                                                <td>{{ item.reste_a_payer }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
+
                                 </div>
+
                             </div>
                         {% endfor %}
-                    <div>
-                        {% comment %} <h3> A revoir</h3> {% endcomment %}
-                        {% comment %} <h3> A revoir: toal payé, total attendu, montant verse, mode de paiement, periode de paiement</h3> {% endcomment %}
-                    </div>
                     </div>
                 </div>
             </div>
@@ -176,6 +207,8 @@
         <script src="{% static 'secretaire/js/main.js' %}"></script>
         
 
+        
+
         <script>
             function togglePaiements(id) {
                 const content = document.getElementById("content-" + id);
@@ -188,4 +221,4 @@
             }
         </script>
     </body>
-    </html>
+</html>

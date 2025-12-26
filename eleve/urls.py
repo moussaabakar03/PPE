@@ -14,6 +14,8 @@ urlpatterns = [
     path('affichageEmploiTemps/<int:id1>/<int:id2>/', views.affichageEmploiTemps, name="affichageEmploiTemps"),
     
     path('mesPaiement/', views.mesPaiement, name="mesPaiement"),
+    path('export-pdf/<int:salle_id>/', views.export_paiement_pdf, name='export_paiement_pdf'),
+
     path('profil/', views.profil, name="profil"),
     
     

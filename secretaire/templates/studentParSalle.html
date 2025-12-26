@@ -41,17 +41,17 @@
                         </li>
                         <li>{{salle.niveau.classe}} {{salle.nom}}</li>
                         <li>
-                            <a href="{% url 'secretaire:listePresence' salle.id annee.id %}"><i class="fa fa-user-check" style = "color: #ffaa01;"></i> Créer liste de présence </a>
+                            <a href="{% url 'secretaire:listePresence' salle.id %}"><i class="fa fa-user-check" style = "color: #ffaa01;"></i> Créer liste de présence </a>
                         </li>
                         <li>
-                            <a href="{% url 'secretaire:emploiDuTemps' salle.id annee.id %}"><i class="fa-solid fa-calendar-days" aria-label="Emploi du temps" style = "color: #ffaa01; padding-left: -10px;"></i><span style = "padding-left: 5px;"></span>Emploi du Temps</a>
+                            <a href="{% url 'secretaire:emploiDuTemps' salle.id  %}"><i class="fa-solid fa-calendar-days" aria-label="Emploi du temps" style = "color: #ffaa01; padding-left: -10px;"></i><span style = "padding-left: 5px;"></span>Emploi du Temps</a>
                         </li>
                         <li>
-                            <a href="{% url 'secretaire:bulletinsSalleDeClasse'%}"><i class="fa-solid fa-clipboard-list" aria-label="Bulletin" style = "color: #ffaa01;"></i><span style = "padding-left: 5px;"></span>Bulletins</a>
+                            <a href="{% url 'secretaire:bulletinsSalleDeClasse' salle.niveau.classe %}"><i class="fa-solid fa-clipboard-list" aria-label="Bulletin" style = "color: #ffaa01;"></i><span style = "padding-left: 5px;"></span>Bulletins</a>
                         </li>
                     
                         <li>
-                            <a href="{% url 'secretaire:messageCommunParent' salle.id annee.id %}"> <i class="fa-regular fa-envelope" style="color: #ffaa01;"></i>
+                            <a href="{% url 'secretaire:messageCommunParent' salle.id  %}"> <i class="fa-regular fa-envelope" style="color: #ffaa01;"></i>
                                 <span style="padding-left: 5px;"></span>Message aux parents
                             </a>
                         </li>
@@ -79,26 +79,21 @@
                 <!-- Student Table Area Start Here -->
                 <div class="card height-auto">
                     <div class="card-body">
-                        <div class="heading-layout1">
+                        <div class="heading-layout1 d-flex">
                             <div class="item-title">
                                 <div style = "display: flex; gap: 50px;">
                                     <h6>Liste de tous les élèves inscrit dans la salle de classe: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{salle.niveau.classe}}  {{salle.nom}} >> </span></h6>
                                     <h6 style = "margin-left: 20px;">Année scolaire: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}}>> </span></h6>
                                 </div>
-                                <h6> <i class="fa fa-list"></i>  
-                                    Total des élèves <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> <<{{nombre}}>> </span> 
-                                    (M <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> <<{{nombreMasculin}}>> </span>
-                                    F <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> <<{{nombreFeminin}}>> </span>)
-                                </h6>
-                            </div>
-
-                            <div class="dropdown">
-                                <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                                    aria-expanded="false">...</a>
-
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#"><i
-                                            class="fas fa-redo-alt text-orange-peel"></i>Raffraichir</a>
+                                <div class = "d-flex justify-content-between">
+                                    <h6> <i class="fa fa-list"></i>  
+                                        Total des élèves <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> <<{{nombre}}>> </span> 
+                                        (M <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> <<{{nombreMasculin}}>> </span>
+                                        F <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> <<{{nombreFeminin}}>> </span>)
+                                    </h6>
+                                    <h6>
+                                        Nombre élèves etendus <span style = "font-weight: bold; color: #ffaa01; font-size: 20px;"> <<{{nombreEtendu}}>> </span> 
+                                    </h6>
                                 </div>
                             </div>
                         </div>

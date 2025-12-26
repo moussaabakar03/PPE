@@ -1,0 +1,562 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Certificat d'Inscription - Institut COMMULINK</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'accueil/images/favicon.png' %}">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+    <!-- Modernize js -->
+    <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap');
+        
+        .page-wrapper {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .action-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: #ff9d01;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            margin: 0 8px;
+            border-radius: 5px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .btn:hover {
+            opacity: 0.85;
+        }
+
+        .certificate-container {
+            background: white;
+            padding: 50px;
+            border: 4px solid #042954;
+            position: relative;
+        }
+
+        .certificate-container::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            border: 2px solid #ff9d01;
+            pointer-events: none;
+        }
+
+        /* En-tête */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ff9d01;
+        }
+
+        .logo-placeholder {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 4px solid #ff9d01;
+            overflow: hidden;
+        }
+
+        .logo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .school-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #042954;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .school-info {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .school-info strong {
+            color: #042954;
+        }
+
+        /* Titre */
+        .title {
+            text-align: center;
+            margin: 35px 0;
+        }
+
+        .title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #ff9d01;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 3px solid #042954;
+            display: inline-block;
+            padding-bottom: 8px;
+        }
+
+        /* Contenu */
+        .content {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #333;
+            text-align: justify;
+            margin: 30px 0;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 25px 0;
+            border-left: 5px solid #ff9d01;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 12px;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #042954;
+            min-width: 160px;
+            font-size: 14px;
+        }
+
+        .info-value {
+            font-weight: 500;
+            color: #333;
+            font-size: 15px;
+        }
+
+        /* Pied de page */
+        .footer {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .footer-section {
+            flex: 1;
+            text-align: center;
+        }
+
+        .date-section {
+            color: #333;
+            font-size: 14px;
+        }
+
+        .signature-title {
+            font-weight: 600;
+            color: #042954;
+            margin-bottom: 50px;
+            font-size: 15px;
+        }
+
+        .signature-line {
+            width: 180px;
+            margin: 0 auto;
+            border-bottom: 2px solid #042954;
+        }
+
+        /* Numéro de certificat */
+        .certificate-number {
+            margin-top: 30px;
+            text-align: right;
+            font-size: 13px;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Filigrane */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 70px;
+            color: rgba(255, 157, 1, 0.03);
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        
+    /* Styles pour l'impression */
+    @media print {
+        /* Masquer les éléments inutiles */
+        body * {
+            visibility: hidden;
+        }
+        
+        #wrapper, .wrapper, .dashboard-page-one,
+        .dashboard-content-one, .page-wrapper,
+        .certificate-container, .certificate-container * {
+            visibility: visible;
+        }
+        
+        .certificate-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            padding: 0;
+            border: none;
+            box-shadow: none;
+        }
+        
+        .certificate-container::before {
+            border: none;
+        }
+        
+        /* Masquer les boutons et éléments de navigation */
+        .action-buttons,
+        .header-menu-area,
+        .sidebar-area,
+        .breadcrumbs-area,
+        .copyright,
+        #preloader,
+        #back-to-top {
+            display: none !important;
+        }
+        
+        /* Ajuster le certificat */
+        .page-wrapper {
+            margin: 0;
+            padding: 0;
+            max-width: 100%;
+        }
+        
+        /* Améliorer le filigrane */
+        .watermark {
+            opacity: 0.1;
+        }
+        
+        /* Forcer le fond blanc */
+        .certificate-container {
+            background: white !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        /* Éviter les coupures dans les boîtes */
+        .info-box {
+            page-break-inside: avoid;
+        }
+        
+        /* Marge d'impression */
+        @page {
+            margin: 15mm;
+            size: A4;
+        }
+    }
+
+    /* Styles pour l'écran (ajouter à vos styles existants) */
+    @media screen {
+        .certificate-container {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 20px auto;
+        }
+    }
+       
+    </style>
+    
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+         {% include 'partial/header.html' %}
+        <!-- Header Menu Area End Here -->
+        
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+            {% include 'partial/aside.html' %}
+            <!-- Sidebar Area End Here -->
+            
+            <div class="dashboard-content-one">
+                <!-- Breadcumbs Area Start Here -->
+                <div style="display: flex; justify-content: space-between;">
+                    <div class="breadcrumbs-area">
+                        <h3>Élèves</h3>
+                        <ul>
+                            <li>
+                                <a href="{% url 'secretaire:all-student' %}">Élèves</a>
+                            </li>
+                            <li><a href="{% url 'secretaire:detailEtudiant' inscription.etudiant.matricule inscription.etudiant.parent.id %}">Retour</a></li>
+                            <li>Certificat d'Inscription</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="page-wrapper">
+                    <!-- Boutons d'action -->
+                    <div class="action-buttons">
+                      
+                        <button class="btn pdf-btn" onclick="saveAsPDF()">
+                            <i class="fas fa-file-pdf"></i> Télécharger PDF
+                        </button>
+                      
+                    </div>
+
+                    <!-- Certificat -->
+                    <div class="certificate-container" id="certificat">
+                        <!-- Filigrane -->
+                        <div class="watermark">COMMULINK</div>
+
+                        <div style="position: relative; z-index: 1;">
+                            <!-- En-tête -->
+                            <div class="header">
+                                <div class="logo-placeholder">
+                                    <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="logo">
+                                </div>
+                                <div class="school-name">École Commulink</div>
+                                <div class="school-info">
+                                    📍 Lomé – Togo<br>
+                                    📞 +228 90 00 00 00 | ✉️ contact@commulink.com<br>
+                                    Année scolaire : <strong>{{ inscription.anneeAcademique.debutAnnee|date:'Y' }} - {{ inscription.anneeAcademique.fintAnnee|date:'Y' }}</strong>
+                                </div>
+                            </div>
+
+                            <!-- Titre -->
+                            <div class="title">
+                                <h1>Certificat d'Inscription</h1>
+                            </div>
+
+                            <!-- Contenu -->
+                            <div class="content">
+                                <p>
+                                    Je soussigné(e), <strong>le Directeur de l'École COMMULINK</strong>,
+                                    certifie par la présente que l'étudiant(e) dont les informations figurent ci-dessous 
+                                    est régulièrement inscrit(e) dans notre établissement :
+                                </p>
+
+                                <div class="info-box">
+                                    <div class="info-row">
+                                        <span class="info-label">Nom :</span>
+                                        <span class="info-value">{{ inscription.etudiant.nom }}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Prénom :</span>
+                                        <span class="info-value">{{ inscription.etudiant.prenom }}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Date de naissance :</span>
+                                        <span class="info-value">{{ inscription.etudiant.date_naissance|date:'d/m/Y' }}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Matricule :</span>
+                                        <span class="info-value">{{ inscription.etudiant.matricule }}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Classe :</span>
+                                        <span class="info-value">{{ inscription.salleClasse.niveau }}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Année scolaire :</span>
+                                        <span class="info-value">{{ inscription.anneeAcademique.debutAnnee|date:'Y' }} - {{ inscription.anneeAcademique.fintAnnee|date:'Y' }}</span>
+                                    </div>
+                                </div>
+
+                                <p style="margin-top: 25px;">
+                                    Le présent certificat est délivré à l'intéressé(e) pour servir et valoir ce que de droit.
+                                </p>
+                            </div>
+
+                            <!-- Pied de page -->
+                            <div class="footer">
+                                <div class="footer-section date-section">
+                                    <strong>Fait à Lomé,</strong><br>
+                                    Le {% now "d/m/Y" %}
+                                </div>
+                                <div class="footer-section">
+                                    <div class="signature-title">Le Directeur</div>
+                                    <div class="signature-line"></div>
+                                </div>
+                            </div>
+
+                            <!-- Numéro de certificat -->
+                            <div class="certificate-number">
+                                Certificat N° : CERT-{{ inscription.anneeAcademique.debutAnnee|date:'Y' }}-{{ inscription.id|stringformat:"05d" }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    {% include 'partial/copyright.html' %}
+                </div>
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    
+   <!-- jQuery -->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+    // Impression optimisée
+    function printCertificate() {
+        // Ouvrir une fenêtre d'impression propre
+        const printContent = document.getElementById('certificat').innerHTML;
+        const originalContent = document.body.innerHTML;
+        
+        document.body.innerHTML = printContent;
+        window.print();
+        document.body.innerHTML = originalContent;
+        location.reload(); // Recharger pour restaurer les fonctionnalités
+    }
+
+    // Téléchargement PDF avec html2pdf
+    function saveAsPDF() {
+        const element = document.getElementById('certificat');
+        const opt = {
+            margin: [10, 10, 10, 10],
+            filename: `Certificat_${"{{ inscription.etudiant.matricule }}".replace(/[^a-z0-9]/gi, '_')}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                letterRendering: true
+            },
+            jsPDF: { 
+                unit: 'mm', 
+                format: 'a4', 
+                orientation: 'portrait' 
+            },
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        };
+
+        // Afficher un message de chargement
+        const originalBtnText = document.querySelector('.pdf-btn').innerHTML;
+        document.querySelector('.pdf-btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...';
+        document.querySelector('.pdf-btn').disabled = true;
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            // Restaurer le bouton
+            document.querySelector('.pdf-btn').innerHTML = originalBtnText;
+            document.querySelector('.pdf-btn').disabled = false;
+            
+            // Afficher un message de confirmation
+        });
+    }
+
+    // Notification
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <span>${message}</span>
+            <button onclick="this.parentElement.remove()">&times;</button>
+        `;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
+    }
+
+    // Raccourci clavier pour l'impression
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+            e.preventDefault();
+            printCertificate();
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            saveAsPDF();
+        }
+    });
+
+    // Optimiser l'image pour l'impression
+    document.addEventListener('DOMContentLoaded', function() {
+        const logo = document.querySelector('.logo-placeholder img');
+        if (logo) {
+            logo.onload = function() {
+                console.log('Logo chargé pour impression');
+            };
+            logo.onerror = function() {
+                console.log('Erreur de chargement du logo');
+                this.style.display = 'none';
+            };
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -82,6 +82,20 @@ def ajouter_paiement(request, id_inscription, id_annee):
 
     totalPaye = sum(p.montantVerse for p in paiements)
     resteTotalPaye = totalCout - totalPaye
+    
+    # Frais de scolarité
+    # Frais d'inscription
+    # Frais d'étude du dossier
+    # Frais Associés
+    
+    paiementsScolarite = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Frais de scolarité")
+    totalScolarite = sum(p.montantVerse for p in paiementsScolarite)
+    paiementsInscription = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Frais d'inscription")
+    totalInscription = sum(p.montantVerse for p in paiementsInscription)
+    paiementsEtudeDossier = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Frais d'étude du dossier")
+    totalEtudeDossier = sum(p.montantVerse for p in paiementsEtudeDossier)
+    paiementsFraisAssocie = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Frais Associés")
+    totalFraisAssocie = sum(p.montantVerse for p in paiementsFraisAssocie)
 
     # Paiement par type
     dejaPayeParType = defaultdict(Decimal)
@@ -104,19 +118,23 @@ def ajouter_paiement(request, id_inscription, id_annee):
         }.get(type_paiement, 0)
 
         dejaPaye = dejaPayeParType[type_paiement]
-
-        if dejaPaye + montantVerse > montantMaximum:
-            error = "Montant versé dépasse le montant requis pour ce type de frais."
-            messages.error(request, f"Montant versé dépasse le montant requis pour {type_paiement}.")
+        
+        if montantVerse >= 1:
+            if dejaPaye + montantVerse > montantMaximum:
+                error = "Montant versé dépasse le montant requis pour ce type de frais."
+                messages.error(request, f"Montant versé dépasse le montant requis pour {type_paiement}.")
+            else:
+                PaiementEleve.objects.create(
+                    inscription_Etudiant=inscriptionEleve,
+                    montantVerse=montantVerse,
+                    typePaiement=type_paiement,
+                    modePaiment=mode_paiement,
+                )
+                messages.success(request, f"Paiement de {montantVerse} FCFA pour {eleve.nom} {eleve.prenom} enregistré avec succès.")
+                return redirect(request.path) 
         else:
-            PaiementEleve.objects.create(
-                inscription_Etudiant=inscriptionEleve,
-                montantVerse=montantVerse,
-                typePaiement=type_paiement,
-                modePaiment=mode_paiement,
-            )
-            messages.success(request, f"Paiement de {montantVerse} FCFA pour {eleve.nom} {eleve.prenom} enregistré avec succès.")
-            return redirect(request.path)  # Rafraîchir la page
+            messages.error(request, "Le montant doit être superieur égale '1'")
+            return redirect("comptable:ajouter_paiement", id_inscription=id_inscription, id_annee=id_annee)
 
     return render(request, 'ajouter_paiement.html', {
         'inscriptionEleve': inscriptionEleve,
@@ -126,10 +144,65 @@ def ajouter_paiement(request, id_inscription, id_annee):
         'paiements': paiements,
         'totalCout': totalCout,
         'totalPaye': totalPaye,
+        "totalInscription": totalInscription,
+        "totalEtudeDossier": totalEtudeDossier,
+        "totalFraisAssocie": totalFraisAssocie,
+        'totalScolarite': totalScolarite,
         'resteTotalPaye': resteTotalPaye,
         'dejaPayeParType_json': json.dumps({k: float(v) for k, v in dejaPayeParType.items()}),
 
     })
+
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+import io
+
+@login_required
+@staff_required
+def export_paiement_pdf(request, id_inscription, id_annee):
+
+    annee = get_object_or_404(AnneeScolaire, id=id_annee)
+    inscriptionEleve = get_object_or_404(Inscription, id=id_inscription, anneeAcademique=annee)
+    eleve = inscriptionEleve.etudiant
+
+    paiements = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve)
+
+    cout = get_object_or_404(Cout, anneeScolaire=annee, classe=inscriptionEleve.salleClasse.niveau)
+    totalCout = cout.coutInscription + cout.coutScolarite + cout.fraisEtudeDossier + cout.fraisAssocie
+    totalPaye = sum(p.montantVerse for p in paiements)
+    resteTotal = totalCout - totalPaye
+
+    # Totaux par type
+    totalInscription = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais d'inscription")
+    totalEtudeDossier = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais d'étude du dossier")
+    totalScolarite = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais de scolarité")
+    totalFraisAssocie = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais Associés")
+
+    context = {
+        'eleve': eleve,
+        'paiements': paiements,
+        'totalCout': totalCout,
+        'totalPaye': totalPaye,
+        'resteTotal': resteTotal,
+        'totalInscription': totalInscription,
+        'totalEtudeDossier': totalEtudeDossier,
+        'totalScolarite': totalScolarite,
+        'totalFraisAssocie': totalFraisAssocie,
+        'inscription': inscriptionEleve,
+        'annee': annee,
+    }
+
+    html = render_to_string('paiement_pdf.html', context)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="paiement_{eleve.nom}_{eleve.prenom}.pdf"'
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse("Erreur lors de la génération du PDF")
+    return response
+
 
 @login_required
 @staff_required

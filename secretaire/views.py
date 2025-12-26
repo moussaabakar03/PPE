@@ -38,10 +38,13 @@ from django.conf import settings
 @login_required 
 @admin_required
 def index(request):
-    inscriptions = Inscription.objects.all().count()
-    inscrisRecemments = Inscription.objects.all().order_by("id")[:4]
+    anneeActive = get_annee_active()
+    inscriptions = Inscription.objects.filter(anneeAcademique=anneeActive).count()
+    inscrisRecemments = Inscription.objects.filter(anneeAcademique=anneeActive).order_by("id")[:4]
     enseignants = Enseignant.objects.count()
-    contains = {'inscriptions': inscriptions, 'enseignants': enseignants, 'inscrisRecemments': inscrisRecemments}
+    eleves = Etudiant.objects.all().count()
+    
+    contains = {'inscriptions': inscriptions, "eleves": eleves, 'enseignants': enseignants, 'inscrisRecemments': inscrisRecemments}
     return render(request, 'index.html', contains)
 
 @login_required 
@@ -86,8 +89,18 @@ def deconnexion(request):
     logout(request)
     return redirect('secretaire:login')
 
+def get_annee_active():
+    return AnneeScolaire.objects.filter(est_active=True).first()
+
+def changer_annee_active(request, annee_id):
+    annee = AnneeScolaire.objects.get(id=annee_id)
+    annee.est_active = True
+    annee.save()
+    messages.success(request, f"L'année {annee} est maintenant active.")
+    return redirect("secretaire:index")
 
 
+    
 #Année scolaire.
 @login_required 
 @admin_required
@@ -372,7 +385,6 @@ def student_detail(request, matricule):
         inscrits = etudiant.inscriptions.all()
         annees = AnneeScolaire.objects.all().order_by("-id")
         
-        messages.info(request, f"Profil de {etudiant.prenom} {etudiant.nom} consulté.")
         context = {"etudiant": etudiant, "inscrits": inscrits, "annees": annees, 'parent': parent}
         return render(request, 'student-details.html', context)
     
@@ -385,7 +397,9 @@ def student_detail(request, matricule):
 def detailEtudiant(request, matricule, id):
     etudiant = Etudiant.objects.get(matricule=matricule)
     parent = Parent.objects.get(id=id)
-    inscriptions = etudiant.inscriptions.all()
+    
+    anneeActive = get_annee_active()
+    inscriptions = etudiant.inscriptions.filter(anneeAcademique = anneeActive)
     
     dernierInscription = inscriptions.last()
 
@@ -454,14 +468,23 @@ def detailEtudiant(request, matricule, id):
             "moyenne": moyenne,
             "dernierInscription": dernierInscription,
         }
-        messages.info(request, f"Profil de {etudiant.prenom} {etudiant.nom} consulté.")
         return render(request, 'detailEtudiant.html', context)
+
+@login_required 
+@admin_required
+def certificatInscription(request, id):
+    inscription = get_object_or_404(Inscription, id=id)
+    
+    return render(request, "certificatInscription.html", {'inscription': inscription})
 
 @login_required 
 @admin_required
 def affichePaiementEleve(request, matricule):
     eleve = get_object_or_404(Etudiant, matricule=matricule)
-    inscriptions = eleve.inscriptions.all()
+    
+    anneeActive = get_annee_active()
+    inscriptions = eleve.inscriptions.filter(anneeAcademique = anneeActive)
+    
     paiements_groupes = defaultdict(list)
 
     # Récupérer tous les paiements liés aux inscriptions de l'élève
@@ -472,7 +495,6 @@ def affichePaiementEleve(request, matricule):
         salle = paiement.inscription_Etudiant.salleClasse
         paiements_groupes[salle].append(paiement)
 
-    messages.info(request, f"Historique des paiements de {eleve.prenom} {eleve.nom} consulté.")
     return render(request, 'paiementEleve.html', {
         'paiements_groupes': dict(paiements_groupes),
         'etudiant': eleve,
@@ -485,7 +507,6 @@ def affichePaiementEleve(request, matricule):
 def all_teacher(request):
     enseignants = Enseignant.objects.all()
     content = {"enseignants": enseignants }
-    messages.info(request, "Liste des enseignants consultée.")
     return render(request, 'all-teacher.html', content)
 
 @login_required 
@@ -531,13 +552,11 @@ def add_teacher(request):
             messages.error(request, f"Erreur lors de l'ajout de l'enseignant: {str(e)}")
             return render(request, 'add-teacher.html')
     
-    messages.info(request, "Formulaire d'ajout d'enseignant affiché.")
     return render(request, 'add-teacher.html')
 
 @login_required 
 @admin_required
 def teacher_detail(request):
-    messages.info(request, "Détails de l'enseignant consultés.")
     return render(request, 'teacher-details.html')
 
 @login_required 
@@ -561,7 +580,6 @@ def modifier_teacher(request, matricule):
         messages.success(request, f"Informations de l'enseignant {enseignant.prenom} {enseignant.nom} mises à jour avec succès.")
         return redirect("secretaire:all-teacher")
     
-    messages.info(request, f"Formulaire de modification de l'enseignant {enseignant.prenom} {enseignant.nom} affiché.")
     return render(request, 'modifier-teacher.html', {"enseignant": enseignant, "groupes_sanguins": groupes_sanguins})
 
 @login_required 
@@ -577,7 +595,6 @@ def supprimer_teacher(request, matricule):
 @admin_required
 def detailEnseignant(request, matricule):
     enseignant = Enseignant.objects.get(matricule = matricule)
-    messages.info(request, f"Profil de l'enseignant {enseignant.prenom} {enseignant.nom} consulté.")
     context = {"enseignant": enseignant}
     return render(request, 'detaitEnseignant.html', context)
 
@@ -595,7 +612,6 @@ def cvEnseignants(request, id):
         messages.success(request, f"CV de l'enseignant {enseignant.prenom} {enseignant.nom} ajouté avec succès!")
         return redirect('secretaire:detailEnseignant', matricule = enseignant.matricule)
     
-    messages.info(request, "Formulaire d'ajout de CV affiché.")
     return render(request, 'cvEnseignant.html')
 
 @login_required 
@@ -603,7 +619,6 @@ def cvEnseignants(request, id):
 def listeCvEnseignant(request, id):
     enseignant = Enseignant.objects.get(id = id)
     cvEnseignants = cvEnseignant.objects.filter(enseignant = enseignant)
-    messages.info(request, f"Liste des CV de l'enseignant {enseignant.prenom} {enseignant.nom} consultée.")
     return render(request, 'listeCvEnseignant.html', {"cvEnseignants" : cvEnseignants, "enseignant" : enseignant})
 
 @login_required 
@@ -644,7 +659,6 @@ def all_parents(request):
             
     
     parents = Parent.objects.all()
-    messages.info(request, "Liste des parents consultée.")
     
     return render(request, 'all-parents.html', {"parents": parents, 'form': form, 'message_envoye': message_envoye})
 
@@ -687,7 +701,6 @@ def ajout_parents(request):
             messages.error(request, f"Erreur lors de l'ajout du parent: {str(e)}")
             return render(request, 'add-parents.html')
     
-    messages.info(request, "Formulaire d'ajout de parent affiché.")
     return render(request, 'add-parents.html')
 
 from django.contrib import messages
@@ -716,7 +729,6 @@ def modifier_parent(request, id):
         messages.success(request, f"Informations du parent {parent.prenom} {parent.nom} mises à jour avec succès.")
         return redirect("secretaire:all-parents")
     
-    # messages.info(request, f"Formulaire de modification du parent {parent.prenom} {parent.nom} affiché.")
     return render(request, 'modifierParent.html', {"parent": parent})
 
 @login_required 
@@ -739,7 +751,6 @@ def all_class(request):
         return render(request, 'all-class.html', {"matieres": matiere})
     else:
         matiere = Matiere.objects.all()
-        messages.info(request, "Liste des matières consultée.")
         return render(request, 'all-class.html', {"matieres": matiere})
 
 @login_required 
@@ -761,7 +772,6 @@ def ajoutMatiere(request):
             messages.success(request, f"Matière '{nom}' ajoutée avec succès.")
             return redirect("secretaire:all-class")
     
-    messages.info(request, "Formulaire d'ajout de matière affiché.")
     return render(request, 'add-class.html')
 
 @login_required 
@@ -786,7 +796,6 @@ def modifier_matiere(request, id):
         messages.success(request, f"Matière '{matiere.nom}' modifiée avec succès.")
         return redirect("secretaire:all-class")
     
-    messages.info(request, f"Formulaire de modification de la matière '{matiere.nom}' affiché.")
     return render(request, "modifierMatiere.html", {"matiere": matiere})
 
 # salle de classe
@@ -796,7 +805,6 @@ def all_salle(request):
     salles = SalleDeClasse.objects.all()
     etudiant = Etudiant.objects.all()
     annees = AnneeScolaire.objects.all().order_by('-id')
-    messages.info(request, "Liste des salles de classe consultée.")
     return render(request, 'all-salle.html', {"salles": salles, "etudiants": etudiant, "annees": annees})
 
 @login_required 
@@ -819,12 +827,12 @@ def add_salle(request):
             nom=nom,
             capacite=capacite,
             emplacement=emplacement,
-            niveau=classe
+            niveau=classe,
+            capacite_etendue = capacite
         )
         messages.success(request, f"Salle '{nom}' ajoutée avec succès.")
         return redirect("secretaire:all-salle")
     
-    messages.info(request, "Formulaire d'ajout de salle affiché.")
     return render(request, 'add-salle.html', {"niveaux": niveau})
 
 
@@ -844,7 +852,7 @@ def etendreSalleClasse(request, idEleve, idSalleClasse, idAnnee):
         anneeAcademique=anneeScolaire
     )
     
-    salleClasse.capacite +=1
+    salleClasse.capacite_etendue +=1
     salleClasse.save()
     messages.success(request, f"La salle {salleClasse.nom} a été étendue et {eleve.nom} a été inscrit avec succès.")
     
@@ -881,9 +889,15 @@ def modifierSalle(request, nom):
                     f"Pour l’année {annee}, il y a déjà {nb_inscrits} élèves inscrits."
                 )
                 return redirect("secretaire:modifierSalle", nom=salle.nom)
+            
 
         # --- Si tout est valide, on sauvegarde ---
-        salle.capacite = nouvelle_capacite
+        
+        if salle.capacite_etendue < nouvelle_capacite:
+            salle.capacite_etendue = nouvelle_capacite
+            salle.capacite = nouvelle_capacite
+            
+        
         salle.save()
 
         messages.success(request, f"Salle '{salle.nom}' modifiée avec succès.")
@@ -907,9 +921,10 @@ def supprimerSalle(request, id):
 
 @login_required 
 @admin_required
-def studentParSalle(request, id, id2):
+def studentParSalle(request, id):
     salle = SalleDeClasse.objects.get(pk=id)
-    anneeScolaire = AnneeScolaire.objects.get(id=id2)
+    # anneeScolaire = AnneeScolaire.objects.get(id=id2)
+    anneeScolaire = get_annee_active()
     
     form = ContactForm()
     message_envoye = False
@@ -927,6 +942,10 @@ def studentParSalle(request, id, id2):
 
         # Compter le nombre de filles
         nombreFeminin = sum(1 for i in inscrits if i.etudiant.genre == "Feminin")
+        
+        nombreEtendu = 0
+        if nombre > salle.capacite:
+            nombreEtendu = nombre - salle.capacite 
         
         messages.info(request, f"Recherche d'étudiants dans la salle '{salle.nom}' effectuée.")
         
@@ -950,7 +969,7 @@ def studentParSalle(request, id, id2):
             messages.success(request, "Message envoyé avec succès!")
             message_envoye = True
             
-        return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'nombreMasculin': nombreMasculin,'nombreFeminin': nombreFeminin, 'annee': anneeScolaire, 'form': form, 'message_envoye': message_envoye})
+        return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'nombreMasculin': nombreMasculin,'nombreFeminin': nombreFeminin, 'nombreEtendu': nombreEtendu, 'annee': anneeScolaire, 'form': form, 'message_envoye': message_envoye})
     
     else:
         
@@ -964,11 +983,13 @@ def studentParSalle(request, id, id2):
         # Compter le nombre de filles
         nombreFeminin = sum(1 for i in inscrits if i.etudiant.genre == "Feminin")
       
+        nombreEtendu = 0
+        if nombre > salle.capacite:
+            nombreEtendu = nombre - salle.capacite 
         
-        messages.info(request, f"Liste des étudiants de la salle '{salle.nom}' consultée.")
         form = ContactForm()
         
-    return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'nombreMasculin': nombreMasculin,'nombreFeminin': nombreFeminin, 'annee': anneeScolaire, 'form': form, 'message_envoye': message_envoye})
+    return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'nombreMasculin': nombreMasculin,'nombreFeminin': nombreFeminin, 'nombreEtendu': nombreEtendu,  'annee': anneeScolaire, 'form': form, 'message_envoye': message_envoye})
 
 
 import openpyxl
@@ -1030,7 +1051,7 @@ def export_pdf(request, salle_id, annee_id):
             etu.prenom,
             etu.genre,
             f"{ins.salleClasse.niveau.classe} {ins.salleClasse.nom}",
-            etu.mail
+            etu.mail,
         ])
 
     table = Table(data)
@@ -1048,9 +1069,9 @@ def export_pdf(request, salle_id, annee_id):
 
 @login_required 
 @admin_required
-def messageCommunParent(request, id1, id2):
+def messageCommunParent(request, id1):
     salle = get_object_or_404(SalleDeClasse, id=id1)
-    anneeScolaire = get_object_or_404(AnneeScolaire, id=id2)
+    anneeScolaire = get_annee_active()
     
     inscrits = Inscription.objects.filter(salleClasse=salle, anneeAcademique=anneeScolaire)
     
@@ -1087,7 +1108,7 @@ def messageCommunParent(request, id1, id2):
             else:
                 messages.warning(request, "Aucun email n'a pu être envoyé.")
             
-            return redirect("secretaire:studentParSalle", id=id1, id2=id2)
+            return redirect("secretaire:studentParSalle", id=id1)
     else:
         form = FormMessageCommun()
     
@@ -1100,12 +1121,170 @@ def messageCommunParent(request, id1, id2):
     return render(request, "messageCommunParent.html", context)
 
 
+# Dans un fichier d'utilitaires (par exemple, utils.py ou services.py)
+
+def get_bulletin_data_for_etudiant(etudiant, trimestre_selectionne, tous_les_bulletins_de_classe):
+    """
+    Récupère les données structurées pour un étudiant et un trimestre donné.
+    
+    :param etudiant: L'objet Etudiant (ou Student)
+    :param trimestre_selectionne: La chaîne de caractère du trimestre ('1er trimestre', etc.)
+    :param tous_les_bulletins_de_classe: La structure complète 'bulletins_etudiants'
+    :return: Le dictionnaire de données du bulletin pour cet étudiant et ce trimestre.
+    """
+    # 1. Trouver les données spécifiques à l'étudiant dans la structure principale
+    etudiant_data = next((item for item in tous_les_bulletins_de_classe if item['etudiant'].id == etudiant.id), None)
+
+    if etudiant_data:
+        # 2. Préparer le contexte pour le rendu du template
+        # Il faut isoler les données du trimestre pour le template PDF
+        
+        # Filtrer la liste des moyennes par la clé du trimestre
+        liste_moyennes = etudiant_data['liste_moyennes'].get(trimestre_selectionne, [])
+        
+        return {
+            'etudiant': etudiant,
+            'liste_moyennes': liste_moyennes,
+            'moyenne_generale_trimestre': etudiant_data['moyennes_generales'].get(trimestre_selectionne),
+            'rang_trimestre': etudiant_data['rangs'].get(trimestre_selectionne),
+            'moyennes_generales_tous': etudiant_data['moyennes_generales'], # Pour affichage cumulé (si nécessaire)
+            'rangs_tous': etudiant_data['rangs'], # Pour affichage cumulé (si nécessaire)
+            # ... Ajoutez toutes les autres clés nécessaires (absences, décisions, etc.)
+        }
+    return None
+
+
+from django.shortcuts import get_object_or_404
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.http import JsonResponse, HttpRequest
+from django.template.loader import render_to_string
+# from weasyprint import HTML, CSS # Import pour la conversion PDF
+# Assurez-vous d'importer vos modèles
+# from .models import SalleDeClasse, AnneeScolaire, Inscription
+# Assurez-vous d'importer votre logique de récupération de données
+# from .services import get_all_bulletins_data_for_class, get_bulletin_data_for_etudiant 
+# (ou le module où vous avez mis la fonction get_bulletin_data_for_etudiant)
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.contrib.auth.decorators import login_required # Remplacer par @admin_required si nécessaire
+from django.http import JsonResponse, HttpRequest
+
+# Importez vos modèles
+from .models import SalleDeClasse, AnneeScolaire, Inscription
+# Importez votre logique de génération de bulletin
+# Exemple : from .utils import generer_bulletin_pdf_pour_etudiant_et_trimestre 
+
+@login_required # Utilisez le décorateur approprié
+def envoyerBulletinsAuxParents(request: HttpRequest, salle_id: int, annee_id: int):
+    """
+    Envoie les bulletins du trimestre spécifié aux parents des élèves de la salle.
+    Requiert une méthode POST avec 'trimestre_selectionne'.
+    """
+    if request.method != 'POST':
+        # Protéger la vue contre les accès GET direct
+        return JsonResponse({'status': 'error', 'message': 'Méthode non autorisée.'}, status=405)
+
+    # Récupérer le trimestre sélectionné depuis les données POST
+    trimestre_selectionne = request.POST.get('trimestre_selectionne')
+    
+    if not trimestre_selectionne or trimestre_selectionne == 'tous':
+        return JsonResponse({'status': 'error', 'message': 'Veuillez sélectionner un trimestre spécifique.'}, status=400)
+
+    try:
+        salle = get_object_or_404(SalleDeClasse, id=salle_id)
+        anneeScolaire = get_object_or_404(AnneeScolaire, id=annee_id)
+        
+        # Filtrer les inscriptions pour la salle et l'année
+        inscrits = Inscription.objects.filter(salleClasse=salle, anneeAcademique=anneeScolaire)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Erreur de récupération des données: {str(e)}'}, status=500)
+
+
+    emails_envoyes = 0
+    total_etudiants = inscrits.count()
+    
+    # Sujet de l'email
+    sujet_email = f"Bulletin Scolaire - {trimestre_selectionne} - {salle.niveau.classe} {salle.nom}"
+
+    for inscription in inscrits:
+        etudiant = inscription.etudiant
+        email_parent = etudiant.parent.email if etudiant.parent and etudiant.parent.email else None
+
+        if email_parent:
+            try:
+                # ====================================================================
+                # ÉTAPE CLÉ : GÉNÉRATION DU BULLETIN
+                # --------------------------------------------------------------------
+                # Vous devez remplacer cette partie par votre propre logique
+                # pour générer le bulletin (e.g., HTML, PDF) pour cet étudiant et ce trimestre.
+                # L'approche recommandée est de générer un PDF.
+                #
+                # Exemple de génération de contenu textuel simple pour la démonstration:
+                
+                # --- SIMULATION DE GÉNÉRATION DE BULLETIN ---
+                # Dans un vrai cas, vous auriez besoin d'une fonction comme
+                # 'generer_bulletin_pdf(etudiant, trimestre)'
+                
+                # Simuler le contenu du corps de l'email
+                corps_email = f"""
+Chers Parents,
+
+Veuillez trouver ci-joint le bulletin de notes de votre enfant :
+- Nom : {etudiant.nom} {etudiant.prenom}
+- Classe : {salle.niveau.classe} {salle.nom}
+- Trimestre : {trimestre_selectionne}
+
+Ce document officiel récapitule les performances de l'étudiant durant cette période.
+Veuillez le consulter attentivement.
+
+Cordialement,
+
+L'Administration du Complexe Scolaire AcadPro
+"""
+                
+                # Créer l'objet EmailMessage
+                email = EmailMessage(
+                    sujet_email,
+                    corps_email,
+                    settings.EMAIL_HOST_USER,
+                    [email_parent],
+                )
+
+                # Si vous générez un PDF, vous l'attacheriez ici.
+                # Exemple :
+                # bulletin_pdf = generer_bulletin_pdf_pour_etudiant_et_trimestre(etudiant, trimestre_selectionne)
+                # email.attach(f"Bulletin_{etudiant.matricule}_{trimestre_selectionne.replace(' ', '_')}.pdf", bulletin_pdf, 'application/pdf')
+
+
+                # Envoyer l'email
+                email.send(fail_silently=False)
+                emails_envoyes += 1
+                # print(f"Bulletin de {etudiant.nom} envoyé à: {email_parent}") # Débogage
+            
+            except Exception as e:
+                # Enregistrer l'erreur ou l'afficher dans un journal
+                print(f"Erreur lors de l'envoi du bulletin de {etudiant.nom} à {email_parent}: {str(e)}")
+
+
+    if emails_envoyes > 0:
+        message_reponse = f"{emails_envoyes} bulletin(s) du **{trimestre_selectionne}** envoyé(s) avec succès aux parents!"
+        status_code = 200
+    else:
+        message_reponse = "Aucun bulletin n'a pu être envoyé. Vérifiez si les emails des parents sont renseignés."
+        status_code = 400
+
+    return JsonResponse({'status': 'success' if emails_envoyes > 0 else 'warning', 'message': message_reponse}, status=status_code)
+
 @login_required 
 @admin_required
-def listePresence(request, id, id2):
+def listePresence(request, id):
     salle = SalleDeClasse.objects.get(pk=id)
-    anneeScolaire = AnneeScolaire.objects.get(id=id2)
-
+    anneeScolaire = get_annee_active()
+    
     if request.method == 'POST' and 'dateHeureDebut' in request.POST:
         dateHeureDebut = request.POST.get("dateHeureDebut")
         commentaire = request.POST.get("commentaire")
@@ -1126,7 +1305,7 @@ def listePresence(request, id, id2):
                 )
 
         messages.success(request, "Liste de présence enregistrée avec succès.")
-        return redirect('secretaire:listePresencePasse', id=id, id2=id2)
+        return redirect('secretaire:listePresencePasse', id=id)
 
     matricule = request.POST.get('matricule', '')
     nom = request.POST.get('nom', '')
@@ -1136,14 +1315,14 @@ def listePresence(request, id, id2):
     )
     nombre = inscrits.count()
     
-    messages.info(request, f"Formulaire de prise de présence pour la salle '{salle.nom}' affiché.")
     return render(request, 'listePresence.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, "annee": anneeScolaire})
 
 @login_required 
 @admin_required
-def listePresencePasse(request, id, id2):
+def listePresencePasse(request, id):
     salleClasse = SalleDeClasse.objects.get(id=id)
-    anneeScolaire = AnneeScolaire.objects.get(id=id2)
+    anneeScolaire = get_annee_active()
+    
     inscrits = Inscription.objects.filter(anneeAcademique=anneeScolaire)
     emargements = Emargement.objects.filter(
         salleClasse=salleClasse,
@@ -1164,7 +1343,6 @@ def listePresencePasse(request, id, id2):
         date_str = localtime(em.dateHeureDebut).date().strftime('%Y-%m-%d')
         emargements_par_date[date_str].append(em)
 
-    messages.info(request, f"Historique des présences de la salle '{salleClasse.nom}' consulté.")
     return render(request, 'listePresencePasse.html', {
         "emargements_par_date": dict(emargements_par_date),
         "salleClasse": salleClasse,
@@ -1175,7 +1353,8 @@ def listePresencePasse(request, id, id2):
 @admin_required
 def presenceEtudiant(request, matricule):
     etudiant = Etudiant.objects.get(matricule=matricule)
-    inscrits = etudiant.inscriptions.all()
+    anneeActive = get_annee_active()
+    inscrits = etudiant.inscriptions.filter(anneeAcademique = anneeActive)
     parent = etudiant.parent
     emargements = Emargement.objects.filter(inscrits__in=inscrits).order_by('-id')
     
@@ -1184,7 +1363,6 @@ def presenceEtudiant(request, matricule):
         date_str = localtime(em.dateHeureDebut).date().strftime('%Y-%m-%d')
         emargements_par_date[date_str].append(em)
 
-    messages.info(request, f"Historique des présences de l'étudiant {etudiant.prenom} {etudiant.nom} consulté.")
     return render(request, 'presenceStudent.html', {
         "emargements_par_date": dict(emargements_par_date),
         "etudiant": etudiant,
@@ -1195,9 +1373,9 @@ def presenceEtudiant(request, matricule):
     
 @login_required 
 @admin_required
-def emploiDuTemps(request, id1, id2):
+def emploiDuTemps(request, id1):
     salle = SalleDeClasse.objects.get(id=id1)
-    annee = AnneeScolaire.objects.get(id=id2)
+    annee = get_annee_active()
     jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
     
     horaires = PlageHoraire.objects.filter(salle=salle, annee=annee).first()
@@ -1218,7 +1396,7 @@ def emploiDuTemps(request, id1, id2):
         except Exception as e:
             messages.error(request, f"Erreur lors de la création de la plage horaire: {str(e)}")
         
-        return redirect('secretaire:ajoutEmploiTemps', id1=id1, id2=id2, id3=salle.niveau.id)
+        return redirect('secretaire:ajoutEmploiTemps', id1=id1, id3=salle.niveau.id)
     
     if horaires:
         for h in range(horaires.debut, horaires.fin):
@@ -1251,9 +1429,9 @@ from django.contrib import messages
 
 @login_required 
 @admin_required
-def ajoutEmploiTemps(request, id1, id2, id3):
+def ajoutEmploiTemps(request, id1, id3):
     salle = SalleDeClasse.objects.get(id=id1)
-    annee = AnneeScolaire.objects.get(id=id2)
+    annee = get_annee_active()
     classe = Classe.objects.get(id=id3)
     
     jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
@@ -1295,7 +1473,7 @@ def ajoutEmploiTemps(request, id1, id2, id3):
         else:
             messages.warning(request, "Aucun cours n'a été ajouté à l'emploi du temps.")
             
-        return redirect('secretaire:emploiDuTemps', id1=id1, id2=id2)
+        return redirect('secretaire:emploiDuTemps', id1=id1)
 
     return render(request, "ajoutEmploiTemps.html", {
         'salle': salle,
@@ -1308,20 +1486,14 @@ def ajoutEmploiTemps(request, id1, id2, id3):
 
 @login_required 
 @admin_required
-def supprimerEmploiTemps(request, id1, id2):
+def supprimerEmploiTemps(request, id1):
     salle = get_object_or_404(SalleDeClasse, id=id1)
-    annee = get_object_or_404(AnneeScolaire, id=id2)
+    annee = get_annee_active()
     
     deleted_count, _ = EmploiDuTemps.objects.filter(salle=salle, annee=annee).delete()
     PlageHoraire.objects.filter(salle = salle, annee = annee).delete()
     messages.success(request, f"Emploi du temps supprimé avec succès ({deleted_count} entrées supprimées).")
-    return redirect('secretaire:emploiDuTemps', id1=id1, id2=id2)
-
-
-@login_required 
-@admin_required
-def bulletinsSalleDeClasse(request):
-    return render(request, 'bulletinsSalleDeClasse.html')
+    return redirect('secretaire:emploiDuTemps', id1=id1)
 
 
 
@@ -1374,12 +1546,13 @@ def supprimerNiveau(request, id):
 @login_required 
 @admin_required
 def all_inscription(request):
+    anneeScolaire = get_annee_active()
+    
     if request.method == "POST":
         matricule = request.POST.get("matricule", "").strip()
-        anneeScolaire = request.POST.get("anneeScolaire", "").strip()
         niveau = request.POST.get("niveau", "").strip()
 
-        inscriptions = Inscription.objects.all()
+        inscriptions = inscriptions.filter(anneeAcademique=anneeScolaire)
 
         if matricule:
             inscriptions = inscriptions.filter(etudiant__matricule__icontains=matricule)
@@ -1391,13 +1564,7 @@ def all_inscription(request):
             except (ValueError, Classe.DoesNotExist):
                 pass
 
-        if anneeScolaire:
-            try:
-                anneeAcademique = AnneeScolaire.objects.get(pk=int(anneeScolaire))
-                inscriptions = inscriptions.filter(anneeAcademique=anneeAcademique)
-            except (ValueError, AnneeScolaire.DoesNotExist):
-                pass
-
+    
         if not inscriptions.exists():
             messages.info(request, "Aucune inscription ne correspond à vos critères de recherche.")
             
@@ -1408,7 +1575,7 @@ def all_inscription(request):
         })
     
     else:
-        inscriptions = Inscription.objects.select_related('etudiant', 'salleClasse__niveau').all()
+        inscriptions = Inscription.objects.select_related('etudiant', 'salleClasse__niveau').filter(anneeAcademique=anneeScolaire)
         return render(request, 'all-inscription.html', {
             "inscriptions": inscriptions,
             "anneeScolaires": AnneeScolaire.objects.all(),
@@ -1429,11 +1596,11 @@ def ajoutInscription(request):
         # montantVerse = request.POST["montantVerse"]
         # if not montantVerse:
         #     montantVerse = 0
-        anneeScolaire_id = request.POST["anneeScolaire"]
+        # anneeScolaire_id = request.POST["anneeScolaire"]
         
         etudiant = get_object_or_404(Etudiant, pk=int(etudiant_id))
         salleDeClasse = get_object_or_404(SalleDeClasse, pk=int(salleClasse_id))
-        anneeAcademique = get_object_or_404(AnneeScolaire, pk=int(anneeScolaire_id))
+        anneeAcademique = get_annee_active()
         
        
         
@@ -1519,7 +1686,7 @@ def modifierInscription(request, id):
 @login_required 
 @admin_required
 def all_cours(request):
-    cours = Cours.objects.all()
+    cours = Cours.objects.filter(anneeScolaire = get_annee_active())
     
     if request.method == "POST":
         matiere = request.POST['matiere']
@@ -1527,11 +1694,11 @@ def all_cours(request):
         enseignant = request.POST['enseignant']
         
         if matiere:
-            cours = Cours.objects.filter(matiere__nom = matiere.strip())
+            cours = Cours.objects.filter(anneeScolaire = get_annee_active(), matiere__nom = matiere.strip())
         if classe:
-            cours = Cours.objects.filter(classe__classe = classe.strip())
+            cours = Cours.objects.filter(anneeScolaire = get_annee_active(), classe__classe = classe.strip())
         if enseignant:
-            cours = Cours.objects.filter(enseignant__nom = enseignant.strip())
+            cours = Cours.objects.filter(anneeScolaire = get_annee_active(), enseignant__nom = enseignant.strip())
         
         return render(request, 'all-cours.html', {'cours_list': cours})
     
@@ -1548,14 +1715,14 @@ def ajoutCours(request):
         classe_nom = request.POST["classe"]
         etat = request.POST["etat"]
         coefficient = request.POST["coefficient"]
-        anneeScolaire = request.POST["anneeScolaire"]
+        # anneeScolaire = request.POST["anneeScolaire"]
 
         # Récupérer les objets liés à partir des noms
         matiere = Matiere.objects.get(pk=int(matiere_nom))
         # enseignant = Enseignant.objects.get(nom=enseignant_nom.split()[0], prenom=enseignant_nom.split()[1])
         enseignant = Enseignant.objects.get(pk=int(enseignant_nom))
         classe = Classe.objects.get(pk=int(classe_nom))
-        anneeAcademique = AnneeScolaire.objects.get(pk=int(anneeScolaire))
+        anneeAcademique = get_annee_active()
 
         if Cours.objects.filter( enseignant=enseignant, classe=classe, anneeScolaire=anneeAcademique, matiere=matiere).exists():
             messages.error(request, "Cours déjà existant")
@@ -1671,68 +1838,109 @@ def modifier_evaluation(request, id):
     }
     return render(request, 'modifier-evaluation.html', context)
 
+from django.db.models import Sum
+
 @login_required 
 @admin_required
-def evaluation_groupee(request, id, id1, id2):
-    # classe = Classe.objects.get(id=id)
-    anneeScolaire = AnneeScolaire.objects.get(id=id2)
+def evaluation_groupee(request, id, id1):
     salleClasse = SalleDeClasse.objects.get(id=id)
+    anneeScolaire = get_annee_active()
+    
     inscrits = Inscription.objects.filter(
-        salleClasse=salleClasse, anneeAcademique =anneeScolaire.id
+        salleClasse=salleClasse, anneeAcademique=anneeScolaire.id
     ).select_related('etudiant', 'salleClasse')
 
-    # matieres = Matiere.objects.filter(niveau=classe)
-    # salle = SalleDeClasse.objects.get(niveau=classe)
-    courrs = Cours.objects.filter(classe__id = id1, anneeScolaire__id = anneeScolaire.id)
-    
+    courrs = Cours.objects.filter(
+        classe__id=id1, anneeScolaire__id=anneeScolaire.id
+    )
+
     if request.method == 'POST':
         trimestre = request.POST["trimestre"]
         cours_id = request.POST["cours"]
         typeEvaluation = request.POST["typeEvaluation"]
-        pourcentage = request.POST["pourcentage"]
+        pourcentage = float(request.POST["pourcentage"])
         cours = Cours.objects.get(pk=int(cours_id))
 
         evaluations_ajoutees = 0
+        eleves_depassement = []
+
+        # Détection des types à combiner
+        types_combine = ["Devoir", "Interrogation"]
+
         for inscrit in inscrits:
             note_input_name = f"note_{inscrit.etudiant.id}"
             note_val = request.POST.get(note_input_name)
 
-            if note_val:  
+            if note_val:
+                # Combiner Devoir + Interrogation
+                if typeEvaluation in types_combine:
+                    total_eleve = Evaluation.objects.filter(
+                        cours=cours,
+                        trimestre=trimestre,
+                        etudiant=inscrit.etudiant,
+                        typeEvaluation__in=types_combine
+                    ).aggregate(sum=Sum('pourcentage'))['sum'] or 0
+                else:
+                    # Composition reste indépendante
+                    total_eleve = Evaluation.objects.filter(
+                        cours=cours,
+                        trimestre=trimestre,
+                        etudiant=inscrit.etudiant,
+                        typeEvaluation=typeEvaluation
+                    ).aggregate(sum=Sum('pourcentage'))['sum'] or 0
+
+                # Vérification dépassement
+                if float(total_eleve) + pourcentage > 100:
+                    eleves_depassement.append(inscrit.etudiant.matricule)
+                    continue
+
+
+                # Création si OK
                 Evaluation.objects.create(
                     cours=cours,
                     etudiant=inscrit.etudiant,
                     typeEvaluation=typeEvaluation,
                     note=note_val,
                     trimestre=trimestre,
-                    pourcentage =pourcentage
+                    pourcentage=pourcentage
                 )
                 evaluations_ajoutees += 1
 
-        messages.success(request, f"{evaluations_ajoutees} évaluation(s) ajoutée(s) avec succès pour le cours {cours.matiere}.")
-        return redirect('secretaire:all_evaluation')  
+        # Message
+        if eleves_depassement:
+            messages.warning(
+                request, 
+                f"L'évaluation n'a pas pu être ajoutée pour les élèves suivants "
+                f"car leur pourcentage cumulé dépasse 100% : {', '.join(eleves_depassement)}"
+            )
+            return redirect('secretaire:evaluation_groupee', id=id, id1=id1)
+            
+        if evaluations_ajoutees > 0:
+            messages.success(
+                request, 
+                f"{evaluations_ajoutees} évaluation(s) ajoutée(s) avec succès pour le cours {cours.matiere}."
+            )
 
-    context = {
-        # 'matieres': matieres,
-        # 'salle': salle,
+        return redirect('secretaire:filtre_evaluation', id=id)
+
+    return render(request, 'liste_inscrits_par_classe.html', {
         'salleClasse': salleClasse,
         'inscrits': inscrits,
         'courrs': courrs,
-    }
-    return render(request, 'liste_inscrits_par_classe.html', context)
+    })
 
 @login_required 
 @admin_required
 def selectClasseEvaluation(request):
     # classe = Classe.objects.all()
     salleClasse = SalleDeClasse.objects.all()
-    annee = AnneeScolaire.objects.all().order_by('-id')
-    return render(request, 'selectClasseEvaluation.html', {'salleClasses': salleClasse, 'annees': annee})
+    return render(request, 'selectClasseEvaluation.html', {'salleClasses': salleClasse})
 
 @login_required 
 @admin_required
 def selectClasse(request):
     salleClasses = SalleDeClasse.objects.all()
-    return render(request, 'selectClasse.html', {'salleClasses': salleClasses, 'annees': AnneeScolaire.objects.all().order_by('-id')})
+    return render(request, 'selectClasse.html', {'salleClasses': salleClasses})
 
 @login_required 
 @admin_required
@@ -1762,9 +1970,9 @@ def filtre_evaluation(request, id):
 
 @login_required 
 @admin_required    
-def note_individuelle(request, id, id2):
+def note_individuelle(request, id):
     salleClasse = SalleDeClasse.objects.get(id=id)
-    annee = AnneeScolaire.objects.get(id=id2)
+    annee = get_annee_active()
     
     inscrits = Inscription.objects.filter(
         salleClasse = salleClasse,
@@ -1784,9 +1992,9 @@ def note_individuelle(request, id, id2):
 
 @login_required 
 @admin_required
-def ajout_note_individuelle(request, id, id1, id2):
+def ajout_note_individuelle(request, id, id1):
     etudiant = Etudiant.objects.get(id=id)
-    
+    anneeActive = get_annee_active()
     if request.method == 'POST':
         cours_id = request.POST["cours"]
         trimestre = request.POST["trimestre"]
@@ -1810,7 +2018,7 @@ def ajout_note_individuelle(request, id, id1, id2):
         messages.success(request, f"Note de {etudiants} en {cours.matiere} ajoutée avec succès.")
         return redirect('secretaire:all_evaluation')
     
-    cours_list = Cours.objects.filter(classe__id = id1, anneeScolaire__id = id2)
+    cours_list = Cours.objects.filter(classe__id = id1, anneeScolaire__id = anneeActive.id)
     classe = Classe.objects.get(id = id1)
 
     context = {
@@ -1837,14 +2045,17 @@ def deleteEvaluation(request, id):
 @login_required 
 @admin_required
 def all_cout(request):
+    anneeActive = get_annee_active()
+    
     if request.method == 'POST':
         classe = request.POST["classe"]
-        couts = Cout.objects.filter(classe__classe__icontains = classe)
+        
+        couts = Cout.objects.filter(classe__classe__icontains = classe, anneeScolaire = anneeActive)
         
         context = {'couts': couts}
         return render(request, 'all-cout.html', {'couts': couts})
     else:
-        couts = Cout.objects.all()
+        couts = Cout.objects.filter(anneeScolaire = anneeActive)
         context = {'couts': couts}
         return render(request, 'all-cout.html', context)
 
@@ -1857,9 +2068,9 @@ def ajoutCout(request):
         coutScolarite = request.POST['coutScolarite']
         fraisEtudeDossier = request.POST['fraisEtudeDossier']
         fraisAssocie = request.POST['fraisAssocie']
-        annee = request.POST['anneeScolaire']
+        # annee = request.POST['anneeScolaire']
 
-        anneeScolaire = AnneeScolaire.objects.get(pk=int(annee))
+        anneeScolaire = get_annee_active()
         
         classe = get_object_or_404(Classe, id=classe_id)
         if Cout.objects.filter(classe = classe, anneeScolaire = anneeScolaire).exists():
@@ -1874,9 +2085,9 @@ def ajoutCout(request):
                 fraisAssocie=fraisAssocie,
                 anneeScolaire = anneeScolaire
                 )
-            messages.success(request, f"Coûts pour la classe {classe} ({anneeScolaire}) ajoutés avec succès.")
+            messages.success(request, f"Coûts pour la classe {classe} ajoutés avec succès.")
             return redirect('secretaire:all_cout')
-    context = {'classe_list': Classe.objects.all(), 'anneeScolaires': AnneeScolaire.objects.all()}
+    context = {'classe_list': Classe.objects.all()}
     return render(request, 'add-cout.html', context)
 
 @login_required 
@@ -1900,8 +2111,8 @@ def modifierCout(request, id):
         cout.fraisEtudeDossier = request.POST['fraisEtudeDossier']
         cout.fraisAssocie = request.POST['fraisAssocie']
 
-        pkAnneeScolaire = request.POST["anneeScolaire"]
-        annee = get_object_or_404(AnneeScolaire, pk=pkAnneeScolaire)
+        # pkAnneeScolaire = request.POST["anneeScolaire"]
+        annee = get_annee_active()
         cout.anneeScolaire = annee
 
         cout.classe = get_object_or_404(Classe, id=classe_id)
@@ -1993,9 +2204,9 @@ def get_appreciation(element):
 
 @login_required 
 @admin_required
-def generationBilletin(request, matricule, classe, id):
+def generationBulletin(request, matricule, classe):
     etudiant = get_object_or_404(Etudiant, matricule=matricule)
-    annee = get_object_or_404(AnneeScolaire, id=id)
+    annee = get_annee_active()
     cours_classe = Cours.objects.filter(classe__classe=classe, anneeScolaire=annee)
 
     salleClasse = get_object_or_404(SalleDeClasse, niveau__classe=classe)
@@ -2018,6 +2229,8 @@ def generationBilletin(request, matricule, classe, id):
         for trimestre in trimestres:
             evaluations = cours.evaluations.filter(etudiant=etudiant, trimestre=trimestre)
 
+            # print(evaluations)
+            
             total_devoir = 0.0
             total_compo = 0.0
 
@@ -2051,6 +2264,8 @@ def generationBilletin(request, matricule, classe, id):
         total_coeff = sum(item['coefficient'] for item in liste_moyennes[trimestre])
         if total_coeff > 0:
             moyennes_generales[trimestre] = round(total_pondere / total_coeff, 4)
+            if moyennes_generales[trimestre] > 20:
+                moyennes_generales[trimestre] = 20.00
 
     # --- Calcul des rangs + statistiques de classe ---
     for trimestre in trimestres:
@@ -2089,7 +2304,9 @@ def generationBilletin(request, matricule, classe, id):
         # Statistiques de classe
         if classement:
             notes = [m for _, m in classement]
-            stats_classe[trimestre]["forte"] = max(notes)
+            if max(notes) >= 20:
+                notes_max = 20.00
+                stats_classe[trimestre]["forte"] = notes_max 
             stats_classe[trimestre]["faible"] = min(notes)
             stats_classe[trimestre]["moyenne"] = round(sum(notes) / len(notes), 2)
 
@@ -2120,64 +2337,274 @@ def generationBilletin(request, matricule, classe, id):
         "appreciationGenerale3": get_appreciation(moyennes_generales["3e trimestre"]),
     })
 
-# def generationBilletin(request, matricule, classe):
-#     etudiant = Etudiant.objects.get(matricule=matricule)
-#     inscrits = etudiant.inscriptions.all()
-#     cours_classe = Cours.objects.filter(classe__classe=classe)
 
-#     evaluations = Evaluation.objects.filter(
-#         etudiant=etudiant,
-#         trimestre="2e Trimestre",
-#         cours__in=cours_classe
-#     )
 
-#     # Regrouper les moyennes par matière et type d'évaluation
-#     notes_par_matiere = defaultdict(lambda: {"Devoir": [], "Composition": [], "Interrogation": [], "coef": 1})
+@login_required 
+@admin_required
+def bulletinsSalleDeClasse(request, classe):
+    annee = get_annee_active() 
+    cours_classe = Cours.objects.filter(classe__classe=classe, anneeScolaire=annee)
+    salleClasse = get_object_or_404(SalleDeClasse, niveau__classe=classe)
+    inscrits_classe = Inscription.objects.filter(anneeAcademique=annee, salleClasse=salleClasse)
+    tousInscrits = inscrits_classe.count()
 
-#     for eval in evaluations:
-#         matiere = eval.cours.matiere
-#         notes_par_matiere[matiere.nom]["coef"] = matiere.coefficient
-#         notes_par_matiere[matiere.nom][eval.typeEvaluation].append(float(eval.note))
+    trimestres = ["1er trimestre", "2e trimestre", "3e trimestre"]
 
-#     # Calcul des moyennes par matière
-#     bulletin = []
-#     somme_notes_ponderees = 0.0
-#     somme_coefficients = 0.0
+    # Structure pour stocker les données de tous les étudiants
+    bulletins_etudiants = []
 
-#     for matiere, notes in notes_par_matiere.items():
-#         coef = notes["coef"]
+    # --- Calcul du classement pour chaque trimestre ---
+    classements = {t: [] for t in trimestres}
+    
+    for trimestre in trimestres:
+        for inscrit in inscrits_classe:
+            etu = inscrit.etudiant
+            total_pondere_etu = 0.0
+            total_coeff_etu = 0.0
+            
+            for cours in cours_classe:
+                evaluations = cours.evaluations.filter(etudiant=etu, trimestre=trimestre)
+                total_devoir = 0.0
+                total_compo = 0.0
+                
+                for evaluation in evaluations:
+                    pourcentage = float(evaluation.pourcentage) / 100
+                    note_ponderee = float(evaluation.note) * pourcentage
+                    if evaluation.typeEvaluation in ['Devoir', 'Interrogation']:
+                        total_devoir += note_ponderee
+                    elif evaluation.typeEvaluation == 'Composition':
+                        total_compo += note_ponderee
 
-#         def moyenne(note_list):
-#             return round(sum(note_list) / len(note_list), 2) if note_list else 0.0
+                moyenne_matiere = float((total_devoir + total_compo) / 2)
+                total_pondere_etu += moyenne_matiere * cours.coefficient
+                total_coeff_etu += cours.coefficient
 
-#         moy_dev = moyenne(notes["Devoir"])
-#         moy_int = moyenne(notes["Interrogation"])
-#         moy_comp = moyenne(notes["Composition"])
+            moyenne_generale_etu = round(total_pondere_etu / total_coeff_etu, 4) if total_coeff_etu > 0 else 0
+            classements[trimestre].append((etu.id, moyenne_generale_etu))
 
-#         moy_globale = round((moy_dev + moy_int + moy_comp) / 3, 2) if (moy_dev or moy_int or moy_comp) else 0.0
-#         moy_coef = round(moy_globale * coef, 2)
+        # Trier du plus fort au plus faible
+        classements[trimestre].sort(key=lambda x: x[1], reverse=True)
 
-#         bulletin.append({
-#             "matiere": matiere,
-#             "coef": coef,
-#             "dev": moy_dev,
-#             "int": moy_int,
-#             "comp": moy_comp,
-#             "moyenne": moy_globale,
-#             "ponderee": moy_coef
-#         })
+    # --- Calcul des statistiques de classe ---
+    stats_classe = {t: {"forte": 0, "faible": 0, "moyenne": 0} for t in trimestres}
+    
+    for trimestre in trimestres:
+        if classements[trimestre]:
+            notes = [m for _, m in classements[trimestre]]
+            
+            if max(notes) >= 20:
+                notes_max = 20.0
+                stats_classe[trimestre]["forte"] = notes_max 
+            stats_classe[trimestre]["faible"] = min(notes)
+            stats_classe[trimestre]["moyenne"] = round(sum(notes) / len(notes), 2)
 
-#         somme_notes_ponderees += moy_coef
-#         somme_coefficients += coef
+    # --- Calcul des données pour chaque étudiant ---
+    for inscrit in inscrits_classe:
+        etudiant = inscrit.etudiant
+        
+        # Structures pour cet étudiant
+        liste_moyennes = {t: [] for t in trimestres}
+        moyennes_generales = {t: 0 for t in trimestres}
+        rangs = {t: None for t in trimestres}
 
-#     moyenne_generale = round(somme_notes_ponderees / somme_coefficients, 2) if somme_coefficients else 0.0
+        # --- Calcul des moyennes matières de l'élève ---
+        for cours in cours_classe:
+            coefficient = cours.coefficient
+            for trimestre in trimestres:
+                evaluations = cours.evaluations.filter(etudiant=etudiant, trimestre=trimestre)
 
-#     return render(request, 'generationBilletin.html', {
-#         "etudiant": etudiant,
-#         "inscrits": inscrits,
-#         "bulletin": bulletin,
-#         "moyenne_generale": moyenne_generale,
-#         "cours_classes": cours_classe
+                total_devoir = 0.0
+                total_compo = 0.0
+
+                for evaluation in evaluations:
+                    pourcentage = float(evaluation.pourcentage) / 100
+                    note_ponderee = float(evaluation.note) * pourcentage
+
+                    if evaluation.typeEvaluation in ['Devoir', 'Interrogation']:
+                        total_devoir += note_ponderee
+                    elif evaluation.typeEvaluation == 'Composition':
+                        total_compo += note_ponderee
+
+                moyenne_matiere = float((total_devoir + total_compo) / 2)
+
+                liste_moyennes[trimestre].append({
+                    "matiere": cours.matiere.nom,
+                    "enseignant": cours.enseignant.nom,
+                    "coefficient": coefficient,
+                    "moyenne_devoir": round(total_devoir, 2),
+                    "moyenne_compo": round(total_compo, 2),
+                    "moyenne": round(moyenne_matiere, 2),
+                    "moyenne_ponderee": round(moyenne_matiere * coefficient, 2),
+                    "appreciation1": get_appreciation(round(moyenne_matiere, 2)),
+                    "appreciation2": get_appreciation(round(moyenne_matiere, 2)),
+                    "appreciation3": get_appreciation(round(moyenne_matiere, 2)),
+                })
+
+        # --- Calcul des moyennes générales de l'élève ---
+        for trimestre in trimestres:
+            total_pondere = sum(item['moyenne_ponderee'] for item in liste_moyennes[trimestre])
+            total_coeff = sum(item['coefficient'] for item in liste_moyennes[trimestre])
+            if total_coeff > 0:
+                moyennes_generales[trimestre] = round(total_pondere / total_coeff, 4)
+                if moyennes_generales[trimestre] > 20:
+                    moyennes_generales[trimestre] = 20.00
+
+        # --- Récupération des rangs ---
+        for trimestre in trimestres:
+            rangs[trimestre] = next(
+                (i + 1 for i, (etu_id, _) in enumerate(classements[trimestre]) if etu_id == etudiant.id), 
+                None
+            )
+
+        # Ajouter les données de cet étudiant
+        bulletins_etudiants.append({
+            "etudiant": etudiant,
+            "liste_moyennes": liste_moyennes,
+            "moyennes_generales": moyennes_generales,
+            "rangs": rangs,
+        })
+
+    # Message de confirmation
+    messages.success(request, f"Bulletins générés avec succès pour {tousInscrits} étudiant(s). Année scolaire {annee}")
+    
+    return render(request, 'bulletinsSalleDeClasse.html', {
+        "annee": annee,
+        "salleClasse": salleClasse,
+        "tousInscrits": tousInscrits,
+        "trimestres": trimestres,
+        "bulletins_etudiants": bulletins_etudiants,
+        "stats_classe": stats_classe,
+    })
+
+# @login_required 
+# @admin_required
+# def bulletinsSalleDeClasse(request, classe, id):
+#     # etudiant = get_object_or_404(Etudiant, matricule=matricule)
+#     annee = get_object_or_404(AnneeScolaire, id=id)
+#     cours_classe = Cours.objects.filter(classe__classe=classe, anneeScolaire=annee)
+
+#     salleClasse = get_object_or_404(SalleDeClasse, niveau__classe=classe)
+
+
+
+#     # inscrits = etudiant.inscriptions.all()
+#     inscrits_classe = Inscription.objects.filter(anneeAcademique=annee, salleClasse=salleClasse)
+#     tousInscrits = inscrits_classe.count()
+
+#     trimestres = ["1er trimestre", "2e trimestre", "3e trimestre"]
+
+#     # Structures pour stocker les résultats
+#     liste_moyennes = {t: [] for t in trimestres}
+#     moyennes_generales = {t: 0 for t in trimestres}
+#     rangs = {t: None for t in trimestres}
+#     stats_classe = {t: {"forte": 0, "faible": 0, "moyenne": 0} for t in trimestres}  # <-- Ajouté
+
+#     # --- Calcul des moyennes matières de l'élève ---
+#     for cours in cours_classe:
+#         coefficient = cours.coefficient
+#         for trimestre in trimestres:
+#             evaluations = cours.evaluations.filter(etudiant__inscriptions__in=inscrits_classe, trimestre=trimestre)
+
+#             total_devoir = 0.0
+#             total_compo = 0.0
+
+#             for evaluation in evaluations:
+#                 pourcentage = float(evaluation.pourcentage) / 100
+#                 note_ponderee = float(evaluation.note) * pourcentage
+
+#                 if evaluation.typeEvaluation in ['Devoir', 'Interrogation']:
+#                     total_devoir += note_ponderee
+#                 elif evaluation.typeEvaluation == 'Composition':
+#                     total_compo += note_ponderee
+
+#             moyenne_matiere = float((total_devoir + total_compo) / 2)
+
+#             liste_moyennes[trimestre].append({
+#                 "matiere": cours.matiere.nom,
+#                 "enseignant": cours.enseignant.nom,
+#                 "coefficient": coefficient,
+#                 "moyenne_devoir": round(total_devoir, 2),
+#                 "moyenne_compo": round(total_compo, 2),
+#                 "moyenne": round(moyenne_matiere, 2),
+#                 "moyenne_ponderee": round(moyenne_matiere * coefficient, 2),
+#                 "appreciation1": get_appreciation(round(moyenne_matiere, 2)),
+#                 "appreciation2": get_appreciation(round(moyenne_matiere, 2)),
+#                 "appreciation3": get_appreciation(round(moyenne_matiere, 2)),
+#             })
+
+#     # --- Calcul des moyennes générales de l'élève ---
+#     for trimestre in trimestres:
+#         total_pondere = sum(item['moyenne_ponderee'] for item in liste_moyennes[trimestre])
+#         total_coeff = sum(item['coefficient'] for item in liste_moyennes[trimestre])
+#         if total_coeff > 0:
+#             moyennes_generales[trimestre] = round(total_pondere / total_coeff, 4)
+
+#     # --- Calcul des rangs + statistiques de classe ---
+#     for trimestre in trimestres:
+#         classement = []
+#         for inscrit in inscrits_classe:
+#             etu = inscrit.etudiant
+#             cours_inscrit = Cours.objects.filter(classe__classe=classe, anneeScolaire=annee)
+
+#             total_pondere_etu = 0.0
+#             total_coeff_etu = 0.0
+#             for cours in cours_inscrit:
+#                 evaluations = cours.evaluations.filter(etudiant=etu, trimestre=trimestre)
+#                 total_devoir = 0.0
+#                 total_compo = 0.0
+#                 for evaluation in evaluations:
+#                     pourcentage = float(evaluation.pourcentage) / 100
+#                     note_ponderee = float(evaluation.note) * pourcentage
+#                     if evaluation.typeEvaluation in ['Devoir', 'Interrogation']:
+#                         total_devoir += note_ponderee
+#                     elif evaluation.typeEvaluation == 'Composition':
+#                         total_compo += note_ponderee
+
+#                 moyenne_matiere = float((total_devoir + total_compo) / 2)
+#                 total_pondere_etu += moyenne_matiere * cours.coefficient
+#                 total_coeff_etu += cours.coefficient
+
+#             moyenne_generale_etu = round(total_pondere_etu / total_coeff_etu, 4) if total_coeff_etu > 0 else 0
+#             classement.append((etu.id, moyenne_generale_etu))
+
+#         # Trier du plus fort au plus faible
+#         classement.sort(key=lambda x: x[1], reverse=True)
+
+#         # Trouver rang élève
+#         # rangs[trimestre] = next((i + 1 for i, (etu_id, _) in enumerate(classement) if etu_id == etudiant.id), None)
+#         # rangs[trimestre] = next((i + 1 for i, (etu_id, _) in enumerate(classement), None))
+
+#         # Statistiques de classe
+#         if classement:
+#             notes = [m for _, m in classement]
+#             stats_classe[trimestre]["forte"] = max(notes)
+#             stats_classe[trimestre]["faible"] = min(notes)
+#             stats_classe[trimestre]["moyenne"] = round(sum(notes) / len(notes), 2)
+
+#     # Message de confirmation pour la génération du bulletin
+#     messages.success(request, f"Bulletins générées avec succès. Année scolaire {annee}")
+    
+#     return render(request, 'bulletinsSalleDeClasse.html', {
+#         "annee": annee,
+#         "inscrits_classe": inscrits_classe, 
+#         "tousInscrits": tousInscrits,
+#         "salleClasse": salleClasse,
+#         "liste_moyennesTrimestre1": liste_moyennes["1er trimestre"],
+#         "liste_moyennesTrimestre2": liste_moyennes["2e trimestre"],
+#         "liste_moyennesTrimestre3": liste_moyennes["3e trimestre"],
+#         "moyenne_generale1": moyennes_generales["1er trimestre"],
+#         "moyenne_generale2": moyennes_generales["2e trimestre"],
+#         "moyenne_generale3": moyennes_generales["3e trimestre"],
+#         "rang1": rangs["1er trimestre"],
+#         "rang2": rangs["2e trimestre"],
+#         "rang3": rangs["3e trimestre"],
+#         "stats1": stats_classe["1er trimestre"],
+#         "stats2": stats_classe["2e trimestre"],
+#         "stats3": stats_classe["3e trimestre"],
+#         "trimestres": trimestres,
+#         "appreciationGenerale1": get_appreciation(moyennes_generales["1er trimestre"]),
+#         "appreciationGenerale2": get_appreciation(moyennes_generales["2e trimestre"]),
+#         "appreciationGenerale3": get_appreciation(moyennes_generales["3e trimestre"]),
 #     })
 
 
@@ -2431,11 +2858,12 @@ def ajoutComptable(request):
             
             comptable = Comptable.objects.create(
                 email=email,
+                telephone=telephone,
                 utilisateur=utilisateur
             )
             
             
             return HttpResponse("Comptable ajouté avec succès!!")
-    return render(request, "ajoutComptable.html", {"form": form})
+    return render(request, "ajoutComptable.html", {"form": form, "comptables": Comptable.objects.all()})
 
 

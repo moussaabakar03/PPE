@@ -83,6 +83,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                
+                # ✅ AJOUTE CECI
+                'secretaire.context_processors.annees_scolaires',
             ],
         },
     },
@@ -189,7 +192,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-
+STATIC_ROOT="static"
 
 
 

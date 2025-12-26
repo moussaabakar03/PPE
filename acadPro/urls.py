@@ -43,7 +43,7 @@ urlpatterns = [
     
     
     path('depotDossier/', views.depotDossier, name="depotDossier"),
-    path('receptionDossierStudent/', views.receptionDossierStudent, name="receptionDossierStudent"),
+    path('reception-dossier-eleve/', views.receptionDossierStudent, name="receptionDossierStudent"),
     path('connexion/', views.connexion, name="connexion"),
     path('deconnexion/', views.deconnexion, name="deconnexion"),
 

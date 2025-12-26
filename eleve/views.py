@@ -319,26 +319,28 @@ def echangeEleveEleve(request, id):
 #     return render(request, 'eleve/mesPaiement.html', {'mesPaiements': mesPaiements , 'etudiant': eleve, 'inscriptions': inscriptions})
 from collections import defaultdict
 
+
+from collections import defaultdict
+
 @login_required
 @eleve_required
 def mesPaiement(request):
-    
+
+    # Récupération de l'élève connecté
     try:
         eleve = Etudiant.objects.get(utilisateur__username=request.user.username)
     except Etudiant.DoesNotExist:
         messages.error(request, "Les identifiants sont incorrects !")
         return redirect('connexion')
-    
+
     inscriptions = eleve.inscriptions.all()
     paiements = PaiementEleve.objects.filter(inscription_Etudiant__in=inscriptions)
-    
-    annee = None
-    for inscription in inscriptions:
-        if annee is None:
-            annee = inscription.anneeAcademique
-            
-    paiements_temp = defaultdict(list)
 
+    # Récupération de l'année scolaire
+    annee = inscriptions.first().anneeAcademique if inscriptions else None
+
+    # Paiements regroupés par salle
+    paiements_temp = defaultdict(list)
     for paiement in paiements:
         salle = paiement.inscription_Etudiant.salleClasse
         paiements_temp[salle.id].append(paiement)
@@ -348,10 +350,19 @@ def mesPaiement(request):
     restePayer_global = 0
 
     for salle_id, paiements in paiements_temp.items():
+
         salle = paiements[0].inscription_Etudiant.salleClasse
-        total_salle = sum(p.montantVerse for p in paiements)
+
+        # FILTRAGE PAR TYPE DE PAIEMENT
+        totalInscription = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais d'inscription")
+        totalEtudeDossier = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais d'étude du dossier")
+        totalScolarite = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais de scolarité")
+        totalFraisAssocie = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais Associés")
+
+        total_salle = totalInscription + totalEtudeDossier + totalScolarite + totalFraisAssocie
         total_paye_global += total_salle
 
+        # Récupération du coût total de la classe
         try:
             cout_obj = Cout.objects.get(anneeScolaire=annee, classe=salle.niveau)
             cout_total = (
@@ -363,24 +374,165 @@ def mesPaiement(request):
         except Cout.DoesNotExist:
             cout_total = 0
 
-        # Calcul du reste à payer pour CETTE salle
-        reste_salle = cout_total - total_salle
-        restePayer_global += max(reste_salle, 0)  # on évite les valeurs négatives
+
+        reste_salle = max(cout_total - total_salle, 0)
+        restePayer_global += reste_salle
 
         paiements_par_salle.append({
             'salle': salle,
-            'paiements': paiements,
-            'total_paye': total_salle,
+            'totalInscription': totalInscription,
+            'totalEtudeDossier': totalEtudeDossier,
+            'totalScolarite': totalScolarite,
+            'totalFraisAssocie': totalFraisAssocie,
+
+            # Coûts attendus individuellement
+            'coutInscription': cout_obj.coutInscription,
+            'coutEtudeDossier': cout_obj.fraisEtudeDossier,
+            'coutScolarite': cout_obj.coutScolarite,
+            'coutFraisAssocie': cout_obj.fraisAssocie,
+
             'cout_attendu': cout_total,
-            'reste_a_payer': max(reste_salle, 0)
+            'total_paye': total_salle,
+            'reste_a_payer': reste_salle,
         })
+
 
     return render(request, 'eleve/mesPaiement.html', {
         'paiements_par_salle': paiements_par_salle,
         'etudiant': eleve,
         'total_paye': total_paye_global,
-        'restePayer': restePayer_global
+        'restePayer': restePayer_global,
     })
+
+
+
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+from io import BytesIO
+
+
+import qrcode
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import cm
+from reportlab.lib import colors
+from django.http import HttpResponse
+from django.conf import settings
+from io import BytesIO
+import os
+
+
+def export_paiement_pdf(request, salle_id):
+
+    eleve = get_object_or_404(Etudiant, utilisateur=request.user)
+    inscription = eleve.inscriptions.filter(salleClasse_id=salle_id).first()
+    salle = inscription.salleClasse
+    annee = inscription.anneeAcademique
+
+    paiements = PaiementEleve.objects.filter(inscription_Etudiant=inscription)
+
+    # Totaux par type
+    totalInscription = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais d'inscription")
+    totalEtudeDossier = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais d'étude du dossier")
+    totalScolarite = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais de scolarité")
+    totalFraisAssocie = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais Associés")
+
+    total_paye = totalInscription + totalEtudeDossier + totalScolarite + totalFraisAssocie
+
+    try:
+        cout = Cout.objects.get(anneeScolaire=annee, classe=salle.niveau)
+        cout_total = cout.coutInscription + cout.coutScolarite + cout.fraisEtudeDossier + cout.fraisAssocie
+    except Cout.DoesNotExist:
+        cout_total = 0
+
+    reste_a_payer = max(cout_total - total_paye, 0)
+
+    # PDF buffer
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4)
+    styles = getSampleStyleSheet()
+    elements = []
+
+    # LOGO
+    logo_path = os.path.join(settings.STATIC_ROOT, "image/Logo.png")
+    if os.path.exists(logo_path):
+        logo = Image(logo_path, width=4*cm, height=4*cm)
+        logo.hAlign = "CENTER"
+        elements.append(logo)
+
+    elements.append(Spacer(1, 10))
+    elements.append(Paragraph("<b><font size=20>RELEVÉ DE PAIEMENT</font></b>", styles["Title"]))
+    elements.append(Spacer(1, 10))
+
+    # INFO ÉLÈVE
+    elements.append(Paragraph(f"<b>Élève :</b> {eleve.nom} {eleve.prenom}", styles["Normal"]))
+    elements.append(Paragraph(f"<b>Classe :</b> {salle.niveau} - {salle.nom}", styles["Normal"]))
+    elements.append(Paragraph(f"<b>Année scolaire :</b> {annee}", styles["Normal"]))
+    elements.append(Paragraph(f"<b>Matricule :</b> {eleve.matricule}", styles["Normal"]))
+    elements.append(Spacer(1, 20))
+
+    # TABLEAU
+    data = [
+        ["Type", "Payé (FCFA)", "Attendu", "Reste"],
+        ["Frais d'inscription", totalInscription, cout.coutInscription, max(cout.coutInscription - totalInscription, 0)],
+        ["Frais étude dossier", totalEtudeDossier, cout.fraisEtudeDossier, max(cout.fraisEtudeDossier - totalEtudeDossier, 0)],
+        ["Frais scolarité", totalScolarite, cout.coutScolarite, max(cout.coutScolarite - totalScolarite, 0)],
+        ["Frais associés", totalFraisAssocie, cout.fraisAssocie, max(cout.fraisAssocie - totalFraisAssocie, 0)],
+        ["", "", "", ""],
+        ["TOTAL", total_paye, cout_total, reste_a_payer],
+    ]
+
+    table = Table(data, colWidths=[7*cm, 3*cm, 3*cm, 3*cm])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
+        ('BACKGROUND', (0, -1), (-1, -1), colors.whitesmoke),
+        ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+    ]))
+
+    elements.append(table)
+    elements.append(Spacer(1, 20))
+
+    # QR CODE
+    qr_data = (
+        f"Eleve: {eleve.nom} {eleve.prenom}\n"
+        f"Classe: {salle.niveau}-{salle.nom}\n"
+        f"Année: {annee}\n"
+        f"Total payé: {total_paye} FCFA\n"
+        f"Reste: {reste_a_payer} FCFA"
+    )
+
+    qr_img = qrcode.make(qr_data)
+    qr_buffer = BytesIO()
+    qr_img.save(qr_buffer)
+    qr_buffer.seek(0)
+    qr = Image(qr_buffer, width=3*cm, height=3*cm)
+    qr.hAlign = "LEFT"
+
+    elements.append(Paragraph("<b>Vérification QR Code :</b>", styles["Normal"]))
+    elements.append(qr)
+    elements.append(Spacer(1, 20))
+
+    # # SIGNATURE
+    # elements.append(Paragraph("<b>Directeur des Études</b>", styles["Normal"]))
+    # elements.append(Spacer(1, 40))
+    # elements.append(Paragraph("______________________________", styles["Normal"]))
+
+    # Build
+    doc.build(elements)
+
+    pdf = buffer.getvalue()
+    buffer.close()
+
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="Paiements_{eleve.nom}_{salle.nom}.pdf"'
+
+    return response
 
 
 @login_required

@@ -1,0 +1,146 @@
+
+/* Styles pour l'impression */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .bulletin, .bulletin * {
+        visibility: visible;
+    }
+    .bulletin {
+        page-break-after: always;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    .no-print {
+        display: none !important;
+    }
+}
+
+/* Styles des bulletins */
+.bulletin {
+    min-height: auto;
+    padding: 1cm;
+    margin: 1cm auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    position: relative;
+    box-sizing: border-box;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+}
+
+.left-header, .right-header {
+    width: 30%;
+    font-size: 12px;
+    text-align: center;
+}
+
+.center-header {
+    width: 40%;
+    text-align: center;
+}
+
+.title-large {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.subtitle {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.student-info {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.subjects-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.subjects-table th, .subjects-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.subjects-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.decisions {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.decision-box {
+    width: 45%;
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+.decision-box h4 {
+    margin: 0 0 10px 0;
+    text-align: center;
+    text-decoration: underline;
+}
+
+.checkbox {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 1px solid #000;
+    margin-right: 5px;
+}
+
+.checkbox.checked:before {
+    content: "✓";
+    display: block;
+    text-align: center;
+    line-height: 12px;
+}
+
+.note {
+    font-size: 12px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Bouton d'impression */
+.print-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ff9d01;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 1000;
+}
+
+.print-button:hover {
+    background-color: #e68a00;
+}
+
+#bulletin2, #bulletin3 { display: none; }

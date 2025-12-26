@@ -10,161 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <Link rel="stylesheet" href="{% static 'secretaire/css/styleBulletin.css' %}">
-<style>
-        /* Styles généraux */
-        {% comment %} body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-        } {% endcomment %}
-        
-        /* Styles pour l'impression */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            .bulletin, .bulletin * {
-                visibility: visible;
-            }
-            .bulletin {
-                page-break-after: always;
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                margin: 0;
-                padding: 0;
-            }
-            .no-print {
-                display: none !important;
-            }
-        }
-        
-        /* Styles des bulletins */
-        .bulletin {
-            {% comment %} width: 21cm; {% endcomment %}
-            min-height: auto;
-            padding: 1cm;
-            margin: 1cm auto;
-            {% comment %} background: white; {% endcomment %}
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            position: relative;
-            box-sizing: border-box;
-        }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #000;
-            padding-bottom: 10px;
-        }
-        
-        .left-header, .right-header {
-            width: 30%;
-            font-size: 12px;
-            text-align: center;
-        }
-        
-        .center-header {
-            width: 40%;
-            text-align: center;
-        }
-        
-        .title-large {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 5px 0;
-        }
-        
-        .subtitle {
-            font-size: 16px;
-            font-weight: bold;
-            margin: 5px 0;
-        }
-        
-        .student-info {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .subjects-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        
-        .subjects-table th, .subjects-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        
-        .subjects-table th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-        
-        .decisions {
-            display: flex;
-            justify-content: space-between;
-            margin: 20px 0;
-        }
-        
-        .decision-box {
-            width: 45%;
-            border: 1px solid #ddd;
-            padding: 10px;
-        }
-        
-        .decision-box h4 {
-            margin: 0 0 10px 0;
-            text-align: center;
-            text-decoration: underline;
-        }
-        
-        .checkbox {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border: 1px solid #000;
-            margin-right: 5px;
-        }
-        
-        .checkbox.checked:before {
-            content: "✓";
-            display: block;
-            text-align: center;
-            line-height: 12px;
-        }
-        
-        .note {
-            font-size: 12px;
-            margin-top: 20px;
-            text-align: center;
-        }
-        
-        /* Bouton d'impression */
-        .print-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #ff9d01;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            z-index: 1000;
-        }
-        
-        .print-button:hover {
-            background-color: #e68a00;
-        }
-    </style>
+    <Link rel="stylesheet" href="{% static 'secretaire/css/stylePourBulletin.css' %}">
+  
     {% include 'partial/head.html' %}
 
 </head>
@@ -198,17 +45,25 @@
                         </li> -->
                         <li> <a href ="{% url 'secretaire:detailEtudiant' etudiant.matricule etudiant.parent.id %}" >Retour(<i class="fas fa-info-circle"></i> Mes Infos)</a></li>
                         <li>Bulletin Scolaire ({{etudiant.nom}} {{etudiant.prenom}})</li>
-                        {% comment %} <li> <a href ="" ><i class="fas fa-print" style="color: #ff9d01;"></i>Imprimer</a></li> {% endcomment %}
+                        <li>
+                            <select name="trimestre" id="trimestre" class="select2 form-control" style="width: 250px; font-size: 15px;" required>
+                                <option value="">-- Choisir --</option>
+                                <option value="trimestre1">Trimestre 1</option>
+                                <option value="trimestre2">Trimestre 2</option>
+                                <option value="trimestre3">Trimestre 3</option>
+                            </select>
+
+                        </li>
                         <li> 
-                               <button class="print-button no-print" onclick="printBulletins()">
-            <i class="fas fa-print"></i> Imprimer les bulletins
-        </button>
+                            <button class="print-button no-print" onclick="printBulletins()">
+                                <i class="fas fa-print"></i> Imprimer les bulletins
+                            </button>
                         </li>
 
                     </ul>
                 </div>
                 <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 40px; margin-bottom: -30px;">
-                    <div>
+                    {% comment %} <div>
                         {% if inscrits %}
                             <select name="anneeScolaire" class="select2 form-control" id="anneeSelect" style="width: 250px;  font-size: 15px;" required>
                                 <option value=""  style= "width: 600px; ">-- Choisir une année scolaire --</option>
@@ -219,7 +74,7 @@
                                 {% endfor %}
                             </select>
                         {%endif %}
-                    </div>
+                    </div> {% endcomment %}
                     {% if annee %}
                         {{ annee.debutAnnee|date:"Y" }}- {{ annee.fintAnnee|date:"Y" }}
                     {%endif %}
@@ -677,7 +532,7 @@
 
 
     
-    <script>
+    {% comment %} <script>
         $(document).ready(function () {
             $('#anneeSelect').on('change', function() {
 
@@ -685,12 +540,39 @@
                 const eleve_matricule = "{{ etudiant.matricule }}";
                 const anneeScolaireId = $('select[name="anneeScolaire"]').val();
 
-                const url = `/secretaire/generationBilletin/${eleve_matricule}/${salle_id}/${anneeScolaireId}`;
+                const url = `/secretaire/generationBilletin/${eleve_matricule}/${salle_id}}`;
                 window.location.href = url;
             });
         });
+    </script> {% endcomment %}
+
+    <script>
+        document.getElementById("trimestre").addEventListener("change", function() {
+        let value = this.value;
+
+        if (value === "trimestre1"){
+            document.getElementById("bulletin1").style.display = "block";
+            document.getElementById("bulletin2").style.display = "none";
+            document.getElementById("bulletin3").style.display = "none";
+
+        }
+        if (value === "trimestre2"){
+            document.getElementById("bulletin1").style.display = "block";
+            document.getElementById("bulletin2").style.display = "block";
+            document.getElementById("bulletin3").style.display = "none";
+
+        } 
+        if (value === "trimestre3"){
+            document.getElementById("bulletin3").style.display = "block";
+            document.getElementById("bulletin1").style.display = "block";
+            document.getElementById("bulletin2").style.display = "block";
+        } 
+    });
     </script>
-     <script>
+
+
+
+    <script>
         function printBulletins() {
             window.print();
         }

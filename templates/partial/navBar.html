@@ -64,5 +64,8 @@
                 <li class="nav-item"><a href="{% url 'connexion' %}" class="btn btn-accent ml-2">Connexion</a></li>
             </ul>
         </div>
+         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            {% include 'partial/messages.html' %}
+        </div>
     </div>
 </nav>

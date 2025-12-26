@@ -93,6 +93,9 @@
                         <li>
                             <a href="{% url 'secretaire:index' %}">Tableau Bord</a>
                         </li>
+                        <li>
+                            <a href="{% url 'secretaire:all_inscription' %}">Inscription *</a>
+                        </li>
                         <li>Ajout Inscription</li>
                     </ul>
                 </div>
@@ -174,7 +177,7 @@
                                     </select>
                                 </div>
 
-                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                {% comment %} <div class="col-xl-4 col-lg-6 col-12 form-group">
                                     <label>Année scolaire *</label>
                                     <select name="anneeScolaire" id ="annee-select" class="select2 form-control" required>
                                         <option value="">Sélectionnez l'année scolaire *</option>
@@ -182,7 +185,7 @@
                                             <option value={{anneeScolaire.id}} data-coutInscriptionAnnee = {{ anneeScolaire.cout.first.coutInscription }}>{{ anneeScolaire.debutAnnee|date:"Y" }}- {{ anneeScolaire.fintAnnee|date:"Y" }}</option>
                                         {% endfor %}
                                     </select>
-                                </div>
+                                </div> {% endcomment %}
                         
                                 <!-- Montant versé -->
                                 {% comment %} <div class="col-xl-4 col-lg-6 col-12 form-group">

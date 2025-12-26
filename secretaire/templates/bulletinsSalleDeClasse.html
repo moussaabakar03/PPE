@@ -1,8 +1,8 @@
+{% load dict_utils %}
+
 {% load static %}
-
-
 <!doctype html>
-<html class="no-js" lang="">
+<html class="no-js" lang="fr">
 
 <head>
     <meta charset="utf-8">
@@ -12,103 +12,596 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" />
 
+    <link rel="stylesheet" href="{% static 'secretaire/css/styleBulletin.css' %}">
+    <link rel="stylesheet" href="{% static 'secretaire/css/stylePourBulletin.css' %}">
     {% include 'partial/head.html' %}
+    <style>
+        /* Styles optimisés pour l'impression */
+        @media print {
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                background: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .bulletin {
+                width: 100% !important;
+                height: auto !important;
+                margin: 0 !important;
+                padding: 10mm !important;
+                page-break-after: always;
+                box-sizing: border-box;
+                position: relative;
+                display: block !important;
+            }
+            
+            .print-bulletin-container {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            /* Assurer que tous les éléments sont visibles */
+            .bulletin * {
+                visibility: visible !important;
+            }
+            
+            /* Optimiser l'espace des tableaux */
+            .subjects-table {
+                width: 100% !important;
+                font-size: 12px !important;
+                margin: 5mm 0 !important;
+            }
+            
+            .subjects-table th,
+            .subjects-table td {
+                padding: 2px 4px !important;
+            }
+            
+            /* Réduire les marges internes */
+            .header,
+            .student-info,
+            .decisions {
+                margin: 2mm 0 !important;
+                padding: 2mm !important;
+            }
+            
+            /* Ajuster la taille des images */
+            .center-header img {
+                width: 70px !important;
+                height: 70px !important;
+            }
+            
+            .student-info img {
+                width: 100px !important;
+                height: 100px !important;
+            }
+        }
+
+        /* Styles pour l'écran */
+        .print-bulletin-container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
+        
+        .bulletin { 
+            margin-bottom: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
-    
 
 <body>
-    <!-- Preloader Start Here -->
-    <div id="preloader"></div>
-    <!-- Preloader End Here -->
     <div id="wrapper" class="wrapper bg-ash">
-        <!-- Header Menu Area Start Here -->
-        
         {% include 'partial/header.html' %}
-
-        <!-- Header Menu Area End Here -->
-        <!-- Page Area Start Here -->
         <div class="dashboard-page-one">
-            <!-- Sidebar Area Start Here -->
-           
             {% include 'partial/aside.html' %}
-
-            <!-- Sidebar Area End Here -->
             <div class="dashboard-content-one">
-                <!-- Breadcubs Area Start Here -->
                 <div class="breadcrumbs-area">
                     <h3>Bulletins scolaire</h3>
-                    <div style ="display: flex; justify-content: space-between;">
+                    <div style="display: flex; justify-content: space-between;">
                         <ul>
-                            <li>Nom SAllle</li>
-                            <li><a href =""> Retour<a></li>
-                            {% comment %} <li><a href ="{% url 'secretaire:studentParSalle' salle.id annee.id %}"> Retour<a></li> {% endcomment %}
+                            <li>Nom Salle</li>
+                            <li><a href="{% url 'secretaire:studentParSalle' salleClasse.id %}"> Retour</a></li>
                             <li> Bulletins scolaire</li>
                         </ul>
                         <ul>
-                            {% comment %} <li><a href ="#" onclick="openModal('{{ salle.id }}', '{{ annee.id }}')"> <i class="fa fa-plus"></i> Generer toutes les Bulletins scolaire<a></li> {% endcomment %}
-                            <li><a href ="#"> <i class="fa-solid fa-file-circle-check" aria-label="Bulletin généré"></i>Generer toutes les Bulletins scolaire<a></li>
+                            <li>
+                                <div class="dropdown">
+                                    <button class="print-button no-print" id="btnImprimer">Imprimer</button>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </div>
-                <!-- Breadcubs Area End Here -->
-                <!-- Student Table Area Start Here -->
-                <div class="card height-auto">
-                    <div class="card-body">
-                        <div class="heading-layout1">
-                            <div class="item-title">
-                                <h3>Bulletins de note *</h3>
-                            </div>
-                        </div>
-                        <div class="table-responsive">
-                             {% comment %} <table id="notesTable"  class="table display data-table text-nowrap">
-                            <thead>
-                                <tr>
-                                    <th>Année</th>
-                                    <th>Classe</th>
-                                    <th>Voir</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if inscrits %}
-                                    {% for inscription in inscrits %}
-                                        <tr>
-                                            <td>{{ inscription.anneeAcademique.debutAnnee|date:"Y" }}- {{ inscription.anneeAcademique.fintAnnee|date:"Y" }}</td>
-                                            <td>{{ inscription.salleClasse.niveau.classe }}- {{ inscription.salleClasse.nom }}</td>
-                                            <td>
-                                                <a class="nav-link" href="{% url 'eleve:affichageEmploiTemps' inscription.salleClasse.id inscription.anneeAcademique.id %}"><i class="fas fa-eye" title = "voir plus" aria-hidden="true" style="color:rgb(25, 25, 103); font-size: 22px; margin-right: 10px;"></i> Voir</a>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                {% else %}
-                                    <tr>
-                                        <td colspan="4" class="text-center" style= "color: #ff9d01;">Aucune emploi du temps enregistré</td>
-                                    </tr>
-                                {% endif %}
-                            </tbody>
-                        </table> {% endcomment %}
-                        </div>
+
+                <!-- Barre de filtrage et d'impression -->
+                <div id="barreFiltre" style="margin: 20px 10%; padding: 20px; background-color: #f8f9fa; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <div style="display: flex; gap: 20px; align-items: center;">
+                        <label for="filtreTrimestreSelect" style="font-weight: bold; font-size: 16px;">Filtrer par trimestre :</label>
+                        <select id="filtreTrimestreSelect" style="padding: 10px 20px; border: 2px solid #212f61ff; border-radius: 5px; font-size: 14px; cursor: pointer; background-color: white;">
+                            <option value="tous">Tous les trimestres</option>
+                            <option value="1er trimestre">1er trimestre</option>
+                            <option value="2e trimestre">2e trimestre</option>
+                            <option value="3e trimestre">3e trimestre</option>
+                        </select>
                     </div>
+
+                    <button id="btnImprimer2" style="padding: 12px 30px; background-color: #212f61ff; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: background-color 0.3s;">
+                        <i class="fa fa-paper-plane-o"></i> Envoyer aux parents
+                    </button>   
                 </div>
-                <!-- Student Table Area End Here -->
-                               {% include 'partial/copyright.html' %}
+
+                <div id="bulletinsWrapper" style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-left: 10%; margin-top: 10px; width: 80%;">
+                    {% if bulletins_etudiants %}
+                        {% for bulletin_data in bulletins_etudiants %}
+                            {% for trimestre in trimestres %}
+                                <div class="bulletin bulletin-trimestre" data-trimestre="{{ trimestre }}" id="bulletin-{{ bulletin_data.etudiant.id }}-{{ forloop.parentloop.counter }}" style="margin-top: 50px; padding: 20px; background: white; border: 1px solid #ddd;">
+                                    <!-- ... CONTENU DU BULLETIN (identique) ... -->
+                                    <!-- En-tête -->
+                                    <div class="header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                        <div class="left-header" style="flex: 1; text-align: left;">
+                                            <div style="font-weight: bold;">République du Togo</div>
+                                            <div style="font-size: 10px;">**************</div>
+                                            <div style="font-size: 11px;">MINISTÈRE DE L'ÉDUCATION NATIONALE</div>
+                                            <div style="font-size: 10px;">**************</div>
+                                            <div style="font-size: 11px;">COMPLEXE SCOLAIRE AcadPro</div>
+                                            <div style="font-size: 10px;">Éduquer - Produire - Se développer</div>
+                                            <div style="font-size: 10px;">Tél : (+228) 63 79 77 19</div>
+                                            <div style="font-size: 10px;">Ville : Lomé - Togo</div>
+                                            <div style="font-size: 10px;">Adresse : Agoé Assiyéyé - Rue de 40 m</div>
+                                        </div>
+
+                                        <div class="center-header" style="flex: 1; text-align: center;">
+                                            <div>
+                                                <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="logo" style="width: 85px; height: 85px; object-fit: cover;">
+                                            </div>
+                                            <div class="title-large" style="font-size: 18px; font-weight: bold; margin: 5px 0;">BULLETIN DE NOTES</div>
+                                            <div class="subtitle" style="font-size: 14px; margin-bottom: 5px;">{{ trimestre }}</div>
+                                            <div style="font-size: 11px;">Paix - Travail - Progrès</div>
+                                        </div>
+
+                                        <div class="right-header" style="flex: 1; text-align: right;">
+                                            <div style="direction: ltr;">جمهورية تشاد</div>
+                                            <div style="font-size: 10px;">**************</div>
+                                            <div style="direction: ltr;">وزارة التعليم الوطني</div>
+                                            <div style="direction: ltr;">مجمع مدرسة النهضة العلمية</div>
+                                            <div style="font-size: 10px; direction: ltr;">ANNÉE SCOLAIRE</div>
+                                            <div style="font-size: 10px; direction: ltr;">{{ annee.debutAnnee|date:"Y" }}- {{ annee.fintAnnee|date:"Y" }}</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Informations étudiant -->
+                                    <div class="student-info" style="display: flex; justify-content: space-between; margin: 15px 0; padding: 10px; border: 1px solid #ddd;">
+                                        <div style="flex: 3;">
+                                            <strong>Nom Prénoms :</strong> {{ bulletin_data.etudiant.nom }} {{ bulletin_data.etudiant.prenom }}<br>
+                                            <strong>Date de Naissance :</strong> {{ bulletin_data.etudiant.date_naissance|date:"Y-m-d" }} <strong>Sexe :</strong> {{ bulletin_data.etudiant.genre }}<br>
+                                            <strong>Matricule :</strong> {{ bulletin_data.etudiant.matricule }}<br>
+                                            <strong>Classe :</strong> {{ salleClasse.niveau.classe }} {{ salleClasse.nom }} <strong>Effectif :</strong> {{ tousInscrits }}<br>
+                                        </div>
+                                        <div style="flex: 1; text-align: right;">
+                                            {% if bulletin_data.etudiant.photo %}
+                                                <img src="{{ bulletin_data.etudiant.photo.url }}" alt="Photo" style="width: 130px; height: 130px; border-radius: 7px; object-fit: cover;">
+                                            {% else %}
+                                                <p class="text-center"><i class="fa fa-user"></i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <!-- Tableau des matières -->
+                                    <table class="subjects-table" style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                                        <thead>
+                                            <tr style="background-color: #f8f9fa;">
+                                                <th style="text-align: left; padding: 8px; border: 1px solid #ddd; width: 25%;">Matière</th>
+                                                <th style="padding: 8px; border: 1px solid #ddd;">Moyenne Devoir</th>
+                                                <th style="padding: 8px; border: 1px solid #ddd;">Moyenne Composit.</th>
+                                                <th style="padding: 8px; border: 1px solid #ddd;">Moyenne Matière</th>
+                                                <th style="padding: 8px; border: 1px solid #ddd;">Coef.</th>
+                                                <th style="padding: 8px; border: 1px solid #ddd;">Moy. Coeff.</th>
+                                                <th style="padding: 8px; border: 1px solid #ddd;">Moy. Classe</th>
+                                                <th style="padding: 8px; border: 1px solid #ddd;">Appréciation</th>
+                                                <th style="padding: 8px; border: 1px solid #ddd;">Professeur</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in bulletin_data.liste_moyennes|lookup:trimestre %}
+                                            <tr>
+                                                <td style="padding: 6px; border: 1px solid #ddd;">{{ item.matiere }}</td>
+                                                <td style="padding: 6px; border: 1px solid #ddd; text-align: center;">{{ item.moyenne_devoir }}</td>
+                                                <td style="padding: 6px; border: 1px solid #ddd; text-align: center;">{{ item.moyenne_compo }}</td>
+                                                <td style="padding: 6px; border: 1px solid #ddd; text-align: center; font-weight: bold; font-size: 16px;">{{ item.moyenne }}</td>
+                                                <td style="padding: 6px; border: 1px solid #ddd; text-align: center;">{{ item.coefficient }}</td>
+                                                <td style="padding: 6px; border: 1px solid #ddd; text-align: center;">{{ item.moyenne_ponderee }}</td>
+                                                <td style="padding: 6px; border: 1px solid #ddd; text-align: center;">--</td>
+                                                <td style="padding: 6px; border: 1px solid #ddd; text-align: center;">
+                                                    {% if trimestre == "1er trimestre" %}{{ item.appreciation1 }}
+                                                    {% elif trimestre == "2e trimestre" %}{{ item.appreciation2 }}
+                                                    {% else %}{{ item.appreciation3 }}{% endif %}
+                                                </td>
+                                                <td style="padding: 6px; border: 1px solid #ddd; text-align: center;">{{ item.enseignant }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                            <tr style="background-color: #f0f0f0;">
+                                                <td colspan="3" style="padding: 8px; border: 1px solid #ddd;"><strong>Moyenne Générale</strong></td>
+                                                <td colspan="6" style="padding: 8px; border: 1px solid #ddd; text-align: center;"><strong>{{ bulletin_data.moyennes_generales|lookup:trimestre }}</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <!-- Totaux et moyennes -->
+                                    <div style="background-color: white; border: 0.5px solid #ddd; padding: 10px; margin: 15px 0;">
+                                        {% if trimestre == "1er trimestre" %}
+                                            <div style="display: flex; justify-content: center; align-items: center; gap: 75px;">
+                                                <div><strong>Moyenne 1er Trimestre :</strong> {{ bulletin_data.moyennes_generales|lookup:"1er trimestre" }}</div>
+                                                <div><strong>Rang 1er Trimestre :</strong> {{ bulletin_data.rangs|lookup:"1er trimestre" }} / {{ tousInscrits }}</div>
+                                            </div>
+                                        {% elif trimestre == "2e trimestre" %}
+                                            <div style="display: flex; justify-content: center; align-items: center; gap: 75px;">
+                                                <div><strong>Moyenne 1er Trimestre :</strong> {{ bulletin_data.moyennes_generales|lookup:"1er trimestre" }}</div>
+                                                <div><strong>Rang 1er Trimestre :</strong> {{ bulletin_data.rangs|lookup:"1er trimestre" }} / {{ tousInscrits }}</div>
+                                            </div>
+                                            <div style="display: flex; justify-content: center; align-items: center; gap: 75px;">
+                                                <div><strong>Moyenne 2e Trimestre :</strong> {{ bulletin_data.moyennes_generales|lookup:"2e trimestre" }}</div>
+                                                <div><strong>Rang 2e Trimestre :</strong> {{ bulletin_data.rangs|lookup:"2e trimestre" }} / {{ tousInscrits }}</div>
+                                            </div>
+                                        {% else %}
+                                            <div style="display: flex; justify-content: center; align-items: center; gap: 75px;">
+                                                <div><strong>Moyenne 1er Trimestre :</strong> {{ bulletin_data.moyennes_generales|lookup:"1er trimestre" }}</div>
+                                                <div><strong>Rang 1er Trimestre :</strong> {{ bulletin_data.rangs|lookup:"1er trimestre" }} / {{ tousInscrits }}</div>
+                                            </div>
+                                            <div style="display: flex; justify-content: center; align-items: center; gap: 75px;">
+                                                <div><strong>Moyenne 2e Trimestre :</strong> {{ bulletin_data.moyennes_generales|lookup:"2e trimestre" }}</div>
+                                                <div><strong>Rang 2e Trimestre :</strong> {{ bulletin_data.rangs|lookup:"2e trimestre" }} / {{ tousInscrits }}</div>
+                                            </div>
+                                            <div style="display: flex; justify-content: center; align-items: center; gap: 75px;">
+                                                <div><strong>Moyenne 3e Trimestre :</strong> {{ bulletin_data.moyennes_generales|lookup:"3e trimestre" }}</div>
+                                                <div><strong>Rang 3e Trimestre :</strong> {{ bulletin_data.rangs|lookup:"3e trimestre" }} / {{ tousInscrits }}</div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div style="text-align: center; margin: 20px 0;">
+                                        <div><strong>Forte moyenne :</strong> {{ stats_classe|lookup:trimestre|lookup:"forte" }}</div>
+                                        <div><strong>Moyenne de classe :</strong> {{ stats_classe|lookup:trimestre|lookup:"moyenne" }}</div>
+                                        <div><strong>Faible moyenne :</strong> {{ stats_classe|lookup:trimestre|lookup:"faible" }}</div>
+                                    </div>
+
+                                    <div style="text-align: center; margin: 20px 0; font-size: 14px;">
+                                        <strong>Appréciation du travail : {{ bulletin_data.moyennes_generales|lookup:trimestre|get_appreciation }}</strong>
+                                    </div>
+
+                                    <div class ="footer">
+                                        <div class="decisions" style="display: flex; justify-content: space-around; margin: 20px 0;">
+                                            <div class="decision-box" style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                                                <h4 style="margin: 0;">Signature</h4>
+                                            </div>
+                                        </div>
+
+                                        <div class="note" style="text-align: center; font-size: 12px; margin-top: 20px;">
+                                            <strong>NB:</strong> Toute rature entraînera l'annulation de ce bulletin. Ce relevé n'est tiré qu'en un seul exemplaire. Veuillez faire des copies pour d'autres services.
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% else %}
+                        <p>Aucun étudiant inscrit dans cette classe.</p>
+                    {% endif %}
+                </div>
+
+                {% include 'partial/copyright.html' %}
             </div>
         </div>
-        <!-- Page Area End Here -->
     </div>
-    <!-- jquery-->
+
+    <!-- jquery--> 
     <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
-    <!-- Plugins js -->
     <script src="{% static 'secretaire/js/plugins.js' %}"></script>
-    <!-- Popper js -->
     <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
-    <!-- Bootstrap js -->
     <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
-    <!-- Scroll Up Js -->
     <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
-    <!-- Data Table Js -->
     <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
-    <!-- Custom Js -->
     <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+    <script>
+        // Filtrage côté client
+        {% comment %} document.getElementById('filtreTrimestreSelect').addEventListener('change', function() {
+            const trimestreSelectionne = this.value;
+            const tousLesBulletins = document.querySelectorAll('.bulletin-trimestre');
+
+            tousLesBulletins.forEach(function(bulletin) {
+                if (trimestreSelectionne === 'tous') {
+                    bulletin.style.display = 'block';
+                } else {
+                    const trimestre = bulletin.getAttribute('data-trimestre');
+                    if (trimestre === trimestreSelectionne) {
+                        bulletin.style.display = 'block';
+                    } else {
+                        bulletin.style.display = 'none';
+                    }
+                }
+            });
+        });
+
+        // Fonction d'impression améliorée
+        function imprimerBulletins() {
+            const trimestreSelectionne = document.getElementById('filtreTrimestreSelect').value;
+            const tousLesBulletins = Array.from(document.querySelectorAll('.bulletin-trimestre'));
+
+            const bulletinsAImprimer = tousLesBulletins.filter(b => {
+                if (trimestreSelectionne === 'tous') return true;
+                return b.getAttribute('data-trimestre') === trimestreSelectionne;
+            });
+
+            if (bulletinsAImprimer.length === 0) {
+                alert('Aucun bulletin à imprimer pour le trimestre sélectionné.');
+                return;
+            }
+
+            let printWindow = window.open('', '_blank');
+            if (!printWindow) {
+                alert('Merci d\'autoriser les pop-ups pour pouvoir imprimer.');
+                return;
+            }
+
+            const doc = printWindow.document;
+            doc.open();
+            doc.write('<!doctype html><html><head><title>Impression des bulletins</title>');
+            
+            // Styles optimisés pour l'impression
+            doc.write('<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1">');
+            doc.write('<style>');
+            doc.write('@media print {');
+            doc.write('body { margin: 0 !important; padding: 0 !important; width: 100% !important; height: 100% !important; background: white !important; }');
+            doc.write('.bulletin { width: 100% !important; height: auto !important; margin: 0 !important; padding: 10mm !important; page-break-after: always; box-sizing: border-box; }');
+            doc.write('.print-bulletin-container { width: 100% !important; margin: 0 !important; padding: 0 !important; }');
+            doc.write('.subjects-table { width: 100% !important; font-size: 12px !important; margin: 5mm 0 !important; }');
+            doc.write('.subjects-table th, .subjects-table td { padding: 2px 4px !important; }');
+            doc.write('.header, .student-info, .decisions { margin: 2mm 0 !important; padding: 2mm !important;}');
+            doc.write('.center-header img { width: 70px !important; height: 70px !important; }');
+            doc.write('.student-info img { width: 100px !important; height: 100px !important; }');
+            doc.write('.footer{ }');
+            doc.write('}');
+            doc.write('</style>');
+            doc.write('</head><body>');
+
+            doc.write('<div class="print-bulletin-container">');
+            bulletinsAImprimer.forEach(function(bulletin) {
+                doc.write('<div class="bulletin">' + bulletin.innerHTML + '</div>');
+            });
+            doc.write('</div>');
+
+            doc.write('</body></html>');
+            doc.close();
+
+            printWindow.onload = function() {
+                printWindow.focus();
+                printWindow.print();
+                setTimeout(function() { printWindow.close(); }, 500);
+            };
+        }
+
+        // Raccourci : bouton principal
+        document.getElementById('btnImprimer').addEventListener('click', function() { 
+            imprimerBulletins(); 
+        });
+
+        // Effet hover sur le bouton d'impression
+        document.getElementById('btnImprimer2').addEventListener('mouseover', function() { this.style.backgroundColor = '#218838'; });
+        document.getElementById('btnImprimer2').addEventListener('mouseout', function() { this.style.backgroundColor = '#28a745'; });
+
+        // Charger Font Awesome
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css';
+        document.head.appendChild(link);
+
+ {% endcomment %}
+
+
+
+        ////////////////////////////
+
+
+        // Filtrage côté client
+        document.getElementById('filtreTrimestreSelect').addEventListener('change', function() {
+            const trimestreSelectionne = this.value;
+            const tousLesBulletins = document.querySelectorAll('.bulletin-trimestre');
+
+            tousLesBulletins.forEach(function(bulletin) {
+                if (trimestreSelectionne === 'tous') {
+                    bulletin.style.display = 'block';
+                } else {
+                    const trimestre = bulletin.getAttribute('data-trimestre');
+                    if (trimestre === trimestreSelectionne) {
+                        bulletin.style.display = 'block';
+                    } else {
+                        bulletin.style.display = 'none';
+                    }
+                }
+            });
+        });
+
+        // Récupérer le jeton CSRF pour les requêtes POST (nécessaire pour Django)
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+
+        /**
+        * Envoie les bulletins du trimestre sélectionné aux parents par requête AJAX.
+        */
+        function envoyerBulletins() {
+            const selectElement = document.getElementById('filtreTrimestreSelect');
+            const trimestreSelectionne = selectElement.value;
+            const btnEnvoyer = document.getElementById('btnEnvoyerAuxParents'); // Nouvelle ID pour clarté
+            const btnContent = btnEnvoyer.innerHTML; // Sauvegarde du contenu initial
+
+            if (trimestreSelectionne === 'tous') {
+                alert('Veuillez sélectionner un trimestre spécifique (1er, 2e ou 3e trimestre) avant d\'envoyer.');
+                return;
+            }
+
+            if (!confirm(`Êtes-vous sûr de vouloir envoyer les bulletins du ${trimestreSelectionne} aux parents de cette classe ?`)) {
+                return;
+            }
+
+            // Désactiver le bouton pendant l'envoi
+            btnEnvoyer.disabled = true;
+            btnEnvoyer.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Envoi en cours...';
+
+            // Récupérer les IDs nécessaires pour l'URL Django
+            // Vous devez passer salleClasse.id et annee.id à l'URL.
+            // Supposons qu'ils sont disponibles dans le template (ce qui semble être le cas).
+            // EXEMPLE:
+            const salleId = "{{ salleClasse.id }}"; // Récupérer l'ID de la salle (assurez-vous que cette variable est disponible)
+            const anneeId = "{{ annee.id }}"; // Récupérer l'ID de l'année (assurez-vous que cette variable est disponible)
+
+            const url = `/secretaire/bulletins-salle/${salleId}/${anneeId}/envoyer-parents/`; // Assurez-vous que l'URL correspond à votre `urls.py`
+
+            const formData = new FormData();
+            formData.append('trimestre_selectionne', trimestreSelectionne);
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    // Ne pas mettre 'Content-Type': 'application/json' si vous utilisez FormData
+                },
+                body: formData,
+            })
+            .then(response => {
+                // Le statut 200/400/500/etc. est géré par la réponse de Django
+                return response.json().then(data => ({
+                    status: response.status,
+                    data
+                }));
+            })
+            .then(({ status, data }) => {
+                if (status === 200) {
+                    alert('✅ Succès : ' + data.message);
+                } else {
+                    alert('❌ Erreur : ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la requête AJAX:', error);
+                alert('Une erreur inattendue est survenue lors de l\'envoi.');
+            })
+            .finally(() => {
+                // Réactiver le bouton
+                btnEnvoyer.disabled = false;
+                btnEnvoyer.innerHTML = btnContent;
+            });
+        }
+
+        // Fonction d'impression (inchangée)
+        function imprimerBulletins() {
+            const trimestreSelectionne = document.getElementById('filtreTrimestreSelect').value;
+            const tousLesBulletins = Array.from(document.querySelectorAll('.bulletin-trimestre'));
+
+            const bulletinsAImprimer = tousLesBulletins.filter(b => {
+                if (trimestreSelectionne === 'tous') return true;
+                return b.getAttribute('data-trimestre') === trimestreSelectionne;
+            });
+
+            if (bulletinsAImprimer.length === 0) {
+                alert('Aucun bulletin à imprimer pour le trimestre sélectionné.');
+                return;
+            }
+
+            let printWindow = window.open('', '_blank');
+            if (!printWindow) {
+                alert('Merci d\'autoriser les pop-ups pour pouvoir imprimer.');
+                return;
+            }
+
+            // Reste du code d'impression...
+            const doc = printWindow.document;
+            doc.open();
+            doc.write('<!doctype html><html><head><title>Impression des bulletins</title>');
+            
+            // Styles optimisés pour l'impression (inclus ici pour la simplicité)
+            doc.write('<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1">');
+            doc.write('<style>');
+            doc.write('@media print {');
+            doc.write('body { margin: 0 !important; padding: 0 !important; width: 100% !important; height: 100% !important; background: white !important; }');
+            doc.write('.bulletin { width: 100% !important; height: auto !important; margin: 0 !important; padding: 10mm !important; page-break-after: always; box-sizing: border-box; }');
+            doc.write('.print-bulletin-container { width: 100% !important; margin: 0 !important; padding: 0 !important; }');
+            doc.write('.subjects-table { width: 100% !important; font-size: 12px !important; margin: 5mm 0 !important; }');
+            doc.write('.subjects-table th, .subjects-table td { padding: 2px 4px !important; }');
+            doc.write('.header, .student-info, .decisions { margin: 2mm 0 !important; padding: 2mm !important;}');
+            doc.write('.center-header img { width: 70px !important; height: 70px !important; }');
+            doc.write('.student-info img { width: 100px !important; height: 100px !important; }');
+            doc.write('.footer{ }');
+            doc.write('}');
+            doc.write('</style>');
+            doc.write('</head><body>');
+
+            doc.write('<div class="print-bulletin-container">');
+            bulletinsAImprimer.forEach(function(bulletin) {
+                doc.write('<div class="bulletin">' + bulletin.innerHTML + '</div>');
+            });
+            doc.write('</div>');
+
+            doc.write('</body></html>');
+            doc.close();
+
+            printWindow.onload = function() {
+                printWindow.focus();
+                printWindow.print();
+                setTimeout(function() { printWindow.close(); }, 500);
+            };
+        }
+
+
+        // Raccourci : bouton principal d'impression
+        document.getElementById('btnImprimer').addEventListener('click', function() { 
+            // Assurez-vous que ce bouton est pour l'IMPRESSION et non l'envoi
+            imprimerBulletins(); 
+        });
+
+
+        // Lier la nouvelle fonction d'envoi au bouton "Envoyer aux parents"
+        document.getElementById('btnImprimer2').id = 'btnEnvoyerAuxParents'; // Changer l'ID pour plus de clarté
+        document.getElementById('btnEnvoyerAuxParents').removeEventListener('click', imprimerBulletins); // Retirer l'ancien listener si existant
+        document.getElementById('btnEnvoyerAuxParents').addEventListener('click', envoyerBulletins);
+
+
+        // Effet hover sur le bouton d'envoi (mis à jour avec la nouvelle ID)
+        const btnEnvoyer = document.getElementById('btnEnvoyerAuxParents');
+        if (btnEnvoyer) {
+            btnEnvoyer.addEventListener('mouseover', function() { this.style.backgroundColor = 'rgba(155, 170, 219, 1)ff'; });
+            btnEnvoyer.addEventListener('mouseout', function() { this.style.backgroundColor = '#212f61ff'; });
+        }
+
+        // Charger Font Awesome
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css';
+        document.head.appendChild(link);
+    </script>
+
+
+    
 
 </body>
 

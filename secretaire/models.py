@@ -8,7 +8,14 @@ from django.db import models
 class AnneeScolaire(models.Model):
     debutAnnee = models.DateField()
     fintAnnee = models.DateField()
-    
+    est_active = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.est_active:
+            # Désactiver toutes les autres années
+            AnneeScolaire.objects.exclude(pk=self.pk).update(est_active=False)
+        super().save(*args, **kwargs)
+        
     def __str__(self):
         return f"{self.debutAnnee.year}-{self.fintAnnee.year}"
     
@@ -27,6 +34,8 @@ class SalleDeClasse(models.Model):
     nom = models.CharField(max_length=50)
     capacite = models.PositiveIntegerField()
     emplacement = models.CharField(max_length=100, null=True, blank=True)
+    
+    capacite_etendue = models.PositiveIntegerField()
     def __str__(self):
         return f"{self.niveau}- {self.nom}- {self.capacite}"
 
@@ -212,7 +221,8 @@ class Evaluation(models.Model):
     etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE, null=True, blank=True, related_name='evaluations')
     
     def __str__(self):
-        return f"Évaluation {self.typeEvaluation} - {self.etudiant} - Note: {self.note}/{self.pourcentage}"
+        note = self.note*(self.pourcentage/100)
+        return f"Évaluation {self.typeEvaluation} - {self.etudiant} - Note: {note}"
 
 
 class Cout(models.Model):
@@ -266,7 +276,7 @@ class depotDossierEtudiant(models.Model):
 
 class PlageHoraire(models.Model):
     salle = models.ForeignKey(SalleDeClasse, on_delete=models.CASCADE, null=True)
-    annee = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE, null=True)
+    annee = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE, null=True, related_name="plageHoraire")
     debut = models.PositiveIntegerField()
     fin = models.PositiveIntegerField()
 
@@ -277,7 +287,7 @@ class PlageHoraire(models.Model):
 class EmploiDuTemps(models.Model):
     cours = models.ForeignKey(Cours, on_delete=models.CASCADE)
     salle = models.ForeignKey(SalleDeClasse, on_delete=models.CASCADE, null=True)
-    annee = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE, null=True)
+    annee = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE, null=True, related_name="emploiDuTemps")
     heure = models.CharField(max_length=30)
     jour = models.CharField(max_length=30)
     

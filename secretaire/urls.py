@@ -21,7 +21,8 @@ urlpatterns = [
     path('affichageAnneeScolaire/', views.affichageAnneeScolaire, name='affichageAnneeScolaire'),
     path('ajoutAnneeScolaire/', views.ajoutAnneeScolaire, name='ajoutAnneeScolaire'),
     path('modifierAnneeScolaire/<int:id>/', views.modifierAnneeScolaire, name='modifierAnneeScolaire'),
-    path('supprimerAnneeScolaire/<int:id>/', views.supprimerAnneeScolaire, name='supprimerAnneeScolaire'),
+    path('supprimer-anneeScolaire/<int:id>/', views.supprimerAnneeScolaire, name='supprimerAnneeScolaire'),
+    path('changer-annee-active/<int:annee_id>/', views.changer_annee_active, name='changer_annee_active'),
     
     
     path('all-student/', views.all_student, name='all-student'),
@@ -31,15 +32,20 @@ urlpatterns = [
     path('detailEtudiant/<str:matricule>/<int:id>/', views.detailEtudiant, name = 'detailEtudiant'),
     path('modifier_student/<str:matricule>/', views.modifier_student, name = 'modifier_student'),
     path('supprimer_student/<str:matricule>/', views.supprimer_student, name = 'supprimer_student'),
-    path('studentParSalle/<int:id>/<int:id2>/', views.studentParSalle, name = 'studentParSalle'),
-    path('messageCommunParent/<int:id1>/<int:id2>/', views.messageCommunParent, name = 'messageCommunParent'),
+    path('studentParSalle/<int:id>/', views.studentParSalle, name = 'studentParSalle'),
+    path('messageCommunParent/<int:id1>/', views.messageCommunParent, name = 'messageCommunParent'),
+    path('bulletins-salle/<int:salle_id>/<int:annee_id>/envoyer-parents/', views.envoyerBulletinsAuxParents, name='envoyerBulletinsAuxParents'),
+
+    path('certificat-inscription/<int:id>/', views.certificatInscription, name = 'certificatInscription'),
+
+    
     
     path('export-excel/<int:salle_id>/<int:annee_id>/', views.export_excel, name='export_excel'),
     path('export-pdf/<int:salle_id>/<int:annee_id>/', views.export_pdf, name='export_pdf'),
     
     
-    path('listePresence/<int:id>/<int:id2>/', views.listePresence, name = 'listePresence'),
-    path('listePresencePasse/<int:id>/<int:id2>/', views.listePresencePasse, name = 'listePresencePasse'),
+    path('listePresence/<int:id>/', views.listePresence, name = 'listePresence'),
+    path('listePresencePasse/<int:id>/', views.listePresencePasse, name = 'listePresencePasse'),
     
     path('presenceEtudiant/<str:matricule>/', views.presenceEtudiant, name = 'presenceEtudiant'),
     
@@ -76,10 +82,10 @@ urlpatterns = [
     path('add-salle/', views.add_salle, name='add-salle'),
     path('modifierSalle/<str:nom>/', views.modifierSalle, name='modifierSalle'),
     path('supprimerSalle/<int:id>/', views.supprimerSalle, name='supprimerSalle'),
-    path('emploiDuTemps/<int:id1>/<int:id2>/', views.emploiDuTemps, name='emploiDuTemps'),
-    path('ajoutEmploiTemps/<int:id1>/<int:id2>/<int:id3>/', views.ajoutEmploiTemps, name='ajoutEmploiTemps'),
-    path('supprimerEmploiTemps/<int:id1>/<int:id2>/', views.supprimerEmploiTemps, name='supprimerEmploiTemps'),
-    path('bulletinsSalleDeClasse/', views.bulletinsSalleDeClasse, name='bulletinsSalleDeClasse'),
+    path('emploiDuTemps/<int:id1>/', views.emploiDuTemps, name='emploiDuTemps'),
+    path('ajoutEmploiTemps/<int:id1>/<int:id3>/', views.ajoutEmploiTemps, name='ajoutEmploiTemps'),
+    path('supprimerEmploiTemps/<int:id1>/', views.supprimerEmploiTemps, name='supprimerEmploiTemps'),
+    path('bulletinsSalleDeClasse/<str:classe>/', views.bulletinsSalleDeClasse, name='bulletinsSalleDeClasse'),
     path("etendre-salle/<int:idEleve>/<int:idSalleClasse>/<int:idAnnee>/", views.etendreSalleClasse, name="etendreSalleClasse"),
 
     
@@ -92,7 +98,7 @@ urlpatterns = [
     path('supprimerNiveau/<int:id>/', views.supprimerNiveau, name='supprimerNiveau'),
     
     
-    path('all_inscription', views.all_inscription, name='all_inscription'),
+    path('all-inscription', views.all_inscription, name='all_inscription'),
     path('add_inscription', views.ajoutInscription, name='add_inscription'),
     path('modifierInscription/<int:id>/', views.modifierInscription, name='modifierInscription'),
     path('delete_inscription/<int:id>/', views.delete_inscription, name='delete_inscription'),
@@ -110,13 +116,13 @@ urlpatterns = [
     path('supprimer_evaluation/<int:pk>/', views.supprimer_evaluation, name='supprimer_evaluation'),
     path('modifier_evaluation/<int:id>/', views.modifier_evaluation, name='modifier_evaluation'),
     
-    path('evaluation-groupee/<int:id>/<int:id1>/<int:id2>/', views.evaluation_groupee, name='evaluation_groupee'),
+    path('evaluation-groupee/<int:id>/<int:id1>/', views.evaluation_groupee, name='evaluation_groupee'),
     path('filtre_evaluation/<int:id>/', views.filtre_evaluation, name='filtre_evaluation'),
     path('selectClasseEvaluation/', views.selectClasseEvaluation, name='selectClasseEvaluation'),
     
     path('selectClasse/', views.selectClasse, name='selectClasse'),
-    path('note_individuelle/<int:id>/<int:id2>/', views.note_individuelle, name='note_individuelle'),
-    path('ajout_note_individuelle/<int:id>/<int:id1>/<int:id2>/', views.ajout_note_individuelle, name='ajout_note_individuelle'),
+    path('note_individuelle/<int:id>/', views.note_individuelle, name='note_individuelle'),
+    path('ajout_note_individuelle/<int:id>/<int:id1>/', views.ajout_note_individuelle, name='ajout_note_individuelle'),
     
     
     
@@ -144,7 +150,7 @@ urlpatterns = [
     
     
     
-    path('generationBilletin/<str:matricule>/<str:classe>/<int:id>/', views.generationBilletin, name='generationBilletin'),
+    path('generationBulletin/<str:matricule>/<str:classe>/', views.generationBulletin, name='generationBilletin'),
     
     
     # path('recuperationDossierEleve/', views.recuperationDossierEleve, name="recuperationDossierEleve"),

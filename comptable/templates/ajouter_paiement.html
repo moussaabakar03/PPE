@@ -185,7 +185,12 @@
                         <!-- Historique des paiements -->
                         <div class="payment-history" style = "width: 50%;">
                             <h2><i class="fas fa-history"></i> Historique des Paiements</h2>
-                            
+                            <div style="width:100%; margin-bottom: 10px;">
+                                <a href="{% url 'comptable:export_paiement_pdf' inscriptionEleve.id anneeScol.id %}" 
+                                class="btn btn-danger w-100" style="padding:8px 14px;">
+                                    <i class="fa fa-file-pdf-o"></i> Exporter en PDF
+                                </a>
+                            </div>
                             <table id="payments-table">
                                 <thead>
                                     <tr>
@@ -201,8 +206,6 @@
                                             <td>{{ paiement.datePaiement|date:"d/m/Y" }}</td>
                                             <td>{{ paiement.typePaiement }}</td>
                                             <td class="paid">{{ paiement.montantVerse }}</td>
-                                            {% comment %} <td class="remaining">{{ paiement.reste_a_payer }} FCFA</td> {% endcomment %}
-                                            {% comment %} <td class="remaining">{{ paiement.periodeConcerne }}</td> {% endcomment %}
                                             <td>{{ paiement.modePaiment }}</td>
                                         </tr>
                                     {% endfor %}
@@ -212,6 +215,42 @@
                                             <td colspan= "5" style = "text-align: center;" id="no-payments">Aucun paiement enregistré pour cet élève.</td>
                                         </tr>
                                     {% endif %}
+                                </tbody>
+                            </table>
+
+                            <hr>
+                            <span>Recapilatif</span>
+                            <hr>
+                            <table id="payments-table">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Montant(FCFA)</th>
+                                        <th>Restant</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Frais d'Inscription</td>
+                                        <td>{{ totalInscription }}</td>
+                                        <td>{{ totalInscription }}</td>
+                                    </tr>
+                                     <tr>
+                                        <td>Frais Etude de dossier</td>
+                                        <td>{{ totalEtudeDossier }}</td>
+                                        <td>{{ totalEtudeDossier }}</td>
+                                    </tr>
+                                     <tr>
+                                        <td>Frais Scolarité</td>
+                                        <td>{{ totalScolarite }}</td>
+                                        <td>{{ totalScolarite }}</td>
+                                    </tr>
+                                     <tr>
+                                        <td>Frais Associé</td>
+                                        <td>{{ totalFraisAssocie }}</td>
+                                        <td>{{ totalFraisAssocie }}</td>
+                                    </tr>
+                                     
                                 </tbody>
                             </table>
                             
@@ -296,7 +335,7 @@
 
             resteAPayerInput.value = reste.toFixed(2);
 
-            if (montantType <= dejaPaye) {
+            if (montantType < dejaPaye) {
                 montantVerseInput.value = "";
                 montantVerseInput.disabled = true;
                 resteAPayerInput.value = "0.00";
@@ -341,7 +380,7 @@
             resteAPayerInput.value = reste.toFixed(2);
 
             // Désactiver si tout est payé
-            if (reste === 0) {
+            if (reste < 0) {
                 montantVerseInput.disabled = true;
                 alert("Paiement complet effectué !");
             } else {
