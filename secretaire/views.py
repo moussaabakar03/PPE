@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 
 from comptable.models import PaiementEleve
 from secretaire.forms import ContactForm, FormComptable, FormMessageCommun
-from . models import AnneeScolaire, Classe, Comptable, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, Utilisateur, cvEnseignant, depotDossierEtudiant
+from . models import AnneeScolaire, Classe, Comptable, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, EvaluationGroupee, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, Utilisateur, cvEnseignant, depotDossierEtudiant
 from django.utils.timezone import localtime
 from django.db.models import Q
 
@@ -516,7 +516,6 @@ def add_teacher(request):
         nom = request.POST["nom"]
         prenom = request.POST["prenom"]
         sexe = request.POST["sexe"]
-        date_naissance = request.POST["date_naissance"]
         diplome = request.POST["diplome"]
         profession = request.POST["profession"]
         email = request.POST["email"]
@@ -524,15 +523,22 @@ def add_teacher(request):
         photo = request.FILES.get("photo")  
         
         lieuDeNaissance = request.POST["lieuDeNaissance"]
-        salaire = request.POST["salaire"]
+        salaire = request.POST["salaire"] or None
         typeDeContrat = request.POST["typeDeContrat"]
-        date_debut_contrat = request.POST["date_debut_contrat"]
-        date_fin_contrat = request.POST["date_fin_contrat"]
+        
+        date_naissance = request.POST.get("date_naissance") or None
+        date_debut_contrat = request.POST.get("date_debut_contrat") or None
+        date_fin_contrat = request.POST.get("date_fin_contrat") or None
+
         matricule = generate_matricule(nom)
         while (Enseignant.objects.filter( matricule = matricule).exists()):
             matricule = generate_matricule(nom)
 
         try:
+            if Utilisateur.objects.filter(username = email, role="enseignant").exists():
+                messages.warning(request, "Duplication des mails!")
+                return redirect('secretaire:add-teacher')
+            
             utilisateur = Utilisateur.objects.create(
                 username=email,
                 password=make_password(phone),
@@ -542,10 +548,26 @@ def add_teacher(request):
                 role="enseignant",
                 is_active=True,
             )
-            Enseignant.objects.create(utilisateur = utilisateur, matricule = matricule, nom = nom, prenom = prenom, profession = profession, tel = phone, 
-                                    diplome = diplome,  photo = photo , date_naissance = date_naissance, sexe = sexe, mail = email,
-                                    lieuDeNaissance= lieuDeNaissance, salaire = salaire, typeDeContrat = typeDeContrat, 
-                                    date_debut_contrat = date_debut_contrat, date_fin_contrat = date_fin_contrat)
+            
+            Enseignant.objects.create(
+                utilisateur = utilisateur, 
+                matricule = matricule, 
+                nom = nom,
+                prenom = prenom, 
+                profession = profession, 
+                tel = phone, 
+                diplome = diplome,  
+                photo = photo , 
+                date_naissance = date_naissance, 
+                sexe = sexe, 
+                mail = email,
+                lieuDeNaissance= lieuDeNaissance, 
+                salaire = salaire, 
+                typeDeContrat = typeDeContrat, 
+                date_debut_contrat = date_debut_contrat, 
+                date_fin_contrat = date_fin_contrat
+                )
+            
             messages.success(request, f"Enseignant {prenom} {nom} ajouté avec succès. Matricule: {matricule}")
             return redirect("secretaire:all-teacher")
         except Exception as e:
@@ -553,6 +575,8 @@ def add_teacher(request):
             return render(request, 'add-teacher.html')
     
     return render(request, 'add-teacher.html')
+
+
 
 @login_required 
 @admin_required
@@ -1840,18 +1864,21 @@ def modifier_evaluation(request, id):
 
 from django.db.models import Sum
 
-@login_required 
+
+@login_required
 @admin_required
 def evaluation_groupee(request, id, id1):
     salleClasse = SalleDeClasse.objects.get(id=id)
     anneeScolaire = get_annee_active()
-    
+
     inscrits = Inscription.objects.filter(
-        salleClasse=salleClasse, anneeAcademique=anneeScolaire.id
-    ).select_related('etudiant', 'salleClasse')
+        salleClasse=salleClasse,
+        anneeAcademique=anneeScolaire.id
+    ).select_related('etudiant')
 
     courrs = Cours.objects.filter(
-        classe__id=id1, anneeScolaire__id=anneeScolaire.id
+        classe__id=id1,
+        anneeScolaire__id=anneeScolaire.id
     )
 
     if request.method == 'POST':
@@ -1863,62 +1890,58 @@ def evaluation_groupee(request, id, id1):
 
         evaluations_ajoutees = 0
         eleves_depassement = []
-
-        # Détection des types à combiner
         types_combine = ["Devoir", "Interrogation"]
 
+        # 🔹 Création du groupe (IDENTIFIANT SEULEMENT)
+        groupe = EvaluationGroupee.objects.create()
+
         for inscrit in inscrits:
-            note_input_name = f"note_{inscrit.etudiant.id}"
-            note_val = request.POST.get(note_input_name)
+            note_val = request.POST.get(f"note_{inscrit.etudiant.id}")
+            if not note_val:
+                continue
 
-            if note_val:
-                # Combiner Devoir + Interrogation
-                if typeEvaluation in types_combine:
-                    total_eleve = Evaluation.objects.filter(
-                        cours=cours,
-                        trimestre=trimestre,
-                        etudiant=inscrit.etudiant,
-                        typeEvaluation__in=types_combine
-                    ).aggregate(sum=Sum('pourcentage'))['sum'] or 0
-                else:
-                    # Composition reste indépendante
-                    total_eleve = Evaluation.objects.filter(
-                        cours=cours,
-                        trimestre=trimestre,
-                        etudiant=inscrit.etudiant,
-                        typeEvaluation=typeEvaluation
-                    ).aggregate(sum=Sum('pourcentage'))['sum'] or 0
-
-                # Vérification dépassement
-                if float(total_eleve) + pourcentage > 100:
-                    eleves_depassement.append(inscrit.etudiant.matricule)
-                    continue
-
-
-                # Création si OK
-                Evaluation.objects.create(
+            if typeEvaluation in types_combine:
+                total_eleve = Evaluation.objects.filter(
                     cours=cours,
-                    etudiant=inscrit.etudiant,
-                    typeEvaluation=typeEvaluation,
-                    note=note_val,
                     trimestre=trimestre,
-                    pourcentage=pourcentage
-                )
-                evaluations_ajoutees += 1
+                    etudiant=inscrit.etudiant,
+                    typeEvaluation__in=types_combine
+                ).aggregate(sum=Sum('pourcentage'))['sum'] or 0
+            else:
+                total_eleve = Evaluation.objects.filter(
+                    cours=cours,
+                    trimestre=trimestre,
+                    etudiant=inscrit.etudiant,
+                    typeEvaluation=typeEvaluation
+                ).aggregate(sum=Sum('pourcentage'))['sum'] or 0
 
-        # Message
+            if float(total_eleve) + pourcentage > 100:
+                eleves_depassement.append(inscrit.etudiant.matricule)
+                continue
+
+            # --- Création  + groupe ---
+            Evaluation.objects.create(
+                cours=cours,
+                etudiant=inscrit.etudiant,
+                typeEvaluation=typeEvaluation,
+                note=note_val,
+                trimestre=trimestre,
+                pourcentage=pourcentage,
+                evaluation_groupe=groupe  
+            )
+            evaluations_ajoutees += 1
+
         if eleves_depassement:
             messages.warning(
-                request, 
-                f"L'évaluation n'a pas pu être ajoutée pour les élèves suivants "
-                f"car leur pourcentage cumulé dépasse 100% : {', '.join(eleves_depassement)}"
+                request,
+                "Évaluation non ajoutée pour les élèves suivants (dépassement 100%) : "
+                + ", ".join(eleves_depassement)
             )
-            return redirect('secretaire:evaluation_groupee', id=id, id1=id1)
-            
+
         if evaluations_ajoutees > 0:
             messages.success(
-                request, 
-                f"{evaluations_ajoutees} évaluation(s) ajoutée(s) avec succès pour le cours {cours.matiere}."
+                request,
+                f"{evaluations_ajoutees} évaluation(s) ajoutée(s) avec succès."
             )
 
         return redirect('secretaire:filtre_evaluation', id=id)
@@ -1928,6 +1951,8 @@ def evaluation_groupee(request, id, id1):
         'inscrits': inscrits,
         'courrs': courrs,
     })
+
+
 
 @login_required 
 @admin_required
@@ -1947,7 +1972,8 @@ def selectClasse(request):
 def filtre_evaluation(request, id):
     salle = get_object_or_404(SalleDeClasse, id=id)
     classe = salle.niveau
-
+    anneeActive = get_annee_active()
+    
     evaluation = Evaluation.objects.filter(cours__classe=classe).order_by('-id')
 
     if request.method == 'POST':

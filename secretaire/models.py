@@ -134,19 +134,19 @@ class Enseignant(models.Model):
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE, null=True, blank=True, related_name="enseignant")
     matricule = models.CharField(max_length=50, unique=True)
     nom = models.CharField(max_length=100)
-    prenom = models.CharField(max_length=100)
-    profession = models.CharField(max_length=100)
-    tel = models.CharField(max_length=15)
-    diplome = models.CharField(max_length=100)
+    prenom = models.CharField(max_length=100, null=True, blank=True)
+    profession = models.CharField(max_length=100, null=True, blank=True)
+    tel = models.CharField(max_length=15, null=True, blank=True)
+    diplome = models.CharField(max_length=100, null=True, blank=True)
     photo = models.ImageField(upload_to='photos/enseignants/', null=True, blank=True)
-    date_naissance = models.DateField()
-    sexe = models.CharField(max_length=10, choices=[('M', 'Masculin'), ('F', 'Féminin')])
-    mail = models.EmailField()
-    lieuDeNaissance = models.CharField(max_length=100)
+    date_naissance = models.DateField(null=True, blank=True)
+    sexe = models.CharField(max_length=50, choices=[('M', 'Masculin'), ('F', 'Féminin')], null=True, blank=True)
+    mail = models.EmailField(null=True, blank=True)
+    lieuDeNaissance = models.CharField(max_length=100, null=True, blank=True)
     date_enregistrement = models.DateTimeField(auto_now_add=True)
-    salaire = models.DecimalField(max_digits=10, decimal_places=2)
-    typeDeContrat = models.CharField(max_length=100)
-    date_debut_contrat = models.DateField()
+    salaire = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    typeDeContrat = models.CharField(max_length=100, null=True, blank=True)
+    date_debut_contrat = models.DateField(null=True, blank=True)
     date_fin_contrat = models.DateField(null=True, blank=True)
     
     def __str__(self):
@@ -210,8 +210,19 @@ class Cours(models.Model):
     def __str__(self):
         return f"{self.matiere} par {self.enseignant} - {self.classe} ({self.anneeScolaire})"
 
+class EvaluationGroupee(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Groupe évaluation #{self.id} - {self.created_at}"
+
 
 class Evaluation(models.Model):
+    evaluation_groupe = models.ForeignKey(
+        EvaluationGroupee,
+        on_delete=models.CASCADE,
+        related_name="evaluations",
+    )
     cours = models.ForeignKey(Cours, on_delete=models.CASCADE, null=False, blank=True, related_name='evaluations')
     trimestre = models.CharField(max_length=100, choices=[('Trimestre 1', 'Trimestre 1'), ('Trimestre 2', 'Trimestre 2'), ('Trimestre 3', 'Trimestre 3')])
     typeEvaluation = models.CharField(max_length=100, choices=[('Devoir', 'Devoir'), ('Interrogation', 'Interrogation'), ('Composition', 'Composition')])

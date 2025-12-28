@@ -102,9 +102,9 @@
                                     <label>Sexe *</label>
                                     <select class="select2" name="sexe">
                                         <option value="Non-specifié" {% if enseignant.sexe == "Non-specifié" %}selected{% endif %}>Please Select Gender *</option>
-                                        <option value="Masculin" {% if enseignant.sexe == "Masculin" %}selected{% endif %}>Male</option>
-                                        <option value="Feminin" {% if enseignant.sexe == "Feminin" %}selected{% endif %}>Female</option>
-                                        <option value="Autres" {% if enseignant.sexe == "Autres" %}selected{% endif %}>Others</option>
+                                        <option value="Masculin" {% if enseignant.sexe == "M" %}selected{% endif %}>Masculin</option>
+                                        <option value="Feminin" {% if enseignant.sexe == "F" %}selected{% endif %}>Feminin</option>
+                                        <option value="Autres" {% if enseignant.sexe == "Autres" %}selected{% endif %}>Autres</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
