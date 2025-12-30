@@ -119,6 +119,8 @@ urlpatterns = [
     path('evaluation-groupee/<int:id>/<int:id1>/', views.evaluation_groupee, name='evaluation_groupee'),
     path('filtre_evaluation/<int:id>/', views.filtre_evaluation, name='filtre_evaluation'),
     path('selectClasseEvaluation/', views.selectClasseEvaluation, name='selectClasseEvaluation'),
+    path('evaluationGroupee/<int:id>/', views.evaluationGroupee, name='evaluationGroupee'),
+    
     
     path('selectClasse/', views.selectClasse, name='selectClasse'),
     path('note_individuelle/<int:id>/', views.note_individuelle, name='note_individuelle'),

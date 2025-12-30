@@ -31,9 +31,7 @@
                 <div class="breadcrumbs-area">
                     <h3>Evaluation</h3>
                     <ul>
-                        <li>
-                            <a href="{% url 'secretaire:index' %}">Tableau de Bord</a>
-                        </li>
+                        {% comment %} <li><a href="{% url 'secretaire:evaluationGroupee' evaluation_group.cours. %}">Retour </a></li> {% endcomment %}
                         <li>Evaluation *</li>
                     </ul>
                 </div>
@@ -98,7 +96,7 @@
                                         <td>{{ salleDeClasse.evaluations.typeEvaluation }}</td> {% endcomment %}
                                         <td style = "display: flex; justify-content: space-between, gap: 10px;">
                                             <div class="">
-                                                <a class="dropdown-item" href="{% url 'secretaire:filtre_evaluation' salleDeClasse.id %}">
+                                                <a class="dropdown-item" href="{% url 'secretaire:evaluationGroupee' salleDeClasse.id %}">
                                                     <i class="fas fa-eye" title = "voir plus" aria-hidden="true" style="color:rgb(25, 25, 103); font-size: 22px; margin-right: 10px;"></i> Voir plus
                                                 </a>
                                             </div>

@@ -211,6 +211,10 @@ class Cours(models.Model):
         return f"{self.matiere} par {self.enseignant} - {self.classe} ({self.anneeScolaire})"
 
 class EvaluationGroupee(models.Model):
+    cours = models.ForeignKey(Cours, on_delete=models.CASCADE, null=False, blank=True, related_name='evaluationsGroupee')
+    trimestre = models.CharField(max_length=100, choices=[('Trimestre 1', 'Trimestre 1'), ('Trimestre 2', 'Trimestre 2'), ('Trimestre 3', 'Trimestre 3')])
+    typeEvaluation = models.CharField(max_length=100, choices=[('Devoir', 'Devoir'), ('Interrogation', 'Interrogation'), ('Composition', 'Composition')])
+    pourcentage = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

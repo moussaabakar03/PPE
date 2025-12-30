@@ -1893,7 +1893,13 @@ def evaluation_groupee(request, id, id1):
         types_combine = ["Devoir", "Interrogation"]
 
         # 🔹 Création du groupe (IDENTIFIANT SEULEMENT)
-        groupe = EvaluationGroupee.objects.create()
+        groupe = EvaluationGroupee.objects.create(
+            cours=cours,
+            typeEvaluation=typeEvaluation,
+            pourcentage=pourcentage,
+            trimestre=trimestre,
+        )
+        
 
         for inscrit in inscrits:
             note_val = request.POST.get(f"note_{inscrit.etudiant.id}")
@@ -1967,14 +1973,46 @@ def selectClasse(request):
     salleClasses = SalleDeClasse.objects.all()
     return render(request, 'selectClasse.html', {'salleClasses': salleClasses})
 
+    
+@login_required
+@admin_required
+def evaluationGroupee(request, id):
+    annee_active = get_annee_active()
+
+    salle = get_object_or_404(SalleDeClasse, id=id)
+
+    eval_groupees = EvaluationGroupee.objects.select_related(
+        "cours",
+        "cours__classe",
+        "cours__anneeScolaire",
+    ).filter(
+        cours__anneeScolaire=annee_active,
+        cours__classe=salle.niveau
+    ).order_by("-created_at")
+
+    return render(
+        request,
+        "evaluationGroupee.html",
+        {
+            "salle": salle,
+            "annee_active": annee_active,
+            "eval_groupees": eval_groupees,
+        }
+    )
+
+
+
+
 @login_required 
 @admin_required
 def filtre_evaluation(request, id):
-    salle = get_object_or_404(SalleDeClasse, id=id)
-    classe = salle.niveau
+    # salle = get_object_or_404(SalleDeClasse, id=id)
+    # classe = salle.niveau
     anneeActive = get_annee_active()
     
-    evaluation = Evaluation.objects.filter(cours__classe=classe).order_by('-id')
+    evaluation_group = EvaluationGroupee.objects.get(id=id)
+    
+    evaluation = Evaluation.objects.filter(evaluation_groupe=evaluation_group, cours__anneeScolaire = anneeActive).order_by('-id')
 
     if request.method == 'POST':
         typeEvaluation = request.POST.get('typeEvaluation')
@@ -1991,7 +2029,7 @@ def filtre_evaluation(request, id):
         if matiere:
             evaluation = evaluation.filter(cours__matiere__nom__icontains=matiere)
 
-    context = {'evaluations': evaluation, 'salle':salle, 'etudiants': Etudiant.objects.all(), 'annees': AnneeScolaire.objects.all()}
+    context = {'evaluations': evaluation, 'etudiants': Etudiant.objects.all(), "evaluation_group":evaluation_group}
     return render(request, 'filtre-evaluation.html', context)
 
 @login_required 

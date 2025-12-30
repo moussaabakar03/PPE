@@ -1,0 +1,136 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+
+   {% include 'partial/head.html' %}
+
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+        
+         {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+
+            {% include 'partial/aside.html' %}
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Evaluation</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'secretaire:index' %}">Tableau de Bord</a>
+                            
+                        </li>
+                        <li><a href="{% url 'secretaire:all_evaluation' %}">Retour </a></li>
+                        <li>Notes {{salle.nom}}</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Class Table Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Notes evaluations de la salle <span style = "color: #ffaa01; margin-left: 15px;"> {{salle.niveau.classe}} -({{salle.nom}})</span> </h3>
+                            </div>
+                           
+                        </div>
+                      
+                        <div class="table-responsive">
+                            <table id="evaluationsTable" class="table display data-table text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input checkAll">
+                                                <label class="form-check-label">ID</label>
+                                            </div>
+                                        </th>
+                                        <th>Matière</th>
+                                        <th>Pourcentage</th>
+                                        <th>Trimestre</th>
+                                        <th>Type.E</th>
+                                        <th>Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for evaluation in eval_groupees %}
+                                        <tr>
+                                            <td>
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input">
+                                                    <label class="form-check-label">{{ evaluation.id }}</label>
+                                                </div>
+                                            </td>
+                                            <td>{{ evaluation.cours.matiere.nom }}</td>
+                                            <td>{{ evaluation.pourcentage }} %</td>
+                                            <td>{{ evaluation.trimestre }}</td>
+                                            <td>{{ evaluation.typeEvaluation }}</td>
+                                            <td>{{ evaluation.created_at|date:"d/m/Y H:i:s" }}</td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                        <span class="flaticon-more-button-of-three-dots"></span>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        {% comment %} <a class="dropdown-item" href="{% url 'secretaire:modifier_evaluation' evaluation.id  %}">
+                                                            <i class="fas fa-cogs text-dark-pastel-green"></i>Modifier
+                                                        </a> {% endcomment %}
+                                                        <a class="dropdown-item" href="{% url 'secretaire:supprimer_evaluation' evaluation.id  %}" onclick="return confirm('Voulez-vous vraiment supprimer cette évaluation ?')">
+                                                            <i class="fas fa-times text-orange-red"></i>Supprimer
+                                                        </a>
+                                                       
+                                                        <a class="dropdown-item" href="{% url 'secretaire:filtre_evaluation' evaluation.id %}">
+                                                            <i class="fas fa-eye" title = "voir plus" aria-hidden="true" style="color:rgb(25, 25, 103); font-size: 22px; margin-right: 10px;"></i> Voir plus
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- Class Table Area End Here -->
+                {% include 'partial/copyright.html' %}
+
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Data Table Js -->
+    <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+
+</body>
+
+</html>

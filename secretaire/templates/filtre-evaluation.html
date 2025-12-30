@@ -35,7 +35,8 @@
                             <a href="{% url 'secretaire:index' %}">Tableau de Bord</a>
                             
                         </li>
-                        <li><a href="{% url 'secretaire:all_evaluation' %}">Evaluation *</a></li>
+                        <li><a href="">Retour </a></li>
+
                         <li>Notes {{salle.nom}}</li>
                     </ul>
                 </div>
@@ -76,18 +77,7 @@
                                 <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
                                     <input type="text" name="matiere" id="filtreMatiere" placeholder="Filtre par matiere ..." class="form-control" oninput="applyEvaluationFilters()">
                                 </div>
-                                {% comment %} <div class="col-1-xxxl col-xl-2 col-lg-3 col-12 form-group">
-                                    <button type="submit" class="fw-btn-fill btn-gradient-yellow">FILTRER</button>
-                                </div> {% endcomment %}
-                                <div class="col-xl-3 col-lg-6 col-12 form-group">
-                                    <select id="anneeScolaireFilter" class="select2 form-control" name="anneesScolaire" onchange="applyEvaluationFilters()">
-                                        <option value="">Année scolaire *</option>
-                                        {% for anneesScolaire in annees %}
-                                            <option value="{{ anneesScolaire.debutAnnee|date:"Y" }}-{{ anneesScolaire.fintAnnee|date:"Y" }}">{{ anneesScolaire.debutAnnee|date:"Y" }}-{{ anneesScolaire.fintAnnee|date:"Y" }}</option>
-                                        {% endfor %}
-                                        <option value="Non-renseigné">Autre</option>
-                                    </select>
-                                </div>
+                               
                                 <div class="col-4-xxxl col-xl-4 col-lg-3 col-12 form-group">
                                     <select class="form-control" name="trimestre" id="filtreTrimestre" onchange="applyEvaluationFilters()">
                                         <option value="">Filtre par trimestre ...</option>
@@ -115,7 +105,6 @@
                                         <th>Note(/20)</th>
                                         <th>Pourcentage</th>
                                         <th>Trimestre</th>
-                                        <th>Année Scolaire</th>
                                         <th>Enseignant</th>
                                         <th>Type.E</th>
                                         <th>Date</th>
@@ -143,7 +132,6 @@
                                             {% endif %}
                                             <td>{{ evaluation.pourcentage }} %</td>
                                             <td>{{ evaluation.trimestre }}</td>
-                                            <td>{{ evaluation.cours.anneeScolaire.debutAnnee|date:"Y" }}-{{ evaluation.cours.anneeScolaire.fintAnnee|date:"Y" }}</td>
                                             <td>{{ evaluation.cours.enseignant.nom }} {{ evaluation.cours.enseignant.prenom }}</td>
                                             <td>{{ evaluation.typeEvaluation }}</td>
                                             <td>{{ evaluation.dateEvaluation|date:"d/m/Y" }}</td>
