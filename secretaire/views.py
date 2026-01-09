@@ -1833,7 +1833,6 @@ def supprimer_evaluation(request, pk):
 @admin_required
 def modifier_evaluation(request, id):
     evaluation = Evaluation.objects.get(id=id)
-    # etudiant = Etudiant.objects.get(id=id)
     
     if request.method == 'POST':
         cours_id = request.POST["cours"]
@@ -1841,7 +1840,6 @@ def modifier_evaluation(request, id):
         
         evaluation.trimestre = request.POST["trimestre"]
         evaluation.typeEvaluation = request.POST["typeEvaluation"]
-        evaluation.dateEvaluation = request.POST["dateEvaluation"]
         evaluation.note = request.POST["note"]
         evaluation.pourcentage = request.POST["pourcentage"]
 
@@ -1851,13 +1849,13 @@ def modifier_evaluation(request, id):
         evaluation.save()
         messages.success(request, f"Évaluation de {evaluation.etudiant} modifiée avec succès.")
         
-        return redirect('secretaire:all_evaluation')
+        return redirect('secretaire:evaluationGroupee', id= evaluation.cours.classe.id)
     
     cours_list = Cours.objects.all()
 
     context = {
         'cours_list': cours_list,
-        # 'etudiant': etudiant,
+        'etudiant':  evaluation.etudiant,
         'evaluation': evaluation
     }
     return render(request, 'modifier-evaluation.html', context)
