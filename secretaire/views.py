@@ -1812,12 +1812,12 @@ def supprimer_cours(request, pk):
 @login_required 
 @admin_required
 def all_evaluation(request):
-    # niveaux = Classe.objects.all()
+    niveaux = Classe.objects.all()
     # evaluations = Evaluation.objects.all()
     # cours = Cours.objects.all()
-    salleDeClasse = SalleDeClasse.objects.all()
+    # salleDeClasse = SalleDeClasse.objects.all()
     # context = {'evaluations': evaluations, 'niveaux': niveaux}
-    return render(request, 'all-evaluation.html', {'salleDeClasses': salleDeClasse})
+    return render(request, 'all-evaluation.html', {'niveaux': niveaux})
 
 @login_required 
 @admin_required
@@ -1827,7 +1827,7 @@ def supprimer_evaluation(request, pk):
     matiere_nom = evaluation.cours.matiere.nom
     Evaluation.objects.get(pk=pk).delete()
     messages.success(request, f"Évaluation de {etudiant_nom} en {matiere_nom} supprimée avec succès.")
-    return redirect('secretaire:all_evaluation')
+    return redirect('secretaire:filtre_evaluation', id=evaluation.evaluation_groupe.id)
 
 @login_required 
 @admin_required
@@ -1892,7 +1892,7 @@ def evaluation_groupee(request, id, id1):
         eleves_depassement = []
         types_combine = ["Devoir", "Interrogation"]
 
-        # 🔹 Création du groupe (IDENTIFIANT SEULEMENT)
+        # Création du groupe 
         groupe = EvaluationGroupee.objects.create(
             cours=cours,
             typeEvaluation=typeEvaluation,
@@ -1950,7 +1950,7 @@ def evaluation_groupee(request, id, id1):
                 f"{evaluations_ajoutees} évaluation(s) ajoutée(s) avec succès."
             )
 
-        return redirect('secretaire:filtre_evaluation', id=id)
+        return redirect('secretaire:filtre_evaluation', id=groupe.id)
 
     return render(request, 'liste_inscrits_par_classe.html', {
         'salleClasse': salleClasse,
@@ -1958,6 +1958,22 @@ def evaluation_groupee(request, id, id1):
         'courrs': courrs,
     })
 
+
+@login_required 
+@admin_required
+def supprimerEvaluationGroupee(request, id):
+    evaluation_groupee = EvaluationGroupee.objects.get(id=id)
+    evaluations_associees = Evaluation.objects.filter(evaluation_groupe=evaluation_groupee)
+
+    nombre_evaluations = evaluations_associees.count()
+    evaluations_associees.delete()
+    evaluation_groupee.delete()
+
+    messages.success(
+        request,
+        f"Groupe d'évaluation et ses {nombre_evaluations} évaluations associées supprimés avec succès."
+    )
+    return redirect('secretaire:evaluationGroupee', id=evaluation_groupee.cours.classe.id)
 
 
 @login_required 
@@ -1979,7 +1995,7 @@ def selectClasse(request):
 def evaluationGroupee(request, id):
     annee_active = get_annee_active()
 
-    salle = get_object_or_404(SalleDeClasse, id=id)
+    classe = get_object_or_404(Classe, id=id)
 
     eval_groupees = EvaluationGroupee.objects.select_related(
         "cours",
@@ -1987,16 +2003,23 @@ def evaluationGroupee(request, id):
         "cours__anneeScolaire",
     ).filter(
         cours__anneeScolaire=annee_active,
-        cours__classe=salle.niveau
-    ).order_by("-created_at")
+        cours__classe=classe
+    ).order_by("-id")
+    
+    notesAjout_individuel = Evaluation.objects.filter(
+        cours__anneeScolaire=annee_active,
+        cours__classe=classe,
+        evaluation_groupe = None
+        )
 
     return render(
         request,
         "evaluationGroupee.html",
         {
-            "salle": salle,
+            "classe": classe,
             "annee_active": annee_active,
             "eval_groupees": eval_groupees,
+            "notesAjout_individuel": notesAjout_individuel,
         }
     )
 
@@ -2012,7 +2035,7 @@ def filtre_evaluation(request, id):
     
     evaluation_group = EvaluationGroupee.objects.get(id=id)
     
-    evaluation = Evaluation.objects.filter(evaluation_groupe=evaluation_group, cours__anneeScolaire = anneeActive).order_by('-id')
+    evaluations = Evaluation.objects.filter(evaluation_groupe=evaluation_group, cours__anneeScolaire = anneeActive).order_by('-id')
 
     if request.method == 'POST':
         typeEvaluation = request.POST.get('typeEvaluation')
@@ -2021,16 +2044,17 @@ def filtre_evaluation(request, id):
         trimestre = request.POST.get('trimestre')
 
         if nom:
-            evaluation = evaluation.filter(etudiant__nom__icontains=nom)
+            evaluations = evaluations.filter(etudiant__nom__icontains=nom)
         if typeEvaluation:
-            evaluation = evaluation.filter(typeEvaluation__icontains=typeEvaluation)
+            evaluations = evaluations.filter(typeEvaluation__icontains=typeEvaluation)
         if trimestre:
-            evaluation = evaluation.filter(trimestre__icontains=trimestre)
+            evaluations = evaluations.filter(trimestre__icontains=trimestre)
         if matiere:
-            evaluation = evaluation.filter(cours__matiere__nom__icontains=matiere)
+            evaluations = evaluations.filter(cours__matiere__nom__icontains=matiere)
 
-    context = {'evaluations': evaluation, 'etudiants': Etudiant.objects.all(), "evaluation_group":evaluation_group}
+    context = {'evaluations': evaluations, 'etudiants': Etudiant.objects.all(), "evaluation_group":evaluation_group}
     return render(request, 'filtre-evaluation.html', context)
+
 
 @login_required 
 @admin_required    
@@ -2080,7 +2104,7 @@ def ajout_note_individuelle(request, id, id1):
             etudiant=etudiants
         )
         messages.success(request, f"Note de {etudiants} en {cours.matiere} ajoutée avec succès.")
-        return redirect('secretaire:all_evaluation')
+        return redirect('secretaire:evaluationGroupee', id=id1)
     
     cours_list = Cours.objects.filter(classe__id = id1, anneeScolaire__id = anneeActive.id)
     classe = Classe.objects.get(id = id1)

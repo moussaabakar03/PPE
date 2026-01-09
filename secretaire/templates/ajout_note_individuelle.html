@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% comment %} <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -104,3 +104,203 @@
   </div>
 </body>
 </html>
+
+ {% endcomment %}
+
+
+{% comment %} LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL {% endcomment %}
+
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AcadPro | Inscrits par classe</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Select 2 CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/select2.min.css' %}">
+    <!-- Date Picker CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/datepicker.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+    <!-- Modernize js -->
+    <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+        
+         {% include 'partial/header.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+           
+            {% include 'partial/aside.html' %}
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Evaluation</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'secretaire:all_evaluation' %}">Evaluations *</a>
+                        </li>
+                        <li>Ajout Evaluation</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Add Class Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div>
+                              <p>Ajout de note de: <span style= "color: #ff9d01; margin-left: 20px;">{{etudiant.nom}} {{etudiant.prenom}}</span></p>
+                            </div>
+                            <div>
+                              <p> Classe: <span style= "color: #ff9d01; margin-left: 20px;">{{classe.classe}}</span></p>
+                            </div>
+                        </div>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                        
+                                <!-- Trimestre / Module -->
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label for="trimestre">Trimestre/Module:</label>
+                                    <select class="select2" name="trimestre" required>
+                                        <option value="">Choisir trimestre</option>
+                                        <option value="1er trimestre">1er trimestre</option>
+                                        <option value="2e trimestre">2e trimestre</option>
+                                        <option value="3e trimestre">3e trimestre</option>
+                                    </select>
+                                </div>
+
+                                <!-- Classe -->
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label for="cours">Matière:</label>
+                                    <select class="select2" name="cours" required>
+                                        <option value = ""> Veillez Choisir une matière</option>
+                                        {% for cours in cours_list %}
+                                            <option value="{{ cours.id }}"> {{ cours.matiere.nom }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label for="typeEvaluation">Type d'évaluation:</label>
+                                    <select class="select2" name="typeEvaluation" required>
+                                        <option value=""> Veillez choisir le type d'évaluation</option>
+                                        <option value="Devoir">Devoir</option>
+                                        <option value="Interrogation">Interrogation</option>
+                                        <option value="Composition">Composition</option>
+                                    </select>
+                                </div>
+                        
+                                <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                    <label for="pourcentage">Pourcentage:</label>
+                                    <input type="number" name="pourcentage" class="form-control" min="0" max="100" step="0.1" required>
+                                </div>
+                                <div class="col">
+                                      <input type="hidden" id="date" class="form-control" name= "etudiant" value="{{etudiant.id}}">
+                                  </div>
+                            </div>
+                        
+                            <hr>
+                        
+                            <div class="table-responsive">
+                                <table class="table display data-table text-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">Matricule</label>
+                                                </div>
+                                            </th>
+                                            <th> Nom & Prenom </th>
+                                            <th> Note (/20) </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                          <!-- Matricule -->
+                                          <td>
+                                              {{etudiant.matricule}}
+                                          </td>
+                                          <!-- Nom & Prénom -->
+                                          <td>
+                                              {{ etudiant.nom }} {{ etudiant.prenom }}
+                                          </td>
+                                          
+                                          <!-- Note -->
+                                          <td>
+                                              <input type="number" name="note" class="form-control" style ="border: 0.5px solid #6e6b6bff;" required min="0" max="20">
+                                          </td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- Bouton sauvegarder -->
+                            <div class="col-12 form-group mg-t-8" style="text-align: center;">
+                                <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Sauvegarder</button>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+                <!-- Add Class Area End Here -->
+                {% include 'partial/copyright.html' %}
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <!-- jquery-->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Select 2 Js -->
+    <script src="{% static 'secretaire/js/select2.min.js' %}"></script>
+    <!-- Date Picker Js -->
+    <script src="{% static 'secretaire/js/datepicker.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+</body>
+
+</html>
+
+
+ 
+
+
+

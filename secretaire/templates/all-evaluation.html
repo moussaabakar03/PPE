@@ -74,7 +74,7 @@
                                                 <label class="form-check-label">ID</label>
                                             </div>
                                         </th>
-                                        <th>Salle de Classe</th>
+                                        <th>Classe</th>
                                         {% comment %} <th>Matière</th>
                                         <th>Trimestre</th>
                                         <th>Type d'évaluation</th> {% endcomment %}
@@ -82,27 +82,21 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for salleDeClasse in salleDeClasses %}
+                                    {% for niveau in niveaux %}
                                     <tr>
                                         <td>
                                             <div class="form-check">
                                                 <input type="checkbox" class="form-check-input">
-                                                <label class="form-check-label">{{ salleDeClasse.id }}</label>
+                                                <label class="form-check-label">{{ niveau.id }}</label>
                                             </div>
                                         </td>
-                                        <td>{{ salleDeClasse.nom}} -({{ salleDeClasse.niveau.classe }})</td>
-                                        {% comment %} <td>{{ salleDeClasse.matiere.nom }}</td>
-                                        <td>{{ salleDeClasse.trimestre }}</td>
-                                        <td>{{ salleDeClasse.evaluations.typeEvaluation }}</td> {% endcomment %}
+                                        <td>{{ niveau.classe }}</td>
                                         <td style = "display: flex; justify-content: space-between, gap: 10px;">
                                             <div class="">
-                                                <a class="dropdown-item" href="{% url 'secretaire:evaluationGroupee' salleDeClasse.id %}">
+                                                <a class="dropdown-item" href="{% url 'secretaire:evaluationGroupee' niveau.id %}">
                                                     <i class="fas fa-eye" title = "voir plus" aria-hidden="true" style="color:rgb(25, 25, 103); font-size: 22px; margin-right: 10px;"></i> Voir plus
                                                 </a>
                                             </div>
-                                            {% comment %} <div class="">
-                                                <a href="{% url 'secretaire:deleteEvaluation' salleDeClasse.id %}" onclick= "return confirm('voulez-vous vraiment supprimer ce test?')"  class='btn btn-danger btn-sm'><i class='fas fa-trash' style='font-size: 18px'></i></a>
-                                            </div> {% endcomment %}
                                         </td>
                                     </tr>
                                     {% endfor %}

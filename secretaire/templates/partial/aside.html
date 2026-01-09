@@ -11,20 +11,6 @@
         <ul class="nav nav-sidebar-menu sidebar-toggle-view">
             <li class="nav-item">
                 <a href="{% url 'secretaire:index' %}" class="nav-link"><i class="flaticon-dashboard"></i><span>Tableau de Bord</span></a>
-                {% comment %} <ul class="nav sub-group-menu">
-                    <li class="nav-item">
-                        <a href="{% url 'secretaire:index' %}" class="nav-link"><i class="fas fa-angle-right"></i>Admin</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'secretaire:index3' %}" class="nav-link"><i class="fas fa-angle-right"></i>Elèves</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'secretaire:index4' %}" class="nav-link"><i class="fas fa-angle-right"></i>Parents</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'secretaire:index5' %}" class="nav-link"><i class="fas fa-angle-right"></i>Enseignants</a>
-                    </li>
-                </ul> {% endcomment %}
             </li>
             
             <li class="nav-item sidebar-nav-item">
@@ -36,9 +22,6 @@
                     <li class="nav-item">
                         <a href="{% url 'secretaire:admit-form' %}" class="nav-link"><i class="fas fa-angle-right"></i>Admission</a>
                     </li>
-                    <!-- <li class="nav-item">
-                        <a href="{% url 'secretaire:student-promotion' %}" class="nav-link"><i class="fas fa-angle-right"></i>Promotion Elèves</a>
-                    </li> -->
                 </ul>
             </li>
             <li class="nav-item sidebar-nav-item">
@@ -122,13 +105,13 @@
                 <a href="#" class="nav-link"><i class="flaticon-shopping-list"></i><span>Evaluations</span></a>
                 <ul class="nav sub-group-menu">
                     <li class="nav-item">
-                        <a href="{% url 'secretaire:selectClasse' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout de Note individuelle</a>
+                        <a href="{% url 'secretaire:all_evaluation' %}" class="nav-link"><i class="fas fa-angle-right"></i>Détail des evaluations</a>
                     </li>
                     <li class="nav-item">
                         <a href="{% url 'secretaire:selectClasseEvaluation' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout de Note groupée</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{% url 'secretaire:all_evaluation' %}" class="nav-link"><i class="fas fa-angle-right"></i>Détail des evaluations</a>
+                        <a href="{% url 'secretaire:selectClasse' %}" class="nav-link"><i class="fas fa-angle-right"></i>Ajout de Note individuelle</a>
                     </li>
                 </ul>
             </li>
