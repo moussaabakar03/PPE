@@ -35,9 +35,9 @@
                             <a href="{% url 'secretaire:index' %}">Tableau de Bord</a>
                             
                         </li>
-                        <li><a href="">Retour </a></li>
+                        <li><a href="{% url 'secretaire:evaluationGroupee' evaluation_group.cours.classe.id %}">Retour </a></li>
 
-                        <li>Notes {{salle.nom}}</li>
+                        <li>Notes {{evaluation_group.cours.classe.classe }}</li>
                     </ul>
                 </div>
                 <!-- Breadcubs Area End Here -->
@@ -46,47 +46,32 @@
                     <div class="card-body">
                         <div class="heading-layout1">
                             <div class="item-title">
-                                <h3>Notes evaluations de la salle <span style = "color: #ffaa01; margin-left: 15px;"> {{salle.niveau.classe}} -({{salle.nom}})</span> </h3>
+                                <h3>Notes de la salle <span style = "color: #ffaa01; margin-left: 15px;"> {{evaluation_group.cours.classe.classe}} </span> </h3>
                             </div>
-                           <div class="dropdown">
-                                <a class="dropdown-toggle" href="#" role="button" 
-                                data-toggle="dropdown" aria-expanded="false">...</a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#"><i class="fas fa-times text-orange-red"></i>Fermer</a>
-                                    <a class="dropdown-item" href="#"><i class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
-                                    <a class="dropdown-item" href="#"><i class="fas fa-redo-alt text-orange-peel"></i>Refrecher</a>
-                                </div>
+                            <div class="item-title">
+                                <h5>Matière <span style = "color: #ffaa01; margin-left: 15px;"> {{evaluation_group.cours.matiere.code }} </span> </h5>
+                            </div>
+                            <div class="item-title">
+                                <h5><span style = "color: #ffaa01; margin-left: 15px;"> {{evaluation_group.trimestre }} </span> </h5>
                             </div>
                         </div>
                         <form class="mg-b-20" method="POST">
                             {% csrf_token %}
                             <div class="row gutters-8">
-                                <div class="col-3-xxxl col-xl-3 col-lg-3 col-12 form-group">
-                                    <input type="text" name="nom" id="filtreNom" placeholder="Filtre par Nom etudiant ..." class="form-control" oninput="applyEvaluationFilters()">
+                                <div class="col-3-xxxl col-xl-5 col-lg-5 col-12 form-group">
+                                    <input type="text" name="nom" id="filtreNom" placeholder="Filtre par Nom etudiant ..." class="form-control w-100" oninput="applyEvaluationFilters()">
                                 </div>
-                                <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
+                                {% comment %} <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
                                     <select class="form-control" name="typeEvaluation" id="filtreType" onchange="applyEvaluationFilters()">
                                         <option value=""> Filtre par type evaluation ... </option>
                                         <option value="Devoir">Devoir</option>
                                         <option value="Interrogation">Interrogation</option>
                                         <option value="Composition">Composition</option>
                                     </select>
-                                    {% comment %} <input type="text" name="typeEvaluation" id="filtreType" placeholder="Filtre par type eval ..." class="form-control" oninput="applyEvaluationFilters()"> {% endcomment %}
-
                                 </div>
                                 <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
                                     <input type="text" name="matiere" id="filtreMatiere" placeholder="Filtre par matiere ..." class="form-control" oninput="applyEvaluationFilters()">
-                                </div>
-                               
-                                <div class="col-4-xxxl col-xl-4 col-lg-3 col-12 form-group">
-                                    <select class="form-control" name="trimestre" id="filtreTrimestre" onchange="applyEvaluationFilters()">
-                                        <option value="">Filtre par trimestre ...</option>
-                                        <option value="1er trimestre">1er trimestre</option>
-                                        <option value="2e trimestre">2e trimestre</option>
-                                        <option value="3e trimestre">3e trimestre</option>
-                                    </select>
-                                </div>
-                               
+                                </div> {% endcomment %}
                             </div>
                         </form>
                         <div class="table-responsive">
@@ -100,11 +85,8 @@
                                             </div>
                                         </th>
                                         <th>Élève</th>
-                                        <th>Classe</th>
-                                        <th>Matière</th>
                                         <th>Note(/20)</th>
                                         <th>Pourcentage</th>
-                                        <th>Trimestre</th>
                                         <th>Enseignant</th>
                                         <th>Type.E</th>
                                         <th>Date</th>
@@ -117,12 +99,10 @@
                                             <td>
                                                 <div class="form-check">
                                                     <input type="checkbox" class="form-check-input">
-                                                    <label class="form-check-label">{{ evaluation.id }}</label>
+                                                    <label class="form-check-label"> # </label>
                                                 </div>
                                             </td>
                                             <td><span style= "font-weight: bold;">{{ evaluation.etudiant.nom }} </span>  {{ evaluation.etudiant.prenom }}</td>
-                                            <td>{{ evaluation.cours.classe.classe }} </td>
-                                            <td>{{ evaluation.cours.matiere.nom }}</td>
                                             {% if evaluation.note > 10  %}
                                                 <td><span style= "font-weight: bold; color: green;">{{ evaluation.note }}</span></td>
                                             {% elif evaluation.note == 10  %}
@@ -131,7 +111,6 @@
                                                 <td><span style= "font-weight: bold; color: red;">{{ evaluation.note }}</span></td>
                                             {% endif %}
                                             <td>{{ evaluation.pourcentage }} %</td>
-                                            <td>{{ evaluation.trimestre }}</td>
                                             <td>{{ evaluation.cours.enseignant.nom }} {{ evaluation.cours.enseignant.prenom }}</td>
                                             <td>{{ evaluation.typeEvaluation }}</td>
                                             <td>{{ evaluation.dateEvaluation|date:"d/m/Y" }}</td>
@@ -146,9 +125,6 @@
                                                         </a>
                                                         <a class="dropdown-item" href="{% url 'secretaire:supprimer_evaluation' evaluation.id  %}" onclick="return confirm('Voulez-vous vraiment supprimer cette évaluation ?')">
                                                             <i class="fas fa-times text-orange-red"></i>Supprimer
-                                                        </a>
-                                                        <a class="dropdown-item" href="#">
-                                                            <i class="fas fa-redo-alt text-orange-peel"></i>Rafraîchir
                                                         </a>
                                                     </div>
                                                 </div>

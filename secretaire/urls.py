@@ -120,6 +120,9 @@ urlpatterns = [
     path('filtre_evaluation/<int:id>/', views.filtre_evaluation, name='filtre_evaluation'),
     path('selectClasseEvaluation/', views.selectClasseEvaluation, name='selectClasseEvaluation'),
     path('evaluationGroupee/<int:id>/', views.evaluationGroupee, name='evaluationGroupee'),
+
+    path('supprimer-evaluation-groupee/<int:id>/', views.supprimerEvaluationGroupee, name='supprimerEvaluationGroupee'),
+    
     
     
     path('selectClasse/', views.selectClasse, name='selectClasse'),

@@ -226,6 +226,8 @@ class Evaluation(models.Model):
         EvaluationGroupee,
         on_delete=models.CASCADE,
         related_name="evaluations",
+        null=True,
+        blank=True
     )
     cours = models.ForeignKey(Cours, on_delete=models.CASCADE, null=False, blank=True, related_name='evaluations')
     trimestre = models.CharField(max_length=100, choices=[('Trimestre 1', 'Trimestre 1'), ('Trimestre 2', 'Trimestre 2'), ('Trimestre 3', 'Trimestre 3')])
