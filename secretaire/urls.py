@@ -38,6 +38,10 @@ urlpatterns = [
 
     path('certificat-inscription/<int:id>/', views.certificatInscription, name = 'certificatInscription'),
 
+    path('exclure-etudiant/<str:matricule>/', views.exclure_etudiant, name = 'exclure_etudiant'),
+    path('graduer-etudiant/<str:matricule>/', views.graduer_etudiant, name = 'graduer_etudiant'),
+    path('gracier-etudiant/<str:matricule>/', views.gracier_etudiant, name = 'gracier_etudiant'),
+
     
     
     path('export-excel/<int:salle_id>/<int:annee_id>/', views.export_excel, name='export_excel'),

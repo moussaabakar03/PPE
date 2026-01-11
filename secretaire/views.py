@@ -284,6 +284,7 @@ def admit_form(request):
                 nationnalite=nationnalite,
                 photo=photo,
                 lien_de_parente=lien_de_parente,
+                statut='Actif'
             )
             messages.success(request, f"Étudiant {prenom} {nom} créé avec succès. Matricule: {matricule}")
             return redirect("secretaire:all-student")
@@ -483,6 +484,35 @@ def detailEtudiant(request, matricule, id):
             "salleClasse": salleClasse,
         }
         return render(request, 'detailEtudiant.html', context)
+
+
+
+def exclure_etudiant(request, matricule):
+    etudiant = get_object_or_404(Etudiant, matricule=matricule)
+    etudiant.utilisateur.is_active = False
+    etudiant.utilisateur.save()
+    etudiant.statut = 'Exclu'
+    etudiant.save()
+    messages.success(request, f"L'étudiant {etudiant.prenom} {etudiant.nom} a été exclu avec succès.")
+    return redirect('secretaire:detailEtudiant', matricule=matricule, id=etudiant.parent.id)
+
+def graduer_etudiant(request, matricule):
+    etudiant = get_object_or_404(Etudiant, matricule=matricule)
+    etudiant.statut = 'Gradué'
+    etudiant.save()
+    messages.success(request, f"L'étudiant {etudiant.prenom} {etudiant.nom} a été gradué avec succès.")
+    return redirect('secretaire:detailEtudiant', matricule=matricule, id=etudiant.parent.id)
+
+def gracier_etudiant(request, matricule):
+    etudiant = get_object_or_404(Etudiant, matricule=matricule)
+    etudiant.utilisateur.is_active = True
+    etudiant.utilisateur.save()
+    etudiant.statut = 'Actif'
+    etudiant.save()
+    messages.success(request, f"L'étudiant {etudiant.prenom} {etudiant.nom} a été gracié avec succès.")
+    return redirect('secretaire:detailEtudiant', matricule=matricule, id=etudiant.parent.id)
+
+
 
 @login_required 
 @admin_required
@@ -2311,7 +2341,7 @@ def generationBulletin(request, matricule, salleClasse):
     cours_classe = Cours.objects.filter(classe__classe=salleClasse.niveau.classe, anneeScolaire=annee)
 
     inscrits = etudiant.inscriptions.all()
-    inscrits_classe = Inscription.objects.filter(anneeAcademique=annee, salleClasse=salleClasse)
+    inscrits_classe = Inscription.objects.filter(anneeAcademique=annee, salleClasse=salleClasse, etudiant__in = Etudiant.objects.filter(statut = 'Actif'))
     tousInscrits = inscrits_classe.count()
 
     trimestres = ["1er trimestre", "2e trimestre", "3e trimestre"]
@@ -2444,7 +2474,7 @@ def bulletinsSalleDeClasse(request, salleClasseId):
     annee = get_annee_active() 
     salleClasse = get_object_or_404(SalleDeClasse, id=salleClasseId)
     cours_classe = Cours.objects.filter(classe__classe=salleClasse.niveau.classe, anneeScolaire=annee)
-    inscrits_classe = Inscription.objects.filter(anneeAcademique=annee, salleClasse=salleClasse)
+    inscrits_classe = Inscription.objects.filter(anneeAcademique=annee, salleClasse=salleClasse, etudiant__in = Etudiant.objects.filter(statut = 'Actif'))
     tousInscrits = inscrits_classe.count()
 
     trimestres = ["1er trimestre", "2e trimestre", "3e trimestre"]
