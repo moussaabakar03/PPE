@@ -85,7 +85,7 @@ urlpatterns = [
     path('emploiDuTemps/<int:id1>/', views.emploiDuTemps, name='emploiDuTemps'),
     path('ajoutEmploiTemps/<int:id1>/<int:id3>/', views.ajoutEmploiTemps, name='ajoutEmploiTemps'),
     path('supprimerEmploiTemps/<int:id1>/', views.supprimerEmploiTemps, name='supprimerEmploiTemps'),
-    path('bulletinsSalleDeClasse/<str:classe>/', views.bulletinsSalleDeClasse, name='bulletinsSalleDeClasse'),
+    path('bulletinsSalleDeClasse/<int:salleClasseId>/', views.bulletinsSalleDeClasse, name='bulletinsSalleDeClasse'),
     path("etendre-salle/<int:idEleve>/<int:idSalleClasse>/<int:idAnnee>/", views.etendreSalleClasse, name="etendreSalleClasse"),
 
     
@@ -155,7 +155,7 @@ urlpatterns = [
     
     
     
-    path('generationBulletin/<str:matricule>/<str:classe>/', views.generationBulletin, name='generationBilletin'),
+    path('generationBulletin/<str:matricule>/<int:salleClasse>/', views.generationBulletin, name='generationBilletin'),
     
     
     # path('recuperationDossierEleve/', views.recuperationDossierEleve, name="recuperationDossierEleve"),

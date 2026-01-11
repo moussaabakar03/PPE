@@ -77,6 +77,7 @@ class Comptable(models.Model):
     date_modification = models.DateTimeField(auto_now= True)        
         
 class Parent(models.Model):
+        
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE, null=True, blank=True, related_name="parent")
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
@@ -91,6 +92,15 @@ class Parent(models.Model):
         return f"{self.prenom} {self.nom}"  
     
 class Etudiant(models.Model):
+    
+    statutEleve = [
+        ('Exclu', 'Exclu'),
+        ('Actif', 'Actif'),
+        ('Gradué', 'Gradué'),
+        ('Suspendu', 'Suspendu'),
+    ]
+        
+    
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE, related_name="eleve", null=True, blank=True)
     parent = models.ForeignKey(Parent, on_delete=models.CASCADE, null=True, blank=True, related_name= 'etudiant')
     nom = models.CharField(max_length=100)
@@ -122,6 +132,8 @@ class Etudiant(models.Model):
             ('Tuteur', 'Tuteur'),
         ]
     )
+    
+    # statut = models.CharField(max_length=20, choices=statutEleve, default='Actif')
     
     def __str__(self):
         return f"{self.matricule}"

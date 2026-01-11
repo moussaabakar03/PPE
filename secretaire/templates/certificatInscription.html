@@ -232,82 +232,82 @@
         }
 
         
-    /* Styles pour l'impression */
-    @media print {
-        /* Masquer les éléments inutiles */
-        body * {
-            visibility: hidden;
+        /* Styles pour l'impression */
+        @media print {
+            /* Masquer les éléments inutiles */
+            body * {
+                visibility: hidden;
+            }
+            
+            #wrapper, .wrapper, .dashboard-page-one,
+            .dashboard-content-one, .page-wrapper,
+            .certificate-container, .certificate-container * {
+                visibility: visible;
+            }
+            
+            .certificate-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 0;
+                border: none;
+                box-shadow: none;
+            }
+            
+            .certificate-container::before {
+                border: none;
+            }
+            
+            /* Masquer les boutons et éléments de navigation */
+            .action-buttons,
+            .header-menu-area,
+            .sidebar-area,
+            .breadcrumbs-area,
+            .copyright,
+            #preloader,
+            #back-to-top {
+                display: none !important;
+            }
+            
+            /* Ajuster le certificat */
+            .page-wrapper {
+                margin: 0;
+                padding: 0;
+                max-width: 100%;
+            }
+            
+            /* Améliorer le filigrane */
+            .watermark {
+                opacity: 0.1;
+            }
+            
+            /* Forcer le fond blanc */
+            .certificate-container {
+                background: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            /* Éviter les coupures dans les boîtes */
+            .info-box {
+                page-break-inside: avoid;
+            }
+            
+            /* Marge d'impression */
+            @page {
+                margin: 15mm;
+                size: A4;
+            }
         }
-        
-        #wrapper, .wrapper, .dashboard-page-one,
-        .dashboard-content-one, .page-wrapper,
-        .certificate-container, .certificate-container * {
-            visibility: visible;
-        }
-        
-        .certificate-container {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            padding: 0;
-            border: none;
-            box-shadow: none;
-        }
-        
-        .certificate-container::before {
-            border: none;
-        }
-        
-        /* Masquer les boutons et éléments de navigation */
-        .action-buttons,
-        .header-menu-area,
-        .sidebar-area,
-        .breadcrumbs-area,
-        .copyright,
-        #preloader,
-        #back-to-top {
-            display: none !important;
-        }
-        
-        /* Ajuster le certificat */
-        .page-wrapper {
-            margin: 0;
-            padding: 0;
-            max-width: 100%;
-        }
-        
-        /* Améliorer le filigrane */
-        .watermark {
-            opacity: 0.1;
-        }
-        
-        /* Forcer le fond blanc */
-        .certificate-container {
-            background: white !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-        
-        /* Éviter les coupures dans les boîtes */
-        .info-box {
-            page-break-inside: avoid;
-        }
-        
-        /* Marge d'impression */
-        @page {
-            margin: 15mm;
-            size: A4;
-        }
-    }
 
-    /* Styles pour l'écran (ajouter à vos styles existants) */
-    @media screen {
-        .certificate-container {
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin: 20px auto;
+        /* Styles pour l'écran (ajouter à vos styles existants) */
+        @media screen {
+            .certificate-container {
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                margin: 20px auto;
+            }
         }
-    }
        
     </style>
     
@@ -347,7 +347,7 @@
                     <!-- Boutons d'action -->
                     <div class="action-buttons">
                       
-                        <button class="btn pdf-btn" onclick="saveAsPDF()">
+                        <button class="btn pdf-btn" id="printBtn">
                             <i class="fas fa-file-pdf"></i> Télécharger PDF
                         </button>
                       
@@ -460,103 +460,109 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-<script>
-    // Impression optimisée
-    function printCertificate() {
-        // Ouvrir une fenêtre d'impression propre
-        const printContent = document.getElementById('certificat').innerHTML;
-        const originalContent = document.body.innerHTML;
-        
-        document.body.innerHTML = printContent;
-        window.print();
-        document.body.innerHTML = originalContent;
-        location.reload(); // Recharger pour restaurer les fonctionnalités
-    }
+    <script>
 
-    // Téléchargement PDF avec html2pdf
-    function saveAsPDF() {
-        const element = document.getElementById('certificat');
-        const opt = {
-            margin: [10, 10, 10, 10],
-            filename: `Certificat_${"{{ inscription.etudiant.matricule }}".replace(/[^a-z0-9]/gi, '_')}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { 
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                letterRendering: true
-            },
-            jsPDF: { 
-                unit: 'mm', 
-                format: 'a4', 
-                orientation: 'portrait' 
-            },
-            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-        };
+        // Gestion de l'impression
+            document.getElementById('printBtn').addEventListener('click', function() {
+                window.print(); // Grâce au CSS, seule la carte formatée s'imprimera
+            });
 
-        // Afficher un message de chargement
-        const originalBtnText = document.querySelector('.pdf-btn').innerHTML;
-        document.querySelector('.pdf-btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...';
-        document.querySelector('.pdf-btn').disabled = true;
-
-        html2pdf().set(opt).from(element).save().then(() => {
-            // Restaurer le bouton
-            document.querySelector('.pdf-btn').innerHTML = originalBtnText;
-            document.querySelector('.pdf-btn').disabled = false;
+        // Impression optimisée
+        function printCertificate() {
+            // Ouvrir une fenêtre d'impression propre
+            const printContent = document.getElementById('certificat').innerHTML;
+            const originalContent = document.body.innerHTML;
             
-            // Afficher un message de confirmation
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            location.reload(); // Recharger pour restaurer les fonctionnalités
+        }
+
+        // Téléchargement PDF avec html2pdf
+        function saveAsPDF() {
+            const element = document.getElementById('certificat');
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: `Certificat_${"{{ inscription.etudiant.matricule }}".replace(/[^a-z0-9]/gi, '_')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    letterRendering: true
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait' 
+                },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+
+            // Afficher un message de chargement
+            const originalBtnText = document.querySelector('.pdf-btn').innerHTML;
+            document.querySelector('.pdf-btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...';
+            document.querySelector('.pdf-btn').disabled = true;
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Restaurer le bouton
+                document.querySelector('.pdf-btn').innerHTML = originalBtnText;
+                document.querySelector('.pdf-btn').disabled = false;
+                
+                // Afficher un message de confirmation
+            });
+        }
+
+        // Notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <span>${message}</span>
+                <button onclick="this.parentElement.remove()">&times;</button>
+            `;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 5px;
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // Raccourci clavier pour l'impression
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                printCertificate();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveAsPDF();
+            }
         });
-    }
 
-    // Notification
-    function showNotification(message, type) {
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.innerHTML = `
-            <span>${message}</span>
-            <button onclick="this.parentElement.remove()">&times;</button>
-        `;
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${type === 'success' ? '#4CAF50' : '#f44336'};
-            color: white;
-            padding: 15px 20px;
-            border-radius: 5px;
-            z-index: 9999;
-            animation: slideIn 0.3s ease;
-        `;
-        document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 3000);
-    }
-
-    // Raccourci clavier pour l'impression
-    document.addEventListener('keydown', (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
-            e.preventDefault();
-            printCertificate();
-        }
-        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-            e.preventDefault();
-            saveAsPDF();
-        }
-    });
-
-    // Optimiser l'image pour l'impression
-    document.addEventListener('DOMContentLoaded', function() {
-        const logo = document.querySelector('.logo-placeholder img');
-        if (logo) {
-            logo.onload = function() {
-                console.log('Logo chargé pour impression');
-            };
-            logo.onerror = function() {
-                console.log('Erreur de chargement du logo');
-                this.style.display = 'none';
-            };
-        }
-    });
-</script>
+        // Optimiser l'image pour l'impression
+        document.addEventListener('DOMContentLoaded', function() {
+            const logo = document.querySelector('.logo-placeholder img');
+            if (logo) {
+                logo.onload = function() {
+                    console.log('Logo chargé pour impression');
+                };
+                logo.onerror = function() {
+                    console.log('Erreur de chargement du logo');
+                    this.style.display = 'none';
+                };
+            }
+        });
+    </script>
 </body>
 
 </html>

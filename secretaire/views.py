@@ -359,7 +359,7 @@ def student_promotion(request):
 @login_required 
 @admin_required
 def student_detail(request, matricule):
-    try:
+    # try:
         etudiant = get_object_or_404(Etudiant, matricule=matricule)
 
         # Générer les données à inclure dans le QR
@@ -382,26 +382,40 @@ def student_detail(request, matricule):
         etudiant.save()
         
         parent = etudiant.parent
-        inscrits = etudiant.inscriptions.all()
-        annees = AnneeScolaire.objects.all().order_by("-id")
+        annee = get_annee_active() 
+        if not etudiant.inscriptions.get(anneeAcademique=annee):
+            messages.error(request, "Cet étudiant n'est pas inscrit pour l'année académique en cours.")
+            return redirect("secretaire:student_detail", matricule=matricule, id =etudiant.parent.id)
+        inscrit = etudiant.inscriptions.get(anneeAcademique=annee)
         
-        context = {"etudiant": etudiant, "inscrits": inscrits, "annees": annees, 'parent': parent}
+        context = {"etudiant": etudiant, "inscrit": inscrit, "annee": annee, 'parent': parent}
         return render(request, 'student-details.html', context)
     
-    except Exception as e:
-        messages.error(request, f"Une erreur s'est produite lors du chargement du profil: {str(e)}")
-        return redirect("secretaire:all-student")
+    # except Exception as e:
+    #     messages.error(request, f"Une erreur s'est produite lors du chargement du profil: {str(e)}")
+    #     return redirect("secretaire:detailEtudiant", matricule=matricule, id=etudiant.parent.id)
     
 @login_required 
 @admin_required
 def detailEtudiant(request, matricule, id):
-    etudiant = Etudiant.objects.get(matricule=matricule)
-    parent = Parent.objects.get(id=id)
-    
+    etudiant = get_object_or_404(Etudiant, matricule=matricule)
+    parent = get_object_or_404(Parent, id=id)
+
     anneeActive = get_annee_active()
-    inscriptions = etudiant.inscriptions.filter(anneeAcademique = anneeActive)
-    
-    dernierInscription = inscriptions.last()
+
+    inscription = etudiant.inscriptions.filter(
+        anneeAcademique=anneeActive
+    ).select_related("salleClasse").first()
+    salleClasse = None
+    if not inscription:
+        # messages.error(
+        #     request,
+        #     "Cet étudiant n'est pas inscrit pour l'année académique en cours."
+        # )
+        # return redirect("secretaire:all-student")
+        salleClasse = None
+    else:
+        salleClasse = inscription.salleClasse
 
     somme_notes_ponderees = 0.0
     somme_coefficients = 0
@@ -411,28 +425,28 @@ def detailEtudiant(request, matricule, id):
         trimestre = request.POST['trimestre']
         typeEvaluation = request.POST['typeEvaluation']
         
-        evaluations = etudiant.evaluations.all()
+        evaluations = etudiant.evaluations.filter(cours__anneeScolaire = anneeActive)
         
         if matiere:
-            evaluations = etudiant.evaluations.filter(cours__matiere__nom__contains = matiere.strip())
+            evaluations = etudiant.evaluations.filter(cours__matiere__nom__contains = matiere.strip(), cours__anneeScolaire = anneeActive)
             for evaluation in evaluations:
                 coefficient = evaluation.cours.coefficient
                 somme_notes_ponderees += float(evaluation.note) * coefficient
                 somme_coefficients += coefficient
         elif trimestre:
-            evaluations = etudiant.evaluations.filter(trimestre__contains = trimestre.strip())
+            evaluations = etudiant.evaluations.filter(trimestre__contains = trimestre.strip(), cours__anneeScolaire = anneeActive)
             for evaluation in evaluations:
                 coefficient = evaluation.cours.coefficient
                 somme_notes_ponderees += float(evaluation.note) * coefficient
                 somme_coefficients += coefficient
         elif typeEvaluation:
-            evaluations = etudiant.evaluations.filter(typeEvaluation__contains = typeEvaluation.strip())
+            evaluations = etudiant.evaluations.filter(typeEvaluation__contains = typeEvaluation.strip(), cours__anneeScolaire = anneeActive)
             for evaluation in evaluations:
                 coefficient = evaluation.cours.coefficient
                 somme_notes_ponderees += float(evaluation.note) * coefficient
                 somme_coefficients += coefficient
         elif matiere and trimestre and typeEvaluation:
-            evaluations = etudiant.evaluations.filter(typeEvaluation__contains = typeEvaluation, trimestre__contains = trimestre, cours__matiere__nom__contains = matiere.strip())
+            evaluations = etudiant.evaluations.filter(typeEvaluation__contains = typeEvaluation, trimestre__contains = trimestre, cours__matiere__nom__contains = matiere.strip(), cours__anneeScolaire = anneeActive)
             for evaluation in evaluations:
                 coefficient = evaluation.cours.coefficient
                 somme_notes_ponderees += float(evaluation.note) * coefficient
@@ -444,15 +458,15 @@ def detailEtudiant(request, matricule, id):
         context = {
             "etudiant": etudiant,
             "parent": parent,
-            "inscriptions": inscriptions,
+            "inscription": inscription,
             "evaluations": evaluations,
             "moyenne": moyenne,
-            "dernierInscription": dernierInscription,
+            "salleClasse": salleClasse,
             }
         return render(request, 'detailEtudiant.html', context)
         
     else:    
-        evaluations = etudiant.evaluations.all()
+        evaluations = etudiant.evaluations.filter(cours__anneeScolaire = anneeActive)
         for evaluation in evaluations:
             coefficient = evaluation.cours.coefficient
             somme_notes_ponderees += float(evaluation.note) * coefficient
@@ -463,10 +477,10 @@ def detailEtudiant(request, matricule, id):
         context = {
             "etudiant": etudiant,
             "parent": parent,
-            "inscriptions": inscriptions,
+            "inscription": inscription,
             "evaluations": evaluations,
             "moyenne": moyenne,
-            "dernierInscription": dernierInscription,
+            "salleClasse": salleClasse,
         }
         return render(request, 'detailEtudiant.html', context)
 
@@ -2290,12 +2304,11 @@ def get_appreciation(element):
 
 @login_required 
 @admin_required
-def generationBulletin(request, matricule, classe):
+def generationBulletin(request, matricule, salleClasse):
     etudiant = get_object_or_404(Etudiant, matricule=matricule)
     annee = get_annee_active()
-    cours_classe = Cours.objects.filter(classe__classe=classe, anneeScolaire=annee)
-
-    salleClasse = get_object_or_404(SalleDeClasse, niveau__classe=classe)
+    salleClasse = get_object_or_404(SalleDeClasse, id=salleClasse)
+    cours_classe = Cours.objects.filter(classe__classe=salleClasse.niveau.classe, anneeScolaire=annee)
 
     inscrits = etudiant.inscriptions.all()
     inscrits_classe = Inscription.objects.filter(anneeAcademique=annee, salleClasse=salleClasse)
@@ -2358,7 +2371,7 @@ def generationBulletin(request, matricule, classe):
         classement = []
         for inscrit in inscrits_classe:
             etu = inscrit.etudiant
-            cours_inscrit = Cours.objects.filter(classe__classe=classe, anneeScolaire=annee)
+            cours_inscrit = Cours.objects.filter(classe__classe=salleClasse.niveau.classe, anneeScolaire=annee)
 
             total_pondere_etu = 0.0
             total_coeff_etu = 0.0
@@ -2427,10 +2440,10 @@ def generationBulletin(request, matricule, classe):
 
 @login_required 
 @admin_required
-def bulletinsSalleDeClasse(request, classe):
+def bulletinsSalleDeClasse(request, salleClasseId):
     annee = get_annee_active() 
-    cours_classe = Cours.objects.filter(classe__classe=classe, anneeScolaire=annee)
-    salleClasse = get_object_or_404(SalleDeClasse, niveau__classe=classe)
+    salleClasse = get_object_or_404(SalleDeClasse, id=salleClasseId)
+    cours_classe = Cours.objects.filter(classe__classe=salleClasse.niveau.classe, anneeScolaire=annee)
     inscrits_classe = Inscription.objects.filter(anneeAcademique=annee, salleClasse=salleClasse)
     tousInscrits = inscrits_classe.count()
 
