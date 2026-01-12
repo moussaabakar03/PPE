@@ -96,7 +96,6 @@ class Etudiant(models.Model):
     statutEleve = [
         ('Exclu', 'Exclu'),
         ('Actif', 'Actif'),
-        ('Gradué', 'Gradué'),
         ('Suspendu', 'Suspendu'),
     ]
         

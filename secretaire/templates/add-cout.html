@@ -99,21 +99,21 @@
             
                                 <div class="col-xl-4 col-lg-6 col-12 form-group">
                                     <label>Frais d'inscription *</label>
-                                    <input type="number" step="2" name="coutInscription" class="form-control" required>
+                                    <input type="number" step="25" name="coutInscription" class="form-control" min="0" required>
                                 </div>
             
                                 <div class="col-xl-4 col-lg-6 col-12 form-group">
                                     <label>Frais de scolarité *</label>
-                                    <input type="number" step="2" name="coutScolarite" class="form-control" required>
+                                    <input type="number" step="25" name="coutScolarite" class="form-control" min="0" required>
                                 </div>
             
                                 <div class="col-xl-4 col-lg-6 col-12 form-group">
                                     <label>Frais d’étude de dossier *</label>
-                                    <input type="number" step="1" name="fraisEtudeDossier" class="form-control" required>
+                                    <input type="number" step="25" name="fraisEtudeDossier" class="form-control" min="0" required>
                                 </div>
                                 <div class="col-xl-4 col-lg-6 col-12 form-group">
                                     <label>Frais Associés *</label>
-                                    <input type="number" name="fraisAssocie" class="form-control" value = "0.0" required>
+                                    <input type="number" step="25" name="fraisAssocie" class="form-control" value = "0.0" min="0" required>
                                 </div>
 
                                 {% comment %} <div class="col-xl-4 col-lg-6 col-12 form-group">

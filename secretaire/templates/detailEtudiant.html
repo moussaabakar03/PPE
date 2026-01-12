@@ -142,8 +142,8 @@
                                 </div>
                             </a>
                             
-                            <a href ="{% url 'secretaire:graduer_etudiant' etudiant.matricule %}">
-                                <div class="message-icon"  style = "cursor: pointer;" title = "message"> Gradué 
+                            <a href ="{% url 'secretaire:suspendre_etudiant' etudiant.matricule %}">
+                                <div class="message-icon"  style = "cursor: pointer;" title = "message"> Suspendre 
                                     <i class="fas fa-user-check"  style = "color: with;" ></i> 
                                 </div>
                             </a>
@@ -160,7 +160,15 @@
                 </div>
                 <!-- Breadcubs Area Start Here -->
                 <div class="breadcrumbs-area">
-                    <h3>Elève</h3>
+                    <h3>Elève
+                        {% if etudiant.statut == "Exclu" %}
+                            <span class="badge badge-danger" style="background-color: red; color: white; font-size: 14px; padding: 5px 10px; border-radius: 5px;">{{ etudiant.statut }}</span>
+                        {% elif etudiant.statut == "Suspendu" %}
+                            <span class="badge badge-warning" style="background-color: orange; color: white; font-size: 14px; padding: 5px 10px; border-radius: 5px;">{{ etudiant.statut }}</span>
+                        {% else %}
+                            <span class="badge badge-success" style="background-color: green; color: white; font-size: 14px; padding: 5px 10px; border-radius: 5px;">{{ etudiant.statut }}</span>
+                        {% endif %}
+                    </h3>
                     <ul>
                         <li> <a href="{% url 'secretaire:all-student' %}">Elèves *</a> </li>
                         {% if inscription %}
