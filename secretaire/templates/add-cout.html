@@ -116,22 +116,43 @@
                                     <input type="number" step="25" name="fraisAssocie" class="form-control" value = "0.0" min="0" required>
                                 </div>
 
-                                {% comment %} <div class="col-xl-4 col-lg-6 col-12 form-group">
-                                    <label>Année scolaire *</label>
-                                    <select name="anneeScolaire" class="select2 form-control" required>
-                                        <option value="">Sélectionnez l'année scolaire *</option>
-                                        {% for anneeScolaire in anneeScolaires %}
-                                            <option value={{anneeScolaire.id}}>{{ anneeScolaire.debutAnnee|date:"Y" }}- {{ anneeScolaire.fintAnnee|date:"Y" }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div> {% endcomment %}
-
-                                <div class="col-12 form-group mg-t-8">
+                                {% comment %} <div class="col-12 form-group mg-t-8">
                                     <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Enregistrer</button>
                                     <button type="reset" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Réinitialiser</button>
+                                </div> {% endcomment %}
+                            </div>
+                        
+                            <h4>Tranches de paiement</h4>
+
+                            <div id="tranches">
+                                <div class="row tranche mb-2">
+                                    <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                        <label>Libelle *</label>
+                                        <input name="tranche_libelle[]" class="form-control" placeholder="Libellé" required>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                        <label>Montant *</label>
+                                        <input name="tranche_montant[]" type="number" min="0" step="1" class="form-control" placeholder="Montant" required> 
+                                    </div>
+                                    <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                        <label>Date d'échéance *</label>
+                                        <input name="tranche_date[]" type="date" class="form-control" required>
+                                    </div>
                                 </div>
                             </div>
+
+                            <div class="col-12 form-group mg-t-8 boutonTranche">
+                                <button type="button" onclick="addTranche()">+ Ajouter une tranche</button>
+                                {% comment %} <button type="reset" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Réinitialiser</button> {% endcomment %}
+                            </div>
+                            <br><br>
+                            <div class="col-12 form-group mg-t-8">
+                                <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Enregistrer</button>
+                                <button type="reset" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Réinitialiser</button>
+                            </div>
+                            {% comment %} <button type="submit" class="btn btn-success">Enregistrer</button> {% endcomment %}
                         </form>
+
             
                     </div>
                 </div>
@@ -142,6 +163,43 @@
         </div>
         <!-- Page Area End Here -->
     </div>
+   
+    <script>
+        function addTranche() {
+            const div = document.createElement("div");
+            div.className = "row tranche mb-2";
+            div.innerHTML = `
+                    <div class="col-xl-4 col-lg-6 col-12 form-group">
+                        <label>Libelle *</label>
+                        <input name="tranche_libelle[]" class="form-control" placeholder="Libellé" required>
+                    </div>
+                    <div class="col-xl-4 col-lg-6 col-12 form-group">
+                        <label>Montant *</label>
+                        <input name="tranche_montant[]" type="number" min="0" step="1" class="form-control" placeholder="Montant" required> 
+                    </div>
+                    <div class="col-xl-4 col-lg-6 col-12 form-group">
+                        <label>Date d'échéance *</label>
+                        <input name="tranche_date[]" type="date" class="form-control" required>
+                    </div>
+            `;
+            document.getElementById("tranches").appendChild(div);
+
+            /*
+            const boutonTranche = document.querySelector(".boutonTranche");
+            const bouttonSuppTranche = document.createElement("button");
+            bouttonSuppTranche.className = "btn-fill-lg bg-blue-dark btn-hover-yellow";
+
+            bouttonSuppTranche.innerHTML = `
+                supprimer tranche
+            `;
+
+            boutonTranche.appendChild(bouttonSuppTranche);
+            */
+
+        }
+    </script>
+
+
     <!-- jquery-->
     <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
     <!-- Plugins js -->

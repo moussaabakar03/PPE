@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 
 from comptable.models import PaiementEleve
 from secretaire.forms import ContactForm, FormComptable, FormMessageCommun
-from . models import AnneeScolaire, Classe, Comptable, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, EvaluationGroupee, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, Utilisateur, cvEnseignant, depotDossierEtudiant
+from . models import AnneeScolaire, Classe, Comptable, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, EvaluationGroupee, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, TrancheCout, Utilisateur, cvEnseignant, depotDossierEtudiant
 from django.utils.timezone import localtime
 from django.db.models import Q
 
@@ -2191,7 +2191,7 @@ def all_cout(request):
 
 @login_required 
 @admin_required
-def ajoutCout(request):
+def ajoutCbout(request):
     if request.method == 'POST':
         classe_id = request.POST["classe"]
         coutInscription = request.POST['coutInscription']
@@ -2220,14 +2220,91 @@ def ajoutCout(request):
     context = {'classe_list': Classe.objects.all()}
     return render(request, 'add-cout.html', context)
 
+
+# from django.shortcuts import render, redirect
+# from django.contrib import messages
+from django.db import transaction
+from decimal import Decimal
+
+@login_required
+@admin_required
+def ajoutCout(request):
+    classes = Classe.objects.all()
+    annee_active = get_annee_active()
+
+    if request.method == "POST":
+        try:
+            with transaction.atomic():
+                classe_id = request.POST.get("classe")
+
+                if Cout.objects.filter(classe_id = classe_id, anneeScolaire = annee_active).exists():
+                    messages.error(request, f"Les coûts de cette classe ont déjà été ajoutés ({Classe.objects.get(pk=classe_id)} ({annee_active})). veuillez modifier les coûts existants")
+                    return redirect("secretaire:add_cout")
+
+                cout = Cout.objects.create(
+                    classe_id=classe_id,
+                    anneeScolaire=annee_active,
+                    coutInscription=Decimal(request.POST.get("coutInscription")),
+                    coutScolarite=Decimal(request.POST.get("coutScolarite")),
+                    fraisEtudeDossier=Decimal(request.POST.get("fraisEtudeDossier")),
+                    fraisAssocie=Decimal(request.POST.get("fraisAssocie")),
+                )
+
+                libelles = request.POST.getlist("tranche_libelle[]")
+                montants = request.POST.getlist("tranche_montant[]")
+                dates = request.POST.getlist("tranche_date[]")
+
+                total_tranches = Decimal("0.00")
+
+                for i in range(len(libelles)):
+                    montant = Decimal(montants[i])
+                    total_tranches += montant
+
+                    TrancheCout.objects.create(
+                        cout=cout,
+                        libelle=libelles[i],
+                        montant=montant,
+                        date_echeance=dates[i],
+                    )
+
+                if total_tranches > cout.coutScolarite:
+                    raise ValueError(
+                        "La somme des tranches dépasse le coût de la scolarité"
+                    )
+
+                messages.success(request, "Coût et tranches ajoutés avec succès")
+                return redirect("secretaire:all_cout")
+
+        except Exception as e:
+            messages.error(request, str(e))
+
+    return render(
+        request,
+        "add-cout.html",
+        {
+            "classe_list": classes,
+            "annee_active": annee_active,
+        }
+    )
+
+
+def detail_cout(request, id):
+    cout = get_object_or_404(Cout, id=id)
+    
+    tranches = cout.tranches.all()
+    
+    context = {'cout': cout, 'tranches': tranches}
+    return render(request, 'detailCout.html', context)
+
 @login_required 
 @admin_required
 def suppCout(request, id):
     cout = get_object_or_404(Cout, id=id)
+    
+    
     classe_nom = cout.classe.classe
-    annee_nom = cout.anneeScolaire.annee
     cout.delete()
-    messages.success(request, f"Coûts de la classe {classe_nom} ({annee_nom}) supprimés avec succès.")
+    messages.success(request, f"Coûts de la classe {classe_nom} supprimés avec succès.")
     return redirect('secretaire:all_cout')
 
 @login_required 

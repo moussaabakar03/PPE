@@ -1,6 +1,6 @@
 from django.db import models
 
-from secretaire.models import Etudiant, Inscription
+from secretaire.models import Etudiant, Inscription, TrancheCout
 
 # Create your models here.
 
@@ -8,6 +8,12 @@ from secretaire.models import Etudiant, Inscription
 
 class PaiementEleve(models.Model):
     inscription_Etudiant = models.ForeignKey(Inscription, on_delete=models.CASCADE, related_name='paiements', null = True, blank=  True)
+    tranche = models.ForeignKey(
+        TrancheCout,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
     montantVerse = models.DecimalField(max_digits=10, decimal_places=2)
     datePaiement = models.DateField(editable=False, auto_now_add=True)
     typePaiement = models.CharField(max_length=150)

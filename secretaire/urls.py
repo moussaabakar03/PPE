@@ -140,7 +140,7 @@ urlpatterns = [
     path('delete_cout/<int:id>/', views.suppCout, name='delete_cout'),
     path('update_cout/<int:id>/', views.modifierCout, name='update_cout'),
     
-    
+    path('detail_cout/<int:id>/', views.detail_cout, name='detail_cout'),
 
     path('all-subject/', views.all_subject, name='all-subject'),
     path('class-routine/', views.class_routine, name='class-routine'),
