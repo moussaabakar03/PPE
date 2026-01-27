@@ -35,36 +35,7 @@
                 </div>
                 <!-- Breadcubs Area End Here -->
 
-                <!-- Année Scolaire Selection Start Here -->
-                <div class="card height-auto">
-                    <div class="card-body">
-                        <div class="heading-layout1">
-                            <div class="item-title">
-                                <h3>Sélectionnez l'année scolaire</h3>
-                            </div>
-                        </div>
-                        <form method="get" action="">
-                            <div class="row">
-                                <div class="col-xl-6 col-lg-6 col-12 form-group">
-                                    <label>Année Scolaire *</label>
-                                    <select name="anneeScolaire" class="select2 form-control" required>
-                                        <option value = "">Selectionner une Année </option>
-                                        {% for annee in annees %}
-                                            <option value="{{annee.id}}">{{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                {% comment %} <div class="col-xl-6 col-lg-6 col-12 form-group">
-                                    <button type="submit" class="fw-btn-fill btn-gradient-yellow" style="margin-top: 30px;">
-                                        Valider
-                                    </button>
-                                </div> {% endcomment %}
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <!-- Année Scolaire Selection End Here -->
-
+              
                 <!-- Class Table Area Start Here -->
                 <div class="card height-auto">
                     <div class="card-body">
@@ -88,7 +59,7 @@
                                         <td>{{ salleClasse.nom }} -{{ salleClasse.niveau.classe }}</td>
                                         <td>
                                             <div class="dropdown">
-                                                <a href="#" class ="voirPlusSalleDeClasse" data-salle-id="{{ salleClasse.id }}">
+                                                <a href="{% url 'comptable:liste_eleve' salleClasse.id %}">
                                                     <i class="fas fa-clipboard-check"> </i> Selectionner la salle
                                                 </a>
                                             </div>
@@ -120,7 +91,7 @@
 
 
       
-    <script>
+    {% comment %} <script>
         $(document).ready(function () {
             $('.voirPlusSalleDeClasse').on('click', function (e) {
                 e.preventDefault();
@@ -136,7 +107,7 @@
                 window.location.href = url;
             });
         });
-    </script>
+    </script> {% endcomment %}
     
 </body>
 </html>

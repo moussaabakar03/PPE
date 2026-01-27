@@ -7,9 +7,11 @@ urlpatterns = [
     path('', views.indexComptable, name='indexComptable'),
     path('listePaiments/', views.listePaiments, name='listePaiments'),
     path('selectionSalle/', views.selectionSalle, name='selectionSalle'),
-    path('liste_eleve/<int:id_salle>/<int:id_annee>/', views.liste_eleve, name='liste_eleve'),
-    path('ajouter-paiement/<int:id_inscription>/<int:id_annee>/', views.ajouter_paiement, name='ajouter_paiement'),
+    path('liste_eleve/<int:id_salle>/', views.liste_eleve, name='liste_eleve'),
+    path('ajouter-paiement/<int:id_inscription>/', views.ajouter_paiement, name='ajouter_paiement'),
     path('enretardSurPaiement/', views.enretardSurPaiement, name='enretardSurPaiement'),
+    
+    path('changer-annee-active/<int:annee_id>/', views.changer_annee_active, name='changer_annee_active'),
     
     path('paiement/pdf/<int:id_inscription>/<int:id_annee>/', 
          views.export_paiement_pdf, 

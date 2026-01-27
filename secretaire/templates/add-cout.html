@@ -104,7 +104,7 @@
             
                                 <div class="col-xl-4 col-lg-6 col-12 form-group">
                                     <label>Frais de scolarité *</label>
-                                    <input type="number" step="25" name="coutScolarite" class="form-control" min="0" required>
+                                    <input type="number" step="25" name="coutScolarite"  id="coutScolarite" class="form-control" min="0" required>
                                 </div>
             
                                 <div class="col-xl-4 col-lg-6 col-12 form-group">
@@ -122,7 +122,7 @@
                                 </div> {% endcomment %}
                             </div>
                         
-                            <h4>Tranches de paiement</h4>
+                            <h4>Tranches de paiement (Subdivision les frais de scolarité)</h4>
 
                             <div id="tranches">
                                 <div class="row tranche mb-2">
@@ -143,7 +143,7 @@
 
                             <div class="col-12 form-group mg-t-8 boutonTranche">
                                 <button type="button" onclick="addTranche()">+ Ajouter une tranche</button>
-                                {% comment %} <button type="reset" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Réinitialiser</button> {% endcomment %}
+                                <button type="button" id="bouton" style="display:none;">Supprimer</button>
                             </div>
                             <br><br>
                             <div class="col-12 form-group mg-t-8">
@@ -165,6 +165,10 @@
     </div>
    
     <script>
+        let boutonTranche = document.querySelector(".boutonTranche");
+        let bouttonSuppTranche = document.getElementById("bouton");
+        {% comment %} bouttonSuppTranche.className = "btn-fill-lg bg-blue-dark btn-hover-yellow"; {% endcomment %}
+        
         function addTranche() {
             const div = document.createElement("div");
             div.className = "row tranche mb-2";
@@ -175,7 +179,7 @@
                     </div>
                     <div class="col-xl-4 col-lg-6 col-12 form-group">
                         <label>Montant *</label>
-                        <input name="tranche_montant[]" type="number" min="0" step="1" class="form-control" placeholder="Montant" required> 
+                        <input name="tranche_montant[]" type="number" min="0" step="25" class="form-control" placeholder="Montant" required> 
                     </div>
                     <div class="col-xl-4 col-lg-6 col-12 form-group">
                         <label>Date d'échéance *</label>
@@ -184,18 +188,33 @@
             `;
             document.getElementById("tranches").appendChild(div);
 
-            /*
-            const boutonTranche = document.querySelector(".boutonTranche");
-            const bouttonSuppTranche = document.createElement("button");
-            bouttonSuppTranche.className = "btn-fill-lg bg-blue-dark btn-hover-yellow";
-
-            bouttonSuppTranche.innerHTML = `
-                supprimer tranche
-            `;
-
+        
+            bouttonSuppTranche.style.display = "inline-block";
+            bouttonSuppTranche.innerText = "- Supprimer une tranche";
+            bouttonSuppTranche.onclick = function() {
+                const tranches = document.getElementById("tranches");
+                if (tranches.children.length > 1) {
+                    tranches.removeChild(tranches.lastChild);
+                }
+                if (tranches.children.length === 1) {
+                    bouttonSuppTranche.style.display = "none";
+                }
+            };
             boutonTranche.appendChild(bouttonSuppTranche);
-            */
 
+            let coutScolariteInput = document.getElementById("coutScolarite");
+            coutScolariteInput.addEventListener("input", function() {
+                let totalTranche = 0;
+                let montantInputs = document.getElementsByName("tranche_montant[]");
+                for (let input of montantInputs) {
+                    totalTranche += parseFloat(input.value) || 0;
+                }
+                if (totalTranche > parseFloat(coutScolariteInput.value)) {
+                    alert("Le total des montants des tranches dépasse le frais de scolarité.");
+                    coutScolariteInput.value = totalTranche;
+                }
+            });
+            
         }
     </script>
 

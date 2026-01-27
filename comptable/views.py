@@ -10,40 +10,58 @@ from collections import defaultdict
 from decimal import Decimal
 
 from comptable.models import PaiementEleve
-from secretaire.models import Classe, Cout, Inscription, Etudiant, AnneeScolaire, SalleDeClasse
+from secretaire.models import Classe, Cout, Inscription, Etudiant, AnneeScolaire, SalleDeClasse, TrancheCout
 from django.contrib.auth.decorators import login_required
 
 from acadPro.utils.decorators import staff_required
+
+
+def annee_active():
+    try:
+        return AnneeScolaire.objects.get(est_active=True)
+    except AnneeScolaire.DoesNotExist:
+        return None
+    
+
+def changer_annee_active(request, annee_id):
+    annee = AnneeScolaire.objects.get(id=annee_id)
+    annee.est_active = True
+    annee.save()
+    messages.success(request, f"L'année {annee} est maintenant active.")
+    return redirect("comptable:indexComptable")
+
 
 # from . form import PaiementForm, timezone
 # Create your views here.
 @login_required
 @staff_required
 def selectionSalle(request):
-    annees = AnneeScolaire.objects.all().order_by('-id')
+    # annees = AnneeScolaire.objects.all().order_by('-id')
+    annee = annee_active()
     SalleDeClasses = SalleDeClasse.objects.all()
     context = {
         'SalleClasses': SalleDeClasses,
-        "annees": annees
+        "annee": annee  
     }
     # Inclure le chemin relatif vers le template
     return render(request, 'selectionSalle.html', context)
 
 @login_required
 @staff_required
-def liste_eleve(request, id_salle, id_annee):
+def liste_eleve(request, id_salle):
     # Initialisation du contexte
     context = {}
     
     try:
         # Récupération de la salle de classe
         salleClasse = get_object_or_404(SalleDeClasse, id=id_salle)
-        anneesScolaire = get_object_or_404(AnneeScolaire, id= id_annee)
+        # anneesScolaire = get_object_or_404(AnneeScolaire, id= id_annee)
+        anneesScolaire = annee_active()
         couts = Cout.objects.filter(classe=salleClasse.niveau, anneeScolaire=anneesScolaire)
         messagesCoutNonEnregistrer = ""
         if not couts.exists():
             # messages.error(request, "Aucun cout n'est enregistré pour cette salle de classe ")
-            messagesCoutNonEnregistrer= "Aucun cout n'est enregistré cette année pour cette salle de classe. Pour effectuer cette opératrion, le secretaire doit ajouter les frais de cette classe"
+            messagesCoutNonEnregistrer= "Aucun cout n'est enregistré cette année pour cette classe. Pour effectuer cette opératrion, le secretaire doit ajouter les frais de cette classe"
 
         # Récupération des élèves inscrits avec optimisation des requêtes
         inscrits = Inscription.objects.filter(
@@ -68,8 +86,9 @@ def liste_eleve(request, id_salle, id_annee):
 
 @login_required
 @staff_required
-def ajouter_paiement(request, id_inscription, id_annee):
-    anneeScol = get_object_or_404(AnneeScolaire, id=id_annee)
+def ajouter_paiement(request, id_inscription):
+    # anneeScol = get_object_or_404(AnneeScolaire, id=id_annee)
+    anneeScol = annee_active()
     inscriptionEleve = get_object_or_404(Inscription, id=id_inscription, anneeAcademique = anneeScol)
     classe = inscriptionEleve.salleClasse.niveau
     
@@ -88,13 +107,13 @@ def ajouter_paiement(request, id_inscription, id_annee):
     # Frais d'étude du dossier
     # Frais Associés
     
-    paiementsScolarite = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Frais de scolarité")
+    paiementsScolarite = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Scolarite")
     totalScolarite = sum(p.montantVerse for p in paiementsScolarite)
-    paiementsInscription = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Frais d'inscription")
+    paiementsInscription = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Inscription")
     totalInscription = sum(p.montantVerse for p in paiementsInscription)
-    paiementsEtudeDossier = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Frais d'étude du dossier")
+    paiementsEtudeDossier = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Etude du dossier")
     totalEtudeDossier = sum(p.montantVerse for p in paiementsEtudeDossier)
-    paiementsFraisAssocie = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Frais Associés")
+    paiementsFraisAssocie = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Associés")
     totalFraisAssocie = sum(p.montantVerse for p in paiementsFraisAssocie)
 
     # Paiement par type
@@ -110,18 +129,19 @@ def ajouter_paiement(request, id_inscription, id_annee):
         # periodeConcerne = request.POST.get('periodeConcerne')
 
         montantMaximum = {
-            'Frais de scolarité': cout.coutScolarite,
-            "Frais d'inscription": cout.coutInscription,
-            "Frais d'étude du dossier": cout.fraisEtudeDossier,
-            "Frais Associés": cout.fraisAssocie,
+            'Scolarite': cout.coutScolarite,
+            "Inscription": cout.coutInscription,
+            "Etude du dossier": cout.fraisEtudeDossier,
+            "Associés": cout.fraisAssocie,
             "Autre": 0
         }.get(type_paiement, 0)
 
+        
         dejaPaye = dejaPayeParType[type_paiement]
         
         if montantVerse >= 1:
             if dejaPaye + montantVerse > montantMaximum:
-                error = "Montant versé dépasse le montant requis pour ce type de frais."
+                # error = "Montant versé dépasse le montant requis pour ce type de frais."
                 messages.error(request, f"Montant versé dépasse le montant requis pour {type_paiement}.")
             else:
                 PaiementEleve.objects.create(
@@ -134,7 +154,7 @@ def ajouter_paiement(request, id_inscription, id_annee):
                 return redirect(request.path) 
         else:
             messages.error(request, "Le montant doit être superieur égale '1'")
-            return redirect("comptable:ajouter_paiement", id_inscription=id_inscription, id_annee=id_annee)
+            return redirect("comptable:ajouter_paiement", id_inscription=id_inscription)
 
     return render(request, 'ajouter_paiement.html', {
         'inscriptionEleve': inscriptionEleve,
@@ -150,6 +170,7 @@ def ajouter_paiement(request, id_inscription, id_annee):
         'totalScolarite': totalScolarite,
         'resteTotalPaye': resteTotalPaye,
         'dejaPayeParType_json': json.dumps({k: float(v) for k, v in dejaPayeParType.items()}),
+        'tranches':  TrancheCout.objects.filter(cout__classe=classe, cout__anneeScolaire=anneeScol)
 
     })
 

@@ -46,7 +46,7 @@
                 <div class="breadcrumbs-area" style = "margin-left: 40px;">
                     <h3>Ajout Paiement</h3>
                     <ul>
-                        <li> <a href ="{% url 'comptable:liste_eleve' salleClasse.id anneeScol.id%}" ><i class="fa fa-arrow-left"></i> Retour</a></li>
+                        <li> <a href ="{% url 'comptable:liste_eleve' salleClasse.id %}" ><i class="fa fa-arrow-left"></i> Retour</a></li>
                         <li>{{ inscriptionEleve.salleClasse.niveau.classe }}- {{ inscriptionEleve.salleClasse.nom }} </li>
                         <li> Ajouter paiement</li>
                     </ul>
@@ -103,16 +103,16 @@
                                         <div class="col-md-12">
                                             <label for="type_paiement" class="form-label">Type de paiement:</label>
                                             <select class="form-control" name="type_paiement" id="type_paiement" required>
-                                                <option value="">-- Choix --</option>
-                                                <option value="Frais de scolarité">Frais de scolarité</option>
-                                                <option value="Frais d'inscription">Frais d'inscription</option>
-                                                <option value="Frais d'étude du dossier">Frais d'étude du dossier</option>
-                                                <option value="Frais Associés">Frais Associés</option>
+                                                <option value="">-- Choix Frais --</option>
+                                                <option value="Scolarite">Scolarité</option>
+                                                <option value="Inscription">Inscription</option>
+                                                <option value="Etude du dossier">Etude du dossier</option>
+                                                <option value="Associés">Associés</option>
                                                 <option value="Autre">Autre</option>
                                             </select>
-                                        </div>
-                                        
+                                        </div>  
                                     </div>
+                                   
                                 </div>
                                 <hr>
                                 <div class="calculation-box">
@@ -134,7 +134,27 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="col-md-12 mt-3" id="tranche_container" style="">
+                                    <label for="tranche_paiement" class="form-label">Tranche de paiement:</label>
+                                    <select class="form-control" name="tranche_paiement" id="tranche_paiement">
+                                        <option value="">-- Choix --</option>
+                                        {% with cumul=0 %}
+                                            {% for tranche in tranches %}
+                                                {% with cumul=cumul|add:tranche.montant %}
+                                                    {% if dejaPayeParType_json.Scolarite >= cumul %}
+                                                        <option value="{{ tranche.id }}" data-montant="{{ tranche.montant }}" data-cumul="{{ cumul }}">
+                                                            {{ tranche.libelle }} - {{ tranche.montant }} FCFA ✅
+                                                        </option>
+                                                    {% else %}
+                                                        <option value="{{ tranche.id }}" data-montant="{{ tranche.montant }}" data-cumul="{{ cumul }}">
+                                                            {{ tranche.libelle }} - {{ tranche.montant }} FCFA ❌
+                                                        </option>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% endfor %}
+                                        {% endwith %}
+                                    </select>
+                                </div>
                                 <div class="form-section">
                                     <hr>
                                     <h5><i class="fas fa-credit-card"></i> Mode de paiement</h5>
@@ -308,10 +328,10 @@
 
     <script>
         const frais = {
-            'Frais de scolarité': {{ cout.coutScolarite|default:0 }},
-            "Frais d'inscription": {{ cout.coutInscription|default:0 }},
-            "Frais d'étude du dossier": {{ cout.fraisEtudeDossier|default:0 }},
-            "Frais Associés": {{ cout.fraisAssocie|default:0 }},
+            'Scolarite': {{ cout.coutScolarite|default:0 }},
+            "Inscription": {{ cout.coutInscription|default:0 }},
+            "Etude du dossier": {{ cout.fraisEtudeDossier|default:0 }},
+            "Associés": {{ cout.fraisAssocie|default:0 }},
             "Autre": 0
         };
 
@@ -394,6 +414,9 @@
         montantVerseInput.addEventListener('input', controleChampsNegatif);
 
         document.addEventListener('DOMContentLoaded', mettreAJourMontants);
+
+
+
 
     </script>
 

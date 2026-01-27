@@ -2288,6 +2288,8 @@ def ajoutCout(request):
     )
 
 
+@login_required
+@admin_required
 def detail_cout(request, id):
     cout = get_object_or_404(Cout, id=id)
     
