@@ -2,6 +2,11 @@ from django.shortcuts import render
 
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
+
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+import io
 # from .models import Enseignant
 # from .form import PaiementPersonnelForm
 
@@ -29,6 +34,22 @@ def changer_annee_active(request, annee_id):
     annee.save()
     messages.success(request, f"L'année {annee} est maintenant active.")
     return redirect("comptable:indexComptable")
+
+
+
+@login_required
+@staff_required
+def indexComptable(request):
+    paiements = PaiementEleve.objects.all()
+    totalMontantPaye = sum(paiement.montantVerse for paiement in paiements)
+    
+    paiementsRecentes= PaiementEleve.objects.all()[:5]
+    return render(request, 'dashbordComptable.html', {
+        'paiements': paiements,
+        'totalPaye': totalMontantPaye,
+        'paiementsRecentes': paiementsRecentes
+    })
+
 
 
 # from . form import PaiementForm, timezone
@@ -69,13 +90,16 @@ def liste_eleve(request, id_salle):
             anneeAcademique=anneesScolaire
         ).select_related('etudiant').order_by('etudiant__nom', 'etudiant__prenom')
         
+        
+        tranches = TrancheCout.objects.filter(cout__classe=salleClasse.niveau, cout__anneeScolaire=anneesScolaire)
        
         # Préparation du contexte pour le template
         context = {
             "salleClasse": salleClasse,
             "anneesScolaire": anneesScolaire,
             "inscrits": inscrits,
-            "messagesCoutNonEnregistrer": messagesCoutNonEnregistrer
+            "messagesCoutNonEnregistrer": messagesCoutNonEnregistrer,
+            "tranches": tranches
         }
 
     except Exception as e:
@@ -109,12 +133,18 @@ def ajouter_paiement(request, id_inscription):
     
     paiementsScolarite = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Scolarite")
     totalScolarite = sum(p.montantVerse for p in paiementsScolarite)
+    total_reste_scolarite = cout.coutScolarite - totalScolarite
     paiementsInscription = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Inscription")
     totalInscription = sum(p.montantVerse for p in paiementsInscription)
+    total_reste_inscription = cout.coutInscription - totalInscription
     paiementsEtudeDossier = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Etude du dossier")
     totalEtudeDossier = sum(p.montantVerse for p in paiementsEtudeDossier)
+    total_reste_etude_dossier = cout.fraisEtudeDossier - totalEtudeDossier
     paiementsFraisAssocie = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Associés")
     totalFraisAssocie = sum(p.montantVerse for p in paiementsFraisAssocie)
+    total_reste_frais_associe = cout.fraisAssocie - totalFraisAssocie
+    
+    
 
     # Paiement par type
     dejaPayeParType = defaultdict(Decimal)
@@ -156,6 +186,35 @@ def ajouter_paiement(request, id_inscription):
             messages.error(request, "Le montant doit être superieur égale '1'")
             return redirect("comptable:ajouter_paiement", id_inscription=id_inscription)
 
+    tranches = TrancheCout.objects.filter(cout__classe=classe, cout__anneeScolaire=anneeScol)
+    paiements_effectues = dejaPayeParType["Scolarite"]
+    # paiements_eleves = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Scolarite")
+    # for paiement in paiements_eleves:
+    #     print (f"Paiement ID: {paiement.id}, Montant Versé: {paiement.montantVerse}, Date: {paiement.datePaiement}")
+    
+    # print("Paiements effectués pour la scolarité :", paiements_effectues)
+    # cumul = 0
+    # for tranche in tranches:
+    
+    mes_traches = []
+    cumul = 0
+    for tranche in tranches:
+        cumul += tranche.montant
+        mes_traches.append({
+            "id": tranche.id,
+            "montant": tranche.montant,
+            "libelle": tranche.libelle,
+            "cumul": cumul,
+            "reste_a_payer": max(0, cumul - paiements_effectues)
+        })
+    tranches = mes_traches
+    first_mois_non_paye = None
+    for tranche in tranches:
+        if paiements_effectues < tranche['cumul']:
+            first_mois_non_paye = tranche
+            break
+    
+    
     return render(request, 'ajouter_paiement.html', {
         'inscriptionEleve': inscriptionEleve,
         'cout': cout,
@@ -168,22 +227,91 @@ def ajouter_paiement(request, id_inscription):
         "totalEtudeDossier": totalEtudeDossier,
         "totalFraisAssocie": totalFraisAssocie,
         'totalScolarite': totalScolarite,
+        'total_reste_scolarite': total_reste_scolarite,
+        'total_reste_inscription': total_reste_inscription,
+        'total_reste_etude_dossier': total_reste_etude_dossier,
+        'total_reste_frais_associe': total_reste_frais_associe,
         'resteTotalPaye': resteTotalPaye,
         'dejaPayeParType_json': json.dumps({k: float(v) for k, v in dejaPayeParType.items()}),
-        'tranches':  TrancheCout.objects.filter(cout__classe=classe, cout__anneeScolaire=anneeScol)
-
+        'tranches':  tranches,
+        'paiements_effectues': paiements_effectues,
+        'first_mois_non_paye': first_mois_non_paye
     })
 
-from django.template.loader import render_to_string
-from django.http import HttpResponse
-from xhtml2pdf import pisa
-import io
+
+
+from django.core.mail import send_mail
+from django.conf import settings
+
+def alerte_retard_paiement(request, id_classe):
+    inscris = Inscription.objects.filter(
+        salleClasse__niveau__id=id_classe,
+        anneeAcademique=annee_active()
+    )
+
+    tranches = TrancheCout.objects.filter(
+        cout__classe__id=id_classe,
+        cout__anneeScolaire=annee_active()
+    )
+    
+    if request.method == "GET":
+        tranche_filtre = request.GET.get("tranche_filter")
+        if not tranche_filtre:
+            return redirect("comptable:liste_eleve", id_salle=id_classe)
+        tranche = get_object_or_404(TrancheCout, id=tranche_filtre)
+    else:
+        return redirect("comptable:liste_eleve", id_salle=id_classe)
+    
+    # Calcul du cumul jusqu'à la tranche sélectionnée
+    cumul = 0
+    for t in tranches:
+        cumul += t.montant
+        if t == tranche:
+            break
+    
+    # Vérification des paiements
+    for i in inscris:
+        paiements = PaiementEleve.objects.filter(
+            inscription_Etudiant=i,
+            typePaiement="Scolarite"
+        )
+        total_paye = sum(p.montantVerse for p in paiements)
+        
+        if total_paye < cumul:
+            montant_restant = cumul - total_paye
+            # print(f"Élève: {i.etudiant.nom} {i.etudiant.prenom} - Retard de {montant_restant} FCFA")
+            
+            parent = i.etudiant.parent
+            if parent and parent.email:
+                # Envoi d'un mail au parent
+                sujet = f"Alerte retard de paiement - {i.etudiant.nom} {i.etudiant.prenom}"
+                message = (
+                    f"Bonjour {parent.nom} {parent.prenom},\n\n"
+                    f"Votre enfant {i.etudiant.nom} {i.etudiant.prenom} "
+                    f"n'a pas encore payé la tranche '{tranche.libelle}'.\n"
+                    f"Montant restant dû : {montant_restant} FCFA.\n\n"
+                    f"Merci de régulariser la situation avant la date d'échéance : {tranche.date_echeance}.\n\n"
+                    f"Cordialement,\nAdministration scolaire"
+                )
+                
+                send_mail(
+                    sujet,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [parent.email],
+                    fail_silently=False,
+                )
+                # print(f"Mail envoyé à {parent.email}")
+                messages.success(request, f"Alerte envoyée à {parent.email}")
+    
+    return redirect("comptable:liste_eleve", id_salle=id_classe)
+
 
 @login_required
 @staff_required
-def export_paiement_pdf(request, id_inscription, id_annee):
+def export_paiement_pdf(request, id_inscription):
 
-    annee = get_object_or_404(AnneeScolaire, id=id_annee)
+    annee = annee_active()
     inscriptionEleve = get_object_or_404(Inscription, id=id_inscription, anneeAcademique=annee)
     eleve = inscriptionEleve.etudiant
 
@@ -224,19 +352,6 @@ def export_paiement_pdf(request, id_inscription, id_annee):
         return HttpResponse("Erreur lors de la génération du PDF")
     return response
 
-
-@login_required
-@staff_required
-def indexComptable(request):
-    paiements = PaiementEleve.objects.all()
-    totalMontantPaye = sum(paiement.montantVerse for paiement in paiements)
-    
-    paiementsRecentes= PaiementEleve.objects.all()[:5]
-    return render(request, 'dashbordComptable.html', {
-        'paiements': paiements,
-        'totalPaye': totalMontantPaye,
-        'paiementsRecentes': paiementsRecentes
-    })
 
 @login_required
 @staff_required
@@ -324,6 +439,5 @@ def enretardSurPaiement(request):
             "niveaux": Classe.objects.all()
         }
         return render(request, 'enretardSurPaiement.html', contains)
-    
     
     

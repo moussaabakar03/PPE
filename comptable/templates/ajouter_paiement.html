@@ -134,27 +134,33 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                
                                 <div class="col-md-12 mt-3" id="tranche_container" style="">
                                     <label for="tranche_paiement" class="form-label">Tranche de paiement:</label>
                                     <select class="form-control" name="tranche_paiement" id="tranche_paiement">
-                                        <option value="">-- Choix --</option>
-                                        {% with cumul=0 %}
+                                        <option value="">-- Voir --</option>
                                             {% for tranche in tranches %}
-                                                {% with cumul=cumul|add:tranche.montant %}
-                                                    {% if dejaPayeParType_json.Scolarite >= cumul %}
-                                                        <option value="{{ tranche.id }}" data-montant="{{ tranche.montant }}" data-cumul="{{ cumul }}">
-                                                            {{ tranche.libelle }} - {{ tranche.montant }} FCFA ✅
-                                                        </option>
-                                                    {% else %}
-                                                        <option value="{{ tranche.id }}" data-montant="{{ tranche.montant }}" data-cumul="{{ cumul }}">
-                                                            {{ tranche.libelle }} - {{ tranche.montant }} FCFA ❌
-                                                        </option>
-                                                    {% endif %}
-                                                {% endwith %}
+                                                {% comment %} <option value="">--  dejà payé: ---{{ dejaPayeParType_json.Scolarite }} --</option>
+                                                <option value="">--  dejà payé: {{ dejaPayeParType_json }} --</option> {% endcomment %}
+                                                {% if paiements_effectues >= tranche.cumul %}
+                                                    <option value="{{ tranche.id }}" data-montant="{{ tranche.montant }}" data-cumul="{{ cumul }}">
+                                                        {{ tranche.libelle }} - {{ tranche.montant }} FCFA ✅
+                                                    </option>
+                                                {% elif first_mois_non_paye and tranche.id == first_mois_non_paye.id %}
+                                                    <option value="{{ tranche.id }}" data-montant="{{ tranche.montant }}" data-cumul="{{ cumul }}">
+                                                        {{ tranche.libelle }} - {{ tranche.montant }} FCFA ⚠️ ({{ tranche.reste_a_payer }} FCFA)
+                                                    </option>
+                                                {% else %}
+                                                    <option value="{{ tranche.id }}" data-montant="{{ tranche.montant }}" data-cumul="{{ cumul }}">
+                                                        {{ tranche.libelle }} - {{ tranche.montant }} FCFA 
+                                                    </option>
+                                                {% endif %}
                                             {% endfor %}
-                                        {% endwith %}
                                     </select>
                                 </div>
+
+
                                 <div class="form-section">
                                     <hr>
                                     <h5><i class="fas fa-credit-card"></i> Mode de paiement</h5>
@@ -206,7 +212,7 @@
                         <div class="payment-history" style = "width: 50%;">
                             <h2><i class="fas fa-history"></i> Historique des Paiements</h2>
                             <div style="width:100%; margin-bottom: 10px;">
-                                <a href="{% url 'comptable:export_paiement_pdf' inscriptionEleve.id anneeScol.id %}" 
+                                <a href="{% url 'comptable:export_paiement_pdf' inscriptionEleve.id %}" 
                                 class="btn btn-danger w-100" style="padding:8px 14px;">
                                     <i class="fa fa-file-pdf-o"></i> Exporter en PDF
                                 </a>
@@ -252,23 +258,30 @@
                                 <tbody>
                                     <tr>
                                         <td>Frais d'Inscription</td>
-                                        <td>{{ totalInscription }}</td>
-                                        <td>{{ totalInscription }}</td>
+                                        <td>{{ totalInscription|floatformat:1  }}</td>
+                                        <td>
+                                            {% if total_reste_inscription == 0 %}
+                                                {% comment %} icone de check vert {% endcomment %}
+                                                <span style="color: green; font-weight: bold;">{{ total_reste_inscription|floatformat:1 }} ✅</span
+                                            {% else %}
+                                                {{ total_reste_inscription|floatformat:1  }}
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                      <tr>
                                         <td>Frais Etude de dossier</td>
-                                        <td>{{ totalEtudeDossier }}</td>
-                                        <td>{{ totalEtudeDossier }}</td>
+                                        <td>{{ totalEtudeDossier|floatformat:1  }}</td>
+                                        <td>{{ total_reste_etude_dossier|floatformat:1  }}</td>
                                     </tr>
                                      <tr>
                                         <td>Frais Scolarité</td>
-                                        <td>{{ totalScolarite }}</td>
-                                        <td>{{ totalScolarite }}</td>
+                                        <td>{{ totalScolarite|floatformat:1  }}</td>
+                                        <td>{{ total_reste_scolarite|floatformat:1  }}</td>
                                     </tr>
                                      <tr>
                                         <td>Frais Associé</td>
-                                        <td>{{ totalFraisAssocie }}</td>
-                                        <td>{{ totalFraisAssocie }}</td>
+                                        <td>{{ totalFraisAssocie|floatformat:1  }}</td>
+                                        <td>{{ total_reste_frais_associe|floatformat:1  }}</td>
                                     </tr>
                                      
                                 </tbody>
