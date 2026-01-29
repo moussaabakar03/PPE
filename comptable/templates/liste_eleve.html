@@ -47,13 +47,30 @@
                             <div class="item-title">
                                 <h3>Élèves de {{ salleClasse.nom }}</h3>
                             </div>
-                            <div class="dropdown">
-                                <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">...</a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#"><i class="fas fa-print text-dark-pastel-green"></i>Imprimer</a>
-                                    <a class="dropdown-item" href="#"><i class="fas fa-download text-orange-peel"></i>Exporter</a>
-                                </div>
+                            {% comment %} select des tranches {% endcomment %}
+                            <div class="">
+                                <form method="get" action="{% url 'comptable:alerte_retard_paiement' salleClasse.niveau.id %}">
+                                    <label for="tranche_filter">Filtrer par tranche de paiement:</label>
+                                    {% comment %} <select name="tranche_filter" id="tranche_filter" onchange="this.form.submit()"> {% endcomment %}
+                                    <select name="tranche_filter" id="tranche_filter">
+                                        <option value="">-- Tous --</option>
+                                        {% for tranche in tranches %}
+                                            <option value="{{ tranche.id }}" {% if tranche.id|stringformat:"s" == request.GET.tranche_filter %}selected{% endif %}>
+                                                {{ tranche.libelle }} - {{ tranche.montant|floatformat:1 }} FCFA
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    {% comment %} button envoyer alert {% endcomment %}
+                                    <button type="submit" class="btn btn-success" href="#" role="button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-check" viewBox="0 0 16 16">
+                                            <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372zm-2.54 1.183L5.93 9.363 1.591 6.602z"/>
+                                            <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-1.993-1.679a.5.5 0 0 0-.686.172l-1.17 1.95-.547-.547a.5.5 0 0 0-.708.708l.774.773a.75.75 0 0 0 1.174-.144l1.335-2.226a.5.5 0 0 0-.172-.686"/>
+                                        </svg>
+                                        Alerter
+                                    </button>
+                                </form>
                             </div>
+
                         </div>
 
                         <div class="table-responsive">
@@ -79,7 +96,7 @@
                                                     <i class="fas fa-money-bill-wave"></i> Paiement
                                                 </a>
                                             {% else %}
-                                                <a href="{%  url 'comptable:ajouter_paiement' inscrit.id anneesScolaire.id %}"
+                                                <a href="{%  url 'comptable:ajouter_paiement' inscrit.id %}"
                                                     class="btn btn-success btn-sm">
                                                     <i class="fas fa-money-bill-wave"></i> Paiement
                                                 </a>

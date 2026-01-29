@@ -65,6 +65,25 @@
                     </div>
                 </div>
             </li>
+
+            <li class="navbar-item dropdown header-language">
+                <a class="navbar-nav-link dropdown-toggle" href="#" role="button" 
+                data-toggle="dropdown" aria-expanded="false"><i class="fas fa-calendar-week"></i>ANNEE</a>
+                <div class="dropdown-menu dropdown-menu-right">
+                {% if annees %}
+                    {% for annee in annees %}
+                        <a class="dropdown-item"
+                        href="{% url 'comptable:changer_annee_active' annee.id %}">
+                        {{ annee }}
+                        {% if annee.est_active %} ✅ {% endif %}
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <a class="dropdown-item">Aucune année trouvée</a>
+                {% endif %}
+
+                </div>
+            </li>
         </ul>
     </div>
 </div>

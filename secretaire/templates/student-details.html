@@ -105,12 +105,11 @@
                         <div class="">
                             <ul style="display: flex; gap: 15px; margin-top: 35px;">
                                 {% comment %} <li><a href="{% url 'secretaire:modifier_student' etudiant.matricule %}"><i class="far fa-edit" style="color: #ff9d01;"></i></a></li> {% endcomment %}
-                                <button id="printBtn" type="button"><i class="fas fa-print" style="color: #ff9d01;"></i></button>
                                 <button id="downloadBtn" type="button"><i class="fas fa-download" style="color: #ff9d01;"></i></button>
                             </ul>
                         </div>
                     </div>
-                    <div class="col-xl-3 col-lg-6 col-12 form-group" style ="margin-top: 20px!important; margin: 0 auto;">
+                    {% comment %} <div class="col-xl-3 col-lg-6 col-12 form-group" style ="margin-top: 20px!important; margin: 0 auto;">
                         <select name="anneeScolaire" class="select2 form-control" id="anneeSelect" required >
                             <option value=""  style= "width: 600px;">-- Choisir une année scolaire --</option>
                             {% for annee in annees %}
@@ -123,7 +122,7 @@
                                 {% endfor %}
                             {% endfor %}
                         </select>
-                    </div>
+                    </div> {% endcomment %}
                 </div>
 
                 <div class="card-container print-section" id="content">
@@ -184,10 +183,7 @@
                                 <div class="info-row">
                                     <span class="info-label">Sexe :</span>
                                     <span class="info-value">{{etudiant.genre}}</span>
-                                    <span style="margin-left: 70px;">Classe: <span id = "classe"> </span></span>
-                                    {% comment %} {% for inscrit in inscrits%}
-                                        <span class="info-value" style="margin-left: 10px;">{{inscrit.salleClasse.niveau.classe}}</span>
-                                    {% endfor %} {% endcomment %}
+                                    <span style="margin-left: 70px;">Classe: {{inscrit.salleClasse.niveau.classe}}</span>
                                 </div>
                                 
                                 <div class="info-row">
@@ -251,7 +247,7 @@
             window.print(); // Grâce au CSS, seule la carte formatée s'imprimera
         });
 
-
+ 
         document.getElementById('downloadBtn').addEventListener('click', function () {
             const { jsPDF } = window.jspdf;
 

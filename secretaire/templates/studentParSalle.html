@@ -47,7 +47,7 @@
                             <a href="{% url 'secretaire:emploiDuTemps' salle.id  %}"><i class="fa-solid fa-calendar-days" aria-label="Emploi du temps" style = "color: #ffaa01; padding-left: -10px;"></i><span style = "padding-left: 5px;"></span>Emploi du Temps</a>
                         </li>
                         <li>
-                            <a href="{% url 'secretaire:bulletinsSalleDeClasse' salle.niveau.classe %}"><i class="fa-solid fa-clipboard-list" aria-label="Bulletin" style = "color: #ffaa01;"></i><span style = "padding-left: 5px;"></span>Bulletins</a>
+                            <a href="{% url 'secretaire:bulletinsSalleDeClasse' salle.niveau.id %}"><i class="fa-solid fa-clipboard-list" aria-label="Bulletin" style = "color: #ffaa01;"></i><span style = "padding-left: 5px;"></span>Bulletins</a>
                         </li>
                     
                         <li>

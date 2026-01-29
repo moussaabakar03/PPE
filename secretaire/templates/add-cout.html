@@ -99,39 +99,60 @@
             
                                 <div class="col-xl-4 col-lg-6 col-12 form-group">
                                     <label>Frais d'inscription *</label>
-                                    <input type="number" step="2" name="coutInscription" class="form-control" required>
+                                    <input type="number" step="25" name="coutInscription" class="form-control" min="0" required>
                                 </div>
             
                                 <div class="col-xl-4 col-lg-6 col-12 form-group">
                                     <label>Frais de scolarité *</label>
-                                    <input type="number" step="2" name="coutScolarite" class="form-control" required>
+                                    <input type="number" step="25" name="coutScolarite"  id="coutScolarite" class="form-control" min="0" required>
                                 </div>
             
                                 <div class="col-xl-4 col-lg-6 col-12 form-group">
                                     <label>Frais d’étude de dossier *</label>
-                                    <input type="number" step="1" name="fraisEtudeDossier" class="form-control" required>
+                                    <input type="number" step="25" name="fraisEtudeDossier" class="form-control" min="0" required>
                                 </div>
                                 <div class="col-xl-4 col-lg-6 col-12 form-group">
                                     <label>Frais Associés *</label>
-                                    <input type="number" name="fraisAssocie" class="form-control" value = "0.0" required>
+                                    <input type="number" step="25" name="fraisAssocie" class="form-control" value = "0.0" min="0" required>
                                 </div>
 
-                                {% comment %} <div class="col-xl-4 col-lg-6 col-12 form-group">
-                                    <label>Année scolaire *</label>
-                                    <select name="anneeScolaire" class="select2 form-control" required>
-                                        <option value="">Sélectionnez l'année scolaire *</option>
-                                        {% for anneeScolaire in anneeScolaires %}
-                                            <option value={{anneeScolaire.id}}>{{ anneeScolaire.debutAnnee|date:"Y" }}- {{ anneeScolaire.fintAnnee|date:"Y" }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div> {% endcomment %}
-
-                                <div class="col-12 form-group mg-t-8">
+                                {% comment %} <div class="col-12 form-group mg-t-8">
                                     <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Enregistrer</button>
                                     <button type="reset" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Réinitialiser</button>
+                                </div> {% endcomment %}
+                            </div>
+                        
+                            <h4>Tranches de paiement (Subdivision les frais de scolarité)</h4>
+
+                            <div id="tranches">
+                                <div class="row tranche mb-2">
+                                    <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                        <label>Libelle *</label>
+                                        <input name="tranche_libelle[]" class="form-control" placeholder="Libellé" required>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                        <label>Montant *</label>
+                                        <input name="tranche_montant[]" type="number" min="0" step="1" class="form-control" placeholder="Montant" required> 
+                                    </div>
+                                    <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                        <label>Date d'échéance *</label>
+                                        <input name="tranche_date[]" type="date" class="form-control" required>
+                                    </div>
                                 </div>
                             </div>
+
+                            <div class="col-12 form-group mg-t-8 boutonTranche">
+                                <button type="button" onclick="addTranche()">+ Ajouter une tranche</button>
+                                <button type="button" id="bouton" style="display:none;">Supprimer</button>
+                            </div>
+                            <br><br>
+                            <div class="col-12 form-group mg-t-8">
+                                <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Enregistrer</button>
+                                <button type="reset" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Réinitialiser</button>
+                            </div>
+                            {% comment %} <button type="submit" class="btn btn-success">Enregistrer</button> {% endcomment %}
                         </form>
+
             
                     </div>
                 </div>
@@ -142,6 +163,62 @@
         </div>
         <!-- Page Area End Here -->
     </div>
+   
+    <script>
+        let boutonTranche = document.querySelector(".boutonTranche");
+        let bouttonSuppTranche = document.getElementById("bouton");
+        {% comment %} bouttonSuppTranche.className = "btn-fill-lg bg-blue-dark btn-hover-yellow"; {% endcomment %}
+        
+        function addTranche() {
+            const div = document.createElement("div");
+            div.className = "row tranche mb-2";
+            div.innerHTML = `
+                    <div class="col-xl-4 col-lg-6 col-12 form-group">
+                        <label>Libelle *</label>
+                        <input name="tranche_libelle[]" class="form-control" placeholder="Libellé" required>
+                    </div>
+                    <div class="col-xl-4 col-lg-6 col-12 form-group">
+                        <label>Montant *</label>
+                        <input name="tranche_montant[]" type="number" min="0" step="25" class="form-control" placeholder="Montant" required> 
+                    </div>
+                    <div class="col-xl-4 col-lg-6 col-12 form-group">
+                        <label>Date d'échéance *</label>
+                        <input name="tranche_date[]" type="date" class="form-control" required>
+                    </div>
+            `;
+            document.getElementById("tranches").appendChild(div);
+
+        
+            bouttonSuppTranche.style.display = "inline-block";
+            bouttonSuppTranche.innerText = "- Supprimer une tranche";
+            bouttonSuppTranche.onclick = function() {
+                const tranches = document.getElementById("tranches");
+                if (tranches.children.length > 1) {
+                    tranches.removeChild(tranches.lastChild);
+                }
+                if (tranches.children.length === 1) {
+                    bouttonSuppTranche.style.display = "none";
+                }
+            };
+            boutonTranche.appendChild(bouttonSuppTranche);
+
+            let coutScolariteInput = document.getElementById("coutScolarite");
+            coutScolariteInput.addEventListener("input", function() {
+                let totalTranche = 0;
+                let montantInputs = document.getElementsByName("tranche_montant[]");
+                for (let input of montantInputs) {
+                    totalTranche += parseFloat(input.value) || 0;
+                }
+                if (totalTranche > parseFloat(coutScolariteInput.value)) {
+                    alert("Le total des montants des tranches dépasse le frais de scolarité.");
+                    coutScolariteInput.value = totalTranche;
+                }
+            });
+            
+        }
+    </script>
+
+
     <!-- jquery-->
     <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
     <!-- Plugins js -->

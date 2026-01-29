@@ -38,6 +38,10 @@ urlpatterns = [
 
     path('certificat-inscription/<int:id>/', views.certificatInscription, name = 'certificatInscription'),
 
+    path('exclure-etudiant/<str:matricule>/', views.exclure_etudiant, name = 'exclure_etudiant'),
+    path('suspendre-etudiant/<str:matricule>/', views.suspendre_etudiant, name = 'suspendre_etudiant'),
+    path('gracier-etudiant/<str:matricule>/', views.gracier_etudiant, name = 'gracier_etudiant'),
+
     
     
     path('export-excel/<int:salle_id>/<int:annee_id>/', views.export_excel, name='export_excel'),
@@ -85,7 +89,7 @@ urlpatterns = [
     path('emploiDuTemps/<int:id1>/', views.emploiDuTemps, name='emploiDuTemps'),
     path('ajoutEmploiTemps/<int:id1>/<int:id3>/', views.ajoutEmploiTemps, name='ajoutEmploiTemps'),
     path('supprimerEmploiTemps/<int:id1>/', views.supprimerEmploiTemps, name='supprimerEmploiTemps'),
-    path('bulletinsSalleDeClasse/<str:classe>/', views.bulletinsSalleDeClasse, name='bulletinsSalleDeClasse'),
+    path('bulletinsSalleDeClasse/<int:salleClasseId>/', views.bulletinsSalleDeClasse, name='bulletinsSalleDeClasse'),
     path("etendre-salle/<int:idEleve>/<int:idSalleClasse>/<int:idAnnee>/", views.etendreSalleClasse, name="etendreSalleClasse"),
 
     
@@ -136,7 +140,7 @@ urlpatterns = [
     path('delete_cout/<int:id>/', views.suppCout, name='delete_cout'),
     path('update_cout/<int:id>/', views.modifierCout, name='update_cout'),
     
-    
+    path('detail_cout/<int:id>/', views.detail_cout, name='detail_cout'),
 
     path('all-subject/', views.all_subject, name='all-subject'),
     path('class-routine/', views.class_routine, name='class-routine'),
@@ -155,7 +159,7 @@ urlpatterns = [
     
     
     
-    path('generationBulletin/<str:matricule>/<str:classe>/', views.generationBulletin, name='generationBilletin'),
+    path('generationBulletin/<str:matricule>/<int:salleClasse>/', views.generationBulletin, name='generationBilletin'),
     
     
     # path('recuperationDossierEleve/', views.recuperationDossierEleve, name="recuperationDossierEleve"),

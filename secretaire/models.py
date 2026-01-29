@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ValidationError
 from django.urls import reverse
 from django.contrib.auth.models import AbstractUser, Group, Permission
 # Create your models here.
@@ -77,6 +78,7 @@ class Comptable(models.Model):
     date_modification = models.DateTimeField(auto_now= True)        
         
 class Parent(models.Model):
+        
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE, null=True, blank=True, related_name="parent")
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
@@ -91,6 +93,14 @@ class Parent(models.Model):
         return f"{self.prenom} {self.nom}"  
     
 class Etudiant(models.Model):
+    
+    statutEleve = [
+        ('Exclu', 'Exclu'),
+        ('Actif', 'Actif'),
+        ('Suspendu', 'Suspendu'),
+    ]
+        
+    
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE, related_name="eleve", null=True, blank=True)
     parent = models.ForeignKey(Parent, on_delete=models.CASCADE, null=True, blank=True, related_name= 'etudiant')
     nom = models.CharField(max_length=100)
@@ -122,6 +132,8 @@ class Etudiant(models.Model):
             ('Tuteur', 'Tuteur'),
         ]
     )
+    
+    statut = models.CharField(max_length=20, choices=statutEleve, default='Actif')
     
     def __str__(self):
         return f"{self.matricule}"
@@ -243,17 +255,61 @@ class Evaluation(models.Model):
 
 
 class Cout(models.Model):
-    classe = models.ForeignKey(Classe, on_delete=models.CASCADE, null=True, blank=True, related_name='couts')
-    anneeScolaire = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE, null=False, blank=True, related_name='cout')
-    coutInscription = models.DecimalField(max_digits=10, decimal_places=2)
+    classe = models.ForeignKey(
+        Classe,
+        on_delete=models.CASCADE,
+        related_name="couts"
+    )
+    anneeScolaire = models.ForeignKey(
+        AnneeScolaire,
+        on_delete=models.CASCADE,
+        related_name="couts"
+    )
+
     coutScolarite = models.DecimalField(max_digits=10, decimal_places=2)
+    coutInscription = models.DecimalField(max_digits=10, decimal_places=2)
     fraisEtudeDossier = models.DecimalField(max_digits=10, decimal_places=2)
     fraisAssocie = models.DecimalField(max_digits=10, decimal_places=2)
-    
+
     def __str__(self):
         return f"Coûts {self.classe} - {self.anneeScolaire}"
+        
+    def total_general(self):
+        return (
+            self.coutInscription +
+            self.fraisEtudeDossier +
+            self.fraisAssocie +
+            self.coutScolarite
+        )
+        
 
+class TrancheCout(models.Model):
+    cout = models.ForeignKey(
+        Cout,
+        on_delete=models.CASCADE,
+        related_name="tranches"
+    )
 
+    libelle = models.CharField(max_length=100)
+    montant = models.DecimalField(max_digits=10, decimal_places=2)
+    date_echeance = models.DateField()
+    
+    
+    def __str__(self):
+        return f"Tranche {self.libelle} - {self.montant} - Échéance: {self.date_echeance}"
+    
+    
+    def clean(self):
+        total_tranches = sum(
+            t.montant for t in self.cout.tranches.exclude(id=self.id)
+        )
+        if total_tranches + self.montant > self.cout.coutScolarite:
+            raise ValidationError(
+                "La somme des tranches ne doit pas dépasser le coût de la scolarité"
+            )
+
+    
+    
 class Emargement(models.Model):
     salleClasse = models.ForeignKey(SalleDeClasse, on_delete=models.CASCADE, null=True, blank=True, related_name='emargements')
     inscrits = models.ForeignKey(Inscription, on_delete=models.CASCADE, null=True, blank=True, related_name='emargements')
