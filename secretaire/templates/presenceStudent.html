@@ -276,6 +276,7 @@
                                 <th>Présent</th>
                                 <th>Absent</th>
                                 <th>Durée</th>
+                                <th>Commentaires....</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -287,8 +288,8 @@
                                     {% for emargement in emargements %}
                                         <tr>
                                             <td>{{ emargement.dateHeureDebut|date:"d/m/Y" }}</td>
-                                            <td>{{ emargement.dateHeureDebut|date:"d/m/Y H:i" }}</td>
-                                            <td>{{ emargement.date_heure_fin|date:"d/m/Y H:i" }}</td>
+                                            <td>{{ emargement.dateHeureDebut|date:"H:i" }}</td>
+                                            <td>{{ emargement.date_heure_fin|date:"H:i" }}</td>
                                             <td>
                                                 {% if emargement.presence == 1 %}
                                                     <i class="fas fa-check-circle" style="color:green;"></i>
@@ -300,7 +301,8 @@
                                                 {% endif %}
                                             </td>
                                             <td></td>
-                                        </tr>
+                                            <td>{{ emargement.commentaire }} </td>
+                                            </tr>
                                     {% endfor %}
                                 {% else %}
                                     <tr>

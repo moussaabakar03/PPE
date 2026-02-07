@@ -51,19 +51,6 @@ class Utilisateur(AbstractUser):
         ('comptable', 'Comptable'),
     ]
     
-    groups = models.ManyToManyField( 
-        Group, 
-        related_name='utilisateur_groups', 
-        blank=True, 
-        help_text='The groups this user belongs to.', 
-        verbose_name='groups' ) 
-    user_permissions = models.ManyToManyField( 
-        Permission, 
-        related_name='utilisateur_user_permissions', 
-        blank=True, 
-        help_text='Specific permissions for this user.', 
-        verbose_name='user permissions' )
-    
     
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
 
@@ -84,7 +71,7 @@ class Parent(models.Model):
     prenom = models.CharField(max_length=100)
     genre = models.CharField(max_length=10, choices=[('M', 'Masculin'), ('F', 'Féminin')])
     telephone = models.CharField(max_length=20)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(max_length=100)
     profession = models.CharField(max_length=100, null=True, blank=True)
 
     photo = models.ImageField(upload_to='parents/', null=True, blank=True)
@@ -115,7 +102,8 @@ class Etudiant(models.Model):
         ('AB+', 'AB+'), ('AB-', 'AB-'), 
         ('O+', 'O+'), ('O-', 'O-')
     ])
-    mail = models.EmailField()
+    mail = models.EmailField(max_length=100)
+
     niveau = models.CharField(max_length=50)
     telephone = models.CharField(max_length=50)
     nationnalite = models.CharField(max_length=50)
@@ -153,7 +141,7 @@ class Enseignant(models.Model):
     photo = models.ImageField(upload_to='photos/enseignants/', null=True, blank=True)
     date_naissance = models.DateField(null=True, blank=True)
     sexe = models.CharField(max_length=50, choices=[('M', 'Masculin'), ('F', 'Féminin')], null=True, blank=True)
-    mail = models.EmailField(null=True, blank=True)
+    mail = models.EmailField(max_length=100, blank=True)
     lieuDeNaissance = models.CharField(max_length=100, null=True, blank=True)
     date_enregistrement = models.DateTimeField(auto_now_add=True)
     salaire = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
@@ -339,7 +327,7 @@ class depotDossierEtudiant(models.Model):
     prenom = models.CharField(max_length=100)
     niveau = models.CharField(max_length=100)
     dateheure = models.DateTimeField(auto_now_add=True)
-    mail = models.EmailField()
+    mail = models.EmailField(max_length=100)
     dossier = models.FileField(upload_to='dossiers_etudiants')
     numero_telephone = models.CharField(max_length=20)
     

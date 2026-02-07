@@ -1363,12 +1363,16 @@ def listePresence(request, id):
             presence_key = f"presence_{etudiant.matricule}"
             presence_val = request.POST.get(presence_key)
 
+            commentaire_key = f"commentaire_{etudiant.matricule}"
+            commentaire_value = request.POST.get(commentaire_key)
+
+
             if presence_val in ['P', 'A']:
                 Emargement.objects.create(
                     salleClasse=salle,
                     inscrits=inscrit,
                     dateHeureDebut=dateHeureDebut,
-                    commentaire=commentaire,
+                    commentaire=commentaire_value,
                     presence=(presence_val == 'P')
                 )
 
@@ -1384,6 +1388,28 @@ def listePresence(request, id):
     nombre = inscrits.count()
     
     return render(request, 'listePresence.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, "annee": anneeScolaire})
+
+
+@login_required 
+@admin_required
+def modifier_emargement(request, id):
+    emargement = get_object_or_404(Emargement, id=id)
+
+    if request.method == 'POST':
+        presence = request.POST.get("presence")
+        commentaire = request.POST.get("commentaire")
+
+        emargement.presence = True if presence == "True" else False
+        emargement.commentaire = commentaire
+        emargement.save()
+
+        messages.success(request, "Emargement mis à jour avec succès.")
+        return redirect('secretaire:listePresencePasse', id=emargement.salleClasse.id)
+
+    return render(request, 'modifier_emargement.html', {"emargement": emargement})
+
+
+
 
 @login_required 
 @admin_required
@@ -1416,6 +1442,14 @@ def listePresencePasse(request, id):
         "salleClasse": salleClasse,
         "anneeScolaire": anneeScolaire
     })
+
+@login_required 
+@admin_required
+def supprimerEmargement(request, id):
+    emargement = get_object_or_404(Emargement, id=id)
+    emargement.delete()
+    messages.success(request, f"Emargement de {emargement.inscrits.etudiant} a été supprimé avec succès!")
+    return redirect("secretaire:listePresencePasse", id= emargement.salleClasse.id)
 
 @login_required 
 @admin_required
@@ -2269,8 +2303,14 @@ def ajoutCout(request):
 
                 if total_tranches > cout.coutScolarite:
                     raise ValueError(
-                        "La somme des tranches dépasse le coût de la scolarité"
+                        "Erreur : la somme des frais de periodes est supérieure au coût total de la scolarité."
                     )
+                elif total_tranches < cout.coutScolarite:
+                    raise ValueError(
+                        "Erreur : la somme des tranches est inférieure au coût total de la scolarité. "
+                        "Les frais doivent être entièrement répartis entre les différentes périodes."
+                    )
+
 
                 messages.success(request, "Coût et tranches ajoutés avec succès")
                 return redirect("secretaire:all_cout")

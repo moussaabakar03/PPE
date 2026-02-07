@@ -108,16 +108,28 @@ WSGI_APPLICATION = 'acadPro.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default':{
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': "acadPro",
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'HOST': 'localhost',
+#         'PORT': '3306'
+#     }
+# }
+
 DATABASES = {
     'default':{
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "basededonnee2",
+        'NAME': "acadPro",
         'USER': 'postgres',
         'PASSWORD': 'Moussa68444436@',
         'HOST': 'localhost',
         'PORT': '5432'
     }
 }
+
 
 LOGIN_URL = 'connexion' 
 AUTH_USER_MODEL = 'secretaire.Utilisateur'
@@ -206,7 +218,12 @@ AXES_FAILURE_LIMIT = 3
 AXES_COOLOFF_TIME = timedelta(minutes=1)
 
 # 🔒 On ne bloque QUE par nom d'utilisateur (pas par IP)
-AXES_LOCKOUT_PARAMETERS = ['username']
+# AXES_LOCKOUT_PARAMETERS = ['username']
+
+# django-axes (compatibilité MySQL)
+AXES_LOCKOUT_PARAMETERS = ["username", "ip_address"]
+
+AXES_USE_USER_AGENT = False
 
 # Ne pas compter les échecs d’admin
 AXES_ONLY_USER_FAILURES = True

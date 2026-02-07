@@ -39,14 +39,10 @@
                     <div style = "display: flex; gap: 50px;">
                         <ul>
                             <li>
-                                <a href="{% url 'secretaire:studentParSalle' salle.id %}"><i class="fa fa-arrow-left"></i> Retour</a>
+                                <a href="{% url 'secretaire:listePresencePasse' emargement.salleClasse.id %}"><i class="fa fa-arrow-left"></i> Retour</a>
                             </li>
-                            <li>{{salle.niveau.classe}} {{salle.nom}}</li>
-                            <li>
-                                <a href="{% url 'secretaire:listePresencePasse' salle.id  %}"> Voir les presences passées </a>
-                            </li>
+                            <li>modifier emargement</li>
                         </ul>
-                        <h6 style = "margin-left: 60px;">Année scolaire: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}}>> </span></h6>
                     </div>
                 </div>
                 <!-- Breadcubs Area End Here -->
@@ -55,29 +51,9 @@
                     <div class="card-body">
                         <div class="heading-layout1">
                             <div class="item-title">
-                                <h6>Liste d'appel des élèves de salle: <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> << {{salle.niveau.classe}}  {{salle.nom}} >> </span></h6>
-                            </div>
-                            <div>
-                                <h6> <i class="fa fa-list"></i>  Total des élèves <span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> <<{{nombre}}>> </span></h6>
+                                <h6>Modifier emargement: {{emargement.inscrits.etudiant.nom}}</h6>
                             </div>
                         </div>
-                        <form class="mg-b-20" method="POST">
-                            {% csrf_token %}
-                            <div class="row gutters-8">
-                                <div class="col-3-xxxl col-xl-3 col-lg-3 col-12 form-group">
-                                    <input type="text" name="matricule" placeholder="Filtrer par matricule..." class="form-control">
-                                </div>
-                                <div class="col-4-xxxl col-xl-4 col-lg-3 col-12 form-group">
-                                    <input type="text" name ="nom" placeholder="Filtrer par nom..." class="form-control">
-                                </div>
-                                <div class="col-4-xxxl col-xl-3 col-lg-3 col-12 form-group">
-                                    <input type="hidden" placeholder="Search by Class ..." class="form-control">
-                                </div>
-                                <div class="col-1-xxxl col-xl-2 col-lg-3 col-12 form-group">
-                                    <button type="submit" class="fw-btn-fill btn-gradient-yellow">FILTRER</button>
-                                </div>
-                            </div>
-                        </form>
                         <div class="table-responsive">
                             <form method = "POST">
                                 {% csrf_token %}
@@ -100,48 +76,46 @@
                                         </tr>
                                     </thead>
                                         <tbody>
-                                            {% for inscrit in inscrits %}
+                                            {% if emargement %}
                                             <tr>
                                                 <td>
                                                     <div class="form-check">
                                                         <input type="checkbox" class="form-check-input">
-                                                        <label class="form-check-label">{{inscrit.etudiant.matricule}}</label>
+                                                        <label class="form-check-label">{{emargement.inscrits.etudiant.matricule}}</label>
                                                     </div>
                                                 </td>
-                                                <td>{{inscrit.etudiant.nom}}</td>
-                                                <td>{{inscrit.etudiant.prenom}}</td>
-                                                <td>{{inscrit.etudiant.genre}}</td>
-                                                <td>{{inscrit.salleClasse.niveau.classe}}- {{inscrit.salleClasse.nom}}</td>
+                                                <td>{{emargement.inscrits.etudiant.nom}}</td>
+                                                <td>{{emargement.inscrits.etudiant.prenom}}</td>
+                                                <td>{{emargement.inscrits.etudiant.genre}}</td>
+                                                <td>{{emargement.inscrits.salleClasse.niveau.classe}}- {{inscrit.salleClasse.nom}}</td>
                                                 <td>
-                                                    <input type="radio" name="presence_{{inscrit.etudiant.matricule}}" value="P" required>
-                                                </td>
+    <input type="radio" name="presence" value="True"
+        {% if emargement.presence == True %}checked{% endif %} required>
+</td>
+<td>
+    <input type="radio" name="presence" value="False"
+        {% if emargement.presence == False %}checked{% endif %} required>
+</td>
+
                                                 <td>
-                                                    <input type="radio" name="presence_{{inscrit.etudiant.matricule}}" value="A" required>
+                                                    <textarea style="height: 30px;"
+                                                            name="commentaire"
+                                                            placeholder="Commentaires...">{{ emargement.commentaire }}</textarea>
                                                 </td>
-                                                <td>
-                                                    <div>
-                                                        <textarea style = "height: 30px;" name="commentaire_{{inscrit.etudiant.matricule}}" placeholder="Commentaires..."></textarea>
-                                                    </div>
-                                                </td>
+
                                             </tr>
-                                            {% endfor %}
+                                            {% endif %}
                                         </tbody>
                                 </table>
-                                <div style ="display: flex; justify-content: space-between; margin-top: 20px; margin-bottom: 20px; ">
-                                    <div>
-                                        <lable> Debut heure de presence </lable>
-                                        <input type="datetime-local" name="dateHeureDebut" required>
-                                    </div>
-                                </div>
                                 <div  style = "width: 40%; margin-left: 27%;">
-                                    <button type="submit" class="fw-btn-fill btn-gradient-yellow">Enregistrer</button>
+                                    <button type="submit" class="fw-btn-fill btn-gradient-yellow">Mettre à jour</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
                 <!-- Student Table Area End Here -->
-                               {% include 'partial/copyright.html' %}
+                {% include 'partial/copyright.html' %}
             </div>
         </div>
         <!-- Page Area End Here -->
