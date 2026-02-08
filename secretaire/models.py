@@ -322,6 +322,59 @@ class Messages(models.Model):
         return f"De {self.expediteur} à {self.destinataire} le {self.date_envoi}"
 
 
+class AlertCompteEleve(models.Model):
+
+    # STATUT_CHOICES = [
+    #     ('en_attente', 'En attente'),
+    #     ('en_cours', 'En cours de traitement'),
+    #     ('resolu', 'Résolu'),
+    #     ('rejete', 'Rejeté'),
+    # ]
+
+    eleve_expedi = models.ForeignKey(
+        Etudiant,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='alertes_envoyees'
+    )
+
+    eleve_destinat = models.ForeignKey(
+        Etudiant,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='alertes_recues'
+    )
+
+    contenu = models.TextField()
+
+    # statut = models.CharField(
+    #     max_length=20,
+    #     choices=STATUT_CHOICES,
+    #     default='en_attente'
+    # )
+
+    # date_signalement = models.DateField(auto_now_add=True)
+
+    # anonyme = models.BooleanField(default=False)
+
+    # traite_par = models.ForeignKey(
+    #     Utilisateur,
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     blank=True,
+    #     related_name='alertes_traitees'
+    # )
+
+    # commentaire_admin = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Signalement - {self.eleve_expedi} -> {self.eleve_destinat}"
+
+
+
+
 class depotDossierEtudiant(models.Model):
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)

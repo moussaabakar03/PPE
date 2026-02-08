@@ -19,9 +19,13 @@ urlpatterns = [
     path('profil/', views.profil, name="profil"),
     
     
-    path('echangeEleveEleve/<int:id>/', views.echangeEleveEleve, name="echangeEleveEleve"),
+    path('echange-eleve-eleve/<int:id>/', views.echangeEleveEleve, name="echangeEleveEleve"),
     path('messages/api/<int:id>/<str:matricule>/', views.messages_api, name='api_messages'),
     path('messages/marquer-lu/<int:message_id>/', views.marquer_message_lu, name='marquer_message_lu'),
+    
+    path('alert-eleve/<int:id>/', views.alert_eleve, name="alert_eleve"),
+
+
     
 
 ]

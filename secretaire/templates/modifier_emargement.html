@@ -89,13 +89,13 @@
                                                 <td>{{emargement.inscrits.etudiant.genre}}</td>
                                                 <td>{{emargement.inscrits.salleClasse.niveau.classe}}- {{inscrit.salleClasse.nom}}</td>
                                                 <td>
-    <input type="radio" name="presence" value="True"
-        {% if emargement.presence == True %}checked{% endif %} required>
-</td>
-<td>
-    <input type="radio" name="presence" value="False"
-        {% if emargement.presence == False %}checked{% endif %} required>
-</td>
+                                                    <input type="radio" name="presence" value="True"
+                                                        {% if emargement.presence == True %}checked{% endif %} required>
+                                                </td>
+                                                <td>
+                                                    <input type="radio" name="presence" value="False"
+                                                        {% if emargement.presence == False %}checked{% endif %} required>
+                                                </td>
 
                                                 <td>
                                                     <textarea style="height: 30px;"

@@ -11,11 +11,31 @@ import json
 from datetime import datetime
 
 from comptable.models import PaiementEleve
-from secretaire.models import AnneeScolaire, Cout, Emargement, EmploiDuTemps, Etudiant, Evaluation, Inscription, Messages, PlageHoraire, SalleDeClasse, depotDossierEtudiant
+from secretaire.models import AlertCompteEleve, AnneeScolaire, Cout, Emargement, EmploiDuTemps, Etudiant, Evaluation, Inscription, Messages, PlageHoraire, SalleDeClasse, depotDossierEtudiant
 
 from acadPro.utils.decorators import eleve_required
 
-# Create your views here.
+
+
+
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+from io import BytesIO
+
+
+import qrcode
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import cm
+from reportlab.lib import colors
+from django.http import HttpResponse
+from django.conf import settings
+from io import BytesIO
+import os
+
+
 
 
 # def navBarEleve(request):
@@ -194,6 +214,29 @@ def messagesEleves(request):
         "derniers_messages": derniers_messages
     }
     return render(request, 'eleve/messages.html', context)
+
+
+
+@login_required
+@eleve_required
+def alert_eleve(request, id):
+    eleve_exp = get_object_or_404(Etudiant, utilisateur__username=request.user.username)
+    eleve_dest = get_object_or_404(Etudiant, id=id)
+    if request.method == "POST":
+        contenu = request.POST["contenu"]
+
+        AlertCompteEleve.objects.create(
+            eleve_expedi=eleve_exp,
+            eleve_destinat=eleve_dest,
+            contenu=contenu,
+            # anonyme=
+            # traite_par=
+            # commentaire_admin
+        )
+
+        messages.success(request, "Votre signal a été bien envoyé, l'administration s'en chargera, merci de resté calme")
+        return redirect("eleve:echangeEleveEleve", id=eleve_dest.id)
+    
 
 
 @login_required
@@ -404,24 +447,6 @@ def mesPaiement(request):
         'restePayer': restePayer_global,
     })
 
-
-
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib import colors
-from reportlab.lib.units import cm
-from io import BytesIO
-
-
-import qrcode
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.units import cm
-from reportlab.lib import colors
-from django.http import HttpResponse
-from django.conf import settings
-from io import BytesIO
-import os
 
 
 def export_paiement_pdf(request, salle_id):
