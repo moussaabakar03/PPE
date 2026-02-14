@@ -164,8 +164,7 @@ urlpatterns = [
     path('generationBulletin/<str:matricule>/<int:salleClasse>/', views.generationBulletin, name='generationBilletin'),
     
     
-    # path('recuperationDossierEleve/', views.recuperationDossierEleve, name="recuperationDossierEleve"),
-    
+    path('alertCompteEleve/', views.alertCompteEleve, name="alertCompteEleve"),
     
     
     

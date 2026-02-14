@@ -85,7 +85,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 
                 # ✅ AJOUTE CECI
-                'secretaire.context_processors.annees_scolaires',
+                # 'secretaire.context_processors.annees_scolaires',
+                'secretaire.context_processors.header_elements_globaux',
             ],
         },
     },

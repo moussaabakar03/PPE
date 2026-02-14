@@ -324,12 +324,10 @@ class Messages(models.Model):
 
 class AlertCompteEleve(models.Model):
 
-    # STATUT_CHOICES = [
-    #     ('en_attente', 'En attente'),
-    #     ('en_cours', 'En cours de traitement'),
-    #     ('resolu', 'Résolu'),
-    #     ('rejete', 'Rejeté'),
-    # ]
+    STATUT_CHOICES = [
+        ('Vue', 'Vue'),
+        ('Non_vue', 'Non vue'),
+    ]
 
     eleve_expedi = models.ForeignKey(
         Etudiant,
@@ -349,11 +347,11 @@ class AlertCompteEleve(models.Model):
 
     contenu = models.TextField()
 
-    # statut = models.CharField(
-    #     max_length=20,
-    #     choices=STATUT_CHOICES,
-    #     default='en_attente'
-    # )
+    statut = models.CharField(
+        max_length=20,
+        choices=STATUT_CHOICES,
+        default='Non_vue'
+    )
 
     # date_signalement = models.DateField(auto_now_add=True)
 

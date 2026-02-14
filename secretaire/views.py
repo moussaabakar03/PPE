@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 
 from comptable.models import PaiementEleve
 from secretaire.forms import ContactForm, FormComptable, FormMessageCommun
-from . models import AnneeScolaire, Classe, Comptable, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, EvaluationGroupee, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, TrancheCout, Utilisateur, cvEnseignant, depotDossierEtudiant
+from . models import AlertCompteEleve, AnneeScolaire, Classe, Comptable, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, EvaluationGroupee, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, TrancheCout, Utilisateur, cvEnseignant, depotDossierEtudiant
 from django.utils.timezone import localtime
 from django.db.models import Q
 
@@ -2427,6 +2427,18 @@ def account_settings(request):
     return render(request, 'account-settings.html')
 
 
+
+@login_required 
+@admin_required
+def alertCompteEleve(request):
+    alerts = AlertCompteEleve.objects.all()
+    nbres_alerts = AlertCompteEleve.objects.count()
+
+    AlertCompteEleve.objects.filter(statut="Non_vue").update(statut="Vue")
+    messages.success(request, "Tous les alertes de notifications consultées!")
+    
+    contains = {"alerts": alerts, "nbres_alerts": nbres_alerts}
+    return render(request, 'alertCompteEleve.html', contains)
 
 
 from collections import defaultdict

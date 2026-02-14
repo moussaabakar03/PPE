@@ -122,8 +122,12 @@ def contact_view(request):
 
 
 def connexion(request):
+
+    if request.user.is_authenticated:
+        return redirect("pageAccueil")
+
     if request.method == "POST":
-        form = ConnexionForm(request.POST, request=request)  # ✅ on passe request ici
+        form = ConnexionForm(request.POST, request=request)  
 
         if form.is_valid():
             utilisateur = form.get_user()
