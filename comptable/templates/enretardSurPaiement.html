@@ -40,16 +40,6 @@
                     <div class="card-body">
                         <form class="mg-b-20" method="POST">
                             {% csrf_token %}
-                            <div class="col-4-xxxl col-xl-12 col-lg-12 col-12 form-group">
-                                <select id="anneeScolaireFilter" class="select2 form-control w-100" name="anneeScolaire" onchange="applyFilters()" style =" padding: 10px; border: 1px solid #ccc; border-radius: 5px; text-align : center;">
-                                    <option value="">Année scolaire *</option>
-                                    {% for anneesScolaire in anneeScolaires %}
-                                        <option value="{{ anneesScolaire.debutAnnee|date:"Y" }}- {{ anneesScolaire.fintAnnee|date:"Y" }}">{{ anneesScolaire.debutAnnee|date:"Y" }}-{{ anneesScolaire.fintAnnee|date:"Y" }}</option>
-                                    {% endfor %}
-                                    <option value="Non-renseigné">Autre</option>
-                                </select>
-                            </div>
-                            
                             <div class="row gutters-8">
                                 <div class="col-4-xxxl col-xl-4 col-lg-3 col-12 form-group">
                                     <select class="form-control" name="type_paiement" id="type_paiement" required>
@@ -113,7 +103,7 @@
                                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                                     <span class="flaticon-more-button-of-three-dots"></span>
                                                 </a>
-                                                <div class="dropdown-menu dropdown-menu-right">
+                                                <!-- <div class="dropdown-menu dropdown-menu-right">
                                                     <a class="dropdown-item" href="{% url 'secretaire:modifierInscription' inscription.id %}">
                                                         <i class="fas fa-cogs text-dark-pastel-green"></i> Modifier
                                                     </a>
@@ -122,7 +112,7 @@
                                                     </a>
                                                     <a class="dropdown-item" href="{% url 'secretaire:detailEtudiant' inscription.etudiant.matricule inscription.etudiant.parent.id %}">
                                                         <i class="fas fa-eye" title = "voir plus"></i>voir plus</a>
-                                                </div>
+                                                </div> -->
                                             </div>
                                         </td>
                                     </tr>

@@ -20,6 +20,9 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from django.conf.urls import handler404
+
+
 from . import views
 
 
@@ -62,6 +65,7 @@ urlpatterns = [
 
 ]
 
+handler404 = 'acadPro.views.custom_404'
 
 
 # Ajouter cette ligne pour servir les fichiers statiques et médias

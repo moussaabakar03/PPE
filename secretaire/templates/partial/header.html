@@ -94,8 +94,8 @@
                                         <i class="fas fa-check"></i>
                                     </div>
                                     <div class="media-body space-sm">
-                                        <div class="post-title">{{ alert.contenu|truncatechars:20 }}</div>
-                                        <span> {{alert.eleve_expedi.nom}} <-> {{alert.eleve_destinat.nom}}</span>
+                                        <div class="post-title">{{ alert.type_signalement|truncatechars:20 }}</div>
+                                        <span> {{alert.eleve_expedi.nom}} <-> {{alert.eleve_signale.nom}}</span>
                                     </div>
                                 </div>
                             {% endfor %}

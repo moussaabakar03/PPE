@@ -45,14 +45,18 @@ def changer_annee_active(request, annee_id):
 @login_required
 @staff_required
 def indexComptable(request):
-    paiements = PaiementEleve.objects.all()
+    paiements = PaiementEleve.objects.filter(inscription_Etudiant__anneeAcademique=annee_active())
     totalMontantPaye = sum(paiement.montantVerse for paiement in paiements)
     
-    paiementsRecentes= PaiementEleve.objects.all()[:5]
+    paiementsRecentes= PaiementEleve.objects.filter(inscription_Etudiant__anneeAcademique=annee_active())[:5]
+
+    nbre_transactions = PaiementEleve.objects.filter(inscription_Etudiant__anneeAcademique=annee_active()).count()
+
     return render(request, 'dashbordComptable.html', {
         'paiements': paiements,
         'totalPaye': totalMontantPaye,
-        'paiementsRecentes': paiementsRecentes
+        'paiementsRecentes': paiementsRecentes,
+        'nbre_transactions': nbre_transactions
     })
 
 
@@ -381,7 +385,7 @@ def export_paiement_pdf(request, id_inscription):
 @login_required
 @staff_required
 def listePaiments(request):
-    paiements = PaiementEleve.objects.all()
+    paiements = PaiementEleve.objects.filter(inscription_Etudiant__anneeAcademique = annee_active())
     return render(request, 'listePaiments.html', {'paiements': paiements})
 
 # def liste_personnel(request):
@@ -421,8 +425,9 @@ def listePaiments(request):
 def enretardSurPaiement(request):
     if request.method == "POST":
         matricule = request.POST.get("matricule", "").strip()
-        anneeScolaire = request.POST.get("anneeScolaire", "").strip()
         niveau = request.POST.get("niveau", "").strip()
+
+        anneeAcademique = annee_active()
 
         inscriptions = Inscription.objects.all()
         filtres_appliques = []
@@ -439,9 +444,8 @@ def enretardSurPaiement(request):
             except (ValueError, Classe.DoesNotExist):
                 pass
 
-        if anneeScolaire:
+        if anneeAcademique:
             try:
-                anneeAcademique = AnneeScolaire.objects.get(pk=int(anneeScolaire))
                 inscriptions = inscriptions.filter(anneeAcademique=anneeAcademique)
                 filtres_appliques.append(f"année: {anneeAcademique}")
             except (ValueError, AnneeScolaire.DoesNotExist):

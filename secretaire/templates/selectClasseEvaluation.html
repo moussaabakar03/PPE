@@ -41,23 +41,12 @@
                 <!-- Class Table Area Start Here -->
                 <div class="card height-auto">
                     <div class="card-body">
-                        {% comment %} <div class="heading-layout1">
+                        <div class="heading-layout1">
                             <div class="item-title">
-                                <h3>Veillez choisir la classe correspondante!</h3>
+                                <h3>Veillez choisir la salle de classe correspondante...</h3>
                             </div>
-                            <div class="col-xl-3 col-lg-6 col-12 form-group">
-                                <label style="color: red;">Année Scolaire *</label>
-                                <select name="anneeScolaire" class="select2 form-control" required>
-                                    {% for annee in annees %}
-                                        <option value="{{annee.id}}">{{annee.debutAnnee|date:"Y"}}-{{annee.fintAnnee|date:"Y"}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
+                            
                         </div>
-                        <div>
-                            <p  style="text-align: center;"> Veillez vouloir bien choisir l'<span  style="color: red; font-weight: bold;">année scolaire</span> correspondante!</p>
-                        </div> {% endcomment %}
-                       
                         <div class="table-responsive">
                             <table class="table display data-table text-nowrap">
                                 <thead>

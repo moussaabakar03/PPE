@@ -217,26 +217,63 @@ def messagesEleves(request):
 
 
 
+
+
 @login_required
 @eleve_required
 def alert_eleve(request, id):
-    eleve_exp = get_object_or_404(Etudiant, utilisateur__username=request.user.username)
+    eleve_exp  = get_object_or_404(Etudiant, utilisateur__username=request.user.username)
     eleve_dest = get_object_or_404(Etudiant, id=id)
+
+    if eleve_exp == eleve_dest:
+        messages.error(request, "Vous ne pouvez pas vous signaler vous-même.")
+        return redirect("eleve:messagesEleves")
+
     if request.method == "POST":
-        contenu = request.POST["contenu"]
+        contenu = request.POST.get("contenu", "").strip()[:500]
+        type_signalement = request.POST.get("type_signalement", "autre")
+        gravite= request.POST.get("gravite", "moderee")
+        # message_ref_id   = request.POST.get("message_ref_id", "")
+
+        if type_signalement not in ["harcelement", "insulte", "menace", "contenu_inapproprie", "spam", "autre"]:
+            type_signalement = "autre"
+        if gravite not in ["faible", "moderee", "grave"]:
+            gravite = "moderee"
+
+        from django.utils import timezone
+        from datetime import timedelta
+
+        deja_signale = AlertCompteEleve.objects.filter(
+            eleve_expedi=eleve_exp, 
+            eleve_signale=eleve_dest,
+            date_signalement__gte=timezone.now() - timedelta(minutes=10)
+        ).exists()
+
+        if deja_signale:
+            messages.warning(request, "Vous avez déjà soumis un signalement récemment. L'administration s'en charge.")
+            return redirect("eleve:echangeEleveEleve", id=eleve_dest.id)
+
+        # Récupérer le message référencé si fourni
+        # message_reference = None
+        # if message_ref_id:
+        #     try:
+        #         message_reference = Message.objects.get(id=int(message_ref_id))
+        #     except (Message.DoesNotExist, ValueError):
+        #         pass
 
         AlertCompteEleve.objects.create(
             eleve_expedi=eleve_exp,
-            eleve_destinat=eleve_dest,
-            contenu=contenu,
-            # anonyme=
-            # traite_par=
-            # commentaire_admin
+            eleve_signale=eleve_dest,
+            contenu=contenu or "Aucune précision fournie.",
+            type_signalement=type_signalement,
+            gravite=gravite,
+            # message_reference = message_reference,
         )
 
-        messages.success(request, "Votre signal a été bien envoyé, l'administration s'en chargera, merci de resté calme")
+        messages.success(request, "Votre signalement a bien été transmis à l'administration. Merci de rester calme.")
         return redirect("eleve:echangeEleveEleve", id=eleve_dest.id)
-    
+
+    return redirect("eleve:messagesEleves")
 
 
 @login_required

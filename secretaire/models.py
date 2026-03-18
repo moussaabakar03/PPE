@@ -322,56 +322,122 @@ class Messages(models.Model):
         return f"De {self.expediteur} à {self.destinataire} le {self.date_envoi}"
 
 
+# class AlertCompteEleve(models.Model):
+
+#     STATUT_CHOICES = [
+#         ('Vue', 'Vue'),
+#         ('Non_vue', 'Non vue'),
+#     ]
+
+#     eleve_expedi = models.ForeignKey(
+#         Etudiant,
+#         on_delete=models.SET_NULL,
+#         null=True,
+#         blank=True,
+#         related_name='alertes_envoyees'
+#     )
+
+#     eleve_destinat = models.ForeignKey(
+#         Etudiant,
+#         on_delete=models.SET_NULL,
+#         null=True,
+#         blank=True,
+#         related_name='alertes_recues'
+#     )
+
+#     contenu = models.TextField()
+
+#     statut = models.CharField(
+#         max_length=20,
+#         choices=STATUT_CHOICES,
+#         default='Non_vue'
+#     )
+
+
+#     def __str__(self):
+#         return f"Signalement - {self.eleve_expedi} -> {self.eleve_destinat}"
+
+
+
 class AlertCompteEleve(models.Model):
 
+    TYPE_CHOICES = [
+        ('harcelement', 'Harcèlement'),
+        ('insulte', 'Insulte / Langage inapproprié'),
+        ('menace', 'Menace'),
+        ('contenu_inapproprie', 'Contenu inapproprié'),
+        ('autre', 'Autre'),
+    ]
+
     STATUT_CHOICES = [
-        ('Vue', 'Vue'),
-        ('Non_vue', 'Non vue'),
+        ('non_vue', 'Non vue'),
+        # ('en_cours', 'En cours de traitement'),
+        ('vue', 'Vue'),
+        # ('rejetee', 'Rejetée'),
+    ]
+
+    GRAVITE_CHOICES = [
+        ('faible', 'Faible'),
+        ('moderee', 'Modérée'),
+        ('grave', 'Grave'),
     ]
 
     eleve_expedi = models.ForeignKey(
         Etudiant,
         on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        null=True, blank=True,
         related_name='alertes_envoyees'
     )
 
-    eleve_destinat = models.ForeignKey(
+    eleve_signale = models.ForeignKey(       #  renommé pour plus de clarté
         Etudiant,
         on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        null=True, blank=True,
         related_name='alertes_recues'
     )
 
-    contenu = models.TextField()
+    # message_reference = models.ForeignKey(   #  lier au message exact signalé
+    #     'Message',
+    #     on_delete=models.SET_NULL,
+    #     null=True, blank=True,
+    #     related_name='alertes'
+    # )
+
+    type_signalement = models.CharField(
+        max_length=30,
+        choices=TYPE_CHOICES,
+        default='autre'
+    )
+
+    gravite = models.CharField(
+        max_length=10,
+        choices=GRAVITE_CHOICES,
+        default='moderee'
+    )
+
+    contenu = models.TextField()          
 
     statut = models.CharField(
         max_length=20,
         choices=STATUT_CHOICES,
-        default='Non_vue'
+        default='non_vue'
     )
 
-    # date_signalement = models.DateField(auto_now_add=True)
+    # note_admin = models.TextField(blank=True, null=True)  # commentaire de l'admin
 
-    # anonyme = models.BooleanField(default=False)
+    date_signalement = models.DateTimeField(auto_now_add=True)
+    date_traitement = models.DateTimeField(null=True, blank=True)
 
-    # traite_par = models.ForeignKey(
-    #     Utilisateur,
-    #     on_delete=models.SET_NULL,
-    #     null=True,
-    #     blank=True,
-    #     related_name='alertes_traitees'
-    # )
-
-    # commentaire_admin = models.TextField(blank=True, null=True)
+    class Meta:
+        ordering = ['-date_signalement']
+        verbose_name = "Alerte compte élève"
+        verbose_name_plural = "Alertes comptes élèves"
 
     def __str__(self):
-        return f"Signalement - {self.eleve_expedi} -> {self.eleve_destinat}"
+        return f"[{self.get_statut_display()}] {self.eleve_expedi} signale {self.eleve_signale} – {self.date_signalement:%d/%m/%Y}"
+    
 
-
-
+    
 
 class depotDossierEtudiant(models.Model):
     nom = models.CharField(max_length=100)

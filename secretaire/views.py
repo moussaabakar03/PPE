@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 
 from comptable.models import PaiementEleve
 from secretaire.forms import ContactForm, FormComptable, FormMessageCommun
-from . models import AlertCompteEleve, AnneeScolaire, Classe, Comptable, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, EvaluationGroupee, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, TrancheCout, Utilisateur, cvEnseignant, depotDossierEtudiant
+from . models import AnneeScolaire, Classe, Comptable,AlertCompteEleve, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, EvaluationGroupee, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, TrancheCout, Utilisateur, cvEnseignant, depotDossierEtudiant
 from django.utils.timezone import localtime
 from django.db.models import Q
 
@@ -961,17 +961,14 @@ def modifierSalle(request, nom):
 
         # --- Si tout est valide, on sauvegarde ---
         
-        if salle.capacite_etendue < nouvelle_capacite:
+        if salle.capacite_etendue >= nouvelle_capacite:
             salle.capacite_etendue = nouvelle_capacite
             salle.capacite = nouvelle_capacite
-            
-        
-        salle.save()
+            salle.save()
+            messages.success(request, f"Salle '{salle.nom}' modifiée avec succès.")
+            return redirect('secretaire:all-salle')
 
-        messages.success(request, f"Salle '{salle.nom}' modifiée avec succès.")
-        return redirect('secretaire:all-salle')
-
-    # --- Si GET, on affiche le formulaire ---
+   
     return render(request, 'modifier_Salle.html', {
         "salle": salle,
         "niveaux": Classe.objects.all()
@@ -1016,8 +1013,6 @@ def studentParSalle(request, id):
             nombreEtendu = nombre - salle.capacite 
         
         messages.info(request, f"Recherche d'étudiants dans la salle '{salle.nom}' effectuée.")
-        
-        
         
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -1654,7 +1649,7 @@ def all_inscription(request):
         matricule = request.POST.get("matricule", "").strip()
         niveau = request.POST.get("niveau", "").strip()
 
-        inscriptions = inscriptions.filter(anneeAcademique=anneeScolaire)
+        inscriptions = Inscription.objects.filter(anneeAcademique=anneeScolaire)
 
         if matricule:
             inscriptions = inscriptions.filter(etudiant__matricule__icontains=matricule)
@@ -2434,7 +2429,7 @@ def alertCompteEleve(request):
     alerts = AlertCompteEleve.objects.all()
     nbres_alerts = AlertCompteEleve.objects.count()
 
-    AlertCompteEleve.objects.filter(statut="Non_vue").update(statut="Vue")
+    AlertCompteEleve.objects.filter(statut="non_vue").update(statut="Vue")
     messages.success(request, "Tous les alertes de notifications consultées!")
     
     contains = {"alerts": alerts, "nbres_alerts": nbres_alerts}

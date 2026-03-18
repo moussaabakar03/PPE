@@ -26,6 +26,9 @@ SECRET_KEY = 'django-insecure-%#9w_d@13b#2qrk3jwu&6^=6=@j$t5$fp^xu*t*ppbhvtzw9!w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['*']
+
 
 #Configuration de mon mail.
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -35,9 +38,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'alimoussaabakar003@gmail.com'
 EMAIL_HOST_PASSWORD = 'yrbm kkbi flri yrgx'
 
-
-
-ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -84,7 +84,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 
-                # ✅ AJOUTE CECI
                 # 'secretaire.context_processors.annees_scolaires',
                 'secretaire.context_processors.header_elements_globaux',
             ],
@@ -111,19 +110,19 @@ WSGI_APPLICATION = 'acadPro.wsgi.application'
 
 # DATABASES = {
 #     'default':{
-#         'ENGINE': 'django.db.backends.mysql',
+#         'ENGINE': 'django.db.backends.postgresql',
 #         'NAME': "acadPro",
-#         'USER': 'root',
-#         'PASSWORD': '',
+#         'USER': 'postgres',
+#         'PASSWORD': 'Moussa68444436@',
 #         'HOST': 'localhost',
-#         'PORT': '3306'
+#         'PORT': '5432'
 #     }
 # }
 
 DATABASES = {
     'default':{
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "acadPro",
+        'NAME': "acadPro_db",
         'USER': 'postgres',
         'PASSWORD': 'Moussa68444436@',
         'HOST': 'localhost',
@@ -209,7 +208,7 @@ STATIC_ROOT="static"
 
 
 
-# ##################### # 🔒 Sécurité - django-axes (Controller les nombres de tentative) ;   #################
+# ##################### Sécurité - django-axes (Controller les nombres de tentative) ;   #################
 from datetime import timedelta
 
 # Nombre maximal d'essais avant blocage
@@ -218,7 +217,7 @@ AXES_FAILURE_LIMIT = 3
 # Durée du blocage (ex. 3 minutes)
 AXES_COOLOFF_TIME = timedelta(minutes=1)
 
-# 🔒 On ne bloque QUE par nom d'utilisateur (pas par IP)
+# On ne bloque QUE par nom d'utilisateur (pas par IP)
 # AXES_LOCKOUT_PARAMETERS = ['username']
 
 # django-axes (compatibilité MySQL)

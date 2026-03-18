@@ -220,3 +220,15 @@ def parent(request):
 def enseignant(request):
     return render(request, "enseignant.html")
 
+
+
+
+# def custom_404(request, exception):
+#     return render(request, '404.html', status=404)
+
+import logging
+logger = logging.getLogger(__name__)
+
+def custom_404(request, exception):
+    logger.warning(f"404 Error: {request.path}")
+    return render(request, '404.html', status=404)
