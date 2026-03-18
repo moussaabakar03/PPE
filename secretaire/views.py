@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 
 from comptable.models import PaiementEleve
 from secretaire.forms import ContactForm, FormComptable, FormMessageCommun
-from . models import AnneeScolaire, Classe, Comptable, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, EvaluationGroupee, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, TrancheCout, Utilisateur, cvEnseignant, depotDossierEtudiant
+from . models import AnneeScolaire, Classe, Comptable,AlertCompteEleve, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, EvaluationGroupee, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, TrancheCout, Utilisateur, cvEnseignant, depotDossierEtudiant
 from django.utils.timezone import localtime
 from django.db.models import Q
 
@@ -961,17 +961,14 @@ def modifierSalle(request, nom):
 
         # --- Si tout est valide, on sauvegarde ---
         
-        if salle.capacite_etendue < nouvelle_capacite:
+        if salle.capacite_etendue >= nouvelle_capacite:
             salle.capacite_etendue = nouvelle_capacite
             salle.capacite = nouvelle_capacite
-            
-        
-        salle.save()
+            salle.save()
+            messages.success(request, f"Salle '{salle.nom}' modifiée avec succès.")
+            return redirect('secretaire:all-salle')
 
-        messages.success(request, f"Salle '{salle.nom}' modifiée avec succès.")
-        return redirect('secretaire:all-salle')
-
-    # --- Si GET, on affiche le formulaire ---
+   
     return render(request, 'modifier_Salle.html', {
         "salle": salle,
         "niveaux": Classe.objects.all()
@@ -1016,8 +1013,6 @@ def studentParSalle(request, id):
             nombreEtendu = nombre - salle.capacite 
         
         messages.info(request, f"Recherche d'étudiants dans la salle '{salle.nom}' effectuée.")
-        
-        
         
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -1363,12 +1358,16 @@ def listePresence(request, id):
             presence_key = f"presence_{etudiant.matricule}"
             presence_val = request.POST.get(presence_key)
 
+            commentaire_key = f"commentaire_{etudiant.matricule}"
+            commentaire_value = request.POST.get(commentaire_key)
+
+
             if presence_val in ['P', 'A']:
                 Emargement.objects.create(
                     salleClasse=salle,
                     inscrits=inscrit,
                     dateHeureDebut=dateHeureDebut,
-                    commentaire=commentaire,
+                    commentaire=commentaire_value,
                     presence=(presence_val == 'P')
                 )
 
@@ -1384,6 +1383,28 @@ def listePresence(request, id):
     nombre = inscrits.count()
     
     return render(request, 'listePresence.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, "annee": anneeScolaire})
+
+
+@login_required 
+@admin_required
+def modifier_emargement(request, id):
+    emargement = get_object_or_404(Emargement, id=id)
+
+    if request.method == 'POST':
+        presence = request.POST.get("presence")
+        commentaire = request.POST.get("commentaire")
+
+        emargement.presence = True if presence == "True" else False
+        emargement.commentaire = commentaire
+        emargement.save()
+
+        messages.success(request, "Emargement mis à jour avec succès.")
+        return redirect('secretaire:listePresencePasse', id=emargement.salleClasse.id)
+
+    return render(request, 'modifier_emargement.html', {"emargement": emargement})
+
+
+
 
 @login_required 
 @admin_required
@@ -1416,6 +1437,14 @@ def listePresencePasse(request, id):
         "salleClasse": salleClasse,
         "anneeScolaire": anneeScolaire
     })
+
+@login_required 
+@admin_required
+def supprimerEmargement(request, id):
+    emargement = get_object_or_404(Emargement, id=id)
+    emargement.delete()
+    messages.success(request, f"Emargement de {emargement.inscrits.etudiant} a été supprimé avec succès!")
+    return redirect("secretaire:listePresencePasse", id= emargement.salleClasse.id)
 
 @login_required 
 @admin_required
@@ -1620,7 +1649,7 @@ def all_inscription(request):
         matricule = request.POST.get("matricule", "").strip()
         niveau = request.POST.get("niveau", "").strip()
 
-        inscriptions = inscriptions.filter(anneeAcademique=anneeScolaire)
+        inscriptions = Inscription.objects.filter(anneeAcademique=anneeScolaire)
 
         if matricule:
             inscriptions = inscriptions.filter(etudiant__matricule__icontains=matricule)
@@ -2269,8 +2298,14 @@ def ajoutCout(request):
 
                 if total_tranches > cout.coutScolarite:
                     raise ValueError(
-                        "La somme des tranches dépasse le coût de la scolarité"
+                        "Erreur : la somme des frais de periodes est supérieure au coût total de la scolarité."
                     )
+                elif total_tranches < cout.coutScolarite:
+                    raise ValueError(
+                        "Erreur : la somme des tranches est inférieure au coût total de la scolarité. "
+                        "Les frais doivent être entièrement répartis entre les différentes périodes."
+                    )
+
 
                 messages.success(request, "Coût et tranches ajoutés avec succès")
                 return redirect("secretaire:all_cout")
@@ -2387,6 +2422,18 @@ def account_settings(request):
     return render(request, 'account-settings.html')
 
 
+
+@login_required 
+@admin_required
+def alertCompteEleve(request):
+    alerts = AlertCompteEleve.objects.all()
+    nbres_alerts = AlertCompteEleve.objects.count()
+
+    AlertCompteEleve.objects.filter(statut="non_vue").update(statut="Vue")
+    messages.success(request, "Tous les alertes de notifications consultées!")
+    
+    contains = {"alerts": alerts, "nbres_alerts": nbres_alerts}
+    return render(request, 'alertCompteEleve.html', contains)
 
 
 from collections import defaultdict

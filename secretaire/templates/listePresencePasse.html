@@ -83,8 +83,6 @@
                                 <h6><span style = "font-weight: bold; color: #ffaa01; font-size: 17px;"> {{anneeScolaire.debutAnnee|date:"Y"}}-{{anneeScolaire.fintAnnee|date:"Y"}}</span></h6>
                             </div>
                         </div>
-                        {% comment %} <form class="mg-b-20" method=""> {% endcomment %}
-                            {% comment %} {% csrf_token %} {% endcomment %}
                         <div class="row gutters-8">
                             <div class="col-3-xxxl col-xl-12 col-lg-3 col-12 form-group">
                                 <input type="text" id="searchInput" placeholder="Filtrer ..." class="form-control"  style ="border: 0.5px solid black;">
@@ -111,19 +109,31 @@
                                         <th>Nom</th>
                                         <th>Prenom</th>
                                         <th>Genre</th>
-                                        <th>Salle</th>
-                                        {% comment %} <th>Salle</th> {% endcomment %}
                                         <th>Présence</th>
-                                        <th>Date debut heure</th>
-                                        <th>Date fin emargement</th>
+                                        <th>Début heure</th>
+                                        <th>Fin heure emargement</th>
                                         <th>Commentaires...</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 
                                 <tbody>
                                     {% for date, emargements in emargements_par_date.items %}
                                         <tr style="background-color:#f0f0f0;">
-                                            <td colspan="9" style="text-align: center;"><strong style =>Date : {{ date }}</strong></td>
+                                            <td colspan="8" style="text-align: center;"><strong>Date : {{ date }}</strong></td>
+                                            <!-- <td>
+                                                <div class="dropdown">
+                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                        <span class="flaticon-more-button-of-three-dots"></span>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <a class="dropdown-item" href="{{ date }}" onclick="return confirm('Voulez-vous vraiment supprimer ce groupe d\'émargement, Elle supprimera toutes les émargements associés ?')">
+                                                            <i class="fas fa-times text-orange-red"></i>Supprimer
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td> -->
+                                            <td></td>
                                         </tr>
 
                                         {% for emargement in emargements %}
@@ -137,7 +147,7 @@
                                             <td>{{ emargement.inscrits.etudiant.nom }}</td>
                                             <td>{{ emargement.inscrits.etudiant.prenom }}</td>
                                             <td>{{ emargement.inscrits.etudiant.genre }}</td>
-                                            <td>{{ emargement.salleClasse.niveau.classe }} - {{ emargement.salleClasse.nom }}</td>
+                                            <!-- <td>{{ emargement.salleClasse.niveau.classe }} - {{ emargement.salleClasse.nom }}</td> -->
                                             <td>
                                             {% if emargement.presence == 1 %}
                                                 <i class="fas fa-check-circle" style="color:green;"></i>
@@ -145,9 +155,24 @@
                                                 <i class="fas fa-times-circle" style="color:red;"></i>
                                             {% endif %}
                                             </td>
-                                            <td>{{ emargement.dateHeureDebut|date:"d/m/Y H:i" }}</td>
-                                            <td>{{ emargement.date_heure_fin|date:"d/m/Y H:i" }}</td>
+                                            <td>{{ emargement.dateHeureDebut|date:"H:i" }}</td>
+                                            <td>{{ emargement.date_heure_fin|date:"H:i" }}</td>
                                             <td>{{ emargement.commentaire }}</td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                        <span class="flaticon-more-button-of-three-dots"></span>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <a class="dropdown-item" href="{% url 'secretaire:modifier_emargement' emargement.id %}">
+                                                            <i class="fas fa-cogs text-dark-pastel-green"></i>Modifier
+                                                        </a>
+                                                        <a class="dropdown-item" href="{% url 'secretaire:supprimerEmargement' emargement.id %}" onclick="return confirm('Voulez-vous vraiment supprimer cet émargement  ?')">
+                                                            <i class="fas fa-times text-orange-red"></i>Supprimer
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
                                         </tr>
                                         {% endfor %}
                                     {% endfor %}

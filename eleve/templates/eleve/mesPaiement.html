@@ -97,79 +97,84 @@
 
                 <div class="card height-auto">
                     <div class="table-responsive">
-                        {% for item in paiements_par_salle %}
-                            <div class="paiement-accordeon">
+                        {% if  paiements_par_salle %}
+                            {% for item in paiements_par_salle %}
+                                <div class="paiement-accordeon">
 
-                                <div class="paiement-header" onclick="togglePaiements('{{ forloop.counter }}')" id="header-{{ forloop.counter }}"
-                                 style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+                                    <div class="paiement-header" onclick="togglePaiements('{{ forloop.counter }}')" id="header-{{ forloop.counter }}"
+                                    style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
 
+                                        <div>
+                                            <span class="icon" id="icon-{{ forloop.counter }}" style="color:red!important;">&#9654;</span>
+                                            Paiements pour la salle : {{ item.salle.niveau }} - {{ item.salle.nom }}
+                                        </div>
 
-                                    <div>
-                                        <span class="icon" id="icon-{{ forloop.counter }}" style="color:red!important;">&#9654;</span>
-                                        Paiements pour la salle : {{ item.salle.niveau }} - {{ item.salle.nom }}
+                                        <!-- Icône PDF -->
+                                        <a href="{% url 'eleve:export_paiement_pdf' item.salle.id %}" title="Exporter en PDF"> Exporter en pdf
+                                            <i class="fa-solid fa-file-pdf" style="color:#e63946;"></i>
+                                        </a>
                                     </div>
 
-                                    <!-- Icône PDF -->
-                                    <a href="{% url 'eleve:export_paiement_pdf' item.salle.id %}" title="Exporter en PDF"> Exporter en pdf
-                                          <i class="fa-solid fa-file-pdf" style="color:#e63946;"></i>
-                                    </a>
-                                </div>
+                                    <div class="paiement-content" id="content-{{ forloop.counter }}" style="overflow:auto; display:none;">
+                                    
+                                        <table class="table display data-table text-nowrap" style="width:100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Type</th>
+                                                    <th>Payé (FCFA)</th>
+                                                    <th>Attendu</th>
+                                                    <th>Reste</th>
+                                                </tr>
+                                            </thead>
 
-                                <div class="paiement-content" id="content-{{ forloop.counter }}" style="overflow:auto; display:none;">
-                                   
-                                    <table class="table display data-table text-nowrap" style="width:100%;">
-                                        <thead>
-                                            <tr>
-                                                <th>Type</th>
-                                                <th>Payé (FCFA)</th>
-                                                <th>Attendu</th>
-                                                <th>Reste</th>
-                                            </tr>
-                                        </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Frais d'inscription</td>
+                                                    <td>{{ item.totalInscription }}</td>
+                                                    <td>{{ item.coutInscription }}</td>
+                                                    <td>{{ item.coutInscription|floatformat:0|add:"-"|add:item.totalInscription }}</td>
+                                                </tr>
 
-                                        <tbody>
-                                            <tr>
-                                                <td>Frais d'inscription</td>
-                                                <td>{{ item.totalInscription }}</td>
-                                                <td>{{ item.coutInscription }}</td>
-                                                <td>{{ item.coutInscription|floatformat:0|add:"-"|add:item.totalInscription }}</td>
-                                            </tr>
+                                                <tr>
+                                                    <td>Frais étude dossier</td>
+                                                    <td>{{ item.totalEtudeDossier }}</td>
+                                                    <td>{{ item.coutEtudeDossier }}</td>
+                                                    <td>{{ item.coutEtudeDossier|floatformat:0|add:"-"|add:item.totalEtudeDossier }}</td>
+                                                </tr>
 
-                                            <tr>
-                                                <td>Frais étude dossier</td>
-                                                <td>{{ item.totalEtudeDossier }}</td>
-                                                <td>{{ item.coutEtudeDossier }}</td>
-                                                <td>{{ item.coutEtudeDossier|floatformat:0|add:"-"|add:item.totalEtudeDossier }}</td>
-                                            </tr>
+                                                <tr>
+                                                    <td>Frais scolarité</td>
+                                                    <td>{{ item.totalScolarite }}</td>
+                                                    <td>{{ item.coutScolarite }}</td>
+                                                    <td>{{ item.coutScolarite|floatformat:0|add:"-"|add:item.totalScolarite }}</td>
+                                                </tr>
 
-                                            <tr>
-                                                <td>Frais scolarité</td>
-                                                <td>{{ item.totalScolarite }}</td>
-                                                <td>{{ item.coutScolarite }}</td>
-                                                <td>{{ item.coutScolarite|floatformat:0|add:"-"|add:item.totalScolarite }}</td>
-                                            </tr>
+                                                <tr>
+                                                    <td>Frais associés</td>
+                                                    <td>{{ item.totalFraisAssocie }}</td>
+                                                    <td>{{ item.coutFraisAssocie }}</td>
+                                                    <td>{{ item.coutFraisAssocie|floatformat:0|add:"-"|add:item.totalFraisAssocie }}</td>
+                                                </tr>
 
-                                            <tr>
-                                                <td>Frais associés</td>
-                                                <td>{{ item.totalFraisAssocie }}</td>
-                                                <td>{{ item.coutFraisAssocie }}</td>
-                                                <td>{{ item.coutFraisAssocie|floatformat:0|add:"-"|add:item.totalFraisAssocie }}</td>
-                                            </tr>
+                                                <!-- TOTAL -->
+                                                <tr style="font-weight:bold;">
+                                                    <td>TOTAL</td>
+                                                    <td>{{ item.total_paye }}</td>
+                                                    <td>{{ item.cout_attendu }}</td>
+                                                    <td>{{ item.reste_a_payer }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
 
-                                            <!-- TOTAL -->
-                                            <tr style="font-weight:bold;">
-                                                <td>TOTAL</td>
-                                                <td>{{ item.total_paye }}</td>
-                                                <td>{{ item.cout_attendu }}</td>
-                                                <td>{{ item.reste_a_payer }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    </div>
 
                                 </div>
-
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        {% else %}
+                            <h3 class="text-center">
+                               Aucun paiement trouvé!
+                            </h3>
+                        {%endif%}
                     </div>
                 </div>
             </div>

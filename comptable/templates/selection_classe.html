@@ -2,51 +2,49 @@
 
 <!doctype html>
 <html class="no-js" lang="">
-
-<head>
-
-   {% include 'partial/head.html' %}
-
-</head>
-
+    <head>
+        {% include 'partial/head.html' %}
+        <title>Sélection Classe</title>
+    </head>
 <body>
     <!-- Preloader Start Here -->
     <div id="preloader"></div>
     <!-- Preloader End Here -->
     <div id="wrapper" class="wrapper bg-ash">
-         <!-- Header Menu Area Start Here -->
-        
-         {% include 'partial/header.html' %}
 
+        <!-- Header Menu Area Start Here -->
+        {% include 'partial/nav.html' %}
         <!-- Header Menu Area End Here -->
+
         <!-- Page Area Start Here -->
         <div class="dashboard-page-one">
             <!-- Sidebar Area Start Here -->
-
-            {% include 'partial/aside.html' %}
-
+            {% include 'partial/asideComptable.html' %}
             <!-- Sidebar Area End Here -->
+
             <div class="dashboard-content-one">
                 <!-- Breadcubs Area Start Here -->
                 <div class="breadcrumbs-area">
-                    <h3>Salle</h3>
+                    <h3>Classe</h3>
                     <ul>
                         <li>
-                            <a href="{% url 'secretaire:index' %}">Tableau de Bord</a>
+                            <a href="{% url 'comptable:indexComptable' %}">Tableau de Bord</a>
                         </li>
-                        <li>Salle *</li>
+                        <li>Classe *</li>
                     </ul>
                 </div>
                 <!-- Breadcubs Area End Here -->
+
+              
                 <!-- Class Table Area Start Here -->
                 <div class="card height-auto">
                     <div class="card-body">
                         <div class="heading-layout1">
                             <div class="item-title">
-                                <h3>Veillez choisir la salle de classe correspondante...</h3>
+                                <h3>Veillez choisir la classe correspondante!</h3>
                             </div>
-                            
                         </div>
+                       
                         <div class="table-responsive">
                             <table class="table display data-table text-nowrap">
                                 <thead>
@@ -56,15 +54,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for salleClasse in salleClasses %}
+                                    {% for classe in classes %}
                                     <tr>
-                                        <td>{{ salleClasse.nom }} -{{ salleClasse.niveau.classe }}</td>
+                                        <td>{{ classe.classe }}</td>
                                         <td>
                                             <div class="dropdown">
-                                               <a href="{% url 'secretaire:evaluation_groupee' salleClasse.id salleClasse.niveau.id %}" class="attribuer-notes">
-                                                    <i class="fas fa-clipboard-check"> </i> Attribuer Notes
+                                                <a href="{% url 'comptable:selectionSalle' classe.id %}">
+                                                    <i class="fas fa-clipboard-check"> </i> Selectionner la classe
                                                 </a>
-
                                             </div>
                                         </td>
                                     </tr>
@@ -76,51 +73,48 @@
                     </div>
                 </div>
                 <!-- Class Table Area End Here -->
-                {% include 'partial/copyright.html' %}
 
+                {% include 'partial/copyright.html' %}
             </div>
         </div>
         <!-- Page Area End Here -->
     </div>
+
+    <!-- Scripts -->
     <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
-    <!-- Plugins js -->
     <script src="{% static 'secretaire/js/plugins.js' %}"></script>
-    <!-- Popper js -->
     <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
-    <!-- Bootstrap js -->
     <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
-    <!-- Scroll Up Js -->
     <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
-    <!-- Data Table Js -->
     <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
-    <!-- Custom Js -->
     <script src="{% static 'secretaire/js/main.js' %}"></script>
 
 
-
-
-
+      
     {% comment %} <script>
         $(document).ready(function () {
-            $('.attribuer-notes').on('click', function (e) {
+            $('.voirPlusSalleDeClasse').on('click', function (e) {
                 e.preventDefault();
 
-                const salleId = $(this).data('salle-id');
-                const classeId = $(this).data('classe-id');
+                const salle_id = $(this).data('salle-id');
                 const anneeScolaireId = $('select[name="anneeScolaire"]').val();
 
                 if (!anneeScolaireId) {
                     alert("Veuillez sélectionner une année scolaire !");
                     return;
                 }
-
-                // Rediriger vers l'URL avec les 3 paramètres
-                const url = `/secretaire/evaluation-groupee/${salleId}/${classeId}/${anneeScolaireId}/`;
+                const url = `/comptable/liste_eleve/${salle_id}/${anneeScolaireId}`;
                 window.location.href = url;
             });
         });
     </script> {% endcomment %}
-
+    
 </body>
-
 </html>
+
+
+
+
+
+
+

@@ -49,7 +49,9 @@ urlpatterns = [
     
     
     path('listePresence/<int:id>/', views.listePresence, name = 'listePresence'),
-    path('listePresencePasse/<int:id>/', views.listePresencePasse, name = 'listePresencePasse'),
+    path('liste-presence-passee/<int:id>/', views.listePresencePasse, name = 'listePresencePasse'),
+    path('supprimer-emargement/<int:id>/', views.supprimerEmargement, name = 'supprimerEmargement'),
+    path('modifier-emargement/<int:id>/', views.modifier_emargement, name = 'modifier_emargement'),
     
     path('presenceEtudiant/<str:matricule>/', views.presenceEtudiant, name = 'presenceEtudiant'),
     
@@ -162,8 +164,7 @@ urlpatterns = [
     path('generationBulletin/<str:matricule>/<int:salleClasse>/', views.generationBulletin, name='generationBilletin'),
     
     
-    # path('recuperationDossierEleve/', views.recuperationDossierEleve, name="recuperationDossierEleve"),
-    
+    path('alertCompteEleve/', views.alertCompteEleve, name="alertCompteEleve"),
     
     
     

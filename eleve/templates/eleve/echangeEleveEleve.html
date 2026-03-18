@@ -1,364 +1,745 @@
-{% load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AcadPro-notes</title>
+    <title>AcadPro – Messagerie</title>
     {% include 'partial/head.html' %}
-    
     <link rel="stylesheet" href="{% static 'eleve/style.css' %}">
     <link rel="stylesheet" href="{% static 'eleve/echangeMessage.css' %}">
 
     <style>
-        .send-button {
-            pointer-events: auto !important;
-            opacity: 1 !important;
-            z-index: 9999 !important;
+        /* 
+           LAYOUT GÉNÉRAL
+         */
+        .grandConteneur {
+            gap: 16px;
+        }
+
+        /* 
+           LISTE DES ÉLÈVES (gauche)
+         */
+        .sidebar {
+            width: 300px;
+            min-width: 220px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 999px;
+            padding: 8px 14px;
+        }
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .student-message-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-radius: 10px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+        .student-message-card:hover { background: #f0f4f8; }
+
+        /* 
+           CHAT CONTAINER (droite)
+         */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            margin-top: 30px;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
+            background: #fff;
+        }
+
+        /* ── Header ── */
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+        }
+        .chat-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .chat-header-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #007bff22;
+        }
+        .chat-header-avatar-placeholder {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e8eef3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+        }
+        .student-name {
+            font-weight: 600;
+            font-size: 15px;
+            color: #222;
+        }
+        /* Indicateur en ligne */
+        .online-dot {
+            width: 9px;
+            height: 9px;
+            background: #28a745;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        /* Bouton signalement header — discret mais visible */
+        .btn-signaler-header {
+            background: none;
+            border: 1px solid #dc354555;
+            color: #dc3545;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        .btn-signaler-header:hover {
+            background: #dc35450f;
+            border-color: #dc3545;
+        }
+
+        /* ── Corps du chat ── */
+        .chat-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 16px 20px;
+            overflow-y: auto;
+            height: calc(100vh - 260px);
+            background: #f7f9fb;
+            scroll-behavior: smooth;
+        }
+
+        /* ── Messages ── */
+        .message-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-bottom: 4px;
+        }
+        .message-wrapper.sent-wrapper  { align-items: flex-end; }
+        .message-wrapper.recv-wrapper  { align-items: flex-start; }
+
+        .message {
+            max-width: 68%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-break: break-word;
             position: relative;
         }
+        .message.sent {
+            background: #007bff;
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+        .message.received {
+            background: #e9ecef;
+            color: #333;
+            border-bottom-left-radius: 4px;
+        }
+        .message-time {
+            font-size: 10px;
+            opacity: 0.65;
+            margin-top: 4px;
+            text-align: right;
+        }
+        /* Statut du message (envoyé/lu) */
+        .message-status-icon {
+            font-size: 10px;
+            margin-left: 4px;
+            opacity: 0.7;
+        }
+
+        /* Actions sur message reçu (survol) */
+        .message-actions {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            margin-top: 3px;
+        }
+        .message-wrapper:hover .message-actions { display: flex; }
+        .btn-flag-msg {
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 11px;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 6px;
+            transition: color 0.2s, background 0.2s;
+        }
+        .btn-flag-msg:hover { color: #dc3545; background: #dc35450f; }
+
+        /* ── Footer formulaire ── */
         #messageForm {
             display: flex;
             align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
             background: #fff;
-            border-top: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 12px;
-            box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.05);
+            border-top: 1px solid #eee;
         }
-
-        #messageForm input[type="text"] {
+        #messageInput {
             flex: 1;
-            padding: 12px 15px;
-            border: 1px solid #ccc;
+            padding: 11px 16px;
+            border: 1px solid #ddd;
             border-radius: 999px;
             outline: none;
             font-size: 14px;
-            transition: border-color 0.3s;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            resize: none;
         }
-
-        #messageForm input[type="text"]:focus {
+        #messageInput:focus {
             border-color: #007bff;
+            box-shadow: 0 0 0 3px #007bff18;
         }
-
-        #messageForm button {
-            margin-left: 10px;
-            background-color: #007bff;
+        #bouttonSoummission {
+            background: #007bff;
             border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
+            color: #fff;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.3s;
+            transition: background 0.2s, transform 0.15s;
+            flex-shrink: 0;
+        }
+        #bouttonSoummission:hover  { background: #0056b3; }
+        #bouttonSoummission:active { transform: scale(0.93); }
+        #bouttonSoummission:disabled { background: #aaa; cursor: not-allowed; }
+
+        /* ── Indicateur de frappe ── */
+        .typing-indicator { display: none; padding: 6px 0; }
+        .typing-indicator.visible { display: flex; align-items: center; gap: 4px; }
+        .typing-indicator span {
+            width: 7px; height: 7px;
+            background: #aaa;
+            border-radius: 50%;
+            animation: bounce 1.2s infinite;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); }
+            40%           { transform: translateY(-6px); }
         }
 
-        #messageForm button:hover {
-            background-color: #0056b3;
+        /* ── Toast notification ── */
+        .toast-msg {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #323232;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s;
+            z-index: 9999;
+            pointer-events: none;
         }
+        .toast-msg.show { opacity: 1; transform: translateY(0); }
+        .toast-msg.success { background: #28a745; }
+        .toast-msg.error   { background: #dc3545; }
 
-        #messageForm i {
-            font-size: 16px;
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .chat-container { margin-top: 0; border-radius: 0; }
         }
-
-
-        .chat-body {
-            display: flex;
-            flex-direction: column;
-            padding: 15px;
-            overflow-y: auto;
-            height: calc(100vh - 250px);
-        }
-
-        .message.sent {
-            background-color: #86a0b0;
-            color: white;
-            border-radius: 12px 12px 0 12px;
-            align-self: flex-end;
-            padding: 10px;
-            max-width: 70%;
-            margin-bottom: 10px;
-        }
-
-        .message.received {
-            background-color: #e2e2e2;
-            color: #333;
-            border-radius: 12px 12px 12px 0;
-            align-self: flex-start;
-            padding: 10px;
-            max-width: 70%;
-            margin-bottom: 10px;
-        }
-
-        /* Style pour le wrapper de message */
-        .message-wrapper {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-
-</style>
-
+    </style>
 </head>
+
 <body>
-    <div>
-   
-        {% include 'eleve/partial/header.html' %}
+    {% include 'eleve/partial/header.html' %}
 
-        <div class="dashboard-page-one">
-            <div class="container">
-                
-                <!-- Navigation Tabs -->
-                {% include 'eleve/partial/navBar.html' %}
+    <div class="dashboard-page-one">
+        <div class="container">
+            {% include 'eleve/partial/navBar.html' %}
 
-                <div class="card height-auto">
-                    <div class="d-flex grandConteneur">
-                        <div style="width: 40%;">
-                            <div class="search-box" style="margin-top: 30px;">
-                                <i class="fas fa-search"></i>
-                                <input type="text" id="messageSearch" placeholder="Rechercher un étudiant...">
-                            </div>
-                            <div class="student-messages-list">
-                                {% if etudiants %}
-                                    {% for etudiant in etudiants %}
+            <div class="card height-auto">
+                <div class="d-flex grandConteneur">
+
+                    <!--   
+                         SIDEBAR — liste des élèves
+                       -->
+                    <div class="sidebar">
+                        <div class="search-box">
+                            <i class="fas fa-search" style="color:#aaa;"></i>
+                            <input type="text" id="messageSearch" placeholder="Rechercher un élève...">
+                        </div>
+
+                        <div class="student-messages-list">
+                            {% if etudiants %}
+                                {% for etudiant in etudiants %}
+                                    <a href="{% url 'eleve:echangeEleveEleve' etudiant.id %}" style="text-decoration:none; color:inherit;">
                                         <div class="student-message-card">
-                                            <div class="student-info">
+                                            <div class="student-info" style="display:flex; align-items:center; gap:8px;">
                                                 <span class="message-status status-unread"></span>
                                                 {{ etudiant.nom }} {{ etudiant.prenom }}
                                             </div>
-                                            <a href="{% url 'eleve:echangeEleveEleve' etudiant.id %}">
-                                                <div class="message-icon" style="cursor: pointer;" title="message">
-                                                    <i class="fas fa-comment" style="color: with;"></i>
-                                                </div>
-                                            </a>
+                                            <i class="fas fa-comment" style="color:#007bff;"></i>
                                         </div>
-                                    {% endfor %}
-                                {% else %}
-                                    <div class="no-messages">
-                                        <i class="fas fa-inbox fa-3x mb-3"></i>
-                                        <p>Aucun élève inscrit pour le moment</p>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="chat-container" style="margin-top: 40px; width: 100%; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">    
-                            <div class="chat-header" style="display: flex; gap:10px; padding: 10px;">
-                                <a href="{% url 'eleve:messagesEleves' %}" title="Fermer discussion">
-                                    <i class="fa fa-arrow-left"></i>
-                                </a>
-                                <div style="margin-left: 10px; display: flex; justify-content: space-between;">
-                                    {% if etudiant.photo %}
-                                        <a href="{{etudiant.photo.url}}"><img src="{{etudiant.photo.url}}" alt="Photo étudiant" style="border-radius: 7px; object-fit: cover; object-position: center;"></a>
-                                    {% else %}
-                                        <span class="text-center" style="margin-top: 10px;"><i class="fa fa-user"></i></span> 
-                                    {% endif %}
-                                    <a href="" style="color: black; margin-top: 10px;"><div class="student-name">{{etudiant.nom}} {{etudiant.prenom}}</div></a>
-                                </div>
-                            </div>
-
-                            <div class="chat-body" id="chat-body"
-                                 data-etudiant-id="{{ etudiant.id }}"
-                                 data-matricule="{{ eleve.matricule }}">
-
-                                {% for message in tous_messages %}
-                                    {% if message.expediteur.id == eleve.id %}
-                                    <div class="message-wrapper">
-                                        <div class="message sent" data-message-id="{{ message.id }}">
-                                            <div class="message-content">{{ message.contenu }}</div>
-                                            <div class="message-time">{{ message.date_envoi|date:"H:i:s" }}</div>
-                                        </div>
-                                        <div class="dropdown">
-                                            <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">...</a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#"><i class="fas fa-times text-orange-red"></i> Supprimer</a>
-                                                <a class="dropdown-item" href="#"><i class="fas fa-cogs text-dark-pastel-green"></i> Modifier</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {% else %}
-                                    <div class="message-wrapper">
-                                        <div class="message received" data-message-id="{{ message.id }}">
-                                            <div class="message-content">{{message.contenu}}</div>
-                                            <div class="message-time">{{message.date_envoi|date:"H:i:s"}}</div>
-                                        </div>
-                                    </div>
-                                    {% endif %}
+                                    </a>
                                 {% endfor %}
-                                
-                                <div class="typing-indicator" id="typing-indicator">
-                                    <span></span>
-                                    <span></span>
-                                    <span></span>
+                            {% else %}
+                                <div class="no-messages" style="text-align:center; padding:30px; color:#999;">
+                                    <i class="fas fa-inbox fa-3x mb-3"></i>
+                                    <p>Aucun élève inscrit pour le moment</p>
                                 </div>
-                            </div>
-
-                                                    
-                            <div>
-                                <form method="POST" id="messageForm" class ="chat-footer">
-                                    {% csrf_token %}
-                                    <input type="text" placeholder="Écrire un message..." id="messageInput" name="messageEleve" autocomplete="off" >
-                                    <button type="submit"  id ="bouttonSoummission">
-                                        <i class="fas fa-paper-plane" id ="iconSoummission"></i>
-                                    </button>
-                                </form>
-                            </div>
-
+                            {% endif %}
                         </div>
                     </div>
+
+                    <!--   
+                         CHAT CONTAINER
+                       -->
+                    <div class="chat-container">
+
+                        <!-- Header -->
+                        <div class="chat-header">
+                            <div class="chat-header-left">
+                                <a href="{% url 'eleve:messagesEleves' %}" title="Retour" style="color:#555;">
+                                    <i class="fa fa-arrow-left"></i>
+                                </a>
+
+                                {% if etudiant.photo %}
+                                    <img src="{{ etudiant.photo.url }}" alt="Photo" class="chat-header-avatar">
+                                {% else %}
+                                    <div class="chat-header-avatar-placeholder">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                {% endif %}
+
+                                <div>
+                                    <div class="student-name">
+                                        {{ etudiant.nom }} {{ etudiant.prenom }}
+                                    </div>
+                                    <!-- Statut en ligne (à rendre dynamique via JS/WS) -->
+                                    <small style="color:#999; font-size:11px;">
+                                        <span class="online-dot"></span> En ligne
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!--   AMÉLIORATION : bouton signalement → ouvre un modal
+                                 (plus fiable que confirm() et permet de choisir la raison) -->
+                            <button class="btn-signaler-header"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalSignalement"
+                                    data-eleve-id="{{ etudiant.id }}"
+                                    data-eleve-nom="{{ etudiant.nom }} {{ etudiant.prenom }}"
+                                    title="Signaler ce compte">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+                                </svg>
+                                Signaler
+                            </button>
+                        </div>
+
+                        <!-- Corps du chat -->
+                        <div class="chat-body" id="chat-body"
+                             data-etudiant-id="{{ etudiant.id }}"
+                             data-matricule="{{ eleve.matricule }}">
+
+                            {% for message in tous_messages %}
+                                {% if message.expediteur.id == eleve.id %}
+                                    <!-- Message envoyé -->
+                                    <div class="message-wrapper sent-wrapper">
+                                        <div class="message sent" data-message-id="{{ message.id }}">
+                                            <div class="message-content">{{ message.contenu }}</div>
+                                            <div class="message-time">
+                                                {{ message.date_envoi|date:"H:i" }}
+                                                <span class="message-status-icon">✓✓</span>
+                                            </div>
+                                        </div>
+                                        <!-- Options sur mes messages -->
+                                        <div class="message-actions" style="justify-content:flex-end;">
+                                            <button class="btn-flag-msg btn-delete-msg"
+                                                    data-id="{{ message.id }}"
+                                                    title="Supprimer">
+                                                <i class="fas fa-trash-alt"></i> Supprimer
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <!-- Message reçu -->
+                                    <div class="message-wrapper recv-wrapper">
+                                        <div class="message received" data-message-id="{{ message.id }}">
+                                            <div class="message-content">{{ message.contenu }}</div>
+                                            <div class="message-time">{{ message.date_envoi|date:"H:i" }}</div>
+                                        </div>
+                                        <!--   AMÉLIORATION : signaler un message précis -->
+                                        <div class="message-actions">
+                                            <button class="btn-flag-msg btn-signaler-msg"
+                                                    data-message-id="{{ message.id }}"
+                                                    data-eleve-id="{{ etudiant.id }}"
+                                                    data-eleve-nom="{{ etudiant.nom }} {{ etudiant.prenom }}"
+                                                    data-contenu="{{ message.contenu|truncatechars:80 }}"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalSignalement"
+                                                    title="Signaler ce message">
+                                                <i class="fas fa-flag"></i> Signaler
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+
+                            <!-- Indicateur de frappe -->
+                            <div class="typing-indicator" id="typing-indicator">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+
+                        <!-- Formulaire d'envoi -->
+                        <form method="POST" id="messageForm">
+                            {% csrf_token %}
+                            <input type="text"
+                                   id="messageInput"
+                                   name="messageEleve"
+                                   placeholder="Écrire un message..."
+                                   autocomplete="off"
+                                   maxlength="1000">
+                            <button type="submit" id="bouttonSoummission" title="Envoyer">
+                                <i class="fas fa-paper-plane" id="iconSoummission"></i>
+                            </button>
+                        </form>
+
+                    </div><!-- /chat-container -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Back to top button -->
+    <!-- 
+         MODAL SIGNALEMENT
+         Utilisé à la fois pour signaler le compte entier
+         ET pour signaler un message précis
+     -->
+    <div class="modal fade" id="modalSignalement" tabindex="-1" aria-labelledby="modalSignalementLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:14px; overflow:hidden;">
+                <div class="modal-header" style="background:#fff4f4; border-bottom:1px solid #f5c6cb;">
+                    <h5 class="modal-title text-danger" id="modalSignalementLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i> Signaler
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <form action="{% url 'eleve:alert_eleve' etudiant.id %}" method="POST" id="formSignalement">
+                    {% csrf_token %}
+                    <input type="hidden" name="eleve_signale_id" id="inputEleveId" value="{{ etudiant.id }}">
+                    <input type="hidden" name="message_ref_id" id="inputMessageRefId" value="">
+
+                    <div class="modal-body" style="padding:20px;">
+                        <!-- Aperçu du message signalé (visible seulement si signalement d'un message) -->
+                        <div id="apercu-message" class="mb-3 p-3 rounded" style="background:#f8f9fa; border-left:3px solid #dc3545; display:none;">
+                            <small class="text-muted d-block mb-1">Message signalé :</small>
+                            <span id="apercu-contenu" style="font-size:13px; color:#333;"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Type de signalement <span class="text-danger">*</span></label>
+                            <select name="type_signalement" class="form-select" required>
+                                <option value="" disabled selected>Choisir une raison...</option>
+                                <option value="harcelement">🔴 Harcèlement</option>
+                                <option value="insulte">🟠 Insulte / Langage inapproprié</option>
+                                <option value="menace">🔴 Menace</option>
+                                <option value="contenu_inapproprie">🟡 Contenu inapproprié</option>
+                                <option value="spam">⚪ Spam / Messages répétitifs</option>
+                                <option value="autre">⚫ Autre</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Gravité perçue</label>
+                            <div class="d-flex gap-2">
+                                <label class="flex-fill text-center p-2 rounded border" style="cursor:pointer;">
+                                    <input type="radio" name="gravite" value="faible" style="display:none;"> 🟡 Faible
+                                </label>
+                                <label class="flex-fill text-center p-2 rounded border" style="cursor:pointer;">
+                                    <input type="radio" name="gravite" value="moderee" checked style="display:none;"> 🟠 Modérée
+                                </label>
+                                <label class="flex-fill text-center p-2 rounded border" style="cursor:pointer;">
+                                    <input type="radio" name="gravite" value="grave" style="display:none;"> 🔴 Grave
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label fw-semibold">Précisions <small class="text-muted fw-normal">(optionnel)</small></label>
+                            <textarea name="contenu"
+                                      class="form-control"
+                                      rows="3"
+                                      maxlength="500"
+                                      placeholder="Décris brièvement la situation..."></textarea>
+                        </div>
+
+                        <!--   Rassurer l'élève sur la confidentialité -->
+                        <small class="text-muted">
+                            <i class="fas fa-lock me-1"></i>
+                            Ce signalement est confidentiel et sera transmis uniquement à l'administration.
+                        </small>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="fas fa-paper-plane me-1"></i> Envoyer le signalement
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast-msg" id="toastMsg"></div>
+
+    <!-- Back to top -->
     <a href="#" class="back-to-top">↑</a>
 
-    <!-- Plugins js -->
+    <!-- Scripts -->
     <script src="{% static 'secretaire/js/plugins.js' %}"></script>
-    <!-- Popper js -->
     <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
-    <!-- Bootstrap js -->
     <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
-    <!-- Scroll Up Js -->
     <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
-    <!-- Custom Js -->
     <script src="{% static 'secretaire/js/main.js' %}"></script>
-    
-    <!-- Script pour le chat en temps réel -->
-    <script src="{% static 'secretaire/js/chat-realtime.js' %}"></script>
-    
-    
-    
+
     <script>
-        // Search functionality
-        $(document).ready(function() {
-            $("#messageSearch").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $(".student-message-card").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
+    //     
+    // UTILITAIRE : échapper le HTML (sécurité XSS)
+    //     
+    function escapeHTML(str) {
+        return str.replace(/[&<>"']/g, m => ({
+            '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+        }[m]));
+    }
+
+    //     
+    // UTILITAIRE : Toast
+    //     
+    function showToast(msg, type = 'success') {
+        const toast = document.getElementById('toastMsg');
+        toast.textContent = msg;
+        toast.className = `toast-msg ${type} show`;
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    //     
+    // RECHERCHE SIDEBAR
+    //     
+    document.getElementById('messageSearch')?.addEventListener('keyup', function () {
+        const q = this.value.toLowerCase();
+        document.querySelectorAll('.student-message-card').forEach(card => {
+            card.closest('a').style.display =
+                card.textContent.toLowerCase().includes(q) ? '' : 'none';
         });
-    </script>
+    });
 
-    <!-- Script corrigé pour la messagerie en temps réel -->
-    <script>
-        // Fonction pour envoyer un message
-        const messageForm = document.getElementById('messageForm');
-        const messageInput = document.getElementById('messageInput');
-        const chatBody = document.getElementById('chat-body');
+    //     
+    // MODAL SIGNALEMENT : pré-remplissage
+    // (compte entier OU message précis)
+    //     
+    document.getElementById('modalSignalement').addEventListener('show.bs.modal', function (e) {
+        const trigger = e.relatedTarget;
+        const messageId  = trigger?.dataset.messageId  || '';
+        const contenu    = trigger?.dataset.contenu    || '';
+        const eleveId    = trigger?.dataset.eleveId    || '{{ etudiant.id }}';
 
-        if (messageForm) {
-            messageForm.addEventListener('submit', function (e) {
-                e.preventDefault();
-                const formData = new FormData(messageForm);
-                const messageContent = messageInput.value.trim();
-                const bouttonSoummission = document.getElementById("bouttonSoummission");
-                const iconSoummission = document.getElementById("iconSoummission");
-                
-                if (!messageContent) {
-                    bouttonSoummission.style.backgroundColor ="gray";
-                    iconSoummission.style.color ="red";
-                    bouttonSoummission.style.border = "none";
-                    setTimeout(()=>{
-                        bouttonSoummission.style.backgroundColor = "#007bff";
-                        iconSoummission.style.color ="white";
-                    }, 1000);
-                    return;
-                }
-                
-                // Afficher immédiatement le message chez l'expéditeur
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message-wrapper');
-                messageDiv.innerHTML = `
-                    <div class="message sent" style="margin-bottom: 10px; background-color:rgb(134, 160, 176)!important;" data-message-id="temp-${Date.now()}">
-                        <div class="message-content">${messageContent}</div>
-                        <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                    </div>
-                `;
-                chatBody.appendChild(messageDiv);
-                messageInput.value = '';
-                chatBody.scrollTop = chatBody.scrollHeight;
-                
-                // Envoyer ensuite le message au serveur
-                fetch(window.location.href, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: new URLSearchParams({messageEleve: messageContent})
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        // Mettre à jour l'ID temporaire avec l'ID réel
-                        const tempElements = document.querySelectorAll('[data-message-id^="temp-"]');
-                        if (tempElements.length > 0) {
-                            const lastTempElement = tempElements[tempElements.length - 1];
-                            lastTempElement.dataset.messageId = data.id;
-                        }
-                    } else {
-                        alert("Erreur : " + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur AJAX:', error);
-                });
-            });
+        document.getElementById('inputEleveId').value     = eleveId;
+        document.getElementById('inputMessageRefId').value = messageId;
+
+        // Afficher l'aperçu uniquement si c'est un signalement de message
+        const apercu = document.getElementById('apercu-message');
+        if (messageId && contenu) {
+            document.getElementById('apercu-contenu').textContent = contenu;
+            apercu.style.display = 'block';
+        } else {
+            apercu.style.display = 'none';
         }
+    });
 
-        // Fonction pour récupérer les nouveaux messages
-        function verifierNouveauxMessages() {
-            if (!chatBody) return;
-            
-            const etudiantId = chatBody.dataset.etudiantId;
-            const matricule = chatBody.dataset.matricule;
-            let lastMessageId = 0;
-            
-            // Trouver le dernier message ID (ignorer les IDs temporaires)
-            document.querySelectorAll('[data-message-id]:not([data-message-id^="temp-"])').forEach(el => {
-                const id = parseInt(el.dataset.messageId);
-                if (id > lastMessageId) lastMessageId = id;
-            });
-            
-            fetch(`/eleve/messages/api/${etudiantId}/${matricule}/?since=${lastMessageId}`)
-                .then(res => res.json())
-                .then(data => {
-                    data.messages.forEach(msg => {
-                        // Vérifier si le message n'est pas déjà dans le DOM
-                        if (!document.querySelector(`[data-message-id="${msg.id}"]`)) {
-                            const messageDiv = document.createElement('div');
-                            messageDiv.classList.add('message-wrapper');
-                            messageDiv.innerHTML = `
-                                <div class="message received" data-message-id="${msg.id}">
-                                    <div class="message-content">${msg.contenu}</div>
-                                    <div class="message-time">${msg.heure}</div>
-                                </div>
-                            `;
-                            chatBody.appendChild(messageDiv);
-                            chatBody.scrollTop = chatBody.scrollHeight;
-                        }
-                    });
-                })
-                .catch(err => console.error("Erreur réception AJAX :", err));
-        }
-        
-        // Vérifier les nouveaux messages toutes les 2 secondes
-        setInterval(verifierNouveauxMessages, 2000);
-        
-        // Faire défiler le chat vers le bas au chargement
-        window.addEventListener('DOMContentLoaded', () => {
-            if (chatBody) {
-                chatBody.scrollTop = chatBody.scrollHeight;
+    // Style radio gravité
+    document.querySelectorAll('[name="gravite"]').forEach(radio => {
+        radio.closest('label').addEventListener('click', function() {
+            document.querySelectorAll('[name="gravite"]').forEach(r =>
+                r.closest('label').style.cssText = 'cursor:pointer;'
+            );
+            this.style.cssText = 'cursor:pointer; background:#fff4f4; border-color:#dc3545!important; font-weight:600;';
+        });
+    });
+
+    //     
+    // ENVOI DE MESSAGE (AJAX)
+    //     
+    const messageForm  = document.getElementById('messageForm');
+    const messageInput = document.getElementById('messageInput');
+    const chatBody     = document.getElementById('chat-body');
+    const btnSubmit    = document.getElementById('bouttonSoummission');
+
+    function scrollToBottom() {
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    if (messageForm) {
+        messageForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const content = messageInput.value.trim();
+            if (!content) {
+                messageInput.style.borderColor = '#dc3545';
+                setTimeout(() => messageInput.style.borderColor = '', 1000);
+                return;
             }
+
+            // Désactiver le bouton pendant l'envoi
+            btnSubmit.disabled = true;
+
+            // Afficher immédiatement (optimistic UI)
+            const tempId = `temp-${Date.now()}`;
+            const now = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper sent-wrapper';
+            //   escapeHTML pour éviter les injections XSS
+            wrapper.innerHTML = `
+                <div class="message sent" data-message-id="${tempId}">
+                    <div class="message-content">${escapeHTML(content)}</div>
+                    <div class="message-time">${now} <span class="message-status-icon" style="opacity:0.4;">✓</span></div>
+                </div>`;
+            chatBody.appendChild(wrapper);
+            messageInput.value = '';
+            scrollToBottom();
+
+            // Envoi AJAX
+            fetch(window.location.href, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: new URLSearchParams({ messageEleve: content })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Remplacer l'ID temporaire par le vrai
+                    const el = chatBody.querySelector(`[data-message-id="${tempId}"]`);
+                    if (el) {
+                        el.dataset.messageId = data.id;
+                        el.querySelector('.message-status-icon').textContent = '✓✓';
+                        el.querySelector('.message-status-icon').style.opacity = '0.7';
+                    }
+                } else {
+                    showToast('Erreur lors de l\'envoi.', 'error');
+                }
+            })
+            .catch(() => showToast('Connexion perdue. Réessaie.', 'error'))
+            .finally(() => { btnSubmit.disabled = false; });
         });
+    }
+
+    //     
+    // POLLING : réception de nouveaux messages
+    //     
+    function getLastMessageId() {
+        let max = 0;
+        document.querySelectorAll('[data-message-id]:not([data-message-id^="temp-"])').forEach(el => {
+            const id = parseInt(el.dataset.messageId);
+            if (id > max) max = id;
+        });
+        return max;
+    }
+
+    function fetchNewMessages() {
+        if (!chatBody) return;
+        const etudiantId = chatBody.dataset.etudiantId;
+        const matricule  = chatBody.dataset.matricule;
+        const since      = getLastMessageId();
+
+        fetch(`/eleve/messages/api/${etudiantId}/${matricule}/?since=${since}`)
+            .then(r => r.json())
+            .then(data => {
+                data.messages.forEach(msg => {
+                    if (document.querySelector(`[data-message-id="${msg.id}"]`)) return;
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'message-wrapper recv-wrapper';
+                    wrapper.innerHTML = `
+                        <div class="message received" data-message-id="${msg.id}">
+                            <div class="message-content">${escapeHTML(msg.contenu)}</div>
+                            <div class="message-time">${msg.heure}</div>
+                        </div>
+                        <div class="message-actions">
+                            <button class="btn-flag-msg btn-signaler-msg"
+                                    data-message-id="${msg.id}"
+                                    data-eleve-id="{{ etudiant.id }}"
+                                    data-contenu="${escapeHTML(msg.contenu).substring(0,80)}"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalSignalement"
+                                    title="Signaler">
+                                <i class="fas fa-flag"></i> Signaler
+                            </button>
+                        </div>`;
+                    chatBody.appendChild(wrapper);
+                    scrollToBottom();
+                });
+            })
+            .catch(() => {}); // Silencieux — pas de spam d'erreurs console
+    }
+
+    // Polling toutes les 2.5 secondes
+    setInterval(fetchNewMessages, 2500);
+
+    // Scroll initial
+    window.addEventListener('DOMContentLoaded', scrollToBottom);
     </script>
-<!-- ... fin du fichier ... -->
 </body>
 </html>
-

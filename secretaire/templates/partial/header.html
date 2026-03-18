@@ -69,10 +69,53 @@
                 </div>
             </li>
             <li class="navbar-item dropdown header-message">
-                <a class="navbar-nav-link dropdown-toggle" href="{% url 'secretaire:messages' %}" role="button"
-                    >
+                <a class="navbar-nav-link dropdown-toggle" href="{% url 'secretaire:messages' %}" role="button">
                     <i class="far fa-envelope"></i>
                 </a>
+            </li>
+            
+            <li class="navbar-item dropdown header-notification">
+                <a class="navbar-nav-link dropdown-toggle" href="{% url 'secretaire:messages' %}" role="button" data-toggle="dropdown"
+                    aria-expanded="false">
+                    <i class="far fa-bell"></i>
+                    <div class="item-title d-md-none text-16 mg-l-10">Notification</div>
+                    <span>{{ nbre_alerts_comptes_eleves}}</span>
+                </a>
+
+                <div class="dropdown-menu dropdown-menu-right">
+                    <div class="item-header">
+                        <h6 class="item-title">0{{ nbre_alerts_comptes_eleves}} Notifiacations non lues</h6>
+                    </div>
+                    <div class="item-content">
+                        {% if alerts_comptes_eleves %}
+                            {% for alert in alerts_comptes_eleves %}
+                                <div class="media">
+                                    <div class="item-icon bg-skyblue">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="media-body space-sm">
+                                        <div class="post-title">{{ alert.type_signalement|truncatechars:20 }}</div>
+                                        <span> {{alert.eleve_expedi.nom}} <-> {{alert.eleve_signale.nom}}</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="media">
+                                <div class="media-body space-sm">
+                                    <div class="post-title">Aucun alert trouvé!</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="media">
+                            <div class="media-body space-sm">
+                                <div class="post-title"><a href="{% url 'secretaire:alertCompteEleve' %}">Voir toutes .... 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-right-circle-fill" viewBox="0 0 16 16">
+                                    <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m5.904-2.803a.5.5 0 1 0-.707.707L9.293 10H6.525a.5.5 0 0 0 0 1H10.5a.5.5 0 0 0 .5-.5V6.525a.5.5 0 0 0-1 0v2.768z"/>
+                                </svg></a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </li>
             {% comment %} <li class="navbar-item dropdown header-language">
                 <a class="navbar-nav-link dropdown-toggle" href="#" role="button" 

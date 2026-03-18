@@ -83,6 +83,9 @@
                                 </tbody>
                             </table>
                         </div>
+                        </br>
+                        <hr/>
+                        </br>
                         <div class="table-responsive">
                             <table class="table display data-table text-nowrap">
                                 <thead>
@@ -96,7 +99,6 @@
                                         <th>Libelle Tranche</th>
                                         <th>Montant</th>
                                         <th>Date d'écheance</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -112,21 +114,6 @@
                                         <td>{{ tranche.libelle }}</td>
                                         <td>{{ tranche.montant }} F CFA</td>
                                         <td>{{ tranche.date_echeance|date:"d/m/Y" }}</td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                    <span class="flaticon-more-button-of-three-dots"></span>
-                                                </a>
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="">
-                                                        <i class="fas fa-cogs text-dark-pastel-green"></i>Modifier
-                                                    </a>
-                                                    <a class="dropdown-item" href="" onclick="return confirm('Voulez-vous vraiment supprimer cette tranche ?')">
-                                                        <i class="fas fa-times text-orange-red"></i>Supprimer
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </td>
                                     </tr>
                                     {% endfor %}
                                     {% else %}

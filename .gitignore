@@ -2,3 +2,29 @@
 *.pyc
 __pycache__/
 
+
+
+
+# Environnement virtuel
+venv/
+env/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Fichier base locale
+db.sqlite3
+
+# Fichier environnement
+.env
+
+# VS Code
+.vscode/
+
+# Dossier media
+media/
+
+# Static collect
+staticfiles/

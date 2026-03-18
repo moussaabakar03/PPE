@@ -21,6 +21,11 @@ from django.contrib.auth.decorators import login_required
 from acadPro.utils.decorators import staff_required
 
 
+
+from django.core.mail import send_mail
+from django.conf import settings
+
+
 def annee_active():
     try:
         return AnneeScolaire.objects.get(est_active=True)
@@ -40,14 +45,18 @@ def changer_annee_active(request, annee_id):
 @login_required
 @staff_required
 def indexComptable(request):
-    paiements = PaiementEleve.objects.all()
+    paiements = PaiementEleve.objects.filter(inscription_Etudiant__anneeAcademique=annee_active())
     totalMontantPaye = sum(paiement.montantVerse for paiement in paiements)
     
-    paiementsRecentes= PaiementEleve.objects.all()[:5]
+    paiementsRecentes= PaiementEleve.objects.filter(inscription_Etudiant__anneeAcademique=annee_active())[:5]
+
+    nbre_transactions = PaiementEleve.objects.filter(inscription_Etudiant__anneeAcademique=annee_active()).count()
+
     return render(request, 'dashbordComptable.html', {
         'paiements': paiements,
         'totalPaye': totalMontantPaye,
-        'paiementsRecentes': paiementsRecentes
+        'paiementsRecentes': paiementsRecentes,
+        'nbre_transactions': nbre_transactions
     })
 
 
@@ -56,16 +65,36 @@ def indexComptable(request):
 # Create your views here.
 @login_required
 @staff_required
-def selectionSalle(request):
+def selectionSalle(request, id_salle):
     # annees = AnneeScolaire.objects.all().order_by('-id')
     annee = annee_active()
-    SalleDeClasses = SalleDeClasse.objects.all()
+    classe = get_object_or_404(Classe, id=id_salle)
+    salleClasses = SalleDeClasse.objects.filter(niveau=classe)
+    
+    tranches = TrancheCout.objects.filter(cout__classe=classe, cout__anneeScolaire=annee)
+
     context = {
-        'SalleClasses': SalleDeClasses,
-        "annee": annee  
+        'salleClasses': salleClasses,
+        "annee": annee,
+        "classe": classe,
+        "tranches": tranches
     }
     # Inclure le chemin relatif vers le template
     return render(request, 'selectionSalle.html', context)
+
+
+@login_required
+@staff_required
+def selectionClasse(request):
+    annee = annee_active()
+    classes = Classe.objects.all()
+    context = {
+        'classes': classes,
+        "annee": annee  
+    }
+    # Inclure le chemin relatif vers le template
+    return render(request, 'selection_classe.html', context)
+
 
 @login_required
 @staff_required
@@ -91,7 +120,6 @@ def liste_eleve(request, id_salle):
         ).select_related('etudiant').order_by('etudiant__nom', 'etudiant__prenom')
         
         
-        tranches = TrancheCout.objects.filter(cout__classe=salleClasse.niveau, cout__anneeScolaire=anneesScolaire)
        
         # Préparation du contexte pour le template
         context = {
@@ -99,7 +127,6 @@ def liste_eleve(request, id_salle):
             "anneesScolaire": anneesScolaire,
             "inscrits": inscrits,
             "messagesCoutNonEnregistrer": messagesCoutNonEnregistrer,
-            "tranches": tranches
         }
 
     except Exception as e:
@@ -240,9 +267,8 @@ def ajouter_paiement(request, id_inscription):
 
 
 
-from django.core.mail import send_mail
-from django.conf import settings
-
+@login_required
+@staff_required
 def alerte_retard_paiement(request, id_classe):
     inscris = Inscription.objects.filter(
         salleClasse__niveau__id=id_classe,
@@ -257,10 +283,10 @@ def alerte_retard_paiement(request, id_classe):
     if request.method == "GET":
         tranche_filtre = request.GET.get("tranche_filter")
         if not tranche_filtre:
-            return redirect("comptable:liste_eleve", id_salle=id_classe)
+            return redirect("comptable:selectionSalle", id_salle=id_classe)
         tranche = get_object_or_404(TrancheCout, id=tranche_filtre)
     else:
-        return redirect("comptable:liste_eleve", id_salle=id_classe)
+        return redirect("comptable:selectionSalle", id_salle=id_classe)
     
     # Calcul du cumul jusqu'à la tranche sélectionnée
     cumul = 0
@@ -303,8 +329,11 @@ def alerte_retard_paiement(request, id_classe):
                 )
                 # print(f"Mail envoyé à {parent.email}")
                 messages.success(request, f"Alerte envoyée à {parent.email}")
-    
-    return redirect("comptable:liste_eleve", id_salle=id_classe)
+        # else:
+        #     # print(f"Élève: {i.etudiant.nom} {i.etudiant.prenom} - Paiement à jour")
+        #     messages.info(request, f"Paiement à jour pour {i.etudiant.nom} {i.etudiant.prenom}")
+        #     pass
+    return redirect("comptable:selectionSalle", id_salle=id_classe)
 
 
 @login_required
@@ -356,7 +385,7 @@ def export_paiement_pdf(request, id_inscription):
 @login_required
 @staff_required
 def listePaiments(request):
-    paiements = PaiementEleve.objects.all()
+    paiements = PaiementEleve.objects.filter(inscription_Etudiant__anneeAcademique = annee_active())
     return render(request, 'listePaiments.html', {'paiements': paiements})
 
 # def liste_personnel(request):
@@ -396,8 +425,9 @@ def listePaiments(request):
 def enretardSurPaiement(request):
     if request.method == "POST":
         matricule = request.POST.get("matricule", "").strip()
-        anneeScolaire = request.POST.get("anneeScolaire", "").strip()
         niveau = request.POST.get("niveau", "").strip()
+
+        anneeAcademique = annee_active()
 
         inscriptions = Inscription.objects.all()
         filtres_appliques = []
@@ -414,9 +444,8 @@ def enretardSurPaiement(request):
             except (ValueError, Classe.DoesNotExist):
                 pass
 
-        if anneeScolaire:
+        if anneeAcademique:
             try:
-                anneeAcademique = AnneeScolaire.objects.get(pk=int(anneeScolaire))
                 inscriptions = inscriptions.filter(anneeAcademique=anneeAcademique)
                 filtres_appliques.append(f"année: {anneeAcademique}")
             except (ValueError, AnneeScolaire.DoesNotExist):

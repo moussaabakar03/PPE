@@ -77,9 +77,7 @@
                                 <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown"
                                     aria-expanded="false">...</a>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="#"><i class="fas fa-times text-orange-red"></i>Fermer</a>
-                                        <a class="dropdown-item" href="#"><i class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
-                                        <a class="dropdown-item" href="#"><i class="fas fa-redo-alt text-orange-peel"></i>Refrecher</a>
+                                        <a class="dropdown-item" href="{% url 'secretaire:admit-form' %}"><i class="fas fa-redo-alt text-orange-peel"></i>Rafraîchir</a>
                                     </div>
                             </div>
                         </div>
@@ -89,15 +87,15 @@
                             <div class="row">
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label>Nom *</label>
-                                    <input type="text" name = "nom" placeholder="" class="form-control">
+                                    <input type="text" name = "nom" placeholder="" class="form-control" required>
                                 </div>
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label>Prenom *</label>
-                                    <input type="text" name = "prenom" placeholder="" class="form-control">
+                                    <input type="text" name = "prenom" placeholder="" class="form-control" required>
                                 </div>
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label>Parent (Tuteur)*</label>
-                                    <select class="select2" name = "parent">
+                                    <select class="select2" name = "parent" required>
                                         <option value="">Please Select parent *</option>
                                         {% for parent in parentss %}
                                             <option value="{{ parent.id }}">{{parent.nom}} {{parent.prenom}}</option>
@@ -116,7 +114,7 @@
                                 </div>
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label>Genre *</label>
-                                    <select class="select2" name = "genre">
+                                    <select class="select2" name = "genre" required>
                                         <option value="">Please Select Gender *</option>
                                         <option value="Masculin">Masculin</option>
                                         <option value="Feminin">Feminin</option>
@@ -125,8 +123,7 @@
                                 </div>
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label>Date de naissance *</label>
-                                    <input type="date" name = "date_naissance" placeholder="dd/mm/yyyy" class="form-control">
-                                    
+                                    <input type="date" name = "date_naissance" placeholder="dd/mm/yyyy" class="form-control" required>
                                 </div>
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label>Groupe sanguin*</label>
@@ -151,15 +148,15 @@
                                 </div>
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label>Nationnalité</label>
-                                    <input type="text" name = "nationnalite" placeholder="" class="form-control">
+                                    <input type="text" name = "nationnalite" placeholder="" class="form-control" required>
                                 </div>
                                 <div class="col-lg-6 col-12 form-group mg-t-30">
-                                    <label class="text-dark-medium">Upload Student Photo (150px X 150px)</label>
+                                    <label class="text-dark-medium">Uploader photo élève  (150px X 150px)</label>
                                     <input type="file" name="photo" class="form-control-file">
                                 </div>
                                 <div class="col-12 form-group mg-t-8">
                                     <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Soumettre</button>
-                                    <button type="reset" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Reset</button>
+                                    <a href="{% url 'secretaire:all-student' %}" type="button" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Annuler</a>
                                 </div>
                             </div>
                         </form>

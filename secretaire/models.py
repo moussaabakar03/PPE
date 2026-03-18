@@ -51,19 +51,6 @@ class Utilisateur(AbstractUser):
         ('comptable', 'Comptable'),
     ]
     
-    groups = models.ManyToManyField( 
-        Group, 
-        related_name='utilisateur_groups', 
-        blank=True, 
-        help_text='The groups this user belongs to.', 
-        verbose_name='groups' ) 
-    user_permissions = models.ManyToManyField( 
-        Permission, 
-        related_name='utilisateur_user_permissions', 
-        blank=True, 
-        help_text='Specific permissions for this user.', 
-        verbose_name='user permissions' )
-    
     
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
 
@@ -84,7 +71,7 @@ class Parent(models.Model):
     prenom = models.CharField(max_length=100)
     genre = models.CharField(max_length=10, choices=[('M', 'Masculin'), ('F', 'Féminin')])
     telephone = models.CharField(max_length=20)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(max_length=100)
     profession = models.CharField(max_length=100, null=True, blank=True)
 
     photo = models.ImageField(upload_to='parents/', null=True, blank=True)
@@ -115,7 +102,8 @@ class Etudiant(models.Model):
         ('AB+', 'AB+'), ('AB-', 'AB-'), 
         ('O+', 'O+'), ('O-', 'O-')
     ])
-    mail = models.EmailField()
+    mail = models.EmailField(max_length=100)
+
     niveau = models.CharField(max_length=50)
     telephone = models.CharField(max_length=50)
     nationnalite = models.CharField(max_length=50)
@@ -153,7 +141,7 @@ class Enseignant(models.Model):
     photo = models.ImageField(upload_to='photos/enseignants/', null=True, blank=True)
     date_naissance = models.DateField(null=True, blank=True)
     sexe = models.CharField(max_length=50, choices=[('M', 'Masculin'), ('F', 'Féminin')], null=True, blank=True)
-    mail = models.EmailField(null=True, blank=True)
+    mail = models.EmailField(max_length=100, blank=True)
     lieuDeNaissance = models.CharField(max_length=100, null=True, blank=True)
     date_enregistrement = models.DateTimeField(auto_now_add=True)
     salaire = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
@@ -334,12 +322,129 @@ class Messages(models.Model):
         return f"De {self.expediteur} à {self.destinataire} le {self.date_envoi}"
 
 
+# class AlertCompteEleve(models.Model):
+
+#     STATUT_CHOICES = [
+#         ('Vue', 'Vue'),
+#         ('Non_vue', 'Non vue'),
+#     ]
+
+#     eleve_expedi = models.ForeignKey(
+#         Etudiant,
+#         on_delete=models.SET_NULL,
+#         null=True,
+#         blank=True,
+#         related_name='alertes_envoyees'
+#     )
+
+#     eleve_destinat = models.ForeignKey(
+#         Etudiant,
+#         on_delete=models.SET_NULL,
+#         null=True,
+#         blank=True,
+#         related_name='alertes_recues'
+#     )
+
+#     contenu = models.TextField()
+
+#     statut = models.CharField(
+#         max_length=20,
+#         choices=STATUT_CHOICES,
+#         default='Non_vue'
+#     )
+
+
+#     def __str__(self):
+#         return f"Signalement - {self.eleve_expedi} -> {self.eleve_destinat}"
+
+
+
+class AlertCompteEleve(models.Model):
+
+    TYPE_CHOICES = [
+        ('harcelement', 'Harcèlement'),
+        ('insulte', 'Insulte / Langage inapproprié'),
+        ('menace', 'Menace'),
+        ('contenu_inapproprie', 'Contenu inapproprié'),
+        ('autre', 'Autre'),
+    ]
+
+    STATUT_CHOICES = [
+        ('non_vue', 'Non vue'),
+        # ('en_cours', 'En cours de traitement'),
+        ('vue', 'Vue'),
+        # ('rejetee', 'Rejetée'),
+    ]
+
+    GRAVITE_CHOICES = [
+        ('faible', 'Faible'),
+        ('moderee', 'Modérée'),
+        ('grave', 'Grave'),
+    ]
+
+    eleve_expedi = models.ForeignKey(
+        Etudiant,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='alertes_envoyees'
+    )
+
+    eleve_signale = models.ForeignKey(       #  renommé pour plus de clarté
+        Etudiant,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='alertes_recues'
+    )
+
+    # message_reference = models.ForeignKey(   #  lier au message exact signalé
+    #     'Message',
+    #     on_delete=models.SET_NULL,
+    #     null=True, blank=True,
+    #     related_name='alertes'
+    # )
+
+    type_signalement = models.CharField(
+        max_length=30,
+        choices=TYPE_CHOICES,
+        default='autre'
+    )
+
+    gravite = models.CharField(
+        max_length=10,
+        choices=GRAVITE_CHOICES,
+        default='moderee'
+    )
+
+    contenu = models.TextField()          
+
+    statut = models.CharField(
+        max_length=20,
+        choices=STATUT_CHOICES,
+        default='non_vue'
+    )
+
+    # note_admin = models.TextField(blank=True, null=True)  # commentaire de l'admin
+
+    date_signalement = models.DateTimeField(auto_now_add=True)
+    date_traitement = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-date_signalement']
+        verbose_name = "Alerte compte élève"
+        verbose_name_plural = "Alertes comptes élèves"
+
+    def __str__(self):
+        return f"[{self.get_statut_display()}] {self.eleve_expedi} signale {self.eleve_signale} – {self.date_signalement:%d/%m/%Y}"
+    
+
+    
+
 class depotDossierEtudiant(models.Model):
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
     niveau = models.CharField(max_length=100)
     dateheure = models.DateTimeField(auto_now_add=True)
-    mail = models.EmailField()
+    mail = models.EmailField(max_length=100)
     dossier = models.FileField(upload_to='dossiers_etudiants')
     numero_telephone = models.CharField(max_length=20)
     
