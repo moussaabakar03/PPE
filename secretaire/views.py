@@ -2519,7 +2519,7 @@ def generationBulletin(request, matricule, salleClasse):
         total_pondere = sum(item['moyenne_ponderee'] for item in liste_moyennes[trimestre])
         total_coeff = sum(item['coefficient'] for item in liste_moyennes[trimestre])
         if total_coeff > 0:
-            moyennes_generales[trimestre] = round(total_pondere / total_coeff, 4)
+            moyennes_generales[trimestre] = round(total_pondere / total_coeff, 2)
             if moyennes_generales[trimestre] > 20:
                 moyennes_generales[trimestre] = 20.00
 
@@ -2548,7 +2548,7 @@ def generationBulletin(request, matricule, salleClasse):
                 total_pondere_etu += moyenne_matiere * cours.coefficient
                 total_coeff_etu += cours.coefficient
 
-            moyenne_generale_etu = round(total_pondere_etu / total_coeff_etu, 4) if total_coeff_etu > 0 else 0
+            moyenne_generale_etu = round(total_pondere_etu / total_coeff_etu, 2) if total_coeff_etu > 0 else 0
             classement.append((etu.id, moyenne_generale_etu))
 
         # Trier du plus fort au plus faible
@@ -2636,7 +2636,7 @@ def bulletinsSalleDeClasse(request, salleClasseId):
                 total_pondere_etu += moyenne_matiere * cours.coefficient
                 total_coeff_etu += cours.coefficient
 
-            moyenne_generale_etu = round(total_pondere_etu / total_coeff_etu, 4) if total_coeff_etu > 0 else 0
+            moyenne_generale_etu = round(total_pondere_etu / total_coeff_etu, 2) if total_coeff_etu > 0 else 0
             classements[trimestre].append((etu.id, moyenne_generale_etu))
 
         # Trier du plus fort au plus faible
@@ -2702,7 +2702,7 @@ def bulletinsSalleDeClasse(request, salleClasseId):
             total_pondere = sum(item['moyenne_ponderee'] for item in liste_moyennes[trimestre])
             total_coeff = sum(item['coefficient'] for item in liste_moyennes[trimestre])
             if total_coeff > 0:
-                moyennes_generales[trimestre] = round(total_pondere / total_coeff, 4)
+                moyennes_generales[trimestre] = round(total_pondere / total_coeff, 2)
                 if moyennes_generales[trimestre] > 20:
                     moyennes_generales[trimestre] = 20.00
 

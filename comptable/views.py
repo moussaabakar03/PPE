@@ -118,8 +118,6 @@ def liste_eleve(request, id_salle):
             salleClasse=salleClasse,
             anneeAcademique=anneesScolaire
         ).select_related('etudiant').order_by('etudiant__nom', 'etudiant__prenom')
-        
-        
        
         # Préparation du contexte pour le template
         context = {
@@ -215,13 +213,6 @@ def ajouter_paiement(request, id_inscription):
 
     tranches = TrancheCout.objects.filter(cout__classe=classe, cout__anneeScolaire=anneeScol)
     paiements_effectues = dejaPayeParType["Scolarite"]
-    # paiements_eleves = PaiementEleve.objects.filter(inscription_Etudiant=inscriptionEleve, typePaiement="Scolarite")
-    # for paiement in paiements_eleves:
-    #     print (f"Paiement ID: {paiement.id}, Montant Versé: {paiement.montantVerse}, Date: {paiement.datePaiement}")
-    
-    # print("Paiements effectués pour la scolarité :", paiements_effectues)
-    # cumul = 0
-    # for tranche in tranches:
     
     mes_traches = []
     cumul = 0
@@ -266,6 +257,59 @@ def ajouter_paiement(request, id_inscription):
     })
 
 
+@login_required
+@staff_required
+def modifierPaiement(request, id_paiement):
+    paiement = get_object_or_404(PaiementEleve, id=id_paiement)
+    inscription_id = paiement.inscription_Etudiant.id
+
+    if request.method == 'POST':
+        # Vous pouvez restreindre les champs modifiables ici
+        paiement.montantVerse = Decimal(request.POST.get('montantVerse'))
+        paiement.modePaiment = request.POST.get('mode_paiement')
+        # paiement.typePaiement = request.POST.get('type_paiement')
+        paiement.save()
+        messages.success(request, "Paiement modifié avec succès.")
+        return redirect('comptable:ajouter_paiement', id_inscription=inscription_id)
+
+    return render(request, 'modifierPaiement.html', {'paiement': paiement})
+
+@login_required
+@staff_required
+def modifier_paiement(request, id_paiement):
+    paiement = get_object_or_404(PaiementEleve, id=id_paiement)
+
+    if request.method == 'POST':
+        # Vous pouvez restreindre les champs modifiables ici
+        paiement.montantVerse = Decimal(request.POST.get('montantVerse'))
+        paiement.modePaiment = request.POST.get('mode_paiement')
+        paiement.description = request.POST.get('description')
+        paiement.save()
+        messages.success(request, "Paiement modifié avec succès.")
+        return redirect('comptable:listePaiements')
+
+    return render(request, 'modifier_paiement.html', {'paiement': paiement})
+
+@login_required
+@staff_required
+def supprimer_paiement(request, id_paiement):
+    paiement = get_object_or_404(PaiementEleve, id=id_paiement)
+    if paiement:
+        paiement.delete()
+        messages.success(request, "Paiement supprimé avec succès.")
+        return redirect('comptable:listePaiements')
+    
+@login_required
+@staff_required
+def supprimerPaiement(request, id_paiement):
+    paiement = get_object_or_404(PaiementEleve, id=id_paiement)
+    inscription_id = paiement.inscription_Etudiant.id
+
+    if paiement:
+        paiement.delete()
+        messages.success(request, "Paiement supprimé avec succès.")
+        return redirect('comptable:ajouter_paiement', id_inscription=inscription_id)
+    
 
 @login_required
 @staff_required
@@ -384,9 +428,9 @@ def export_paiement_pdf(request, id_inscription):
 
 @login_required
 @staff_required
-def listePaiments(request):
+def listePaiements(request):
     paiements = PaiementEleve.objects.filter(inscription_Etudiant__anneeAcademique = annee_active())
-    return render(request, 'listePaiments.html', {'paiements': paiements})
+    return render(request, 'listePaiements.html', {'paiements': paiements})
 
 # def liste_personnel(request):
 #     enseignants = Enseignant.objects.all()

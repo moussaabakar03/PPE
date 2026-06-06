@@ -269,7 +269,7 @@
                                         <div><strong>Forte moyenne :</strong> {{ stats_classe|lookup:trimestre|lookup:"forte" }}</div>
                                         <div><strong>Moyenne de classe :</strong> {{ stats_classe|lookup:trimestre|lookup:"moyenne" }}</div>
                                         <div><strong>Faible moyenne :</strong> {{ stats_classe|lookup:trimestre|lookup:"faible" }}</div>
-                                    </div>
+                                    </div> 
 
                                     <div style="text-align: center; margin: 20px 0; font-size: 14px;">
                                         <strong>Appréciation du travail : {{ bulletin_data.moyennes_generales|lookup:trimestre|get_appreciation }}</strong>

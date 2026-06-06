@@ -129,20 +129,20 @@
                         <p style = "text-align: center; margin-top: 15px;" > DETAILS ELEVE: [<span style = "font-weight: bold;">{{etudiant.nom}} {{etudiant.prenom}}</span>] </p>
                     </div>
                     <div class="icons" style = "display: flex; gap: 20px; margin-bottom: 15px;"> 
-                        <a href ="{% url 'secretaire:echangeMessage' etudiant.id %}">
+                        <!-- <a href ="{% url 'secretaire:echangeMessage' etudiant.id %}">
                             <div class="message-icon"  style = "cursor: pointer;" title = "message">Ecrire un message 
                                 <i class="fas fa-comment"  style = "color: with;" ></i>
                             </div>
-                        </a>
+                        </a> -->
                         {% if etudiant.statut == 'Actif' %}
-                            <a href ="{% url 'secretaire:exclure_etudiant' etudiant.matricule %}">
+                            <a href ="{% url 'secretaire:exclure_etudiant' etudiant.matricule %}" onclick="return confirm('Voulez-vous vous vraiment EXCLURE l\'élève {{etudiant.nom}} {{etudiant.prenom}}?')">
                                 <div class="message-icon"  style = "cursor: pointer;" title = "message"> Exclure 
                                     <i class="fas fa-user-slash"  style = "color: with;" ></i> 
                                 
                                 </div>
                             </a>
                             
-                            <a href ="{% url 'secretaire:suspendre_etudiant' etudiant.matricule %}">
+                            <a href ="{% url 'secretaire:suspendre_etudiant' etudiant.matricule %}" onclick="return confirm('Voulez-vous vous vraiment SUSPENDRE l\'élève {{etudiant.nom}} {{etudiant.prenom}}?')">
                                 <div class="message-icon"  style = "cursor: pointer;" title = "message"> Suspendre 
                                     <i class="fas fa-user-check"  style = "color: with;" ></i> 
                                 </div>
@@ -152,9 +152,8 @@
                             <a href ="{% url 'secretaire:gracier_etudiant' etudiant.matricule %}">
                                 <div class="message-icon"  style = "cursor: pointer;" title = "message"> Gracier 
                                     <i class="fas fa-user-check"  style = "color: with;" ></i> 
-                                
-                                </div>
-                            </a>
+                                </div>   
+                            </a> 
                         {% endif %}
                     </div>
                 </div>

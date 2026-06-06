@@ -46,12 +46,11 @@
                 <div class="breadcrumbs-area" style = "margin-left: 40px;">
                     <h3>Ajout Paiement</h3>
                     <ul>
-                        <li> <a href ="{% url 'comptable:liste_eleve' salleClasse.id %}" ><i class="fa fa-arrow-left"></i> Retour</a></li>
-                        <li>{{ inscriptionEleve.salleClasse.niveau.classe }}- {{ inscriptionEleve.salleClasse.nom }} </li>
-                        <li> Ajouter paiement</li>
+                        <li> <a href ="" ><i class="fa fa-arrow-left"></i> Retour</a></li>
+                        <li> Modifier paiement</li>
                     </ul>
                 </div>
-                <div class="container-fluid" style="">
+                <div class="container-fluid">
                     <div style="display: flex; flex-direction: column; align-items: center;  background-color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; overflow-x: auto;">
                         <div style= "display: flex; gap: 50px;"> 
                             <p><i class="fas fa-chalkboard"></i> {{ inscriptionEleve.salleClasse.niveau.classe }}- {{ inscriptionEleve.salleClasse.nom }}  </p>
@@ -62,104 +61,19 @@
                     <div class="conteneurPaiement" style = "display: flex; gap: 20px; flex-wrap: wrap; padding: 20px;">
                         <!-- Formulaire de paiement -->
                         <div class="payment-form" style ="overflow: auto!important; width: 50%!important;">
-                            <div class="student-header">
-                                <h2><i class="fas fa-money-bill-wave"></i> Enregistrement de Paiement</h2>
-                                <h4 class="mt-3">
-                                </h4>
-                            </div>
-
-                            <!-- Affichage des frais selon le type -->
-                            <div class="fees-display" id="fees-display" style="display: none;">
-                                <h5><i class="fas fa-calculator"></i> Frais applicables</h5>
-                                <div id="fees-content">
-                                    <!-- Les frais seront affichés ici -->
-                                </div>
-                            </div>
-
-                            <!-- Section de calcul -->
-                            <div class="calculation-box">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label>Total inclut des tous les frais(FCFA)</label>
-                                        <input type="number" class="form-control" placeholder="" value="{{totalCout}}" readonly>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label>Total déjà payé (FCFA):</label>
-                                        <input type="number" class="form-control" placeholder="" value="{{totalPaye}}" readonly>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label>Reste Total à payé (FCFA):</label>
-                                        <input type="number" class="form-control" placeholder="" value="{{resteTotalPaye}}" readonly style ="color: red; font-weight: bold;">
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
                             
                             <form method="POST" id="payment-form">
                                 {% csrf_token %}
-                                <div class="form-section">
-                                    <h5><i class="fas fa-info-circle"></i> Informations de paiement</h5>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <label for="type_paiement" class="form-label">Type de paiement:</label>
-                                            <select class="form-control" name="type_paiement" id="type_paiement" required>
-                                                <option value="">-- Choix Frais --</option>
-                                                <option value="Scolarite">Scolarité</option>
-                                                <option value="Inscription">Inscription</option>
-                                                <option value="Etude du dossier">Etude du dossier</option>
-                                                <option value="Associés">Associés</option>
-                                                <option value="Autre">Autre</option>
-                                            </select>
-                                        </div>  
-                                    </div>
-                                   
-                                </div>
+                                <hr>
                                 <hr>
                                 <div class="calculation-box">
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <label for="total_a_payer">Total à payer (FCFA):</label>
-                                            <input type="number" id="montantTotal" name="montantTotal" class="form-control" readonly>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="montant_paye">Montant versé (FCFA):</label>
-                                            <input type="number" id="montantVerse" class="form-control" name="montantVerse" placeholder="Ex: 25000" required min ="500" step="25">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Reste à payer (FCFA):</label>
-                                            <input type="number" id="reste_a_payer" class="form-control" readonly style="background-color: #e9ecef; font-weight: bold;">
-                                        </div>
                                         <div class="col-md-12">
-                                            <div id="messageOnlyMontantVerser" class="text-danger mt-2"></div>
+                                            <label for="montant_paye">Montant versé (FCFA):</label>
+                                            <input type="number" value="{{ paiement.montantVerse }}" id="montantVerse" class="form-control" name="montantVerse" placeholder="Ex: 25000" required min ="500" step="25">
                                         </div>
                                     </div>
                                 </div>
-
-                                
-                                <div class="col-md-12 mt-3" id="tranche_container" style="">
-                                    <label for="tranche_paiement" class="form-label">Modalités de paiement :</label>
-                                    <select class="form-control" name="tranche_paiement" id="tranche_paiement">
-                                        <option value="">-- Voir --</option>
-                                            {% for tranche in tranches %}
-                                                {% comment %} <option value="">--  dejà payé: ---{{ dejaPayeParType_json.Scolarite }} --</option>
-                                                <option value="">--  dejà payé: {{ dejaPayeParType_json }} --</option> {% endcomment %}
-                                                {% if paiements_effectues >= tranche.cumul %}
-                                                    <option value="{{ tranche.id }}" data-montant="{{ tranche.montant }}" data-cumul="{{ cumul }}">
-                                                        {{ tranche.libelle }} - {{ tranche.montant }} FCFA ✅
-                                                    </option>
-                                                {% elif first_mois_non_paye and tranche.id == first_mois_non_paye.id %}
-                                                    <option value="{{ tranche.id }}" data-montant="{{ tranche.montant }}" data-cumul="{{ cumul }}">
-                                                        {{ tranche.libelle }} - {{ tranche.montant }} FCFA ⚠️ ({{ tranche.reste_a_payer }} FCFA)
-                                                    </option>
-                                                {% else %}
-                                                    <option value="{{ tranche.id }}" data-montant="{{ tranche.montant }}" data-cumul="{{ cumul }}">
-                                                        {{ tranche.libelle }} - {{ tranche.montant }} FCFA 
-                                                    </option>
-                                                {% endif %}
-                                            {% endfor %}
-                                    </select>
-                                </div>
-
 
                                 <div class="form-section">
                                     <hr>
@@ -167,12 +81,18 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label for="mode_paiement" class="form-label">Mode de paiement:</label>
-                                            <select class="form-control" name="mode_paiement" id="mode_paiement" required>
+                                            <!-- <select class="form-control" name="mode_paiement" id="mode_paiement" required>
                                                 <option value="">-- Choix --</option>
                                                 <option value="Espèces">Espèces</option>
                                                 <option value="Chèque">Chèque</option>
                                                 <option value="Mobile Money">Mobile Money</option>
                                                 <option value="Virement">Virement</option>
+                                            </select> -->
+                                            <select name="mode_paiement" class="form-control">
+                                                <option value="Espèces" {% if paiement.modePaiment == 'Espèces' %}selected{% endif %}>Espèces</option>
+                                                <option value="Mobile Money" {% if paiement.modePaiment == 'mobile' %}selected{% endif %}>Mobile money</option>
+                                                <option value="Chèque" {% if paiement.modePaiment == 'Chèque' %}selected{% endif %}>Chèque</option>
+                                                <option value="Virement" {% if paiement.modePaiment == 'Virement' %}selected{% endif %}>Virement</option>
                                             </select>
                                         </div>
                                     </div>
@@ -212,7 +132,7 @@
                         <div class="payment-history" style = "width: 50%;">
                             <h2><i class="fas fa-history"></i> Historique des Paiements</h2>
                             <div style="width:100%; margin-bottom: 10px;">
-                                <a href="{% url 'comptable:export_paiement_pdf' inscriptionEleve.id %}" 
+                                <a href="" 
                                 class="btn btn-danger w-100" style="padding:8px 14px;">
                                     <i class="fa fa-file-pdf-o"></i> Exporter en PDF
                                 </a>
@@ -235,11 +155,8 @@
                                             <td class="paid">{{ paiement.montantVerse }}</td>
                                             <td>{{ paiement.modePaiment }}</td>
                                             <td>
-                                                  <a class="dropdown-item" href="{% url 'comptable:modifierPaiement' paiement.id %}">
-                                                    <i class="fas fa-cogs text-dark-pastel-green"></i> Modifier </a>
-                                                    
-                                                    <a class="dropdown-item" href="{% url 'comptable:supprimerPaiement' paiement.id %}" onclick = "return confirm('Voulez-vous vraiment supprimer ce paiement?')"><i
-                                                            class="fas fa-times text-orange-red"></i>Supprimer</a>
+                                                  <a class="dropdown-item" href="{% url 'comptable:modifier_paiement' paiement.id %}">
+                                                    <i class="fas fa-cogs text-dark-pastel-green"></i> Modifier
                                             </td>
                                         </tr>
                                     {% endfor %}
