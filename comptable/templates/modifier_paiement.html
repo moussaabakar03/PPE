@@ -1,0 +1,126 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        {% include 'partial/head.html' %}
+        <title>Sélection Salle</title>
+    </head>
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+
+        <!-- Header Menu Area Start Here -->
+        {% include 'partial/nav.html' %}
+        <!-- Header Menu Area End Here -->
+
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+            {% include 'partial/asideComptable.html' %}
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <div class="breadcrumbs-area">
+                    <h3>Paiement</h3>
+                    <ul>
+                        <li><a href="#">Comptabilité</a></li>
+                        <li>Modifier Paiement</li>
+                    </ul>
+                </div>
+
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Modifier le paiement</h3>
+                            </div>
+                        </div>
+
+                        <form class="new-added-form" method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label>Montant Versé *</label>
+                                    <input type="number" step="0.01" name="montantVerse" value="{{ paiement.montantVerse }}" class="form-control" required>
+                                </div>
+
+                                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                    <label>Mode de paiement *</label>
+                                    <select name="mode_paiement" class="form-control" required>
+                                        <option value="Espèces" {% if paiement.modePaiment == 'Espèces' %}selected{% endif %}>Espèces</option>
+                                        <option value="Chèque" {% if paiement.modePaiment == 'Chèque' %}selected{% endif %}>Chèque</option>
+                                        <option value="Virement" {% if paiement.modePaiment == 'Virement' %}selected{% endif %}>Virement</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-12 col-lg-12 col-12 form-group">
+                                    <label>Description</label>
+                                    <textarea name="description" class="textarea form-control" rows="4">{{ paiement.description }}</textarea>
+                                </div>
+
+                                <div class="col-12 form-group mg-t-8">
+                                    <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Enregistrer les modifications</button>
+                                    <a href="{% url 'comptable:ajouter_paiement' paiement.inscription_Etudiant.id %}" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Annuler</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% include 'partial/copyright.html' %}
+            </div>
+        </div>
+    </div>
+
+
+    
+
+    <!-- Scripts -->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+
+      
+    <script>
+        $(document).ready(function () {
+            $('.voirPlusSalleDeClasse').on('click', function (e) {
+                e.preventDefault();
+
+                const salle_id = $(this).data('salle-id');
+                const anneeScolaireId = $('select[name="anneeScolaire"]').val();
+
+                if (!anneeScolaireId) {
+                    alert("Veuillez sélectionner une année scolaire !");
+                    return;
+                }
+                const url = `/comptable/liste_eleve/${salle_id}/${anneeScolaireId}`;
+                window.location.href = url;
+            });
+        });
+    </script>
+    {% comment %} <script>
+        $('#myTable').DataTable({
+            "pageLength": 3,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
+            },
+            dom: 'Bfrtip',
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+        });
+    </script> {% endcomment %}
+
+</body>
+</html>
+
+
+
+
+
+
+

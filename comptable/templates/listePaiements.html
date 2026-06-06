@@ -16,7 +16,7 @@
         {% include 'partial/nav.html' %}
         <!-- Header Menu Area End Here -->
 
-        <!-- Page Area Start Here -->
+        <!-- Page Area Start Here --> 
         <div class="dashboard-page-one">
             <!-- Sidebar Area Start Here -->
             {% include 'partial/asideComptable.html' %}
@@ -84,7 +84,8 @@
                                         <td>
                                             <div class="form-check">
                                                 <input type="checkbox" class="form-check-input">
-                                                <label class="form-check-label">{{paiement.id}}</label>
+                                                <!-- <label class="form-check-label">{{paiement.id}}</label> -->
+                                                <label class="form-check-label">#</label>
                                             </div>
                                         </td>
                                         <td>{{paiement.inscription_Etudiant.etudiant.nom}} {{paiement.inscription_Etudiant.etudiant.prenom}}</td>
@@ -99,14 +100,11 @@
                                                     <span class="flaticon-more-button-of-three-dots"></span>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="" onclick = "return confirm('Voulez-vous vraiment supprimer ce paiement?')"><i
+                                                    <a class="dropdown-item" href="{% url 'comptable:supprimer_paiement' paiement.id %}" onclick = "return confirm('Voulez-vous vraiment supprimer ce paiement?')"><i
                                                             class="fas fa-times text-orange-red"></i>Supprimer</a>
-                                                    {% if etudiant.matricule %}
-                                                        <a class="dropdown-item" href=""><i
-                                                                class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
-                                                    {% else %}
-                                                        <!-- <span style="color: red;">Matricule manquant ou invalide</span> -->
-                                                    {% endif %}
+                                                    <a class="dropdown-item" href="{% url 'comptable:modifier_paiement' paiement.id %}">
+                                                        <i class="fas fa-cogs text-dark-pastel-green"></i> Modifier
+                                                    </a>
                                                     <a class="dropdown-item" href=""><i class="fas fa-eye" title = "voir plus"></i>voir plus</a>
                                                 </div>
                                             </div>
@@ -135,35 +133,6 @@
     <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'secretaire/js/main.js' %}"></script>
 
-
-      
-    <script>
-        $(document).ready(function () {
-            $('.voirPlusSalleDeClasse').on('click', function (e) {
-                e.preventDefault();
-
-                const salle_id = $(this).data('salle-id');
-                const anneeScolaireId = $('select[name="anneeScolaire"]').val();
-
-                if (!anneeScolaireId) {
-                    alert("Veuillez sélectionner une année scolaire !");
-                    return;
-                }
-                const url = `/comptable/liste_eleve/${salle_id}/${anneeScolaireId}`;
-                window.location.href = url;
-            });
-        });
-    </script>
-    {% comment %} <script>
-        $('#myTable').DataTable({
-            "pageLength": 3,
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
-            },
-            dom: 'Bfrtip',
-            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-        });
-    </script> {% endcomment %}
 
 </body>
 </html>
