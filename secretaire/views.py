@@ -3,9 +3,11 @@ from django.contrib import messages
 from datetime import timedelta, datetime
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.contrib.auth import update_session_auth_hash
 
 from comptable.models import PaiementEleve
-from secretaire.forms import ContactForm, FormComptable, FormMessageCommun
+from secretaire.forms import ContactForm, FormMessageCommun
 from . models import AnneeScolaire, Classe, Comptable,AlertCompteEleve, Cours, Cout, Emargement, EmploiDuTemps, Etudiant, Enseignant, Evaluation, EvaluationGroupee, Inscription, Matiere, Messages, Parent, PlageHoraire, SalleDeClasse, TrancheCout, Utilisateur, cvEnseignant, depotDossierEtudiant
 from django.utils.timezone import localtime
 from django.db.models import Q
@@ -92,11 +94,49 @@ def deconnexion(request):
 def get_annee_active():
     return AnneeScolaire.objects.filter(est_active=True).first()
 
+@login_required
+@admin_required
+def profil(request):
+    utilisateur = request.user
+
+    if request.method == "POST":
+        if request.POST.get("form") == "infos":
+            utilisateur.first_name = request.POST.get("first_name", "").strip()
+            utilisateur.last_name = request.POST.get("last_name", "").strip()
+            utilisateur.email = request.POST.get("email", "").strip()
+            utilisateur.save()
+            messages.success(request, "Informations du profil mises à jour avec succès.")
+            return redirect("secretaire:profil")
+
+        elif request.POST.get("form") == "password":
+            ancien_mdp = request.POST.get("ancien_mot_de_passe", "")
+            nouveau_mdp = request.POST.get("nouveau_mot_de_passe", "")
+            confirmation_mdp = request.POST.get("confirmation_mot_de_passe", "")
+
+            if not utilisateur.check_password(ancien_mdp):
+                messages.error(request, "L'ancien mot de passe est incorrect.")
+            elif not nouveau_mdp or len(nouveau_mdp) < 6:
+                messages.error(request, "Le nouveau mot de passe doit contenir au moins 6 caractères.")
+            elif nouveau_mdp != confirmation_mdp:
+                messages.error(request, "Les mots de passe ne correspondent pas.")
+            else:
+                utilisateur.set_password(nouveau_mdp)
+                utilisateur.save()
+                update_session_auth_hash(request, utilisateur)
+                messages.success(request, "Mot de passe modifié avec succès.")
+            return redirect("secretaire:profil")
+
+    return render(request, 'profil.html', {"utilisateur": utilisateur})
+
 def changer_annee_active(request, annee_id):
     annee = AnneeScolaire.objects.get(id=annee_id)
     annee.est_active = True
     annee.save()
     messages.success(request, f"L'année {annee} est maintenant active.")
+
+    next_url = request.META.get('HTTP_REFERER')
+    if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        return redirect(next_url)
     return redirect("secretaire:index")
 
 
@@ -2560,9 +2600,7 @@ def generationBulletin(request, matricule, salleClasse):
         # Statistiques de classe
         if classement:
             notes = [m for _, m in classement]
-            if max(notes) >= 20:
-                notes_max = 20.00
-                stats_classe[trimestre]["forte"] = notes_max 
+            stats_classe[trimestre]["forte"] = min(max(notes), 20.00)
             stats_classe[trimestre]["faible"] = min(notes)
             stats_classe[trimestre]["moyenne"] = round(sum(notes) / len(notes), 2)
 
@@ -2648,10 +2686,8 @@ def bulletinsSalleDeClasse(request, salleClasseId):
     for trimestre in trimestres:
         if classements[trimestre]:
             notes = [m for _, m in classements[trimestre]]
-            
-            if max(notes) >= 20:
-                notes_max = 20.0
-                stats_classe[trimestre]["forte"] = notes_max 
+
+            stats_classe[trimestre]["forte"] = min(max(notes), 20.0)
             stats_classe[trimestre]["faible"] = min(notes)
             stats_classe[trimestre]["moyenne"] = round(sum(notes) / len(notes), 2)
 
@@ -3091,36 +3127,85 @@ def send_message(request, id, matricule):
 
 # COMPTABLE
 
-def ajoutComptable(request): 
-    form = FormComptable()
-    
+@login_required
+@admin_required
+def all_comptable(request):
+    comptables = Comptable.objects.all()
+    return render(request, 'all-comptable.html', {'comptables': comptables})
+
+@login_required
+@admin_required
+def ajoutComptable(request):
     if request.method == "POST":
-        form = FormComptable(request.POST)
-        
-        if form.is_valid():
-            email = form.cleaned_data["email"]
-            telephone = form.cleaned_data["telephone"]
-            
-            
-            utilisateur = Utilisateur.objects.create(
-                username=email,
-                password=make_password(telephone),
-                email=email,
-                first_name="",
-                last_name="",
-                role="comptable",
-                is_active=True,
-                is_staff = True
-            )
-            
-            comptable = Comptable.objects.create(
-                email=email,
-                telephone=telephone,
-                utilisateur=utilisateur
-            )
-            
-            
-            return HttpResponse("Comptable ajouté avec succès!!")
-    return render(request, "ajoutComptable.html", {"form": form, "comptables": Comptable.objects.all()})
+        nom = request.POST["nom"]
+        prenom = request.POST["prenom"]
+        email = request.POST["email"]
+        telephone = request.POST["telephone"]
+        photo = request.FILES.get("photo")
+
+        if Utilisateur.objects.filter(username=email).exists():
+            messages.warning(request, "Duplication des mails!")
+            return redirect('secretaire:ajoutComptable')
+
+        matricule = generate_matricule(nom)
+        while Comptable.objects.filter(matricule=matricule).exists():
+            matricule = generate_matricule(nom)
+
+        utilisateur = Utilisateur.objects.create(
+            username=email,
+            password=make_password(telephone),
+            email=email,
+            first_name=prenom,
+            last_name=nom,
+            role="comptable",
+            is_active=True,
+            is_staff=True
+        )
+
+        Comptable.objects.create(
+            utilisateur=utilisateur,
+            matricule=matricule,
+            nom=nom,
+            prenom=prenom,
+            photo=photo,
+            email=email,
+            telephone=telephone,
+        )
+
+        messages.success(request, f"Comptable {prenom} {nom} ajouté avec succès. Matricule: {matricule}")
+        return redirect("secretaire:all-comptable")
+
+    return render(request, "ajoutComptable.html")
+
+@login_required
+@admin_required
+def detailComptable(request, matricule):
+    comptable = get_object_or_404(Comptable, matricule=matricule)
+    return render(request, 'detailComptable.html', {'comptable': comptable})
+
+@login_required
+@admin_required
+def modifier_comptable(request, matricule):
+    comptable = get_object_or_404(Comptable, matricule=matricule)
+    if request.method == "POST":
+        comptable.nom = request.POST["nom"]
+        comptable.prenom = request.POST["prenom"]
+        comptable.email = request.POST["email"]
+        comptable.telephone = request.POST["telephone"]
+        if request.FILES.get("photo"):
+            comptable.photo = request.FILES.get("photo")
+        comptable.save()
+        messages.success(request, f"Informations du comptable {comptable.prenom} {comptable.nom} mises à jour avec succès.")
+        return redirect("secretaire:all-comptable")
+    return render(request, 'modifier-comptable.html', {'comptable': comptable})
+
+@login_required
+@admin_required
+def supprimer_comptable(request, matricule):
+    comptable = get_object_or_404(Comptable, matricule=matricule)
+    nom_complet = f"{comptable.prenom} {comptable.nom}"
+    comptable.delete()
+    messages.success(request, f"Comptable {nom_complet} supprimé avec succès.")
+    return redirect("secretaire:all-comptable")
 
 

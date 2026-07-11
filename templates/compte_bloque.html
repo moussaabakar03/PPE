@@ -1,0 +1,26 @@
+{% extends "partial/error_base.html" %}
+
+{% block page_title %}AcadPro - Compte temporairement bloqué{% endblock %}
+{% block accent_from %}var(--warning){% endblock %}
+{% block accent_to %}var(--danger){% endblock %}
+{% block error_icon %}🔒{% endblock %}
+{% block error_title %}Compte temporairement bloqué{% endblock %}
+{% block error_message %}
+    {% if username %}
+        Bonjour <strong>{{ username }}</strong>,
+    {% endif %}
+    vous avez dépassé la limite de <strong>{{ failure_limit }}</strong> tentatives de connexion infructueuses.
+    Par mesure de sécurité, l'accès à ce compte a été suspendu temporairement.
+    <br><br>
+    Pas d'inquiétude, ce n'est que temporaire : merci de patienter environ
+    {% if cooloff_timedelta.days %}
+        <strong>{{ cooloff_timedelta.days }} jour{{ cooloff_timedelta.days|pluralize }}</strong>
+    {% else %}
+        <strong>{{ cooloff_timedelta.seconds }} secondes</strong>
+    {% endif %}
+    avant de réessayer de vous connecter.
+{% endblock %}
+{% block error_actions %}
+    <a href="{% url 'pageAccueil' %}" class="btn-home">Retour à l'accueil</a>
+    <a href="{% url 'contact' %}" class="link-secondary">Besoin d'aide ? Contactez-nous</a>
+{% endblock %}

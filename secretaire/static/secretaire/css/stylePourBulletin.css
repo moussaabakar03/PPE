@@ -1,21 +1,62 @@
 
 /* Styles pour l'impression */
 @media print {
+    @page {
+        size: A4 portrait;
+        margin: 1.2cm;
+    }
+
     body * {
         visibility: hidden;
     }
     .bulletin, .bulletin * {
         visibility: visible;
     }
+
+    /* Le conteneur doit rester dans le flux normal (pas de position: absolute) :
+       sinon, quand un bulletin a beaucoup de matières et dépasse une page A4,
+       le contenu en trop est simplement coupé/superposé au lieu de continuer
+       proprement sur la page suivante. */
     .bulletin {
-        page-break-after: always;
-        position: absolute;
-        left: 0;
-        top: 0;
+        position: static;
         width: 100%;
+        max-width: 100%;
         margin: 0;
         padding: 0;
+        box-shadow: none;
+        border: none;
+        page-break-after: always;
+        page-break-inside: auto;
     }
+
+    .bulletin:last-of-type {
+        page-break-after: auto;
+    }
+
+    /* Ces blocs ne doivent jamais être coupés au milieu par un saut de page */
+    .header,
+    .student-info,
+    .decisions,
+    .decision-box,
+    .note {
+        page-break-inside: avoid;
+    }
+
+    /* Si le tableau des matières dépasse une page (beaucoup de matières),
+       on laisse le tableau se poursuivre sur la page suivante en répétant
+       l'en-tête des colonnes, plutôt que de couper une ligne en deux. */
+    .subjects-table {
+        page-break-inside: auto;
+    }
+
+    .subjects-table thead {
+        display: table-header-group;
+    }
+
+    .subjects-table tr {
+        page-break-inside: avoid;
+    }
+
     .no-print {
         display: none !important;
     }

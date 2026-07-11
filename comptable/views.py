@@ -15,8 +15,10 @@ from collections import defaultdict
 from decimal import Decimal
 
 from comptable.models import PaiementEleve
-from secretaire.models import Classe, Cout, Inscription, Etudiant, AnneeScolaire, SalleDeClasse, TrancheCout
+from secretaire.models import Classe, Comptable, Cout, Inscription, Etudiant, AnneeScolaire, SalleDeClasse, TrancheCout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from acadPro.utils.decorators import staff_required
 
@@ -38,8 +40,49 @@ def changer_annee_active(request, annee_id):
     annee.est_active = True
     annee.save()
     messages.success(request, f"L'année {annee} est maintenant active.")
+
+    next_url = request.META.get('HTTP_REFERER')
+    if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        return redirect(next_url)
     return redirect("comptable:indexComptable")
 
+
+@login_required
+@staff_required
+def profil(request):
+    comptable = get_object_or_404(Comptable, utilisateur=request.user)
+
+    if request.method == "POST":
+        if request.POST.get("form") == "infos":
+            comptable.nom = request.POST.get("nom", "").strip()
+            comptable.prenom = request.POST.get("prenom", "").strip()
+            comptable.email = request.POST.get("email", "").strip()
+            comptable.telephone = request.POST.get("telephone", "").strip()
+            if request.FILES.get("photo"):
+                comptable.photo = request.FILES.get("photo")
+            comptable.save()
+            messages.success(request, "Informations du profil mises à jour avec succès.")
+            return redirect("comptable:profil")
+
+        elif request.POST.get("form") == "password":
+            ancien_mdp = request.POST.get("ancien_mot_de_passe", "")
+            nouveau_mdp = request.POST.get("nouveau_mot_de_passe", "")
+            confirmation_mdp = request.POST.get("confirmation_mot_de_passe", "")
+
+            if not request.user.check_password(ancien_mdp):
+                messages.error(request, "L'ancien mot de passe est incorrect.")
+            elif not nouveau_mdp or len(nouveau_mdp) < 6:
+                messages.error(request, "Le nouveau mot de passe doit contenir au moins 6 caractères.")
+            elif nouveau_mdp != confirmation_mdp:
+                messages.error(request, "Les mots de passe ne correspondent pas.")
+            else:
+                request.user.set_password(nouveau_mdp)
+                request.user.save()
+                update_session_auth_hash(request, request.user)
+                messages.success(request, "Mot de passe modifié avec succès.")
+            return redirect("comptable:profil")
+
+    return render(request, 'profilComptable.html', {"comptable": comptable})
 
 
 @login_required

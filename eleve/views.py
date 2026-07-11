@@ -18,6 +18,8 @@ from acadPro.utils.decorators import eleve_required
 
 
 
+from types import SimpleNamespace
+
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
@@ -434,10 +436,10 @@ def mesPaiement(request):
         salle = paiements[0].inscription_Etudiant.salleClasse
 
         # FILTRAGE PAR TYPE DE PAIEMENT
-        totalInscription = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais d'inscription")
-        totalEtudeDossier = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais d'étude du dossier")
-        totalScolarite = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais de scolarité")
-        totalFraisAssocie = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais Associés")
+        totalInscription = sum(p.montantVerse for p in paiements if p.typePaiement == "Inscription")
+        totalEtudeDossier = sum(p.montantVerse for p in paiements if p.typePaiement == "Etude du dossier")
+        totalScolarite = sum(p.montantVerse for p in paiements if p.typePaiement == "Scolarite")
+        totalFraisAssocie = sum(p.montantVerse for p in paiements if p.typePaiement == "Associés")
 
         total_salle = totalInscription + totalEtudeDossier + totalScolarite + totalFraisAssocie
         total_paye_global += total_salle
@@ -445,21 +447,22 @@ def mesPaiement(request):
         # Récupération du coût total de la classe
         try:
             cout_obj = Cout.objects.get(anneeScolaire=annee, classe=salle.niveau)
-            cout_total = (
-                cout_obj.coutInscription +
-                cout_obj.coutScolarite +
-                cout_obj.fraisEtudeDossier +
-                cout_obj.fraisAssocie
-            )
         except Cout.DoesNotExist:
-            cout_total = 0
+            cout_obj = SimpleNamespace(coutInscription=0, coutScolarite=0, fraisEtudeDossier=0, fraisAssocie=0)
 
+        cout_total = (
+            cout_obj.coutInscription +
+            cout_obj.coutScolarite +
+            cout_obj.fraisEtudeDossier +
+            cout_obj.fraisAssocie
+        )
 
         reste_salle = max(cout_total - total_salle, 0)
         restePayer_global += reste_salle
 
         paiements_par_salle.append({
             'salle': salle,
+            'paiements': sorted(paiements, key=lambda p: p.datePaiement, reverse=True),
             'totalInscription': totalInscription,
             'totalEtudeDossier': totalEtudeDossier,
             'totalScolarite': totalScolarite,
@@ -470,6 +473,12 @@ def mesPaiement(request):
             'coutEtudeDossier': cout_obj.fraisEtudeDossier,
             'coutScolarite': cout_obj.coutScolarite,
             'coutFraisAssocie': cout_obj.fraisAssocie,
+
+            # Restes individuels par type
+            'resteInscription': max(cout_obj.coutInscription - totalInscription, 0),
+            'resteEtudeDossier': max(cout_obj.fraisEtudeDossier - totalEtudeDossier, 0),
+            'resteScolarite': max(cout_obj.coutScolarite - totalScolarite, 0),
+            'resteFraisAssocie': max(cout_obj.fraisAssocie - totalFraisAssocie, 0),
 
             'cout_attendu': cout_total,
             'total_paye': total_salle,
@@ -496,18 +505,19 @@ def export_paiement_pdf(request, salle_id):
     paiements = PaiementEleve.objects.filter(inscription_Etudiant=inscription)
 
     # Totaux par type
-    totalInscription = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais d'inscription")
-    totalEtudeDossier = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais d'étude du dossier")
-    totalScolarite = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais de scolarité")
-    totalFraisAssocie = sum(p.montantVerse for p in paiements if p.typePaiement == "Frais Associés")
+    totalInscription = sum(p.montantVerse for p in paiements if p.typePaiement == "Inscription")
+    totalEtudeDossier = sum(p.montantVerse for p in paiements if p.typePaiement == "Etude du dossier")
+    totalScolarite = sum(p.montantVerse for p in paiements if p.typePaiement == "Scolarite")
+    totalFraisAssocie = sum(p.montantVerse for p in paiements if p.typePaiement == "Associés")
 
     total_paye = totalInscription + totalEtudeDossier + totalScolarite + totalFraisAssocie
 
     try:
         cout = Cout.objects.get(anneeScolaire=annee, classe=salle.niveau)
-        cout_total = cout.coutInscription + cout.coutScolarite + cout.fraisEtudeDossier + cout.fraisAssocie
     except Cout.DoesNotExist:
-        cout_total = 0
+        cout = SimpleNamespace(coutInscription=0, coutScolarite=0, fraisEtudeDossier=0, fraisAssocie=0)
+
+    cout_total = cout.coutInscription + cout.coutScolarite + cout.fraisEtudeDossier + cout.fraisAssocie
 
     reste_a_payer = max(cout_total - total_paye, 0)
 
@@ -535,7 +545,32 @@ def export_paiement_pdf(request, salle_id):
     elements.append(Paragraph(f"<b>Matricule :</b> {eleve.matricule}", styles["Normal"]))
     elements.append(Spacer(1, 20))
 
-    # TABLEAU
+    # HISTORIQUE DES PAIEMENTS
+    elements.append(Paragraph("<b>Historique des paiements</b>", styles["Heading3"]))
+    historique_data = [["Date", "Type", "Montant (FCFA)", "Mode"]]
+    for p in paiements.order_by('-datePaiement'):
+        historique_data.append([
+            p.datePaiement.strftime("%d/%m/%Y"),
+            p.typePaiement,
+            p.montantVerse,
+            p.modePaiment,
+        ])
+    if len(historique_data) == 1:
+        historique_data.append(["-", "Aucun paiement enregistré", "-", "-"])
+
+    historique_table = Table(historique_data, colWidths=[3*cm, 5*cm, 4*cm, 4*cm])
+    historique_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
+    ]))
+    elements.append(historique_table)
+    elements.append(Spacer(1, 20))
+
+    # RÉCAPITULATIF
+    elements.append(Paragraph("<b>Récapitulatif</b>", styles["Heading3"]))
     data = [
         ["Type", "Payé (FCFA)", "Attendu", "Reste"],
         ["Frais d'inscription", totalInscription, cout.coutInscription, max(cout.coutInscription - totalInscription, 0)],

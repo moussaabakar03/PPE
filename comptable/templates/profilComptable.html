@@ -1,0 +1,160 @@
+{% load static %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AcadPro | Mon profil</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'accueil/images/favicon.png' %}">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+    <!-- Modernize js -->
+    <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+        <!-- Header Menu Area Start Here -->
+
+        {% include 'partial/nav.html' %}
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+
+            {% include 'partial/asideComptable.html' %}
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Mon profil</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'comptable:indexComptable' %}">Tableau de Bord</a>
+                        </li>
+                        <li>Mon profil</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+
+                <div class="row">
+                    <div class="col-lg-6 col-12">
+                        <div class="card height-auto">
+                            <div class="card-body">
+                                <div class="heading-layout1">
+                                    <div class="item-title">
+                                        <h3>Informations personnelles</h3>
+                                    </div>
+                                </div>
+                                <form class="new-added-form" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="form" value="infos">
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-12 form-group">
+                                            <label>Nom</label>
+                                            <input type="text" name="nom" value="{{ comptable.nom }}" class="form-control">
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-12 form-group">
+                                            <label>Prénom</label>
+                                            <input type="text" name="prenom" value="{{ comptable.prenom }}" class="form-control">
+                                        </div>
+                                        <div class="col-xl-12 col-12 form-group">
+                                            <label>E-Mail</label>
+                                            <input type="email" name="email" value="{{ comptable.email }}" class="form-control">
+                                        </div>
+                                        <div class="col-xl-12 col-12 form-group">
+                                            <label>Téléphone</label>
+                                            <input type="text" name="telephone" value="{{ comptable.telephone }}" class="form-control">
+                                        </div>
+                                        <div class="col-lg-6 col-12 form-group mg-t-30">
+                                            <label class="text-dark-medium">Photo de profil</label>
+                                            <input type="file" name="photo" class="form-control-file">
+                                        </div>
+                                        <div class="col-12 form-group mg-t-8">
+                                            <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Enregistrer</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-12">
+                        <div class="card height-auto">
+                            <div class="card-body">
+                                <div class="heading-layout1">
+                                    <div class="item-title">
+                                        <h3>Changer le mot de passe</h3>
+                                    </div>
+                                </div>
+                                <form class="new-added-form" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="form" value="password">
+                                    <div class="row">
+                                        <div class="col-xl-12 col-12 form-group">
+                                            <label>Ancien mot de passe</label>
+                                            <input type="password" name="ancien_mot_de_passe" class="form-control" required>
+                                        </div>
+                                        <div class="col-xl-12 col-12 form-group">
+                                            <label>Nouveau mot de passe</label>
+                                            <input type="password" name="nouveau_mot_de_passe" class="form-control" required>
+                                        </div>
+                                        <div class="col-xl-12 col-12 form-group">
+                                            <label>Confirmer le nouveau mot de passe</label>
+                                            <input type="password" name="confirmation_mot_de_passe" class="form-control" required>
+                                        </div>
+                                        <div class="col-12 form-group mg-t-8">
+                                            <button type="submit" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Modifier le mot de passe</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% include 'partial/copyright.html' %}
+
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+   <!-- jQuery -->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+</body>
+
+</html>

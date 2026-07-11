@@ -62,6 +62,11 @@
                 {% comment %} <li class="nav-item"><a href="{% url 'admission_Inscription' %}" class="nav-link">Admission/Inscription</a></li> {% endcomment %}
                 <li class="nav-item"><a href="{% url 'contact' %}" class="nav-link">Contact</a></li>
                 {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="{% if user.is_superuser %}{% url 'secretaire:index' %}{% elif user.is_staff %}{% url 'comptable:indexComptable' %}{% elif user.role == 'parent' %}{% url 'parent' %}{% elif user.role == 'enseignant' %}{% url 'enseignant' %}{% elif user.role == 'eleve' %}{% url 'eleve:notes' %}{% else %}{% url 'pageAccueil' %}{% endif %}" class="nav-link">
+                            <i class="fas fa-gauge"></i> Mon espace
+                        </a>
+                    </li>
                     <li class="nav-item"><a href="{% url 'deconnexion' %}" class="btn btn-accent ml-2">Déconnexion</a></li>
                 {% else %}
                     <li class="nav-item"><a href="{% url 'connexion' %}" class="btn btn-accent ml-2">Connexion</a></li>

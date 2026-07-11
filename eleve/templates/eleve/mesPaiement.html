@@ -116,7 +116,35 @@
                                     </div>
 
                                     <div class="paiement-content" id="content-{{ forloop.counter }}" style="overflow:auto; display:none;">
-                                    
+
+                                        <h4>Historique des paiements</h4>
+                                        <table class="table display data-table text-nowrap" style="width:100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Type</th>
+                                                    <th>Montant (FCFA)</th>
+                                                    <th>Mode</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for paiement in item.paiements %}
+                                                    <tr>
+                                                        <td>{{ paiement.datePaiement|date:"d/m/Y" }}</td>
+                                                        <td>{{ paiement.typePaiement }}</td>
+                                                        <td class="paid">{{ paiement.montantVerse }}</td>
+                                                        <td>{{ paiement.modePaiment }}</td>
+                                                    </tr>
+                                                {% empty %}
+                                                    <tr>
+                                                        <td colspan="4" style="text-align:center;">Aucun paiement enregistré.</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+
+                                        <hr>
+                                        <h4>Récapitulatif</h4>
                                         <table class="table display data-table text-nowrap" style="width:100%;">
                                             <thead>
                                                 <tr>
@@ -132,28 +160,28 @@
                                                     <td>Frais d'inscription</td>
                                                     <td>{{ item.totalInscription }}</td>
                                                     <td>{{ item.coutInscription }}</td>
-                                                    <td>{{ item.coutInscription|floatformat:0|add:"-"|add:item.totalInscription }}</td>
+                                                    <td>{{ item.resteInscription }}</td>
                                                 </tr>
 
                                                 <tr>
                                                     <td>Frais étude dossier</td>
                                                     <td>{{ item.totalEtudeDossier }}</td>
                                                     <td>{{ item.coutEtudeDossier }}</td>
-                                                    <td>{{ item.coutEtudeDossier|floatformat:0|add:"-"|add:item.totalEtudeDossier }}</td>
+                                                    <td>{{ item.resteEtudeDossier }}</td>
                                                 </tr>
 
                                                 <tr>
                                                     <td>Frais scolarité</td>
                                                     <td>{{ item.totalScolarite }}</td>
                                                     <td>{{ item.coutScolarite }}</td>
-                                                    <td>{{ item.coutScolarite|floatformat:0|add:"-"|add:item.totalScolarite }}</td>
+                                                    <td>{{ item.resteScolarite }}</td>
                                                 </tr>
 
                                                 <tr>
                                                     <td>Frais associés</td>
                                                     <td>{{ item.totalFraisAssocie }}</td>
                                                     <td>{{ item.coutFraisAssocie }}</td>
-                                                    <td>{{ item.coutFraisAssocie|floatformat:0|add:"-"|add:item.totalFraisAssocie }}</td>
+                                                    <td>{{ item.resteFraisAssocie }}</td>
                                                 </tr>
 
                                                 <!-- TOTAL -->

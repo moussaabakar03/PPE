@@ -223,12 +223,36 @@ def enseignant(request):
 
 
 
-# def custom_404(request, exception):
-#     return render(request, '404.html', status=404)
-
 import logging
+from django.template import loader
+from django.http import HttpResponseBadRequest, HttpResponseForbidden, HttpResponseNotFound, HttpResponseServerError
+
 logger = logging.getLogger(__name__)
+
+
+def _render_error(template_name, response_class):
+    # Rendu sans context processors (comme les vues d'erreur par défaut de Django) :
+    # une page 500 déclenchée par une panne de la base de données ne doit pas
+    # elle-même échouer à cause des context processors qui interrogent la base.
+    template = loader.get_template(template_name)
+    return response_class(template.render())
+
+
+def custom_400(request, exception):
+    logger.warning(f"400 Error: {request.path}")
+    return _render_error('400.html', HttpResponseBadRequest)
+
+
+def custom_403(request, exception):
+    logger.warning(f"403 Error: {request.path}")
+    return _render_error('403.html', HttpResponseForbidden)
+
 
 def custom_404(request, exception):
     logger.warning(f"404 Error: {request.path}")
-    return render(request, '404.html', status=404)
+    return _render_error('404.html', HttpResponseNotFound)
+
+
+def custom_500(request):
+    logger.error(f"500 Error: {request.path}")
+    return _render_error('500.html', HttpResponseServerError)

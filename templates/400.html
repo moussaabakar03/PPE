@@ -1,0 +1,10 @@
+{% extends "partial/error_base.html" %}
+
+{% block page_title %}AcadPro - Requête invalide{% endblock %}
+{% block error_icon %}🚧{% endblock %}
+{% block error_code %}ERREUR 400{% endblock %}
+{% block error_title %}Requête invalide{% endblock %}
+{% block error_message %}
+    Votre requête n'a pas pu être traitée car elle est incomplète ou mal formée.
+    Retournez à l'accueil et réessayez.
+{% endblock %}

@@ -1,0 +1,161 @@
+{% load static%}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AcadPro | Comptable *</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'accueil/images/favicon.png' %}">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Data Table CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/jquery.dataTables.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+    <!-- Modernize js -->
+    <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+        <!-- Header Menu Area Start Here -->
+
+        {% include 'partial/header.html' %}
+
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+
+            {% include 'partial/aside.html' %}
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Comptable</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'secretaire:index' %}">Tableau de Bord</a>
+                        </li>
+                        <li>Comptable *</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- Comptable Table Area Start Here -->
+                <div class="card height-auto">
+                    <div class="card-body">
+                        <div class="heading-layout1">
+                            <div class="item-title">
+                                <h3>Infos Comptable</h3>
+                            </div>
+                           <div class="dropdown">
+                                <a class="dropdown-toggle" href="#" role="button"
+                                data-toggle="dropdown" aria-expanded="false">...</a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="{% url 'secretaire:all-comptable' %}"><i class="fas fa-redo-alt text-orange-peel"></i>Rafraîchir</a>
+                                    <a class="dropdown-item" href="{% url 'secretaire:ajoutComptable' %}"><i class="fas fa-plus text-dark-pastel-green"></i>Ajouter un comptable</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table display data-table text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>Matricule</th>
+                                        <th>Photo</th>
+                                        <th>Nom</th>
+                                        <th>Prenom</th>
+                                        <th>Telephone</th>
+                                        <th>E-mail</th>
+                                        <th>Date d'ajout</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for comptable in comptables %}
+                                    <tr>
+                                        <td>{{ comptable.matricule }}</td>
+                                        {% if comptable.photo %}
+                                            <td class="text-center"><img src="{{ comptable.photo.url }}" alt="comptable" style="width: 160px; height: 50px; border-radius: 7px; object-fit: cover;"></td>
+                                        {% else %}
+                                            <td class="text-center"><i class="fa fa-user"></i></td>
+                                        {% endif %}
+                                        <td>{{ comptable.nom }}</td>
+                                        <td>{{ comptable.prenom }}</td>
+                                        <td>{{ comptable.telephone }}</td>
+                                        <td>{{ comptable.email }}</td>
+                                        <td>{{ comptable.date_ajout|date:"d/m/Y" }}</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                    <span class="flaticon-more-button-of-three-dots"></span>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    {% if comptable.matricule %}
+                                                        <a class="dropdown-item" href="{% url 'secretaire:detailComptable' comptable.matricule %}"><i class="fas fa-eye" title="voir plus"></i>voir plus</a>
+                                                        <a class="dropdown-item" href="{% url 'secretaire:modifier_comptable' comptable.matricule %}"><i
+                                                                class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
+                                                        <a class="dropdown-item" href="{% url 'secretaire:supprimer_comptable' comptable.matricule %}" onclick="return confirm('Voulez-vous vraiment supprimer ce comptable?')"><i class="fas fa-times text-orange-red"></i>Supprimer</a>
+                                                    {% else %}   
+                                                        <span style="color: red;">Matricule manquant ou invalide</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div> 
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="8" style="text-align:center;">Aucun comptable enregistré.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Comptable Table Area End Here -->
+                {% include 'partial/copyright.html' %}
+
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+  <!-- jQuery -->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Data Table Js -->
+    <script src="{% static 'secretaire/js/jquery.dataTables.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+</body>
+
+</html>

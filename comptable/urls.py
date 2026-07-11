@@ -21,6 +21,7 @@ urlpatterns = [
     path('alerte-retard-paiement/<int:id_classe>/', views.alerte_retard_paiement, name='alerte_retard_paiement'),
     
     path('changer-annee-active/<int:annee_id>/', views.changer_annee_active, name='changer_annee_active'),
+    path('profil/', views.profil, name='profil'),
     
     path('paiement/pdf/<int:id_inscription>/', 
          views.export_paiement_pdf, 
