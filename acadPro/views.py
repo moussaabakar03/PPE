@@ -8,7 +8,7 @@ from django.urls import reverse
 
 from django.contrib import messages
 
-from acadPro.forms import ConnexionForm
+from acadPro.forms import ConnexionForm, ContactForm
 from secretaire.models import AnneeScolaire, Classe, Cout, Enseignant, Etudiant, Parent, depotDossierEtudiant
 from acadPro.utils.decorators import parent_required, enseignant_required
 
@@ -29,7 +29,30 @@ def cours(request):
     return render(request, 'cours.html')
 
 def contact(request):
-    return render(request, 'contact.html')
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            nom = form.cleaned_data.get('nom') or 'Visiteur du site'
+            email = form.cleaned_data['email']
+            sujet = form.cleaned_data['sujet']
+            message = form.cleaned_data['message']
+
+            contenu_message = f"De: {nom} <{email}>\n\n{message}"
+
+            send_mail(
+                sujet,
+                contenu_message,
+                settings.EMAIL_HOST_USER,
+                [settings.EMAIL_HOST_USER],
+                fail_silently=False,
+            )
+            messages.success(request, "Votre message a bien été envoyé. Notre équipe vous répondra dans les plus brefs délais.")
+            return redirect('contact')
+        messages.error(request, "Veuillez corriger les erreurs du formulaire avant d'envoyer votre message.")
+    else:
+        form = ContactForm()
+
+    return render(request, 'contact.html', {'form': form})
 
 def depotDossier(request):
     if request.method == "POST":

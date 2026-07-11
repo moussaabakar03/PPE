@@ -38,3 +38,19 @@ def get_appreciation(moyenne):
         return "Passable"
     else:
         return "Insuffisant"
+
+@register.filter
+def get_decision_conseil(moyenne):
+    """
+    Retourne une proposition de décision du conseil de classe à partir d'une moyenne générale.
+    """
+    if moyenne >= 16:
+        return "Tableau d'honneur - Félicitations"
+    elif moyenne >= 14:
+        return "Encouragements"
+    elif moyenne >= 10:
+        return "Travail satisfaisant"
+    elif moyenne >= 8:
+        return "Avertissement travail"
+    else:
+        return "Blâme travail"

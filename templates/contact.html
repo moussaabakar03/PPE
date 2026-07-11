@@ -2,315 +2,571 @@
 {% load static %}
 
 {% block style %}
-    
-    <!-- Bootstrap 5 CSS (plus récent) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-    <link rel="stylesheet" href="{% static 'accueil/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'accueil/css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'accueil/css/cssPersonnalise/contact.css' %}">
+<style>
+    :root {
+        --ap-navy: #12213f;
+        --ap-navy-light: #1d3868;
+        --ap-gold: #f4a623;
+        --ap-gold-dark: #d6900f;
+        --ap-ink: #1a1a2e;
+        --ap-gray: #6b7280;
+        --ap-bg-soft: #f7f8fb;
+        --ap-radius: 18px;
+    }
 
-    <style>
-        .hero-section {
-            background: linear-gradient(rgba(44, 95, 168, 0.85), rgba(44, 95, 168, 0.9)), url('{% static 'accueil/images/contactHero.jpg' %}');
-            background-size: cover;
-            background-position: center;
-            height: 40vh;
-            display: flex;
-            align-items: center;
-        }
-    </style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        color: var(--ap-ink);
+    }
+
+    .container-ap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    .ap-section {
+        padding: 80px 0;
+    }
+
+    .ap-bg-soft {
+        background: var(--ap-bg-soft);
+    }
+
+    .ap-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--ap-gold-dark);
+        background: rgba(244, 166, 35, 0.12);
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        padding: 6px 16px;
+        border-radius: 50px;
+        margin-bottom: 18px;
+    }
+
+    .ap-title {
+        font-size: 30px;
+        font-weight: 700;
+        color: var(--ap-navy);
+        margin-bottom: 14px;
+    }
+
+    .ap-lead {
+        color: var(--ap-gray);
+        font-size: 15.5px;
+        line-height: 1.8;
+    }
+
+    .ap-section-head {
+        text-align: center;
+        max-width: 620px;
+        margin: 0 auto 50px;
+    }
+
+    .ap-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 14px 28px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14.5px;
+        text-decoration: none;
+        transition: all 0.25s ease;
+        border: 2px solid transparent;
+        cursor: pointer;
+    }
+
+    .ap-btn-primary {
+        background: var(--ap-gold);
+        color: #ffffff;
+        border-color: var(--ap-gold);
+    }
+
+    .ap-btn-primary:hover {
+        background: var(--ap-gold-dark);
+        border-color: var(--ap-gold-dark);
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    .ap-btn-outline {
+        border-color: var(--ap-navy);
+        color: var(--ap-navy);
+        background: transparent;
+    }
+
+    .ap-btn-outline:hover {
+        background: var(--ap-navy);
+        color: #fff;
+    }
+
+    /* PAGE HEADER */
+    .ap-page-header {
+        background: linear-gradient(120deg, var(--ap-navy) 0%, var(--ap-navy-light) 100%);
+        padding: 70px 0;
+        text-align: center;
+    }
+
+    .ap-page-header .ap-eyebrow {
+        background: rgba(244, 166, 35, 0.18);
+    }
+
+    .ap-page-header h1 {
+        color: #ffffff;
+        font-size: 40px;
+        font-weight: 800;
+        margin-bottom: 14px;
+    }
+
+    .ap-page-header p {
+        color: rgba(255,255,255,0.75);
+        max-width: 560px;
+        margin: 0 auto;
+        font-size: 16px;
+    }
+
+    /* INFO CARDS */
+    .ap-info-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 26px;
+    }
+
+    .ap-info-card {
+        background: #ffffff;
+        border: 1px solid #eef0f4;
+        border-radius: var(--ap-radius);
+        padding: 32px 26px;
+        text-align: center;
+        transition: all 0.25s ease;
+    }
+
+    .ap-info-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 45px rgba(18, 33, 63, 0.1);
+    }
+
+    .ap-info-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        background: rgba(244, 166, 35, 0.12);
+        color: var(--ap-gold-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin: 0 auto 18px;
+    }
+
+    .ap-info-card h3 {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--ap-navy);
+        margin-bottom: 10px;
+    }
+
+    .ap-info-card p {
+        color: var(--ap-gray);
+        font-size: 14px;
+        line-height: 1.7;
+        margin-bottom: 16px;
+    }
+
+    /* FORM + MAP */
+    .ap-contact-grid {
+        display: flex;
+        gap: 40px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .ap-form-col {
+        flex: 1 1 480px;
+    }
+
+    .ap-side-col {
+        flex: 1 1 380px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .ap-form-card {
+        background: #ffffff;
+        border: 1px solid #eef0f4;
+        border-radius: var(--ap-radius);
+        padding: 38px;
+    }
+
+    .ap-form-card .form-label {
+        font-weight: 500;
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+
+    .ap-form-card .form-control,
+    .ap-form-card .form-select {
+        border-radius: 10px;
+        border: 1px solid #e2e5ec;
+        padding: 11px 14px;
+        font-size: 14.5px;
+    }
+
+    .ap-form-card .form-control:focus,
+    .ap-form-card .form-select:focus {
+        border-color: var(--ap-gold);
+        box-shadow: 0 0 0 3px rgba(244, 166, 35, 0.15);
+    }
+
+    .ap-form-card .form-check-label {
+        font-size: 13.5px;
+        color: var(--ap-gray);
+    }
+
+    .ap-alert {
+        border-radius: 14px;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .ap-alert-success {
+        background: #eafaf0;
+        color: #157347;
+        border: 1px solid #c6ecd8;
+    }
+
+    .ap-alert-error {
+        background: #fdecec;
+        color: #b42318;
+        border: 1px solid #f6cccc;
+    }
+
+    .ap-map-card {
+        border-radius: var(--ap-radius);
+        overflow: hidden;
+        border: 1px solid #eef0f4;
+        height: 260px;
+    }
+
+    .ap-map-card iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+    }
+
+    .ap-side-card {
+        background: #ffffff;
+        border: 1px solid #eef0f4;
+        border-radius: var(--ap-radius);
+        padding: 26px;
+    }
+
+    .ap-side-card h4 {
+        font-size: 15.5px;
+        font-weight: 600;
+        color: var(--ap-navy);
+        margin-bottom: 14px;
+    }
+
+    .ap-side-card ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .ap-side-card ul li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13.5px;
+        color: var(--ap-gray);
+        margin-bottom: 10px;
+    }
+
+    .ap-side-card ul li i {
+        color: var(--ap-gold-dark);
+        width: 16px;
+    }
+
+    /* FAQ */
+    .ap-faq-card {
+        background: #ffffff;
+        border: 1px solid #eef0f4;
+        border-radius: var(--ap-radius);
+        overflow: hidden;
+    }
+
+    .faq-item {
+        border-bottom: 1px solid #eef0f4;
+    }
+
+    .faq-item:last-child {
+        border-bottom: none;
+    }
+
+    .faq-question {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 26px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 14.5px;
+        color: var(--ap-ink);
+    }
+
+    .faq-question i {
+        color: var(--ap-gold-dark);
+        transition: transform 0.25s ease;
+    }
+
+    .faq-question.active i {
+        transform: rotate(180deg);
+    }
+
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        padding: 0 26px;
+    }
+
+    .faq-answer.open {
+        max-height: 320px;
+        padding: 0 26px 20px;
+    }
+
+    .faq-answer p, .faq-answer li {
+        color: var(--ap-gray);
+        font-size: 13.5px;
+        line-height: 1.75;
+    }
+
+    .faq-answer a {
+        color: var(--ap-gold-dark);
+        font-weight: 600;
+    }
+
+    @media (max-width: 991px) {
+        .ap-info-cards { grid-template-columns: 1fr; }
+        .ap-page-header h1 { font-size: 30px; }
+    }
+
+    @media (max-width: 640px) {
+        .ap-form-card { padding: 26px; }
+    }
+</style>
 {% endblock %}
 
-
 {% block body %}
-    
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 mx-auto text-center text-white">
-                    <h1 class="display-4 mb-4">Contactez-nous</h1>
-                    <p class="lead">Une question, une demande d'information ou un problème technique ? Notre équipe est à votre écoute</p>
-                </div>
+
+<!-- PAGE HEADER -->
+<section class="ap-page-header">
+    <div class="container-ap">
+        <span class="ap-eyebrow"><i class="fas fa-comments"></i> Contact</span>
+        <h1>Contactez-nous</h1>
+        <p>Une question, une demande d'information ou un problème technique ? Notre équipe est à votre écoute.</p>
+    </div>
+</section>
+
+<!-- INFO CARDS -->
+<section class="ap-section">
+    <div class="container-ap">
+        <div class="ap-info-cards">
+            <div class="ap-info-card">
+                <div class="ap-info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <h3>Adresse</h3>
+                <p>Collège AcadPro<br>Agoé Assiyéyé, Rue de 40 m<br>Lomé, Togo</p>
+                <a href="#map" class="ap-btn ap-btn-outline">Voir sur la carte</a>
+            </div>
+            <div class="ap-info-card">
+                <div class="ap-info-icon"><i class="fas fa-phone"></i></div>
+                <h3>Téléphone</h3>
+                <p>Standard : <strong>+228 63 79 77 19</strong><br>Support AcadPro : <strong>+228 94 84 69 12</strong></p>
+                <a href="tel:+22863797719" class="ap-btn ap-btn-outline">Appeler maintenant</a>
+            </div>
+            <div class="ap-info-card">
+                <div class="ap-info-icon"><i class="fas fa-envelope"></i></div>
+                <h3>Email</h3>
+                <p>Direction : <strong>direction@acadpro.fr</strong><br>Support technique : <strong>support@acadpro.fr</strong></p>
+                <a href="mailto:contact@acadpro.fr" class="ap-btn ap-btn-outline">Envoyer un email</a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Contact Info Section -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row justify-content-center mb-5">
-                <div class="col-lg-8 text-center">
-                    <h2 class="contact-title text-center">Comment nous joindre</h2>
-                    <p>Plusieurs moyens de contacter notre établissement et l'équipe acadPro</p>
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="contact-info-card">
-                        <div class="contact-icon">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </div>
-                        <h3>Adresse</h3>
-                        <p>Collège acadPro<br>
-                        123 Rue de l'Éducation<br>
-                        75000 lomé</p>
-                        <a href="#map" class="btn btn-outline-primary mt-2">Voir sur la carte</a>
-                    </div>
-                </div>
-                
-                <div class="col-md-4 mb-4">
-                    <div class="contact-info-card">
-                        <div class="contact-icon">
-                            <i class="fas fa-phone"></i>
-                        </div>
-                        <h3>Téléphone</h3>
-                        <p>Standard: <strong>+228 94 45 67 89</strong><br>
-                        Urgences: <strong>+228 93 45 67 90</strong><br>
-                        Support acadPro: <strong>+228 79 45 67 91</strong></p>
-                        <a href="tel:+33123456789" class="btn btn-outline-primary mt-2">Appeler maintenant</a>
-                    </div>
-                </div>
-                
-                <div class="col-md-4 mb-4">
-                    <div class="contact-info-card">
-                        <div class="contact-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <h3>Email</h3>
-                        <p>Direction: <strong>direction@acadpro.fr</strong><br>
-                        Administration: <strong>administration@acadpro.fr</strong><br>
-                        Support technique: <strong>support@acadpro.fr</strong></p>
-                        <a href="mailto:contact@acadpro.fr" class="btn btn-outline-primary mt-2">Envoyer un email</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- FORM + MAP -->
+<section class="ap-section ap-bg-soft">
+    <div class="container-ap">
+        <div class="ap-contact-grid">
+            <div class="ap-form-col">
+                <span class="ap-eyebrow"><i class="fas fa-paper-plane"></i> Message</span>
+                <h2 class="ap-title">Envoyez-nous un message</h2>
+                <p class="ap-lead" style="margin-bottom: 26px;">Utilisez ce formulaire pour toute demande d'information ou assistance technique.</p>
 
-    <!-- Contact Form Section -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-7 mb-5 mb-lg-0">
-                    <div class="contact-form">
-                        <h2 class="contact-title">Envoyez-nous un message</h2>
-                        <p>Utilisez ce formulaire pour toute demande d'information ou assistance technique</p>
-                        
-                        <form>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Votre nom *</label>
-                                        <input type="text" class="form-control" placeholder="Nom et prénom" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Votre email *</label>
-                                        <input type="email" class="form-control" placeholder="email@exemple.fr" required>
-                                    </div>
-                                </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="ap-alert {% if message.tags == 'success' %}ap-alert-success{% else %}ap-alert-error{% endif %}">
+                            <i class="fas {% if message.tags == 'success' %}fa-circle-check{% else %}fa-circle-exclamation{% endif %}"></i>
+                            <div>{{ message }}</div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="ap-form-card">
+                    <form method="post" action="{% url 'contact' %}">
+                        {% csrf_token %}
+                        <div class="row gy-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Votre nom *</label>
+                                <input type="text" name="nom" class="form-control" placeholder="Nom et prénom" required>
                             </div>
-                            
-                            <div class="mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Votre email *</label>
+                                <input type="email" name="email" class="form-control" placeholder="email@exemple.fr" required>
+                            </div>
+                            <div class="col-12">
                                 <label class="form-label">Sujet de votre message *</label>
-                                <select class="form-select" required>
+                                <select name="sujet" class="form-select" required>
                                     <option value="">Sélectionnez un sujet</option>
                                     <option>Demande d'inscription</option>
                                     <option>Question pédagogique</option>
-                                    <option>Support technique acadPro</option>
+                                    <option>Support technique AcadPro</option>
                                     <option>Problème de connexion</option>
                                     <option>Autre demande</option>
                                 </select>
                             </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Votre rôle *</label>
-                                <select class="form-select" required>
-                                    <option value="">Sélectionnez votre rôle</option>
-                                    <option>Parent d'élève</option>
-                                    <option>Élève</option>
-                                    <option>Enseignant</option>
-                                    <option>Autre</option>
-                                </select>
-                            </div>
-                            
-                            <div class="mb-3">
+                            <div class="col-12">
                                 <label class="form-label">Votre message *</label>
-                                <textarea class="form-control" rows="6" placeholder="Décrivez votre demande en détail..." required></textarea>
+                                <textarea name="message" class="form-control" rows="6" placeholder="Décrivez votre demande en détail..." required></textarea>
                             </div>
-                            
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="consent" required>
-                                <label class="form-check-label" for="consent">
-                                    J'autorise le collège acadPro à conserver mes informations pour traiter ma demande
-                                </label>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="consent" required>
+                                    <label class="form-check-label" for="consent">
+                                        J'autorise le collège AcadPro à conserver mes informations pour traiter ma demande.
+                                    </label>
+                                </div>
                             </div>
-                            
-                            <button type="submit" class="btn btn-primary btn-lg">Envoyer votre message</button>
-                        </form>
-                    </div>
-                </div>
-                
-                <div class="col-lg-5">
-                    <div class="map-container" id="map">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.9916256937595!2d2.292292615674389!3d48.85837007928746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e2964e34e2d%3A0x8ddca9ee380ef7e0!2sTour%20Eiffel!5e0!3m2!1sfr!2sfr!4v1623760000000!5m2!1sfr!2sfr" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <div class="bg-white p-4 mt-4 rounded shadow-sm">
-                        <h4 class="mb-3">Horaires d'ouverture</h4>
-                        <ul class="hours-list">
-                            <li><strong>Lundi - Vendredi:</strong> 8h00 - 18h00</li>
-                            <li><strong>Samedi:</strong> 9h00 - 12h00</li>
-                            <li><strong>Dimanche:</strong> Fermé</li>
-                        </ul>
-                        <p class="mt-3"><i class="fas fa-info-circle me-2 text-primary"></i> Le secrétariat est fermé pendant les vacances scolaires</p>
-                    </div>
-                    
-                    <div class="bg-white p-4 mt-4 rounded shadow-sm">
-                        <h4 class="mb-3">Support technique acadPro</h4>
-                        <p>Pour toute assistance technique concernant la plateforme acadPro :</p>
-                        <ul class="list-unstyled">
-                            <li class="mb-2"><i class="fas fa-phone me-2 text-primary"></i> 01 23 45 67 91</li>
-                            <li class="mb-2"><i class="fas fa-envelope me-2 text-primary"></i> support@acadpro.fr</li>
-                            <li><i class="fas fa-clock me-2 text-primary"></i> Assistance téléphonique : 8h-20h en semaine</li>
-                        </ul>
-                    </div>
+                            <div class="col-12">
+                                <button type="submit" class="ap-btn ap-btn-primary" style="width: 100%;">
+                                    <i class="fas fa-paper-plane"></i> Envoyer votre message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- FAQ Section - CORRIGÉE -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row justify-content-center mb-5">
-                <div class="col-lg-8 text-center">
-                    <h2 class="contact-title text-center">Questions fréquentes</h2>
-                    <p>Retrouvez les réponses aux questions les plus posées</p>
+            <div class="ap-side-col">
+                <div class="ap-map-card" id="map">
+                    <iframe src="https://www.google.com/maps?q=Agoe%20Assiyeye%2C%20Lom%C3%A9%2C%20Togo&output=embed" allowfullscreen loading="lazy"></iframe>
                 </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-lg-10 mx-auto">
-                    <div class="accordion" id="faqAccordion">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingOne">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Comment inscrire mon enfant au collège ?
-                                </button>
-                            </h2>
-                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    <p>L'inscription se fait en plusieurs étapes :</p>
-                                    <ol>
-                                        <li>Prenez rendez-vous avec le secrétariat au +228 96 52 93 46</li>
-                                        <li>Préparez les documents nécessaires (livret de famille, bulletins scolaires)</li>
-                                        <li>Remplissez le dossier d'inscription disponible au secrétariat</li>
-                                        <li>Participez à l'entretien d'admission avec la direction pédagogique</li>
-                                    </ol>
-                                    <p>Vous pouvez également commencer le processus en ligne via votre espace parent sur acadPro. <a href= "{% url 'depotDossier' %}#MonFormulaire"> Cliquez ici</a></p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    J'ai oublié mon mot de passe acadPro, que faire ?
-                                </button>
-                            </h2>
-                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    <p>Si vous avez oublié votre mot de passe :</p>
-                                    <ol>
-                                        <li>Rendez-vous sur la page de connexion acadPro</li>
-                                        <li>Cliquez sur "Mot de passe oublié"</li>
-                                        <li>Cliquez sur nous ecrire. Puis remplissez le formulaire de demande de mot de passe</li>
-                                    </ol>
-                                </div>
-                            </div>
-                        </div>
-                       
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingFour">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                    Où trouver les menus de la cantine scolaire ?
-                                </button>
-                            </h2>
-                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    <p>Les menus de la cantine sont disponibles :</p>
-                                    <ul>
-                                        <li>....</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {% comment %} <div class="text-center mt-5">
-                        <p>Vous ne trouvez pas de réponse à votre question ? <a href="#" class="text-primary">Consultez notre centre d'aide complet</a> ou <a href="#" class="text-primary">contactez-nous directement</a>.</p>
-                    </div> {% endcomment %}
+
+                <div class="ap-side-card">
+                    <h4><i class="fas fa-clock" style="color: var(--ap-gold-dark); margin-right: 8px;"></i>Horaires d'ouverture</h4>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Lundi - Vendredi : 8h00 - 18h00</li>
+                        <li><i class="fas fa-check"></i> Samedi : 9h00 - 12h00</li>
+                        <li><i class="fas fa-xmark"></i> Dimanche : Fermé</li>
+                    </ul>
+                </div>
+
+                <div class="ap-side-card">
+                    <h4><i class="fas fa-headset" style="color: var(--ap-gold-dark); margin-right: 8px;"></i>Support technique AcadPro</h4>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> +228 94 84 69 12</li>
+                        <li><i class="fas fa-envelope"></i> support@acadpro.fr</li>
+                        <li><i class="fas fa-clock"></i> Assistance : 8h-20h en semaine</li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section class="ap-section">
+    <div class="container-ap">
+        <div class="ap-section-head">
+            <span class="ap-eyebrow"><i class="fas fa-circle-question"></i> FAQ</span>
+            <h2 class="ap-title">Questions fréquentes</h2>
+            <p class="ap-lead">Retrouvez les réponses aux questions les plus posées.</p>
+        </div>
+        <div class="ap-faq-card">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Comment inscrire mon enfant au collège ?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>L'inscription se fait en plusieurs étapes :</p>
+                    <ol>
+                        <li>Prenez rendez-vous avec le secrétariat au +228 63 79 77 19</li>
+                        <li>Préparez les documents nécessaires (acte de naissance, bulletins scolaires)</li>
+                        <li>Remplissez le dossier d'inscription en ligne ou au secrétariat</li>
+                        <li>Participez à l'entretien d'admission avec la direction pédagogique</li>
+                    </ol>
+                    <p>Vous pouvez commencer le processus en ligne dès maintenant : <a href="{% url 'depotDossier' %}#MonFormulaire">déposer un dossier</a>.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>J'ai oublié mon mot de passe AcadPro, que faire ?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Rendez-vous sur la page de connexion AcadPro et utilisez le lien "Nous écrire" pour contacter le secrétariat, qui pourra réinitialiser votre accès.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Où trouver les menus de la cantine scolaire ?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Les menus hebdomadaires sont affichés au secrétariat et transmis aux parents en début de trimestre. Contactez-nous pour toute question spécifique.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 {% endblock %}
-
-
 
 {% block script %}
-    <script src="{% static 'accueil/js/jquery.min.js' %}"></script>
-    <script src="{% static 'accueil/js/bootstrap.bundle.min.js' %}"></script>
-    
-       <!-- Bootstrap 5 JS Bundle avec Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Script pour gérer le formulaire
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('form');
-            
-            if(form) {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    // Ici, on simule l'envoi du formulaire
-                    // Dans une application réelle, on enverrait les données au serveur
-                    
-                    // Message de confirmation
-                    alert('Votre message a été envoyé avec succès ! Notre équipe vous répondra dans les plus brefs délais.');
-                    form.reset();
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', function() {
+                faqQuestions.forEach(q => {
+                    if (q !== question) {
+                        q.classList.remove('active');
+                        q.nextElementSibling.classList.remove('open');
+                    }
                 });
-            }
-            
-            // Animation pour les cartes de contact
-            const contactCards = document.querySelectorAll('.contact-info-card');
-            contactCards.forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-5px)';
-                    this.style.boxShadow = '0 10px 25px rgba(0,0,0,0.15)';
-                });
-                
-                card.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                    this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
-                });
+                this.classList.toggle('active');
+                this.nextElementSibling.classList.toggle('open');
             });
         });
-    </script>
-
+    });
+</script>
 {% endblock %}
-
-
-

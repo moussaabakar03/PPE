@@ -1,105 +1,232 @@
+{% load static %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
-    .fade {
+    .ap-footer {
+        background: #12213f;
+        color: rgba(255,255,255,0.72);
+        font-family: 'Poppins', sans-serif;
+        padding: 64px 0 24px;
+        margin-top: 0;
+    }
+
+    .ap-footer h5, .ap-footer h4 {
+        color: #ffffff;
+    }
+
+    .ap-footer a {
+        color: rgba(255,255,255,0.72);
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .ap-footer a:hover {
+        color: #f4a623;
+    }
+
+    .ap-footer .ap-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        font-size: 22px;
+        color: #ffffff;
+        margin-bottom: 16px;
+    }
+
+    .ap-footer .ap-brand img {
+        width: 38px;
+        height: 38px;
+        object-fit: contain;
+    }
+
+    .ap-footer .ap-social {
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .ap-footer .ap-social a {
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.08);
+        border-radius: 50%;
+        color: #ffffff;
+    }
+
+    .ap-footer .ap-social a:hover {
+        background: #f4a623;
+        color: #12213f;
+    }
+
+    .ap-footer ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .ap-footer ul li {
+        margin-bottom: 10px;
+    }
+
+    .ap-footer .ap-contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .ap-footer .ap-contact-item i {
+        color: #f4a623;
+        margin-top: 3px;
+    }
+
+    .ap-footer .ap-newsletter-form {
+        display: flex;
+        gap: 0;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .ap-footer .ap-newsletter-form input {
+        flex: 1;
+        border: none;
+        padding: 12px 14px;
+        font-family: inherit;
+    }
+
+    .ap-footer .ap-newsletter-form button {
+        background: #f4a623;
+        color: #12213f;
+        border: none;
+        padding: 0 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+    .ap-footer .ap-newsletter-form button:hover {
+        background: #d6900f;
+    }
+
+    .ap-footer hr {
+        border-color: rgba(255,255,255,0.12);
+        margin: 40px 0 20px;
+    }
+
+    .ap-footer .ap-bottom {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        font-size: 13px;
+    }
+
+    .ap-footer .ap-bottom ul {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    #scrollTopBtn {
         opacity: 0;
-        transition: opacity 0.5s ease-in-out;
-        }
-    .fade.show {
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        pointer-events: none;
+        background: #12213f;
+        border: none;
+    }
+
+    #scrollTopBtn.show {
         opacity: 1;
-        }
+        pointer-events: auto;
+    }
 </style>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
 <!-- Footer -->
-<footer class="footer pt-5">
+<footer class="ap-footer">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-4 mb-5 mb-lg-0">
-                <h4 class="text-white mb-4">
-                    <i class="fas fa-graduation-cap mr-2"></i>acadPro
-                </h4>
+        <div class="row gy-4">
+            <div class="col-lg-4">
+                <div class="ap-brand">
+                    <img src="{% static 'secretaire/img/logoAcad.png' %}" alt="Logo AcadPro">
+                    AcadPro
+                </div>
                 <p>La solution complète de gestion scolaire pour les collèges. Simplifiez l'administration, améliorez la communication et optimisez le suivi pédagogique.</p>
-                <div class="social-links mt-4">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
+                <div class="ap-social">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
-            <div class="col-lg-2 col-md-6 mb-5 mb-md-0">
-                <h5 class="text-white mb-4">Liens rapides</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><a href="{% url 'pageAccueil' %}">Accueil</a></li>
-                    <li class="mb-2"><a href="{% url 'cours' %}">Cours</a></li>
-                    <li class="mb-2"><a href="{% url 'aPropos' %}">A Propos</a></li>
-                    <li class="mb-2"><a href="{% url 'depotDossier' %}">Dépot dossier</a></li>
+            <div class="col-lg-2 col-md-4">
+                <h5>Liens rapides</h5>
+                <ul>
+                    <li><a href="{% url 'pageAccueil' %}">Accueil</a></li>
+                    <li><a href="{% url 'aPropos' %}">À propos</a></li>
+                    <li><a href="{% url 'cours' %}">Cours</a></li>
+                    <li><a href="{% url 'depotDossier' %}">Dépôt dossier</a></li>
                     <li><a href="{% url 'contact' %}">Contact</a></li>
                 </ul>
             </div>
-            <div class="col-lg-2 col-md-6 mb-5 mb-md-0">
-                <h5 class="text-white mb-4">Ressources</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><a href="#">Blog</a></li>
-                    <li class="mb-2"><a href="#">Documentation</a></li>
-                    <li class="mb-2"><a href="#">FAQ</a></li>
-                    <li><a href="#">Support</a></li>
-                </ul>
+            <div class="col-lg-3 col-md-4">
+                <h5>Contact</h5>
+                <div class="ap-contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Agoé Assiyéyé, Rue de 40 m<br>Lomé, Togo</span>
+                </div>
+                <div class="ap-contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span>+228 63 79 77 19</span>
+                </div>
+                <div class="ap-contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>contact@acadpro.fr</span>
+                </div>
             </div>
-            <div class="col-lg-4">
-                <h5 class="text-white mb-4">Newsletter</h5>
-                <p>Inscrivez-vous pour recevoir nos dernières actualités et offres spéciales.</p>
-                <form class="newsletter-form">
-                    <div class="input-group">
-                        <input type="email" class="form-control" placeholder="Votre email">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="submit">S'inscrire</button>
-                        </div>
-                    </div>
+            <div class="col-lg-3 col-md-4">
+                <h5>Newsletter</h5>
+                <p>Recevez nos actualités et informations d'admission.</p>
+                <form class="ap-newsletter-form">
+                    <input type="email" placeholder="Votre email" required>
+                    <button type="submit">OK</button>
                 </form>
             </div>
         </div>
-        <hr class="my-5 border-light">
-        <div class="row">
-            <div class="col-md-6 text-center text-md-left">
-                <p class="mb-md-0">&copy; 2023 acadPro. Tous droits réservés.</p>
-            </div>
-            <div class="col-md-6 text-center text-md-right">
-                <ul class="list-inline mb-0">
-                    <li class="list-inline-item"><a href="#">Mentions légales</a></li>
-                    <li class="list-inline-item"><a href="#">Politique de confidentialité</a></li>
-                    <li class="list-inline-item"><a href="#">Ina/Esso</a></li>
-                </ul>
-            </div>
+        <hr>
+        <div class="ap-bottom">
+            <p class="mb-0">&copy; {% now "Y" %} AcadPro. Tous droits réservés.</p>
+            <ul>
+                <li><a href="#">Mentions légales</a></li>
+                <li><a href="#">Politique de confidentialité</a></li>
+            </ul>
         </div>
     </div>
 </footer>
 
-
-<button id="scrollTopBtn" class="btn btn-primary rounded-circle shadow position-fixed fade" 
-        style="bottom: 30px; right: 30px; display: none;" title="Retour en haut">
-    <i class="bi bi-arrow-up"></i>
+<button id="scrollTopBtn" class="btn btn-primary rounded-circle shadow position-fixed"
+        style="bottom: 30px; right: 30px; width: 46px; height: 46px;" title="Retour en haut">
+    <i class="fas fa-arrow-up"></i>
 </button>
 
-
-
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
     const scrollBtn = document.getElementById("scrollTopBtn");
 
     window.addEventListener("scroll", () => {
         if (window.scrollY > 200) {
-        scrollBtn.style.display = "block";
-        setTimeout(() => scrollBtn.classList.add("show"), 10); // Ajoute la classe après affichage
+            scrollBtn.classList.add("show");
         } else {
-        scrollBtn.classList.remove("show");
-        setTimeout(() => scrollBtn.style.display = "none", 300); // Cache après l’animation
+            scrollBtn.classList.remove("show");
         }
     });
 
     scrollBtn.addEventListener("click", () => {
-        window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-        });
+        window.scrollTo({ top: 0, behavior: "smooth" });
     });
 </script>

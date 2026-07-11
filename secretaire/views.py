@@ -2496,7 +2496,50 @@ def get_appreciation(element):
             return "Excellent"
         else:
             return "Note invalide"
-        
+
+
+def get_decision_conseil(moyenne):
+    if moyenne >= 16:
+        return "Tableau d'honneur - Félicitations"
+    elif moyenne >= 14:
+        return "Encouragements"
+    elif moyenne >= 10:
+        return "Travail satisfaisant"
+    elif moyenne >= 8:
+        return "Avertissement travail"
+    else:
+        return "Blâme travail"
+
+
+def calculer_moyenne_matiere(evaluations):
+    """Calcule la moyenne d'une matière à partir de ses évaluations.
+
+    La moyenne ne fait la moyenne que des composantes (devoir/interrogation,
+    composition) réellement renseignées : si un seul type d'évaluation existe
+    pour le trimestre en cours, on ne divise pas artificiellement par 2 avec
+    une composante manquante comptée comme 0.
+    """
+    total_devoir = 0.0
+    total_compo = 0.0
+    a_devoir = False
+    a_compo = False
+
+    for evaluation in evaluations:
+        pourcentage = float(evaluation.pourcentage) / 100
+        note_ponderee = float(evaluation.note) * pourcentage
+
+        if evaluation.typeEvaluation in ['Devoir', 'Interrogation']:
+            total_devoir += note_ponderee
+            a_devoir = True
+        elif evaluation.typeEvaluation == 'Composition':
+            total_compo += note_ponderee
+            a_compo = True
+
+    composantes = [v for v, present in [(total_devoir, a_devoir), (total_compo, a_compo)] if present]
+    moyenne_matiere = float(sum(composantes) / len(composantes)) if composantes else 0.0
+
+    return total_devoir, total_compo, moyenne_matiere
+
 
 @login_required 
 @admin_required
@@ -2524,22 +2567,20 @@ def generationBulletin(request, matricule, salleClasse):
         coefficient = cours.coefficient
         for trimestre in trimestres:
             evaluations = cours.evaluations.filter(etudiant=etudiant, trimestre=trimestre)
+            a_evaluation = evaluations.exists()
+            total_devoir, total_compo, moyenne_matiere = calculer_moyenne_matiere(evaluations)
 
-            # print(evaluations)
-            
-            total_devoir = 0.0
-            total_compo = 0.0
-
-            for evaluation in evaluations:
-                pourcentage = float(evaluation.pourcentage) / 100
-                note_ponderee = float(evaluation.note) * pourcentage
-
-                if evaluation.typeEvaluation in ['Devoir', 'Interrogation']:
-                    total_devoir += note_ponderee
-                elif evaluation.typeEvaluation == 'Composition':
-                    total_compo += note_ponderee
-
-            moyenne_matiere = float((total_devoir + total_compo) / 2)
+            # Moyenne de la classe pour cette matière, sur les élèves déjà évalués
+            moyennes_classe_matiere = []
+            for inscrit in inscrits_classe:
+                evals_etu = cours.evaluations.filter(etudiant=inscrit.etudiant, trimestre=trimestre)
+                if evals_etu.exists():
+                    _, _, moy_etu = calculer_moyenne_matiere(evals_etu)
+                    moyennes_classe_matiere.append(moy_etu)
+            moyenne_classe_matiere = (
+                round(sum(moyennes_classe_matiere) / len(moyennes_classe_matiere), 2)
+                if moyennes_classe_matiere else None
+            )
 
             liste_moyennes[trimestre].append({
                 "matiere": cours.matiere.nom,
@@ -2549,19 +2590,26 @@ def generationBulletin(request, matricule, salleClasse):
                 "moyenne_compo": round(total_compo, 2),
                 "moyenne": round(moyenne_matiere, 2),
                 "moyenne_ponderee": round(moyenne_matiere * coefficient, 2),
+                "moyenne_classe": moyenne_classe_matiere,
+                "a_evaluation": a_evaluation,
                 "appreciation1": get_appreciation(round(moyenne_matiere, 2)),
                 "appreciation2": get_appreciation(round(moyenne_matiere, 2)),
                 "appreciation3": get_appreciation(round(moyenne_matiere, 2)),
             })
 
     # --- Calcul des moyennes générales de l'élève ---
+    # Seules les matières où l'élève a été évalué comptent dans la moyenne :
+    # une matière pas encore notée ce trimestre ne doit pas compter comme 0/20.
+    eleve_a_donnees = {t: False for t in trimestres}
     for trimestre in trimestres:
-        total_pondere = sum(item['moyenne_ponderee'] for item in liste_moyennes[trimestre])
-        total_coeff = sum(item['coefficient'] for item in liste_moyennes[trimestre])
+        matieres_evaluees = [item for item in liste_moyennes[trimestre] if item['a_evaluation']]
+        total_pondere = sum(item['moyenne_ponderee'] for item in matieres_evaluees)
+        total_coeff = sum(item['coefficient'] for item in matieres_evaluees)
         if total_coeff > 0:
             moyennes_generales[trimestre] = round(total_pondere / total_coeff, 2)
             if moyennes_generales[trimestre] > 20:
                 moyennes_generales[trimestre] = 20.00
+            eleve_a_donnees[trimestre] = True
 
     # --- Calcul des rangs + statistiques de classe ---
     for trimestre in trimestres:
@@ -2574,32 +2622,26 @@ def generationBulletin(request, matricule, salleClasse):
             total_coeff_etu = 0.0
             for cours in cours_inscrit:
                 evaluations = cours.evaluations.filter(etudiant=etu, trimestre=trimestre)
-                total_devoir = 0.0
-                total_compo = 0.0
-                for evaluation in evaluations:
-                    pourcentage = float(evaluation.pourcentage) / 100
-                    note_ponderee = float(evaluation.note) * pourcentage
-                    if evaluation.typeEvaluation in ['Devoir', 'Interrogation']:
-                        total_devoir += note_ponderee
-                    elif evaluation.typeEvaluation == 'Composition':
-                        total_compo += note_ponderee
+                if not evaluations.exists():
+                    continue  # Matière pas encore notée ce trimestre : ne compte pas comme 0/20
 
-                moyenne_matiere = float((total_devoir + total_compo) / 2)
+                _, _, moyenne_matiere = calculer_moyenne_matiere(evaluations)
                 total_pondere_etu += moyenne_matiere * cours.coefficient
                 total_coeff_etu += cours.coefficient
 
             moyenne_generale_etu = round(total_pondere_etu / total_coeff_etu, 2) if total_coeff_etu > 0 else 0
-            classement.append((etu.id, moyenne_generale_etu))
+            classement.append((etu.id, moyenne_generale_etu, total_coeff_etu > 0))
 
         # Trier du plus fort au plus faible
         classement.sort(key=lambda x: x[1], reverse=True)
 
         # Trouver rang élève
-        rangs[trimestre] = next((i + 1 for i, (etu_id, _) in enumerate(classement) if etu_id == etudiant.id), None)
+        rangs[trimestre] = next((i + 1 for i, (etu_id, _, _a) in enumerate(classement) if etu_id == etudiant.id), None)
 
-        # Statistiques de classe
-        if classement:
-            notes = [m for _, m in classement]
+        # Statistiques de classe : uniquement les élèves ayant au moins une note ce trimestre
+        notes = [m for _, m, a_note in classement if a_note]
+        stats_classe[trimestre]["a_donnees"] = bool(notes)
+        if notes:
             stats_classe[trimestre]["forte"] = min(max(notes), 20.00)
             stats_classe[trimestre]["faible"] = min(notes)
             stats_classe[trimestre]["moyenne"] = round(sum(notes) / len(notes), 2)
@@ -2629,6 +2671,9 @@ def generationBulletin(request, matricule, salleClasse):
         "appreciationGenerale1": get_appreciation(moyennes_generales["1er trimestre"]),
         "appreciationGenerale2": get_appreciation(moyennes_generales["2e trimestre"]),
         "appreciationGenerale3": get_appreciation(moyennes_generales["3e trimestre"]),
+        "decisionConseil1": get_decision_conseil(moyennes_generales["1er trimestre"]) if eleve_a_donnees["1er trimestre"] else None,
+        "decisionConseil2": get_decision_conseil(moyennes_generales["2e trimestre"]) if eleve_a_donnees["2e trimestre"] else None,
+        "decisionConseil3": get_decision_conseil(moyennes_generales["3e trimestre"]) if eleve_a_donnees["3e trimestre"] else None,
     })
 
 
@@ -2659,34 +2704,27 @@ def bulletinsSalleDeClasse(request, salleClasseId):
             
             for cours in cours_classe:
                 evaluations = cours.evaluations.filter(etudiant=etu, trimestre=trimestre)
-                total_devoir = 0.0
-                total_compo = 0.0
-                
-                for evaluation in evaluations:
-                    pourcentage = float(evaluation.pourcentage) / 100
-                    note_ponderee = float(evaluation.note) * pourcentage
-                    if evaluation.typeEvaluation in ['Devoir', 'Interrogation']:
-                        total_devoir += note_ponderee
-                    elif evaluation.typeEvaluation == 'Composition':
-                        total_compo += note_ponderee
+                if not evaluations.exists():
+                    continue  # Matière pas encore notée ce trimestre : ne compte pas comme 0/20
 
-                moyenne_matiere = float((total_devoir + total_compo) / 2)
+                _, _, moyenne_matiere = calculer_moyenne_matiere(evaluations)
                 total_pondere_etu += moyenne_matiere * cours.coefficient
                 total_coeff_etu += cours.coefficient
 
             moyenne_generale_etu = round(total_pondere_etu / total_coeff_etu, 2) if total_coeff_etu > 0 else 0
-            classements[trimestre].append((etu.id, moyenne_generale_etu))
+            classements[trimestre].append((etu.id, moyenne_generale_etu, total_coeff_etu > 0))
 
         # Trier du plus fort au plus faible
         classements[trimestre].sort(key=lambda x: x[1], reverse=True)
 
     # --- Calcul des statistiques de classe ---
-    stats_classe = {t: {"forte": 0, "faible": 0, "moyenne": 0} for t in trimestres}
-    
-    for trimestre in trimestres:
-        if classements[trimestre]:
-            notes = [m for _, m in classements[trimestre]]
+    # Uniquement les élèves ayant au moins une note ce trimestre (sinon "0" fausse la stat)
+    stats_classe = {t: {"forte": 0, "faible": 0, "moyenne": 0, "a_donnees": False} for t in trimestres}
 
+    for trimestre in trimestres:
+        notes = [m for _, m, a_note in classements[trimestre] if a_note]
+        stats_classe[trimestre]["a_donnees"] = bool(notes)
+        if notes:
             stats_classe[trimestre]["forte"] = min(max(notes), 20.0)
             stats_classe[trimestre]["faible"] = min(notes)
             stats_classe[trimestre]["moyenne"] = round(sum(notes) / len(notes), 2)
@@ -2705,20 +2743,8 @@ def bulletinsSalleDeClasse(request, salleClasseId):
             coefficient = cours.coefficient
             for trimestre in trimestres:
                 evaluations = cours.evaluations.filter(etudiant=etudiant, trimestre=trimestre)
-
-                total_devoir = 0.0
-                total_compo = 0.0
-
-                for evaluation in evaluations:
-                    pourcentage = float(evaluation.pourcentage) / 100
-                    note_ponderee = float(evaluation.note) * pourcentage
-
-                    if evaluation.typeEvaluation in ['Devoir', 'Interrogation']:
-                        total_devoir += note_ponderee
-                    elif evaluation.typeEvaluation == 'Composition':
-                        total_compo += note_ponderee
-
-                moyenne_matiere = float((total_devoir + total_compo) / 2)
+                a_evaluation = evaluations.exists()
+                total_devoir, total_compo, moyenne_matiere = calculer_moyenne_matiere(evaluations)
 
                 liste_moyennes[trimestre].append({
                     "matiere": cours.matiere.nom,
@@ -2728,15 +2754,18 @@ def bulletinsSalleDeClasse(request, salleClasseId):
                     "moyenne_compo": round(total_compo, 2),
                     "moyenne": round(moyenne_matiere, 2),
                     "moyenne_ponderee": round(moyenne_matiere * coefficient, 2),
+                    "a_evaluation": a_evaluation,
                     "appreciation1": get_appreciation(round(moyenne_matiere, 2)),
                     "appreciation2": get_appreciation(round(moyenne_matiere, 2)),
                     "appreciation3": get_appreciation(round(moyenne_matiere, 2)),
                 })
 
         # --- Calcul des moyennes générales de l'élève ---
+        # Seules les matières où l'élève a été évalué comptent (voir generationBulletin).
         for trimestre in trimestres:
-            total_pondere = sum(item['moyenne_ponderee'] for item in liste_moyennes[trimestre])
-            total_coeff = sum(item['coefficient'] for item in liste_moyennes[trimestre])
+            matieres_evaluees = [item for item in liste_moyennes[trimestre] if item['a_evaluation']]
+            total_pondere = sum(item['moyenne_ponderee'] for item in matieres_evaluees)
+            total_coeff = sum(item['coefficient'] for item in matieres_evaluees)
             if total_coeff > 0:
                 moyennes_generales[trimestre] = round(total_pondere / total_coeff, 2)
                 if moyennes_generales[trimestre] > 20:
@@ -2745,7 +2774,7 @@ def bulletinsSalleDeClasse(request, salleClasseId):
         # --- Récupération des rangs ---
         for trimestre in trimestres:
             rangs[trimestre] = next(
-                (i + 1 for i, (etu_id, _) in enumerate(classements[trimestre]) if etu_id == etudiant.id), 
+                (i + 1 for i, (etu_id, _, _a) in enumerate(classements[trimestre]) if etu_id == etudiant.id),
                 None
             )
 
