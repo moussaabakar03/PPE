@@ -38,7 +38,9 @@ class ConnexionForm(forms.Form):
 
 
 class ContactForm(forms.Form):
-    email = forms.EmailField(label="Email", widget=forms.EmailInput(attrs={'readonly': 'readonly', 'id': 'id_email'}))
-
+    # required=False : ce formulaire est aussi utilisé par receptionDossierStudent.html,
+    # qui ne rend pas ce champ et n'en a pas besoin.
+    nom = forms.CharField(max_length=150, label="Nom", required=False)
+    email = forms.EmailField(label="Email")
     sujet = forms.CharField(max_length=150, label="Sujet")
     message = forms.CharField(widget=forms.Textarea, label="Message")

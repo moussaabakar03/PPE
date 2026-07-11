@@ -65,11 +65,23 @@ urlpatterns = [
 
 ]
 
+handler400 = 'acadPro.views.custom_400'
+handler403 = 'acadPro.views.custom_403'
 handler404 = 'acadPro.views.custom_404'
+handler500 = 'acadPro.views.custom_500'
 
 
 # Ajouter cette ligne pour servir les fichiers statiques et médias
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    
+
+    # Routes de prévisualisation des pages d'erreur : Django n'appelle les handlers
+    # 400/403/404/500 que lorsque DEBUG=False (sinon il affiche sa page technique).
+    # Ces routes permettent de voir le rendu final dans le navigateur sans changer DEBUG.
+    urlpatterns += [
+        path('preview-erreur/400/', views.custom_400, {'exception': Exception('preview')}),
+        path('preview-erreur/403/', views.custom_403, {'exception': Exception('preview')}),
+        path('preview-erreur/404/', views.custom_404, {'exception': Exception('preview')}),
+        path('preview-erreur/500/', views.custom_500),
+    ]

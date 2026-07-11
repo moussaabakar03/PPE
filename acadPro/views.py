@@ -8,7 +8,7 @@ from django.urls import reverse
 
 from django.contrib import messages
 
-from acadPro.forms import ConnexionForm
+from acadPro.forms import ConnexionForm, ContactForm
 from secretaire.models import AnneeScolaire, Classe, Cout, Enseignant, Etudiant, Parent, depotDossierEtudiant
 from acadPro.utils.decorators import parent_required, enseignant_required
 
@@ -29,7 +29,30 @@ def cours(request):
     return render(request, 'cours.html')
 
 def contact(request):
-    return render(request, 'contact.html')
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            nom = form.cleaned_data.get('nom') or 'Visiteur du site'
+            email = form.cleaned_data['email']
+            sujet = form.cleaned_data['sujet']
+            message = form.cleaned_data['message']
+
+            contenu_message = f"De: {nom} <{email}>\n\n{message}"
+
+            send_mail(
+                sujet,
+                contenu_message,
+                settings.EMAIL_HOST_USER,
+                [settings.EMAIL_HOST_USER],
+                fail_silently=False,
+            )
+            messages.success(request, "Votre message a bien été envoyé. Notre équipe vous répondra dans les plus brefs délais.")
+            return redirect('contact')
+        messages.error(request, "Veuillez corriger les erreurs du formulaire avant d'envoyer votre message.")
+    else:
+        form = ContactForm()
+
+    return render(request, 'contact.html', {'form': form})
 
 def depotDossier(request):
     if request.method == "POST":
@@ -223,12 +246,36 @@ def enseignant(request):
 
 
 
-# def custom_404(request, exception):
-#     return render(request, '404.html', status=404)
-
 import logging
+from django.template import loader
+from django.http import HttpResponseBadRequest, HttpResponseForbidden, HttpResponseNotFound, HttpResponseServerError
+
 logger = logging.getLogger(__name__)
+
+
+def _render_error(template_name, response_class):
+    # Rendu sans context processors (comme les vues d'erreur par défaut de Django) :
+    # une page 500 déclenchée par une panne de la base de données ne doit pas
+    # elle-même échouer à cause des context processors qui interrogent la base.
+    template = loader.get_template(template_name)
+    return response_class(template.render())
+
+
+def custom_400(request, exception):
+    logger.warning(f"400 Error: {request.path}")
+    return _render_error('400.html', HttpResponseBadRequest)
+
+
+def custom_403(request, exception):
+    logger.warning(f"403 Error: {request.path}")
+    return _render_error('403.html', HttpResponseForbidden)
+
 
 def custom_404(request, exception):
     logger.warning(f"404 Error: {request.path}")
-    return render(request, '404.html', status=404)
+    return _render_error('404.html', HttpResponseNotFound)
+
+
+def custom_500(request):
+    logger.error(f"500 Error: {request.path}")
+    return _render_error('500.html', HttpResponseServerError)

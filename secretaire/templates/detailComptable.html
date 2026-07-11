@@ -1,0 +1,193 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AcadPro | Comptable Details</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'accueil/images/favicon.png' %}">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/normalize.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/bootstrap.min.css' %}">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/all.min.css' %}">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/fonts/flaticon.css' %}">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/css/animate.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'secretaire/style.css' %}">
+    <!-- Modernize js -->
+    <script src="{% static 'secretaire/js/modernizr-3.6.0.min.js' %}"></script>
+
+    <style>
+        .container {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow-x: auto;
+          }
+
+        .table-wrapper {
+        overflow-x: auto;
+        width: 100%;
+        }
+
+        h2 {
+          font-size: 18px;
+          margin-bottom: 10px;
+          color: #333;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 10px;
+        }
+
+        th, td {
+          text-align: left;
+          padding: 8px;
+        }
+
+        th {
+          color:rgb(203, 150, 58);
+          font-weight: bold;
+          background: #f9f9f9;
+        }
+
+        tr:nth-child(even) {
+          background: #f1f1f1;
+        }
+
+        .detailEtudiant{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffa001;
+
+            width: 50%;
+            margin: 20px auto;
+            border-radius: 10px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+         <!-- Header Menu Area Start Here -->
+
+         {% include 'partial/header.html' %}
+
+
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+
+            {% include 'partial/aside.html' %}
+
+
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+
+                <div class="detailEtudiant">
+                    <div>
+                        <p style="text-align: center; margin-top: 15px;"> DETAILS COMPTABLE: [<span style="font-weight: bold;">{{ comptable.nom }} {{ comptable.prenom }}</span>] </p>
+                    </div>
+                </div>
+
+                <!-- Breadcubs Area Start Here -->
+                <div class="breadcrumbs-area">
+                    <h3>Comptable</h3>
+                    <ul>
+                        <li>
+                            <a href="{% url 'secretaire:all-comptable' %}">Comptable *</a>
+                        </li>
+                        <li>Comptable Details</li>
+                    </ul>
+                </div>
+                <!-- Breadcubs Area End Here -->
+                <!-- comptable Details Area Start Here -->
+                <div class="card height-auto">
+                    <div class="container">
+                        <h2>IDENTIFICATION DU COMPTABLE</h2>
+                        <p><small>INFORMATION PERSONNELLE</small></p>
+                        <div class="table-wrapper" style="max-height: 500px; overflow-y: auto;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Matricule</th>
+                                        <th>Photo</th>
+                                        <th>Nom</th>
+                                        <th>Prénom</th>
+                                        <th>Téléphone</th>
+                                        <th>Email</th>
+                                        <th>Date d'ajout</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="color: red; font-weight: bold;">{{ comptable.matricule }}</td>
+                                        <td>
+                                            {% if comptable.photo %}
+                                                <img src="{{ comptable.photo.url }}" alt="Photo" style="width: 160px; height: 50px; border-radius: 7px; object-fit: cover;">
+                                            {% else %}
+                                                <p class="text-center"><i class="fa fa-user"></i></p>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ comptable.nom }}</td>
+                                        <td>{{ comptable.prenom }}</td>
+                                        <td>{{ comptable.telephone }}</td>
+                                        <td>{{ comptable.email }}</td>
+                                        <td>{{ comptable.date_ajout|date:"Y/m/d H:i:s" }}</td>
+                                        <td style="display: flex; justify-content: center; align-items: center;">
+                                            <a class="dropdown-item" href="{% url 'secretaire:modifier_comptable' comptable.matricule %}"><i
+                                                    class="fas fa-cogs text-dark-pastel-green"></i>Modifier</a>
+                                            <a class="dropdown-item" href="{% url 'secretaire:supprimer_comptable' comptable.matricule %}" onclick="return confirm('Voulez-vous vraiment supprimer ce comptable?')"><i class="fas fa-times text-orange-red"></i>Supprimer</a>
+                                                    
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- comptable Details Area End Here -->
+                {% include 'partial/copyright.html' %}
+
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+   <!-- jQuery -->
+    <script src="{% static 'secretaire/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- Plugins js -->
+    <script src="{% static 'secretaire/js/plugins.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'secretaire/js/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'secretaire/js/bootstrap.min.js' %}"></script>
+    <!-- Scroll Up Js -->
+    <script src="{% static 'secretaire/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'secretaire/js/main.js' %}"></script>
+
+</body>
+
+</html>

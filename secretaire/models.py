@@ -59,10 +59,17 @@ class Utilisateur(AbstractUser):
 
 class Comptable(models.Model):
     utilisateur = models.OneToOneField(Utilisateur, on_delete= models.CASCADE, null = True, blank= True, related_name= "comptable")
+    matricule = models.CharField(max_length=50, unique=True, null=True, blank=True)
+    nom = models.CharField(max_length=100, blank=True)
+    prenom = models.CharField(max_length=100, null=True, blank=True)
+    photo = models.ImageField(upload_to='photos/comptables/', null=True, blank=True)
     email = models.EmailField(max_length=165)
-    telephone = models.CharField(max_length=65)    
+    telephone = models.CharField(max_length=65)
     date_ajout = models.DateTimeField(auto_now_add = True)
-    date_modification = models.DateTimeField(auto_now= True)        
+    date_modification = models.DateTimeField(auto_now= True)
+
+    def __str__(self):
+        return f"{self.nom} {self.prenom}"
         
 class Parent(models.Model):
         

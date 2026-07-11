@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+ 
 from pathlib import Path
 import os
 
@@ -230,6 +230,12 @@ AXES_ONLY_USER_FAILURES = True
 
 # Ne pas bloquer tout le monde à cause d’une IP commune
 AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = False
+
+# Page affichée quand un compte est bloqué (message clair au lieu du texte brut par défaut d'axes)
+AXES_LOCKOUT_TEMPLATE = 'compte_bloque.html'
+
+# Message de secours (utilisé seulement si le template ci-dessus est introuvable)
+AXES_COOLOFF_MESSAGE = "Compte temporairement bloqué : trop de tentatives de connexion. Merci de réessayer plus tard."
 
 # Active le backend Axes
 AUTHENTICATION_BACKENDS = [

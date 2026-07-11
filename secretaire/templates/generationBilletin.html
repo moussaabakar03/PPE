@@ -158,7 +158,7 @@
                                             <td style ="font-weight: bold; font-size: 16px;">{{ item.moyenne }}</td>
                                             <td>{{ item.coefficient }}</td>
                                             <td>{{ item.moyenne_ponderee }}</td>
-                                            <td>--</td>
+                                            <td>{{ item.moyenne_classe|default:"--" }}</td>
 
                                             <td>{{item.appreciation1}}</td>
                                             <td>{{ item.enseignant }}</td>
@@ -180,13 +180,17 @@
                                              <div><strong>Rang 1er Trimestre :</strong> {{ rang1 }} / {{ tousInscrits }}</div>
                                         </div>
                                     </div>
-                                
+
                                     <div style="text-align: center; margin: 20px 0;">
-                                        <div><strong>Forte moyenne :</strong> {{ stats1.forte }}</div>
-                                        <div><strong>Moyenne de classe :</strong> {{ stats1.moyenne }}</div>
-                                        <div><strong>Faible moyenne :</strong> {{ stats1.faible }}</div>
+                                        {% if stats1.a_donnees %}
+                                            <div><strong>Forte moyenne :</strong> {{ stats1.forte }}</div>
+                                            <div><strong>Moyenne de classe :</strong> {{ stats1.moyenne }}</div>
+                                            <div><strong>Faible moyenne :</strong> {{ stats1.faible }}</div>
+                                        {% else %}
+                                            <div><em>Aucune donnée disponible pour ce trimestre.</em></div>
+                                        {% endif %}
                                     </div>
-                                
+
                                 <div style="text-align: center; margin: 20px 0; font-size: 14px;">
                                     <strong>Appréciation du travail : {{appreciationGenerale1}}</strong>
                                 </div>
@@ -195,29 +199,25 @@
                                 <div class="decisions">
                                     <div class="decision-box">
                                         <h4>Signature</h4>
-                                        {% comment %} <div><span class="checkbox"></span> Abs non justifiées : 1</div>
-                                        <div><span class="checkbox"></span> Retard : 0</div>
-                                        <div><span class="checkbox checked"></span> Bonne Conduite</div>
-                                        <div><span class="checkbox"></span> Avertis. conduite</div>
-                                        <div><span class="checkbox"></span> Blâme conduite</div> {% endcomment %}
+                                        <p style="margin-top: 40px; border-top: 1px solid #999; padding-top: 5px; text-align: center; font-size: 11px;">Le Directeur des Études</p>
                                     </div>
-                                    
+
                                     <div class="decision-box">
-                                        {% comment %} <h4>DÉCISION DU CONSEIL DE CLASSE</h4> {% endcomment %}
-                                        {% comment %} <div><span class="checkbox"></span> Tableau d'honneur</div>
-                                        <div><span class="checkbox"></span> Félicitations</div>
-                                        <div><span class="checkbox checked"></span> Encouragements</div>
-                                        <div><span class="checkbox"></span> Avertissement Travail</div>
-                                        <div><span class="checkbox"></span> Blâme Travail</div> {% endcomment %}
+                                        <h4>Décision du Conseil de Classe</h4>
+                                        {% if decisionConseil1 %}
+                                            <p style="text-align: center; font-weight: bold;">{{ decisionConseil1 }}</p>
+                                        {% else %}
+                                            <p style="text-align: center;"><em>En attente d'évaluation</em></p>
+                                        {% endif %}
                                     </div>
                                 </div>
-                                
-                                
+
+
                                 <!-- Note en bas -->
                                 <div class="note">
                                     <strong>NB:</strong> Toute rature entraînera l'annulation de ce bulletin. Ce relevé n'est tiré qu'en un seul exemplaire. Veuillez faire des copies pour d'autres services.
                                 </div>
-                            
+
                             </div>
                         {% elif trimestre == "2e trimestre" %}
                             <div class="bulletin" id="bulletin2" style="margin-top: 50px;">
@@ -297,7 +297,7 @@
                                             <td>{{ item.moyenne }}</td>
                                             <td>{{ item.coefficient }}</td>
                                             <td>{{ item.moyenne_ponderee }}</td>
-                                            <td>--</td>
+                                            <td>{{ item.moyenne_classe|default:"--" }}</td>
                                             <td>{{item.appreciation2}}</td>
                                             <td>{{ item.enseignant }}</td>
                                         </tr>
@@ -322,13 +322,17 @@
                                             <div><strong>Rang 2ème Trimestre :</strong> {{ rang2 }} / {{ tousInscrits }}</div>
                                         </div>
                                     </div>
-                                
+
                                     <div style="text-align: center; margin: 20px 0;">
-                                        <div><strong>Forte moyenne :</strong> {{ stats1.forte }}</div>
-                                        <div><strong>Moyenne de classe :</strong> {{ stats1.moyenne }}</div>
-                                        <div><strong>Faible moyenne :</strong> {{ stats1.faible }}</div>
+                                        {% if stats2.a_donnees %}
+                                            <div><strong>Forte moyenne :</strong> {{ stats2.forte }}</div>
+                                            <div><strong>Moyenne de classe :</strong> {{ stats2.moyenne }}</div>
+                                            <div><strong>Faible moyenne :</strong> {{ stats2.faible }}</div>
+                                        {% else %}
+                                            <div><em>Aucune donnée disponible pour ce trimestre.</em></div>
+                                        {% endif %}
                                     </div>
-                                
+
                                 <div style="text-align: center; margin: 20px 0; font-size: 14px;">
                                     <strong>Appréciation du travail : {{appreciationGenerale2}}</strong>
                                 </div>
@@ -337,29 +341,25 @@
                                 <div class="decisions">
                                     <div class="decision-box">
                                         <h4>Signature</h4>
-                                        {% comment %} <div><span class="checkbox"></span> Abs non justifiées : 1</div>
-                                        <div><span class="checkbox"></span> Retard : 0</div>
-                                        <div><span class="checkbox checked"></span> Bonne Conduite</div>
-                                        <div><span class="checkbox"></span> Avertis. conduite</div>
-                                        <div><span class="checkbox"></span> Blâme conduite</div> {% endcomment %}
+                                        <p style="margin-top: 40px; border-top: 1px solid #999; padding-top: 5px; text-align: center; font-size: 11px;">Le Directeur des Études</p>
                                     </div>
-                                    
+
                                     <div class="decision-box">
-                                        {% comment %} <h4>DÉCISION DU CONSEIL DE CLASSE</h4> {% endcomment %}
-                                        {% comment %} <div><span class="checkbox"></span> Tableau d'honneur</div>
-                                        <div><span class="checkbox"></span> Félicitations</div>
-                                        <div><span class="checkbox checked"></span> Encouragements</div>
-                                        <div><span class="checkbox"></span> Avertissement Travail</div>
-                                        <div><span class="checkbox"></span> Blâme Travail</div> {% endcomment %}
+                                        <h4>Décision du Conseil de Classe</h4>
+                                        {% if decisionConseil2 %}
+                                            <p style="text-align: center; font-weight: bold;">{{ decisionConseil2 }}</p>
+                                        {% else %}
+                                            <p style="text-align: center;"><em>En attente d'évaluation</em></p>
+                                        {% endif %}
                                     </div>
                                 </div>
-                                
-                                
+
+
                                 <!-- Note en bas -->
                                 <div class="note">
                                     <strong>NB:</strong> Toute rature entraînera l'annulation de ce bulletin. Ce relevé n'est tiré qu'en un seul exemplaire. Veuillez faire des copies pour d'autres services.
                                 </div>
-                            
+
                             </div>
                         {% elif trimestre == "3e trimestre" %}
                             <div class="bulletin" id="bulletin3" style="margin-top: 50px;">
@@ -440,7 +440,7 @@
                                             <td>{{ item.moyenne }}</td>
                                             <td>{{ item.coefficient }}</td>
                                             <td>{{ item.moyenne_ponderee }}</td>
-                                            <td>--</td>
+                                            <td>{{ item.moyenne_classe|default:"--" }}</td>
                                             <td>{{item.appreciation3}}</td>
                                             <td>{{ item.enseignant }}</td>
                                         </tr>
@@ -471,9 +471,13 @@
                                     </div>
                                     
                                     <div style="text-align: center; margin: 20px 0;">
-                                        <div><strong>Forte moyenne :</strong> {{ stats1.forte }}</div>
-                                        <div><strong>Moyenne de classe :</strong> {{ stats1.moyenne }}</div>
-                                        <div><strong>Faible moyenne :</strong> {{ stats1.faible }}</div>
+                                        {% if stats3.a_donnees %}
+                                            <div><strong>Forte moyenne :</strong> {{ stats3.forte }}</div>
+                                            <div><strong>Moyenne de classe :</strong> {{ stats3.moyenne }}</div>
+                                            <div><strong>Faible moyenne :</strong> {{ stats3.faible }}</div>
+                                        {% else %}
+                                            <div><em>Aucune donnée disponible pour ce trimestre.</em></div>
+                                        {% endif %}
                                     </div>
 
                                 <div style="text-align: center; margin: 20px 0; font-size: 14px;">
@@ -484,24 +488,20 @@
                                 <div class="decisions">
                                     <div class="decision-box">
                                         <h4>Signature</h4>
-                                        {% comment %} <div><span class="checkbox"></span> Abs non justifiées : 1</div>
-                                        <div><span class="checkbox"></span> Retard : 0</div>
-                                        <div><span class="checkbox checked"></span> Bonne Conduite</div>
-                                        <div><span class="checkbox"></span> Avertis. conduite</div>
-                                        <div><span class="checkbox"></span> Blâme conduite</div> {% endcomment %}
+                                        <p style="margin-top: 40px; border-top: 1px solid #999; padding-top: 5px; text-align: center; font-size: 11px;">Le Directeur des Études</p>
                                     </div>
-                                    
+
                                     <div class="decision-box">
-                                        {% comment %} <h4>DÉCISION DU CONSEIL DE CLASSE</h4> {% endcomment %}
-                                        {% comment %} <div><span class="checkbox"></span> Tableau d'honneur</div>
-                                        <div><span class="checkbox"></span> Félicitations</div>
-                                        <div><span class="checkbox checked"></span> Encouragements</div>
-                                        <div><span class="checkbox"></span> Avertissement Travail</div>
-                                        <div><span class="checkbox"></span> Blâme Travail</div> {% endcomment %}
+                                        <h4>Décision du Conseil de Classe</h4>
+                                        {% if decisionConseil3 %}
+                                            <p style="text-align: center; font-weight: bold;">{{ decisionConseil3 }}</p>
+                                        {% else %}
+                                            <p style="text-align: center;"><em>En attente d'évaluation</em></p>
+                                        {% endif %}
                                     </div>
                                 </div>
-                                
-                                
+
+
                                 <!-- Note en bas -->
                                 <div class="note">
                                     <strong>NB:</strong> Toute rature entraînera l'annulation de ce bulletin. Ce relevé n'est tiré qu'en un seul exemplaire. Veuillez faire des copies pour d'autres services.

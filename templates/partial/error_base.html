@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block page_title %}AcadPro{% endblock %}</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'accueil/images/favicon.png' %}">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-light: #6ea1e1;
+            --primary-dark: #2c5ba8;
+            --text-color: #333;
+            --light-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #6c757d;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --border-radius: 8px;
+            --box-shadow: 10px 10px 30px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .error-card {
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 50px 40px;
+            width: 480px;
+            max-width: 100%;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 0.5px solid black;
+            background: linear-gradient(rgba(72, 105, 150, 0.85), rgba(67, 96, 138, 0.9)), url('{% static "accueil/images/contactAccueil.jpg" %}');
+            animation: fadeIn 0.5s;
+        }
+
+        .error-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, {% block accent_from %}var(--primary-light){% endblock %} 0%, {% block accent_to %}var(--primary-dark){% endblock %} 100%);
+        }
+
+        .error-icon {
+            font-size: 56px;
+            margin-bottom: 10px;
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .error-code {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: #ece3e3;
+            margin-bottom: 6px;
+        }
+
+        .error-code:empty {
+            display: none;
+        }
+
+        .error-title {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+
+        .error-message {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #f1f1f1;
+            margin-bottom: 30px;
+        }
+
+        .error-message strong {
+            color: #ffd76a;
+        }
+
+        .error-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-home {
+            display: inline-block;
+            background: white;
+            color: var(--primary-dark);
+            border: none;
+            padding: 13px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+        }
+
+        .link-secondary {
+            color: #ece3e3;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .link-secondary:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+        }
+    </style>
+    {% block extra_style %}{% endblock %}
+</head>
+<body>
+    <div class="error-card">
+        <div class="error-icon">{% block error_icon %}⚠️{% endblock %}</div>
+        <div class="error-code">{% block error_code %}{% endblock %}</div>
+        <div class="error-title">{% block error_title %}Une erreur est survenue{% endblock %}</div>
+        <div class="error-message">
+            {% block error_message %}Veuillez réessayer plus tard.{% endblock %}
+        </div>
+        {% block extra_content %}{% endblock %}
+        <div class="error-actions">
+            {% block error_actions %}
+                <a href="{% url 'pageAccueil' %}" class="btn-home">Retour à l'accueil</a>
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

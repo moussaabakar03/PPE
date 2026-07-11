@@ -23,6 +23,7 @@ urlpatterns = [
     path('modifierAnneeScolaire/<int:id>/', views.modifierAnneeScolaire, name='modifierAnneeScolaire'),
     path('supprimer-anneeScolaire/<int:id>/', views.supprimerAnneeScolaire, name='supprimerAnneeScolaire'),
     path('changer-annee-active/<int:annee_id>/', views.changer_annee_active, name='changer_annee_active'),
+    path('profil/', views.profil, name='profil'),
     
     
     path('all-student/', views.all_student, name='all-student'),
@@ -172,7 +173,11 @@ urlpatterns = [
     # path('api/messages/<int:id>/<str:matricule>/read/', views.mark_messages_as_read, name='mark_messages_as_read'),
     # path('api/messages/<int:id>/<str:matricule>/send/', views.send_message, name='send_message'),
     
+    path('all-comptable/', views.all_comptable, name='all-comptable'),
     path('ajoutComptable/', views.ajoutComptable, name='ajoutComptable'),
-    
+    path('detailComptable/<str:matricule>/', views.detailComptable, name='detailComptable'),
+    path('modifier_comptable/<str:matricule>/', views.modifier_comptable, name='modifier_comptable'),
+    path('supprimer_comptable/<str:matricule>/', views.supprimer_comptable, name='supprimer_comptable'),
+
 ]
 

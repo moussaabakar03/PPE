@@ -266,10 +266,14 @@
                                     </div>
 
                                     <div style="text-align: center; margin: 20px 0;">
-                                        <div><strong>Forte moyenne :</strong> {{ stats_classe|lookup:trimestre|lookup:"forte" }}</div>
-                                        <div><strong>Moyenne de classe :</strong> {{ stats_classe|lookup:trimestre|lookup:"moyenne" }}</div>
-                                        <div><strong>Faible moyenne :</strong> {{ stats_classe|lookup:trimestre|lookup:"faible" }}</div>
-                                    </div> 
+                                        {% if stats_classe|lookup:trimestre|lookup:"a_donnees" %}
+                                            <div><strong>Forte moyenne :</strong> {{ stats_classe|lookup:trimestre|lookup:"forte" }}</div>
+                                            <div><strong>Moyenne de classe :</strong> {{ stats_classe|lookup:trimestre|lookup:"moyenne" }}</div>
+                                            <div><strong>Faible moyenne :</strong> {{ stats_classe|lookup:trimestre|lookup:"faible" }}</div>
+                                        {% else %}
+                                            <div><em>Aucune donnée disponible pour ce trimestre.</em></div>
+                                        {% endif %}
+                                    </div>
 
                                     <div style="text-align: center; margin: 20px 0; font-size: 14px;">
                                         <strong>Appréciation du travail : {{ bulletin_data.moyennes_generales|lookup:trimestre|get_appreciation }}</strong>
@@ -277,8 +281,17 @@
 
                                     <div class ="footer">
                                         <div class="decisions" style="display: flex; justify-content: space-around; margin: 20px 0;">
-                                            <div class="decision-box" style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                                            <div class="decision-box" style="border: 1px solid #ddd; padding: 10px; text-align: center; width: 45%;">
                                                 <h4 style="margin: 0;">Signature</h4>
+                                                <p style="margin-top: 30px; border-top: 1px solid #999; padding-top: 5px; font-size: 11px;">Le Directeur des Études</p>
+                                            </div>
+                                            <div class="decision-box" style="border: 1px solid #ddd; padding: 10px; text-align: center; width: 45%;">
+                                                <h4 style="margin: 0;">Décision du Conseil de Classe</h4>
+                                                {% if bulletin_data.moyennes_generales|lookup:trimestre %}
+                                                    <p style="font-weight: bold;">{{ bulletin_data.moyennes_generales|lookup:trimestre|get_decision_conseil }}</p>
+                                                {% else %}
+                                                    <p><em>En attente d'évaluation</em></p>
+                                                {% endif %}
                                             </div>
                                         </div>
 

@@ -1,0 +1,14 @@
+{% extends "partial/error_base.html" %}
+
+{% block page_title %}AcadPro - Accès refusé{% endblock %}
+{% block error_icon %}⛔{% endblock %}
+{% block error_code %}ERREUR 403{% endblock %}
+{% block error_title %}Accès refusé{% endblock %}
+{% block error_message %}
+    Vous n'avez pas les droits nécessaires pour accéder à cette page.
+    Si vous pensez qu'il s'agit d'une erreur, contactez l'administration de votre établissement.
+{% endblock %}
+{% block error_actions %}
+    <a href="{% url 'pageAccueil' %}" class="btn-home">Retour à l'accueil</a>
+    <a href="{% url 'connexion' %}" class="link-secondary">Se connecter avec un autre compte</a>
+{% endblock %}

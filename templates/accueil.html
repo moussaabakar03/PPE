@@ -1,462 +1,766 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block style %}
-    <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600,700,800,900" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'accueil/css/bootstrap.min.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="{% static 'accueil/css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'accueil/css/cssPersonnalise/index.css' %}">
-    <link rel="icon" type="image/png" href="{% static 'accueil/images/favicon.png' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <style>
-        .testimonial-card{
-            transition: all 0.2s ease-in-out;
+<style>
+    :root {
+        --ap-navy: #12213f;
+        --ap-navy-light: #1d3868;
+        --ap-gold: #f4a623;
+        --ap-gold-dark: #d6900f;
+        --ap-ink: #1a1a2e;
+        --ap-gray: #6b7280;
+        --ap-bg-soft: #f7f8fb;
+        --ap-radius: 18px;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        color: var(--ap-ink);
+    }
+
+    .container-ap {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    .ap-section {
+        padding: 90px 0;
+    }
+
+    .ap-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--ap-gold-dark);
+        background: rgba(244, 166, 35, 0.12);
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        padding: 6px 16px;
+        border-radius: 50px;
+        margin-bottom: 18px;
+    }
+
+    .ap-title {
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--ap-navy);
+        line-height: 1.25;
+        margin-bottom: 16px;
+    }
+
+    .ap-lead {
+        color: var(--ap-gray);
+        font-size: 16px;
+        line-height: 1.8;
+    }
+
+    /* HERO */
+    .ap-hero {
+        background: linear-gradient(180deg, #f7f8fb 0%, #ffffff 100%);
+        padding: 70px 0 0;
+        overflow: hidden;
+    }
+
+    .ap-hero .row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 40px;
+    }
+
+    .ap-hero-text {
+        flex: 1 1 460px;
+    }
+
+    .ap-hero-text h1 {
+        font-size: 46px;
+        font-weight: 800;
+        color: var(--ap-navy);
+        line-height: 1.2;
+        margin-bottom: 20px;
+    }
+
+    .ap-hero-text h1 span {
+        color: var(--ap-gold);
+    }
+
+    .ap-hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-top: 30px;
+    }
+
+    .ap-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 15px;
+        text-decoration: none;
+        transition: all 0.25s ease;
+        border: 2px solid transparent;
+    }
+
+    .ap-btn-primary {
+        background: var(--ap-gold);
+        color: #ffffff;
+    }
+
+    .ap-btn-primary:hover {
+        background: var(--ap-gold-dark);
+        transform: translateY(-2px);
+        color: #ffffff;
+    }
+
+    .ap-btn-outline {
+        border-color: var(--ap-navy);
+        color: var(--ap-navy);
+    }
+
+    .ap-btn-outline:hover {
+        background: var(--ap-navy);
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    .ap-hero-visual {
+        flex: 1 1 420px;
+        position: relative;
+    }
+
+    .ap-hero-visual::before {
+        content: '';
+        position: absolute;
+        top: -30px;
+        right: -30px;
+        width: 90%;
+        height: 90%;
+        background: var(--ap-gold);
+        border-radius: var(--ap-radius);
+        opacity: 0.15;
+        z-index: 0;
+    }
+
+    .ap-hero-visual img {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        height: 420px;
+        object-fit: cover;
+        border-radius: var(--ap-radius);
+        box-shadow: 0 30px 60px rgba(18, 33, 63, 0.18);
+    }
+
+    .ap-hero-badge {
+        position: absolute;
+        z-index: 2;
+        bottom: -24px;
+        left: -24px;
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 18px 22px;
+        box-shadow: 0 15px 40px rgba(18, 33, 63, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .ap-hero-badge .ap-hero-badge-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: var(--ap-navy);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .ap-hero-badge strong {
+        display: block;
+        font-size: 18px;
+        color: var(--ap-navy);
+    }
+
+    .ap-hero-badge span {
+        font-size: 13px;
+        color: var(--ap-gray);
+    }
+
+    /* STATS STRIP */
+    .ap-stats {
+        margin-top: 100px;
+        background: var(--ap-navy);
+    }
+
+    .ap-stats .row {
+        display: flex;
+        flex-wrap: wrap;
+        text-align: center;
+    }
+
+    .ap-stats .ap-stat {
+        flex: 1 1 220px;
+        padding: 42px 20px;
+        border-right: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .ap-stats .ap-stat:last-child {
+        border-right: none;
+    }
+
+    .ap-stats .ap-stat strong {
+        display: block;
+        font-size: 34px;
+        font-weight: 800;
+        color: var(--ap-gold);
+    }
+
+    .ap-stats .ap-stat span {
+        color: rgba(255,255,255,0.75);
+        font-size: 14px;
+    }
+
+    /* FEATURES */
+    .ap-section-head {
+        text-align: center;
+        max-width: 640px;
+        margin: 0 auto 56px;
+    }
+
+    .ap-features {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+    }
+
+    .ap-feature-card {
+        background: #ffffff;
+        border-radius: var(--ap-radius);
+        padding: 40px 32px;
+        border: 1px solid #eef0f4;
+        transition: all 0.25s ease;
+    }
+
+    .ap-feature-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 45px rgba(18, 33, 63, 0.1);
+        border-color: transparent;
+    }
+
+    .ap-feature-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 14px;
+        background: rgba(244, 166, 35, 0.12);
+        color: var(--ap-gold-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 22px;
+    }
+
+    .ap-feature-card h3 {
+        font-size: 19px;
+        font-weight: 600;
+        color: var(--ap-navy);
+        margin-bottom: 10px;
+    }
+
+    .ap-feature-card p {
+        color: var(--ap-gray);
+        font-size: 14.5px;
+        line-height: 1.75;
+        margin: 0;
+    }
+
+    /* CYCLES */
+    .ap-bg-soft {
+        background: var(--ap-bg-soft);
+    }
+
+    .ap-cycles {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+    }
+
+    .ap-cycle-card {
+        background: #ffffff;
+        border-radius: var(--ap-radius);
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(18, 33, 63, 0.06);
+        transition: all 0.25s ease;
+    }
+
+    .ap-cycle-card:hover {
+        transform: translateY(-6px);
+    }
+
+    .ap-cycle-head {
+        background: var(--ap-navy);
+        color: #fff;
+        padding: 26px 28px;
+    }
+
+    .ap-cycle-head span {
+        color: var(--ap-gold);
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .ap-cycle-head h3 {
+        font-size: 22px;
+        font-weight: 700;
+        margin: 6px 0 0;
+    }
+
+    .ap-cycle-body {
+        padding: 26px 28px 30px;
+    }
+
+    .ap-cycle-body ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 22px;
+    }
+
+    .ap-cycle-body ul li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--ap-gray);
+        font-size: 14.5px;
+        margin-bottom: 10px;
+    }
+
+    .ap-cycle-body ul li i {
+        color: var(--ap-gold);
+    }
+
+    .ap-cycle-body a {
+        font-weight: 600;
+        color: var(--ap-navy);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ap-cycle-body a:hover {
+        color: var(--ap-gold-dark);
+    }
+
+    /* ABOUT SPLIT */
+    .ap-about {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 60px;
+    }
+
+    .ap-about-visual {
+        flex: 1 1 420px;
+        position: relative;
+    }
+
+    .ap-about-visual img {
+        width: 100%;
+        height: 420px;
+        object-fit: cover;
+        border-radius: var(--ap-radius);
+    }
+
+    .ap-about-text {
+        flex: 1 1 460px;
+    }
+
+    .ap-checklist {
+        list-style: none;
+        padding: 0;
+        margin: 26px 0;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .ap-checklist li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        color: var(--ap-ink);
+        font-size: 14.5px;
+    }
+
+    .ap-checklist i {
+        color: var(--ap-gold-dark);
+        background: rgba(244, 166, 35, 0.12);
+        width: 26px;
+        height: 26px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+    }
+
+    /* TESTIMONIALS */
+    .ap-testimonials {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+    }
+
+    .ap-testimonial-card {
+        background: #ffffff;
+        border-radius: var(--ap-radius);
+        padding: 32px;
+        border: 1px solid #eef0f4;
+    }
+
+    .ap-testimonial-card .ap-stars {
+        color: var(--ap-gold);
+        margin-bottom: 16px;
+        font-size: 13px;
+    }
+
+    .ap-testimonial-card p {
+        color: var(--ap-ink);
+        font-size: 14.5px;
+        line-height: 1.8;
+        margin-bottom: 22px;
+        font-style: italic;
+    }
+
+    .ap-testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .ap-testimonial-author img {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .ap-testimonial-author strong {
+        display: block;
+        font-size: 14.5px;
+        color: var(--ap-navy);
+    }
+
+    .ap-testimonial-author span {
+        font-size: 12.5px;
+        color: var(--ap-gray);
+    }
+
+    /* CTA BANNER */
+    .ap-cta {
+        background: linear-gradient(120deg, var(--ap-navy) 0%, var(--ap-navy-light) 100%);
+        border-radius: var(--ap-radius);
+        padding: 60px 50px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+    }
+
+    .ap-cta h2 {
+        color: #ffffff;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .ap-cta p {
+        color: rgba(255,255,255,0.75);
+        margin: 0;
+        max-width: 480px;
+    }
+
+    .ap-cta-actions {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 991px) {
+        .ap-features, .ap-cycles, .ap-testimonials {
+            grid-template-columns: repeat(2, 1fr);
         }
-        .testimonial-card:hover{
-            transform: translateY(-20px);
-            background-color: #3498db;
+        .ap-hero-text h1 { font-size: 36px; }
+        .ap-title { font-size: 28px; }
+        .ap-stats .ap-stat { flex: 1 1 45%; border-right: none; }
+    }
+
+    @media (max-width: 640px) {
+        .ap-section { padding: 60px 0; }
+        .ap-features, .ap-cycles, .ap-testimonials, .ap-checklist {
+            grid-template-columns: 1fr;
         }
-
-        .stat-card p{
-            color: black;
-            font-weight: bold;
-        }
-
-        .nombrePlus{
-            color: #161512ff;
-            font-size: 30px;
-            font-weight: bold;
-
-        }
-
-        .hero-section {
-            background: linear-gradient(rgba(55, 102, 167, 0.85), rgba(51, 97, 160, 0.9)), url('{% static 'accueil/images/accueilHero.jpg' %}');
-            {% comment %} background-image: url('{% static 'accueil/images/accueilHero.jpg' %}'); {% endcomment %}
-            background-size: cover;
-            object-fit: cover;
-            {% comment %} background-position: center; {% endcomment %}
-            height: 85vh;
-            display: flex;
-            align-items: center;
-            background-attachment: fixed;
-        }
-
-        
-        .contact-section {
-            background: linear-gradient(rgba(72, 105, 150, 0.85), rgba(67, 96, 138, 0.9)), url('{% static 'accueil/images/contactAccueil.jpg' %}');
-            background-size: cover;
-            background-position: center;
-            padding: 80px 0;
-            background-attachment: fixed; 
-            object-fit : cover;
-        }
-
-        
-
-        @media (max-width: 500px) {
-            .contactRapide {
-                flex-direction: column; /* Les boutons passent l’un en dessous de l’autre */
-                align-items: center; /* Centrage horizontal */
-                gap: 10px; /* Espacement entre eux */
-            }
-
-            .contactRapide a {
-                width: 100%; /* Chaque bouton prend toute la largeur disponible */
-                text-align: center;
-            }
-            {% comment %} body{
-                background-color: #49dd0eff;
-            } {% endcomment %}
-        }
-
-        {% comment %} @media(min-width: 600px){
-            body{
-                background-color: #883131ff;
-            }
-        } {% endcomment %}
-    </style>
-    
+        .ap-hero-text h1 { font-size: 30px; }
+        .ap-hero-visual img { height: 280px; }
+        .ap-cta { padding: 40px 26px; }
+    }
+</style>
 {% endblock %}
-
-
 
 {% block body %}
-      <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 mx-auto text-center text-white">
-                    <h1 class="display-4 mb-4" style="font-weight: bold;">Collège AcadPro</h1>
-                    <p class="lead mb-5">Excellence académique, innovation pédagogique et développement personnel depuis 1995</p>
-                    <div class="d-flex justify-content-center col-md-12 contactRapide">
-                        <a href="{% url 'aPropos' %}#apropos" class="btn btn-light btn-lg mr-3">Découvrir notre établissement</a>
-                        <a href="{% url 'depotDossier' %}#MonFormulaire" class="btn btn-outline-light btn-lg">Inscriptions & admissions</a>
+
+<!-- HERO -->
+<section class="ap-hero">
+    <div class="container-ap">
+        <div class="row">
+            <div class="ap-hero-text">
+                <span class="ap-eyebrow"><i class="fas fa-graduation-cap"></i> Établissement scolaire à Lomé</span>
+                <h1>Une éducation solide pour <span>construire l'avenir</span> de votre enfant</h1>
+                <p class="ap-lead">AcadPro accompagne les élèves de la 6ème à la 3ème avec un encadrement pédagogique rigoureux, un suivi personnalisé et une plateforme numérique qui connecte élèves, parents et enseignants.</p>
+                <div class="ap-hero-actions">
+                    <a href="{% url 'depotDossier' %}" class="ap-btn ap-btn-primary">
+                        <i class="fas fa-file-arrow-up"></i> Déposer un dossier
+                    </a>
+                    <a href="{% url 'aPropos' %}" class="ap-btn ap-btn-outline">
+                        <i class="fas fa-circle-play"></i> Découvrir l'établissement
+                    </a>
+                </div>
+            </div>
+            <div class="ap-hero-visual"> 
+                <img src="{% static 'accueil/images/sectionHeroPageAccueil.jpg' %}" alt="Élèves d'AcadPro">
+                <div class="ap-hero-badge">
+                    <div class="ap-hero-badge-icon"><i class="fas fa-award"></i></div>
+                    <div>
+                        <strong>98%</strong>
+                        <span>de réussite aux examens</span>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Features Section -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="feature-card bg-white p-5 text-center shadow">
-                        <div class="feature-icon">
-                            <i class="fas fa-graduation-cap"></i>
-                        </div>
-                        <h3>Excellence académique</h3>
-                        <p>Un programme rigoureux couvrant toutes les disciplines fondamentales avec des méthodes pédagogiques innovantes pour préparer nos élèves à la réussite au DNB et au-delà.</p>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="feature-card bg-white p-5 text-center shadow">
-                        <div class="feature-icon">
-                            <i class="fas fa-lightbulb"></i>
-                        </div>
-                        <h3>Innovation pédagogique</h3>
-                        <p>Notre plateforme numérique exclusive permet un suivi personnalisé de chaque élève, des ressources pédagogiques adaptées et une communication fluide avec les familles.</p>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="feature-card bg-white p-5 text-center shadow">
-                        <div class="feature-icon">
-                             <i class="fas fa-users"></i>
-                        </div>
-                        <h3>Communauté éducative</h3>
-                        <p>Une équipe pédagogique dévouée et des partenariats avec des institutions culturelles et scientifiques pour offrir à nos élèves une ouverture sur le monde.</p>
-                    </div>
-                </div>
+    <!-- STATS -->
+    <div class="ap-stats">
+        <div class="container-ap row">
+            <div class="ap-stat">
+                <strong>15+</strong>
+                <span>Années d'expérience</span>
+            </div>
+            <div class="ap-stat">
+                <strong>1200+</strong>
+                <span>Élèves accompagnés</span>
+            </div>
+            <div class="ap-stat">
+                <strong>60+</strong>
+                <span>Enseignants qualifiés</span>
+            </div>
+            <div class="ap-stat">
+                <strong>98%</strong>
+                <span>Taux de réussite</span>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- About Section -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <img src="{% static 'accueil/images/presentation.jpg' %}" alt="Collège acadPro" class="img-fluid rounded shadow">
+<!-- POURQUOI NOUS CHOISIR -->
+<section class="ap-section">
+    <div class="container-ap">
+        <div class="ap-section-head">
+            <span class="ap-eyebrow"><i class="fas fa-star"></i> Nos atouts</span>
+            <h2 class="ap-title">Pourquoi choisir AcadPro</h2>
+            <p class="ap-lead">Une pédagogie exigeante et bienveillante, portée par des outils modernes de suivi et de communication.</p>
+        </div>
+        <div class="ap-features">
+            <div class="ap-feature-card">
+                <div class="ap-feature-icon"><i class="fas fa-chalkboard-user"></i></div>
+                <h3>Encadrement personnalisé</h3>
+                <p>Des classes à effectif maîtrisé et un suivi individuel pour permettre à chaque élève de progresser à son rythme.</p>
+            </div>
+            <div class="ap-feature-card">
+                <div class="ap-feature-icon"><i class="fas fa-laptop"></i></div>
+                <h3>Plateforme numérique</h3>
+                <p>Notes, bulletins, paiements et communication avec les enseignants accessibles en ligne, à tout moment.</p>
+            </div>
+            <div class="ap-feature-card">
+                <div class="ap-feature-icon"><i class="fas fa-people-group"></i></div>
+                <h3>Corps enseignant qualifié</h3>
+                <p>Une équipe pédagogique expérimentée, engagée dans la réussite scolaire et l'épanouissement des élèves.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CYCLES -->
+<section class="ap-section ap-bg-soft">
+    <div class="container-ap">
+        <div class="ap-section-head">
+            <span class="ap-eyebrow"><i class="fas fa-layer-group"></i> Programmes</span>
+            <h2 class="ap-title">Nos cycles d'enseignement</h2>
+            <p class="ap-lead">Un parcours cohérent du collège de la 6ème à la 3ème, conforme aux programmes officiels.</p>
+        </div>
+        <div class="ap-cycles">
+            <div class="ap-cycle-card">
+                <div class="ap-cycle-head">
+                    <span>1er cycle</span>
+                    <h3>6ème - 5ème</h3>
                 </div>
-                <div class="col-md-6 pl-md-5">
-                    <h2 class="section-title">Notre établissement AcadPro</h2>
-                    <p class="lead">Une solution complète dédiée à l'administration, élèves et la gestion des collèges.</p>
-                    <p>AcadPro est bien plus qu'un simple collège - c'est un écosystème éducatif complet qui forme les citoyens éclairés de demain.</p>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i> Gestion centralisée des élèves et des classes</li>
-                        <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i> Suivi des notes et des compétences</li>
-                        <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i> Emplois du temps dynamiques</li>
-                        <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i> Communication parents-établissement, établissement-élèves, élève-élève</li>
-                        <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i> Rapports et statistiques détaillés</li>
+                <div class="ap-cycle-body">
+                    <ul>
+                        <li><i class="fas fa-check"></i> Fondamentaux disciplinaires</li>
+                        <li><i class="fas fa-check"></i> Méthodologie de travail</li>
+                        <li><i class="fas fa-check"></i> Suivi renforcé des acquis</li>
                     </ul>
-                    <a href="#" class="btn btn-primary mt-3">En savoir plus</a>
+                    <a href="{% url 'cours' %}">En savoir plus <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="ap-cycle-card">
+                <div class="ap-cycle-head">
+                    <span>2ème cycle</span>
+                    <h3>4ème - 3ème</h3>
+                </div>
+                <div class="ap-cycle-body">
+                    <ul>
+                        <li><i class="fas fa-check"></i> Approfondissement disciplinaire</li>
+                        <li><i class="fas fa-check"></i> Préparation au BEPC</li>
+                        <li><i class="fas fa-check"></i> Orientation scolaire</li>
+                    </ul>
+                    <a href="{% url 'cours' %}">En savoir plus <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="ap-cycle-card">
+                <div class="ap-cycle-head">
+                    <span>Accompagnement</span>
+                    <h3>Soutien scolaire</h3>
+                </div>
+                <div class="ap-cycle-body">
+                    <ul>
+                        <li><i class="fas fa-check"></i> Cours de renforcement</li>
+                        <li><i class="fas fa-check"></i> Préparation aux examens</li>
+                        <li><i class="fas fa-check"></i> Suivi parents-enseignants</li>
+                    </ul>
+                    <a href="{% url 'contact' %}">Nous contacter <i class="fas fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Stats Section -->
-    <section class="py-5 bg-primary text-white">
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-md-3 mb-4 mb-md-0">
-                    <div class="stat-card">
-                        <div class="stat-number">24</div>
-                        <p>Collèges partenaires</p>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-4 mb-md-0">
-                    <div class="stat-card">
-                        <div><span class="stat-number">8500</span><span class="nombrePlus">+</span></div>
-                        <p>Élèves suivis</p>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-4 mb-md-0">
-                    <div class="stat-card">
-                        <div><span class="stat-number">98</span><span class="nombrePlus">%</span></div>
-                        <p>Satisfaction utilisateurs</p>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div><span class="stat-number">20</span><span class="nombrePlus">+</span></div>
-                        <p>Années d'expertise</p>
-                    </div>
-                </div>
+<!-- ABOUT -->
+<section class="ap-section">
+    <div class="container-ap">
+        <div class="ap-about">
+            <div class="ap-about-visual">
+                <img src="{% static 'accueil/images/presentation.jpg' %}" alt="Établissement AcadPro">
+            </div>
+            <div class="ap-about-text">
+                <span class="ap-eyebrow"><i class="fas fa-building-columns"></i> Notre établissement</span>
+                <h2 class="ap-title">Un cadre propice à la réussite de chaque élève</h2>
+                <p class="ap-lead">Depuis notre création, AcadPro place l'élève au centre de son projet pédagogique : rigueur académique, valeurs humaines et accompagnement de proximité avec les familles.</p>
+                <ul class="ap-checklist">
+                    <li><i class="fas fa-check"></i> Programme conforme au système éducatif togolais</li>
+                    <li><i class="fas fa-check"></i> Communication continue avec les parents</li>
+                    <li><i class="fas fa-check"></i> Activités parascolaires et sportives</li>
+                    <li><i class="fas fa-check"></i> Infrastructures sûres et adaptées</li>
+                </ul>
+                <a href="{% url 'aPropos' %}" class="ap-btn ap-btn-primary">
+                    Découvrir notre histoire <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Team Section -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="row justify-content-center mb-5">
-                <div class="col-md-8 text-center">
-                    <h2 class="section-title">Notre équipe pédagogique</h2>
-                    <p>Des professionnels dévoués à l'éducation et à la réussite de vos élèves</p>
+<!-- TEMOIGNAGES -->
+<section class="ap-section ap-bg-soft">
+    <div class="container-ap">
+        <div class="ap-section-head">
+            <span class="ap-eyebrow"><i class="fas fa-comment-dots"></i> Témoignages</span>
+            <h2 class="ap-title">Ce que disent les parents et élèves</h2>
+        </div>
+        <div class="ap-testimonials">
+            <div class="ap-testimonial-card">
+                <div class="ap-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <p>"Depuis que mon fils est à AcadPro, ses résultats se sont nettement améliorés. L'équipe pédagogique est très à l'écoute des parents."</p>
+                <div class="ap-testimonial-author">
+                    <img src="{% static 'accueil/images/temoigne1.jpg' %}" alt="Parent d'élève">
+                    <div>
+                        <strong>Akouvi M.</strong>
+                        <span>Parent d'élève</span>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-3 col-sm-6">
-                    <div class="teacher-card">
-                        <img src="{% static 'accueil/images/fr.jpg' %}" class="img-fluid" alt="Prof de Français">
-                        <div class="p-4">
-                            <h5>Sophie Martin</h5>
-                            <p class="text-muted">Professeur de Français</p>
-                            <p class="small">15 ans d'expérience dans l'enseignement</p>
-                        </div>
+            <div class="ap-testimonial-card">
+                <div class="ap-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <p>"La plateforme en ligne me permet de suivre les notes et les bulletins de ma fille en temps réel. Un vrai gain de temps."</p>
+                <div class="ap-testimonial-author">
+                    <img src="{% static 'accueil/images/temoigne2.jpg' %}" alt="Parent d'élève">
+                    <div>
+                        <strong>Kodjo A.</strong>
+                        <span>Parent d'élève</span>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="teacher-card">
-                        <img src="{% static 'accueil/images/mathematique.png' %}" class="img-fluid" alt="Prof de Mathématiques">
-                        <div class="p-4">
-                            <h5>Thomas Dubois</h5>
-                            <p class="text-muted">Professeur de Mathématiques</p>
-                            <p class="small">Spécialiste en pédagogie innovante</p>
-                        </div>
-                    </div>
+            </div>
+            <div class="ap-testimonial-card">
+                <div class="ap-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                 </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="teacher-card">
-                        <img src="{% static 'accueil/images/hg.jpg' %}" class="img-fluid" alt="Prof d'Histoire-Géo">
-                        <div class="p-4">
-                            <h5>Émilie Lambert</h5>
-                            <p class="text-muted">Professeur d'Histoire-Géographie</p>
-                            <p class="small">Coordinatrice du projet pédagogique</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="teacher-card">
-                        <img src="{% static 'accueil/images/ang.jpg' %}" class="img-fluid" alt="Prof de SVT">
-                        <div class="p-4">
-                            <h5>Pierre Moreau</h5>
-                            <p class="text-muted">Professeur de SVT</p>
-                            <p class="small">Responsable du laboratoire scientifique</p>
-                        </div>
+                <p>"Une ambiance de travail sérieuse et des professeurs disponibles. J'ai obtenu mon BEPC avec mention grâce à leur accompagnement."</p>
+                <div class="ap-testimonial-author">
+                    <img src="{% static 'accueil/images/temoigne3.jpg' %}" alt="Ancien élève">
+                    <div>
+                        <strong>Mawuli K.</strong>
+                        <span>Ancien élève</span>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Courses Section -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row justify-content-center mb-5">
-                <div class="col-md-8 text-center">
-                    <h2 class="section-title">Nos cursus scolaires</h2>
-                    <p>Des programmes adaptés à chaque niveau du collège</p>
-                </div>
+<!-- CTA -->
+<section class="ap-section" style="padding-top: 0;">
+    <div class="container-ap">
+        <div class="ap-cta">
+            <div>
+                <h2>Prêt à rejoindre l'aventure AcadPro ?</h2>
+                <p>Déposez le dossier de votre enfant dès aujourd'hui ou contactez notre équipe pour toute question sur l'admission.</p>
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="course-card">
-                        <div class="p-4">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h4 class="mb-0">6ème</h4>
-                                <span class="badge badge-primary">Cycle 3</span>
-                            </div>
-                            <p>Programme d'adaptation au collège avec renforcement des fondamentaux et initiation aux nouvelles disciplines.</p>
-                            <ul class="list-unstyled">
-                                <li><i class="fas fa-check text-success mr-2"></i> Accompagnement personnalisé</li>
-                                <li><i class="fas fa-check text-success mr-2"></i> Enseignements pratiques interdisciplinaires</li>
-                                <li><i class="fas fa-check text-success mr-2"></i> Parcours citoyen</li>
-                            </ul>
-                        </div>
-                        <div class="bg-light p-4 border-top">
-                            <a href="#" class="btn btn-primary">Détails du programme</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="course-card">
-                        <div class="p-4">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h4 class="mb-0">4ème</h4>
-                                <span class="badge badge-secondary">Cycle 4</span>
-                            </div>
-                            <p>Approfondissement des connaissances avec orientation progressive vers les choix de parcours.</p>
-                            <ul class="list-unstyled">
-                                <li><i class="fas fa-check text-success mr-2"></i> Langues vivantes renforcées</li>
-                                <li><i class="fas fa-check text-success mr-2"></i> Options technologiques</li>
-                                <li><i class="fas fa-check text-success mr-2"></i> Préparation à l'orientation</li>
-                            </ul>
-                        </div>
-                        <div class="bg-light p-4 border-top">
-                            <a href="#" class="btn btn-secondary">Détails du programme</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="course-card">
-                        <div class="p-4">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h4 class="mb-0">3ème</h4>
-                                <span class="badge badge-accent">Cycle 4</span>
-                            </div>
-                            <p>Préparation intensive au Diplôme National du Brevet et orientation vers le lycée.</p>
-                            <ul class="list-unstyled">
-                                <li><i class="fas fa-check text-success mr-2"></i> Stage en entreprise</li>
-                                <li><i class="fas fa-check text-success mr-2"></i> Préparation au DNB</li>
-                                <li><i class="fas fa-check text-success mr-2"></i> Choix d'orientation</li>
-                            </ul>
-                        </div>
-                        <div class="bg-light p-4 border-top">
-                            <a href="#" class="btn btn-accent">Détails du programme</a>
-                        </div>
-                    </div>
-                </div>
+            <div class="ap-cta-actions">
+                <a href="{% url 'depotDossier' %}" class="ap-btn ap-btn-primary">
+                    <i class="fas fa-file-arrow-up"></i> Déposer un dossier
+                </a>
+                <a href="{% url 'contact' %}" class="ap-btn" style="border: 2px solid rgba(255,255,255,0.3); color: #fff;">
+                    <i class="fas fa-envelope"></i> Nous contacter
+                </a>
             </div>
         </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="row justify-content-center mb-5">
-                <div class="col-md-8 text-center">
-                    <h2 class="section-title">Témoignages</h2>
-                    <p>Ce que disent les utilisateurs d'acadPro</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="testimonial-card">
-                        <div class="d-flex align-items-center mb-4">
-                            <img src="{% static 'accueil/images/temoigne1.jpg' %}" class="rounded-circle mr-3" width="60" alt="Témoin 1">
-                            <div>
-                                <h5 class="mb-0">Marie Dupont</h5>
-                                <p class="text-muted mb-0">Parent d'élève</p>
-                            </div>
-                        </div>
-                        <p class="mb-0">"acadPro a révolutionné la communication avec le collège. Je reçois les informations importantes en temps réel et je peux suivre la scolarité de mon fils facilement."</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="testimonial-card">
-                        <div class="d-flex align-items-center mb-4">
-                            <img src="{% static 'accueil/images/temoigne2.jpg' %}" class="rounded-circle mr-3" width="60" alt="Témoin 2">
-                            <div>
-                                <h5 class="mb-0">Jean Leroy</h5>
-                                <p class="text-muted mb-0">Professeur de physique</p>
-                            </div>
-                        </div>
-                        <p class="mb-0">"La gestion des notes et des compétences est devenue beaucoup plus simple. J'ai gagné un temps précieux dans mon travail administratif grâce à acadPro."</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="testimonial-card">
-                        <div class="d-flex align-items-center mb-4">
-                            <img src="{% static 'accueil/images/temoigne3.jpg' %}" class="rounded-circle mr-3" width="60" alt="Témoin 3">
-                            <div>
-                                <h5 class="mb-0">Sophie Bernard</h5>
-                                <p class="text-muted mb-0">Principale adjointe</p>
-                            </div>
-                        </div>
-                        <p class="mb-0">"Depuis l'implémentation d'acadPro, notre collège a gagné en efficacité. Les données sont centralisées, les communications fluidifiées et la coordination entre enseignants améliorée."</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact-section">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-8 text-center text-white mb-5">
-                    <h2 class="mb-4">Vous souhaitez en savoir plus sur acadPro ?</h2>
-                    <p class="lead">Contactez-nous via le Formulaire ci-dessous.</p>
-                </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card shadow-lg">
-                        <div class="card-body p-5">
-                            <form method="POST">
-                                {% csrf_token %}
-                                <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <input type="text" class="form-control" placeholder="Votre nom">
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <input type="email" class="form-control" placeholder="Votre email" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <textarea class="form-control" rows="5" placeholder="Votre message" required></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-block btn-lg">Envoyer</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    </div>
+</section>
 
 {% endblock %}
 
-
-
-
 {% block script %}
-
-    <script src="{% static 'accueil/js/jquery.min.js' %}"></script>
-    <script src="{% static 'accueil/js/bootstrap.bundle.min.js' %}"></script>
-    {% comment %} <script>
-        $(document).ready(function(){
-            // Flag pour suivre si l'animation a été déclenchée
-            let statsAnimated = false;
-            
-            // Fonction pour animer les compteurs
-            function animateStats() {
-                $('.stat-number').each(function() {
-                    $(this).prop('Counter',0).animate({
-                        Counter: $(this).text()
-                    }, {
-                        duration: 2000,
-                        easing: 'swing',
-                        step: function (now) {
-                            $(this).text(Math.ceil(now));
-                        }
-                    });
-                });
-                statsAnimated = true;
-            }
-
-            // Vérifier la position au chargement
-            checkStatsVisibility();
-            
-            // Vérifier lors du défilement
-            $(window).scroll(function() {
-                checkStatsVisibility();
-            });
-            
-            function checkStatsVisibility() {
-                if (statsAnimated) return;
-                
-                const statsSection = $('.bg-primary'); // Sélecteur de votre section stats
-                const windowHeight = $(window).height();
-                const scrollTop = $(window).scrollTop();
-                const sectionTop = statsSection.offset().top;
-                const sectionHeight = statsSection.outerHeight();
-                
-                // Calculer quand la section est à 80% visible
-                const triggerPoint = sectionTop + (sectionHeight * 0.2);
-                
-                if (scrollTop + windowHeight > triggerPoint) {
-                    animateStats();
-                }
-            }
-        });
-    </script> {% endcomment %}
-
 {% endblock %}
