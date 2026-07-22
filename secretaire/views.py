@@ -397,31 +397,41 @@ def student_promotion(request):
     messages.info(request, "Page de promotion des étudiants. Fonctionnalité à implémenter.")
     return render(request, 'student-promotion.html')
 
-@login_required 
+def assurer_qr_code_etudiant(etudiant, force=False):
+    """Génère le QR code (nom/prénom/matricule) d'un étudiant et retourne son chemin relatif.
+
+    Si `force` est False et qu'un QR code valide existe déjà sur disque, il n'est pas
+    regénéré (utile pour la génération en masse, pour éviter de réécrire des dizaines
+    de fichiers à chaque affichage de la page).
+    """
+    if not force and etudiant.cheminCodeQr and os.path.exists(os.path.join(settings.MEDIA_ROOT, etudiant.cheminCodeQr.name)):
+        return etudiant.cheminCodeQr
+
+    contenu = f"Nom: {etudiant.nom} {etudiant.prenom}\nMatricule: {etudiant.matricule}"
+
+    dossier_qr = os.path.join(settings.MEDIA_ROOT, "qr_codes")
+    os.makedirs(dossier_qr, exist_ok=True)
+
+    nom_fichier = f"qr_{etudiant.id}.png"
+    chemin_fichier = os.path.join(dossier_qr, nom_fichier)
+
+    qr = qrcode.make(contenu)
+    qr.save(chemin_fichier)
+
+    etudiant.cheminCodeQr = f"qr_codes/{nom_fichier}"
+    etudiant.save()
+    return etudiant.cheminCodeQr
+
+
+@login_required
 @admin_required
 def student_detail(request, matricule):
     # try:
         etudiant = get_object_or_404(Etudiant, matricule=matricule)
 
-        # Générer les données à inclure dans le QR
-        contenu = f"Nom: {etudiant.nom} {etudiant.prenom}\nMatricule: {etudiant.matricule}"
+        # Génération du QR (toujours régénéré ici, comportement historique de cette page)
+        assurer_qr_code_etudiant(etudiant, force=True)
 
-        # Créer le répertoire s'il n'existe pas
-        dossier_qr = os.path.join(settings.MEDIA_ROOT, "qr_codes")
-        os.makedirs(dossier_qr, exist_ok=True)
-
-        # Chemin du fichier image
-        nom_fichier = f"qr_{etudiant.id}.png"
-        chemin_fichier = os.path.join(dossier_qr, nom_fichier)
-
-        # Génération du QR
-        qr = qrcode.make(contenu)
-        qr.save(chemin_fichier)
-
-        # Mise à jour du chemin dans l'étudiant
-        etudiant.cheminCodeQr = f"qr_codes/{nom_fichier}"
-        etudiant.save()
-        
         parent = etudiant.parent
         annee = get_annee_active() 
         if not etudiant.inscriptions.get(anneeAcademique=annee):
@@ -2798,7 +2808,41 @@ def bulletinsSalleDeClasse(request, salleClasseId):
         "stats_classe": stats_classe,
     })
 
-# @login_required 
+
+CARTES_PAR_PAGE_IMPRESSION = 8  # 2 colonnes x 4 lignes, format carte 85mm x 55mm sur feuille A4
+
+@login_required
+@admin_required
+def cartesEleveSalleDeClasse(request, salleClasseId):
+    salleClasse = get_object_or_404(SalleDeClasse, id=salleClasseId)
+    annee = get_annee_active()
+
+    inscrits_classe = Inscription.objects.filter(
+        anneeAcademique=annee,
+        salleClasse=salleClasse,
+        etudiant__in=Etudiant.objects.filter(statut__in=['Actif', 'Suspendu'])
+    ).select_related('etudiant', 'salleClasse__niveau').order_by('etudiant__nom', 'etudiant__prenom')
+
+    inscrits_list = list(inscrits_classe)
+    for inscrit in inscrits_list:
+        assurer_qr_code_etudiant(inscrit.etudiant)
+
+    pages = [
+        inscrits_list[i:i + CARTES_PAR_PAGE_IMPRESSION]
+        for i in range(0, len(inscrits_list), CARTES_PAR_PAGE_IMPRESSION)
+    ]
+
+    messages.success(request, f"Cartes scolaires générées avec succès pour {len(inscrits_list)} élève(s). Année scolaire {annee}")
+
+    return render(request, 'cartesEleveSalleDeClasse.html', {
+        "salleClasse": salleClasse,
+        "annee": annee,
+        "pages": pages,
+        "tousInscrits": len(inscrits_list),
+    })
+
+
+# @login_required
 # @admin_required
 # def bulletinsSalleDeClasse(request, classe, id):
 #     # etudiant = get_object_or_404(Etudiant, matricule=matricule)
