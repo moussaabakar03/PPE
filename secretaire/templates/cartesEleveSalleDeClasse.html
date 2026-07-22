@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>AcadPro | Carte scolaire</title>
+    <title>AcadPro | Cartes élèves</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% include 'partial/head.html' %}
@@ -20,190 +20,6 @@
             --sc-gold-dark: #d6900f;
             --sc-ink: #1a1a2e;
             --sc-gray: #6b7280;
-        }
-
-        .sc-toolbar {
-            display: flex;
-            gap: 12px;
-        }
-
-        .sc-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            color: #fff;
-            transition: all .2s ease;
-        }
-
-        .sc-btn-print { background: var(--sc-navy); }
-        .sc-btn-print:hover { background: var(--sc-navy-light); }
-        .sc-btn-pdf { background: var(--sc-gold); }
-        .sc-btn-pdf:hover { background: var(--sc-gold-dark); }
-        .sc-btn:disabled { opacity: .65; cursor: not-allowed; }
-
-        .sc-single-wrapper {
-            display: flex;
-            justify-content: center;
-            padding: 50px 20px 60px;
-        }
-
-        .sc-card {
-            width: 340px;
-            height: 220px;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #d8dce6;
-            box-shadow: 0 10px 35px rgba(18, 33, 63, 0.15);
-            display: flex;
-            flex-direction: column;
-            font-family: 'Poppins', Arial, sans-serif;
-            background: #fff;
-        }
-
-        .sc-card-header {
-            background: linear-gradient(120deg, var(--sc-navy), var(--sc-navy-light));
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-        }
-
-        .sc-card-header .sc-logo {
-            width: 34px;
-            height: 34px;
-            object-fit: cover;
-            border-radius: 50%;
-            background: #fff;
-            flex-shrink: 0;
-        }
-
-        .sc-header-text {
-            flex-grow: 1;
-            line-height: 1.25;
-            min-width: 0;
-        }
-
-        .sc-school-name {
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: .3px;
-            white-space: nowrap;
-        }
-
-        .sc-card-title {
-            font-size: 9.5px;
-            color: var(--sc-gold);
-            font-weight: 600;
-            text-transform: uppercase;
-            white-space: nowrap;
-        }
-
-        .sc-year-badge {
-            font-size: 9.5px;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 3px 8px;
-            border-radius: 12px;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
-        .sc-card-body {
-            flex-grow: 1;
-            display: flex;
-            padding: 12px 14px;
-            gap: 12px;
-            min-height: 0;
-        }
-
-        .sc-photo {
-            width: 72px;
-            height: 104px;
-            border-radius: 6px;
-            background: #eef0f4;
-            overflow: hidden;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #b7bdc9;
-            font-size: 28px;
-        }
-
-        .sc-photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .sc-info {
-            flex-grow: 1;
-            min-width: 0;
-        }
-
-        .sc-name {
-            font-size: 13.5px;
-            font-weight: 700;
-            color: var(--sc-navy);
-            margin-bottom: 6px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .sc-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 8px;
-            font-size: 10.5px;
-            color: var(--sc-ink);
-            margin-bottom: 4px;
-        }
-
-        .sc-row span {
-            color: var(--sc-gray);
-            flex-shrink: 0;
-        }
-
-        .sc-row strong {
-            font-weight: 600;
-            text-align: right;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .sc-qr {
-            width: 58px;
-            height: 58px;
-            flex-shrink: 0;
-            align-self: flex-end;
-        }
-
-        .sc-qr img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .sc-card-footer {
-            background: #f7f8fb;
-            border-top: 1px solid #eef0f4;
-            padding: 5px 14px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 8.5px;
-            color: var(--sc-gray);
-        }
-
-        .sc-card-footer strong {
-            color: var(--sc-navy);
         }
 
         .sc-toolbar {
@@ -487,11 +303,12 @@
 
             <div class="dashboard-content-one">
                 <div class="breadcrumbs-area">
-                    <h3>Elèves</h3>
+                    <h3>Cartes scolaires</h3>
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                         <ul>
-                            <li><a href="{% url 'secretaire:detailEtudiant' etudiant.matricule parent.id %}"><i class="fa fa-arrow-left"></i> Retour</a></li>
-                            <li>Carte scolaire ({{ etudiant.nom }} {{ etudiant.prenom }})</li>
+                            <li><a href="{% url 'secretaire:studentParSalle' salleClasse.id %}"><i class="fa fa-arrow-left"></i> Retour</a></li>
+                            <li>{{ salleClasse.niveau.classe }} {{ salleClasse.nom }}</li>
+                            <li>Cartes élèves</li>
                         </ul>
                         <div class="sc-toolbar no-print">
                             <button class="sc-btn sc-btn-print" id="scBtnPrint" type="button">
@@ -504,46 +321,67 @@
                     </div>
                 </div>
 
-                <div class="sc-single-wrapper">
-                    <div class="sc-card" id="scCard">
-                        <div class="sc-card-header">
-                            <img class="sc-logo" src="{% static 'secretaire/img/logoAcad.png' %}" alt="Logo AcadPro">
-                            <div class="sc-header-text">
-                                <div class="sc-school-name">COLLÈGE ACADPRO</div>
-                                <div class="sc-card-title">Carte d'identité scolaire</div>
-                            </div>
-                            <div class="sc-year-badge">{{ annee.debutAnnee|date:"Y" }}-{{ annee.fintAnnee|date:"Y" }}</div>
-                        </div>
+                <p class="sc-summary">
+                    <i class="fa fa-users"></i>
+                    {{ tousInscrits }} élève{{ tousInscrits|pluralize }} —
+                    Année scolaire {{ annee.debutAnnee|date:"Y" }}-{{ annee.fintAnnee|date:"Y" }}
+                </p>
 
-                        <div class="sc-card-body">
-                            <div class="sc-photo">
-                                {% if etudiant.photo %}
-                                    <img src="{{ etudiant.photo.url }}" alt="Photo">
-                                {% else %}
-                                    <i class="fa fa-user"></i>
-                                {% endif %}
-                            </div>
-                            <div class="sc-info">
-                                <div class="sc-name">{{ etudiant.nom }} {{ etudiant.prenom }}</div>
-                                <div class="sc-row"><span>Matricule</span><strong>{{ etudiant.matricule }}</strong></div>
-                                <div class="sc-row"><span>Classe</span><strong>{{ inscrit.salleClasse.niveau.classe }} {{ inscrit.salleClasse.nom }}</strong></div>
-                                <div class="sc-row"><span>Né(e) le</span><strong>{{ etudiant.date_naissance|date:"d/m/Y" }}</strong></div>
-                                <div class="sc-row"><span>Sexe</span><strong>{{ etudiant.genre }}</strong></div>
-                                <div class="sc-row"><span>Contact</span><strong>{{ etudiant.telephone }}</strong></div>
-                            </div>
-                            <div class="sc-qr">
-                                {% if etudiant.cheminCodeQr %}
-                                    <img src="{{ etudiant.cheminCodeQr.url }}" alt="QR Code">
-                                {% endif %}
-                            </div>
-                        </div>
+                {% if pages %}
+                    <div class="sc-pages-wrapper" id="scPagesWrapper">
+                        {% for page in pages %}
+                            <div class="sc-print-page">
+                                <div class="sc-cards-grid">
+                                    {% for inscrit in page %}
+                                        <div class="sc-card">
+                                            <div class="sc-card-header">
+                                                <img class="sc-logo" src="{% static 'secretaire/img/logoAcad.png' %}" alt="Logo AcadPro">
+                                                <div class="sc-header-text">
+                                                    <div class="sc-school-name">COLLÈGE ACADPRO</div>
+                                                    <div class="sc-card-title">Carte d'identité scolaire</div>
+                                                </div>
+                                                <div class="sc-year-badge">{{ annee.debutAnnee|date:"Y" }}-{{ annee.fintAnnee|date:"Y" }}</div>
+                                            </div>
 
-                        <div class="sc-card-footer">
-                            <span>MAT : <strong>{{ etudiant.matricule }}</strong></span>
-                            <span>AcadPro &bull; (+228) 63 79 77 19</span>
-                        </div>
+                                            <div class="sc-card-body">
+                                                <div class="sc-photo">
+                                                    {% if inscrit.etudiant.photo %}
+                                                        <img src="{{ inscrit.etudiant.photo.url }}" alt="Photo">
+                                                    {% else %}
+                                                        <i class="fa fa-user"></i>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="sc-info">
+                                                    <div class="sc-name">{{ inscrit.etudiant.nom }} {{ inscrit.etudiant.prenom }}</div>
+                                                    <div class="sc-row"><span>Matricule</span><strong>{{ inscrit.etudiant.matricule }}</strong></div>
+                                                    <div class="sc-row"><span>Classe</span><strong>{{ inscrit.salleClasse.niveau.classe }} {{ inscrit.salleClasse.nom }}</strong></div>
+                                                    <div class="sc-row"><span>Né(e) le</span><strong>{{ inscrit.etudiant.date_naissance|date:"d/m/Y" }}</strong></div>
+                                                    <div class="sc-row"><span>Sexe</span><strong>{{ inscrit.etudiant.genre }}</strong></div>
+                                                    <div class="sc-row"><span>Contact</span><strong>{{ inscrit.etudiant.telephone }}</strong></div>
+                                                </div>
+                                                <div class="sc-qr">
+                                                    {% if inscrit.etudiant.cheminCodeQr %}
+                                                        <img src="{{ inscrit.etudiant.cheminCodeQr.url }}" alt="QR Code">
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+
+                                            <div class="sc-card-footer">
+                                                <span>MAT : <strong>{{ inscrit.etudiant.matricule }}</strong></span>
+                                                <span>AcadPro &bull; (+228) 63 79 77 19</span>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
-                </div>
+                {% else %}
+                    <div class="sc-empty">
+                        <i class="fa fa-id-card"></i>
+                        Aucun élève inscrit dans cette salle pour l'année en cours.
+                    </div>
+                {% endif %}
 
                 {% include 'partial/copyright.html' %}
             </div>
@@ -563,7 +401,7 @@
     <!-- Custom Js -->
     <script src="{% static 'secretaire/js/main.js' %}"></script>
 
-    <!-- jsPDF + html2canvas pour le téléchargement PDF -->
+    <!-- jsPDF + html2canvas pour le téléchargement PDF (même mécanisme que la carte individuelle) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
@@ -575,15 +413,33 @@
         document.getElementById('scBtnPdf').addEventListener('click', function () {
             const btn = this;
             const originalHtml = btn.innerHTML;
+            const pages = document.querySelectorAll('#scPagesWrapper .sc-print-page');
+
+            if (!pages.length) {
+                return;
+            }
+
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...';
 
-            html2canvas(document.getElementById('scCard'), { scale: 3, useCORS: true }).then(function (canvas) {
-                const imgData = canvas.toDataURL('image/png');
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [85, 55] });
-                pdf.addImage(imgData, 'PNG', 0, 0, 85, 55);
-                pdf.save('carte_scolaire_{{ etudiant.matricule }}.pdf');
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+            let chain = Promise.resolve();
+            pages.forEach((pageEl, index) => {
+                chain = chain.then(() => html2canvas(pageEl, { scale: 2, useCORS: true }).then((canvas) => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pageWidth = pdf.internal.pageSize.getWidth();
+                    const pageHeight = (canvas.height * pageWidth) / canvas.width;
+                    if (index > 0) {
+                        pdf.addPage();
+                    }
+                    pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight);
+                }));
+            });
+
+            chain.then(function () {
+                pdf.save('cartes_scolaires_salle_{{ salleClasse.id }}.pdf');
             }).catch(function (err) {
                 console.error(err);
                 alert("Une erreur est survenue lors de la génération du PDF.");

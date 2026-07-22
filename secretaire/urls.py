@@ -93,6 +93,7 @@ urlpatterns = [
     path('ajoutEmploiTemps/<int:id1>/<int:id3>/', views.ajoutEmploiTemps, name='ajoutEmploiTemps'),
     path('supprimerEmploiTemps/<int:id1>/', views.supprimerEmploiTemps, name='supprimerEmploiTemps'),
     path('bulletinsSalleDeClasse/<int:salleClasseId>/', views.bulletinsSalleDeClasse, name='bulletinsSalleDeClasse'),
+    path('cartesEleveSalleDeClasse/<int:salleClasseId>/', views.cartesEleveSalleDeClasse, name='cartesEleveSalleDeClasse'),
     path("etendre-salle/<int:idEleve>/<int:idSalleClasse>/<int:idAnnee>/", views.etendreSalleClasse, name="etendreSalleClasse"),
 
     
