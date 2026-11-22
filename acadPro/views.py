@@ -39,14 +39,17 @@ def contact(request):
 
             contenu_message = f"De: {nom} <{email}>\n\n{message}"
 
-            send_mail(
-                sujet,
-                contenu_message,
-                settings.EMAIL_HOST_USER,
-                [settings.EMAIL_HOST_USER],
-                fail_silently=False,
-            )
-            messages.success(request, "Votre message a bien été envoyé. Notre équipe vous répondra dans les plus brefs délais.")
+            try:
+                send_mail(
+                    sujet,
+                    contenu_message,
+                    settings.EMAIL_HOST_USER,
+                    [settings.EMAIL_HOST_USER],
+                    fail_silently=False,
+                )
+                messages.success(request, "Votre message a bien été envoyé. Notre équipe vous répondra dans les plus brefs délais.")
+            except Exception as e:
+                messages.error(request, f"Échec de l'envoi de l'email : {e}")
             return redirect('contact')
         messages.error(request, "Veuillez corriger les erreurs du formulaire avant d'envoyer votre message.")
     else:
@@ -95,14 +98,18 @@ def receptionDossierStudent(request):
 
             contenu_message = f"De: <{email}>\n\n{message}"
 
-            send_mail(
-                sujet,
-                contenu_message,
-                settings.EMAIL_HOST_USER,
-                [email],# Mets ici ton adresse de réception
-                fail_silently=False,
-            )
-            message_envoye = True
+            try:
+                send_mail(
+                    sujet,
+                    contenu_message,
+                    settings.EMAIL_HOST_USER,
+                    [email],# Mets ici ton adresse de réception
+                    fail_silently=False,
+                )
+                messages.success(request, "Message envoyé avec succès!")
+                message_envoye = True
+            except Exception as e:
+                messages.error(request, f"Échec de l'envoi de l'email : {e}")
             
             
     receptions = depotDossierEtudiant.objects.all()
@@ -131,14 +138,18 @@ def contact_view(request):
 
             contenu_message = f"De: {nom} <{email}>\n\n{message}"
 
-            send_mail(
-                sujet,
-                contenu_message,
-                settings.EMAIL_HOST_USER,
-                ['alimoussaabakar03@gmail.com'],  # Mets ici ton adresse de réception
-                fail_silently=False,
-            )
-            message_envoye = True
+            try:
+                send_mail(
+                    sujet,
+                    contenu_message,
+                    settings.EMAIL_HOST_USER,
+                    ['alimoussaabakar03@gmail.com'],  # Mets ici ton adresse de réception
+                    fail_silently=False,
+                )
+                messages.success(request, "Message envoyé avec succès!")
+                message_envoye = True
+            except Exception as e:
+                messages.error(request, f"Échec de l'envoi de l'email : {e}")
 
     return render(request, 'accueil/sendMail.html', {'form': form, 'message_envoye': message_envoye})
 

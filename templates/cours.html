@@ -19,387 +19,163 @@
         --ap-radius: 18px;
     }
 
-    body {
-        font-family: 'Poppins', sans-serif;
-        color: var(--ap-ink);
-    }
+    body { font-family: 'Poppins', sans-serif; color: var(--ap-ink); }
 
-    .container-ap {
-        max-width: 1180px;
-        margin: 0 auto;
-        padding: 0 24px;
-    }
-
-    .ap-section {
-        padding: 70px 0 90px;
-    }
+    .container-ap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+    .ap-section { padding: 70px 0 90px; }
 
     .ap-eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: var(--ap-gold-dark);
-        background: rgba(244, 166, 35, 0.12);
-        font-weight: 600;
-        font-size: 13px;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        padding: 6px 16px;
-        border-radius: 50px;
-        margin-bottom: 18px;
+        display: inline-flex; align-items: center; gap: 8px;
+        color: var(--ap-gold-dark); background: rgba(244, 166, 35, 0.12);
+        font-weight: 600; font-size: 13px; letter-spacing: 0.5px;
+        text-transform: uppercase; padding: 6px 16px;
+        border-radius: 50px; margin-bottom: 18px;
     }
 
     /* PAGE HEADER */
     .ap-page-header {
         background: linear-gradient(120deg, var(--ap-navy) 0%, var(--ap-navy-light) 100%);
-        padding: 80px 0;
-        text-align: center;
+        padding: 80px 0; text-align: center;
     }
-
-    .ap-page-header .ap-eyebrow {
-        background: rgba(244, 166, 35, 0.18);
-    }
-
-    .ap-page-header h1 {
-        color: #ffffff;
-        font-size: 42px;
-        font-weight: 800;
-        margin-bottom: 14px;
-    }
-
-    .ap-page-header p {
-        color: rgba(255,255,255,0.75);
-        max-width: 560px;
-        margin: 0 auto;
-        font-size: 16px;
-    }
+    .ap-page-header .ap-eyebrow { background: rgba(244, 166, 35, 0.18); }
+    .ap-page-header h1 { color: #fff; font-size: 42px; font-weight: 800; margin-bottom: 14px; }
+    .ap-page-header p { color: rgba(255,255,255,0.75); max-width: 600px; margin: 0 auto; font-size: 16px; }
 
     /* LAYOUT */
-    .ap-cours-layout {
-        display: flex;
-        gap: 36px;
-        align-items: flex-start;
-    }
-
-    .ap-sidebar {
-        flex: 0 0 280px;
-        position: sticky;
-        top: 20px;
-    }
+    .ap-cours-layout { display: flex; gap: 36px; align-items: flex-start; }
+    .ap-sidebar { flex: 0 0 280px; position: sticky; top: 20px; }
 
     .ap-filter-card {
-        background: #ffffff;
-        border: 1px solid #eef0f4;
-        border-radius: var(--ap-radius);
-        padding: 26px;
-        margin-bottom: 24px;
+        background: #ffffff; border: 1px solid #eef0f4;
+        border-radius: var(--ap-radius); padding: 26px; margin-bottom: 24px;
     }
-
-    .ap-filter-card h3 {
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--ap-navy);
-        margin: 0;
-    }
+    .ap-filter-card h3 { font-size: 16px; font-weight: 600; color: var(--ap-navy); margin: 0; }
 
     .ap-filter-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
+        display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
     }
-
     .ap-filter-count {
-        background: var(--ap-gold);
-        color: #fff;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        font-weight: 600;
+        background: var(--ap-gold); color: #fff; width: 24px; height: 24px;
+        border-radius: 50%; display: inline-flex; align-items: center;
+        justify-content: center; font-size: 12px; font-weight: 600;
     }
 
-    .ap-filter-group {
-        margin-bottom: 22px;
-    }
-
+    .ap-filter-group { margin-bottom: 22px; }
     .ap-filter-group h5 {
-        font-size: 13px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.4px;
-        color: var(--ap-gray);
-        margin-bottom: 12px;
+        font-size: 13px; font-weight: 600; text-transform: uppercase;
+        letter-spacing: 0.4px; color: var(--ap-gray); margin-bottom: 12px;
     }
 
     .level-btn {
-        display: inline-block;
-        padding: 6px 16px;
-        margin: 0 6px 6px 0;
-        background: var(--ap-bg-soft);
-        border-radius: 50px;
-        color: var(--ap-ink);
-        font-size: 13.5px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        border: 1px solid #e9ebf1;
+        display: inline-block; padding: 6px 16px; margin: 0 6px 6px 0;
+        background: var(--ap-bg-soft); border-radius: 50px;
+        color: var(--ap-ink); font-size: 13.5px; font-weight: 500;
+        cursor: pointer; transition: all 0.2s ease; border: 1px solid #e9ebf1;
     }
-
     .level-btn.active, .level-btn:hover {
-        background: var(--ap-navy);
-        color: #fff;
-        border-color: var(--ap-navy);
+        background: var(--ap-navy); color: #fff; border-color: var(--ap-navy);
     }
 
-    .ap-filter-group .form-check {
-        margin-bottom: 8px;
-    }
-
+    .ap-filter-group .form-check { margin-bottom: 8px; }
     .ap-filter-group .form-check-input:checked {
-        background-color: var(--ap-navy);
-        border-color: var(--ap-navy);
+        background-color: var(--ap-navy); border-color: var(--ap-navy);
     }
-
-    .ap-filter-group .form-check-label {
-        font-size: 14px;
-        color: var(--ap-ink);
-    }
-
+    .ap-filter-group .form-check-label { font-size: 14px; color: var(--ap-ink); }
     .ap-filter-group select.form-control {
-        border-radius: 10px;
-        border: 1px solid #e9ebf1;
-        font-size: 14px;
-        padding: 9px 12px;
+        border-radius: 10px; border: 1px solid #e9ebf1; font-size: 14px; padding: 9px 12px;
     }
 
     .ap-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 12px 20px;
-        border-radius: 50px;
-        font-weight: 600;
-        font-size: 14px;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        border: none;
-        width: 100%;
-        cursor: pointer;
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        padding: 12px 20px; border-radius: 50px; font-weight: 600; font-size: 14px;
+        text-decoration: none; transition: all 0.2s ease; border: none;
+        width: 100%; cursor: pointer;
     }
-
-    .ap-btn-primary {
-        background: var(--ap-gold);
-        color: #ffffff;
-    }
-
-    .ap-btn-primary:hover {
-        background: var(--ap-gold-dark);
-        color: #fff;
-    }
+    .ap-btn-primary { background: var(--ap-gold); color: #ffffff; }
+    .ap-btn-primary:hover { background: var(--ap-gold-dark); color: #fff; }
 
     .reset-filters {
-        display: block;
-        text-align: center;
-        margin-top: 14px;
-        color: var(--ap-gray);
-        font-size: 13.5px;
-        cursor: pointer;
+        display: block; text-align: center; margin-top: 14px;
+        color: var(--ap-gray); font-size: 13.5px; cursor: pointer;
     }
-
-    .reset-filters:hover {
-        color: var(--ap-navy);
-        text-decoration: underline;
-    }
+    .reset-filters:hover { color: var(--ap-navy); text-decoration: underline; }
 
     .ap-quicklinks h5 {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--ap-navy);
-        margin-bottom: 14px;
+        font-size: 14px; font-weight: 600; color: var(--ap-navy); margin-bottom: 14px;
     }
-
-    .ap-quicklinks ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .ap-quicklinks li {
-        margin-bottom: 12px;
-    }
-
+    .ap-quicklinks ul { list-style: none; padding: 0; margin: 0; }
+    .ap-quicklinks li { margin-bottom: 12px; }
     .ap-quicklinks a {
-        color: var(--ap-ink);
-        text-decoration: none;
-        font-size: 13.5px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        color: var(--ap-ink); text-decoration: none; font-size: 13.5px;
+        display: flex; align-items: center; gap: 10px;
     }
-
-    .ap-quicklinks a i {
-        color: var(--ap-gold-dark);
-        width: 16px;
-    }
-
-    .ap-quicklinks a:hover {
-        color: var(--ap-navy);
-        font-weight: 600;
-    }
+    .ap-quicklinks a i { color: var(--ap-gold-dark); width: 16px; }
+    .ap-quicklinks a:hover { color: var(--ap-navy); font-weight: 600; }
 
     /* MAIN */
     .ap-main-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-        flex-wrap: wrap;
-        gap: 10px;
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 24px; flex-wrap: wrap; gap: 10px;
     }
+    .ap-main-head h2 { font-size: 24px; font-weight: 700; color: var(--ap-navy); margin: 0; }
+    #results-count { color: var(--ap-gray); font-size: 14px; }
 
-    .ap-main-head h2 {
-        font-size: 24px;
-        font-weight: 700;
-        color: var(--ap-navy);
-        margin: 0;
-    }
-
-    #results-count {
-        color: var(--ap-gray);
-        font-size: 14px;
-    }
-
-    .subject-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-    }
+    .subject-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
 
     .subject-card {
-        background: #ffffff;
-        border-radius: var(--ap-radius);
-        overflow: hidden;
-        border: 1px solid #eef0f4;
-        transition: all 0.25s ease;
+        background: #ffffff; border-radius: var(--ap-radius); overflow: hidden;
+        border: 1px solid #eef0f4; transition: all 0.25s ease;
     }
-
     .subject-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 20px 45px rgba(18, 33, 63, 0.1);
+        transform: translateY(-6px); box-shadow: 0 20px 45px rgba(18, 33, 63, 0.1);
     }
 
     .subject-img {
-        height: 160px;
-        background-size: cover;
-        background-position: center;
-        position: relative;
+        height: 160px; background-size: cover; background-position: center; position: relative;
     }
-
     .subject-img::after {
-        content: '';
-        position: absolute;
-        inset: 0;
+        content: ''; position: absolute; inset: 0;
         background: linear-gradient(180deg, rgba(18,33,63,0) 40%, rgba(18,33,63,0.55) 100%);
     }
 
     .domain-indicator {
-        position: absolute;
-        top: 14px;
-        right: 14px;
-        padding: 5px 12px;
-        border-radius: 50px;
-        font-size: 11.5px;
-        font-weight: 600;
-        color: white;
-        z-index: 2;
+        position: absolute; top: 14px; right: 14px; padding: 5px 12px;
+        border-radius: 50px; font-size: 11.5px; font-weight: 600;
+        color: white; z-index: 2;
     }
-
     .scientifique { background-color: #2563eb; }
     .lettres { background-color: #dc2626; }
     .sciences-humaines { background-color: #16a34a; }
     .arts { background-color: #9333ea; }
+    .eveil { background-color: #f59e0b; }
 
-    .subject-info {
-        padding: 22px;
-    }
-
-    .subject-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: var(--ap-navy);
-        margin-bottom: 8px;
-    }
+    .subject-info { padding: 22px; }
+    .subject-title { font-size: 18px; font-weight: 600; color: var(--ap-navy); margin-bottom: 8px; }
 
     .subject-meta {
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 8px;
-        font-size: 13px;
-        color: var(--ap-gray);
-        margin-bottom: 12px;
+        display: flex; justify-content: space-between; flex-wrap: wrap;
+        gap: 8px; font-size: 13px; color: var(--ap-gray); margin-bottom: 12px;
     }
-
-    .subject-meta i {
-        margin-right: 5px;
-        color: var(--ap-gold-dark);
-    }
-
+    .subject-meta i { margin-right: 5px; color: var(--ap-gold-dark); }
     .subject-info p {
-        color: var(--ap-gray);
-        font-size: 13.5px;
-        line-height: 1.7;
-        margin-bottom: 16px;
+        color: var(--ap-gray); font-size: 13.5px; line-height: 1.7; margin-bottom: 16px;
     }
 
     .badge-level {
-        background: var(--ap-bg-soft);
-        color: var(--ap-navy);
-        padding: 3px 10px;
-        border-radius: 50px;
-        font-size: 11.5px;
-        font-weight: 600;
-        margin-right: 4px;
-        display: inline-block;
-        margin-bottom: 4px;
+        background: var(--ap-bg-soft); color: var(--ap-navy); padding: 3px 10px;
+        border-radius: 50px; font-size: 11.5px; font-weight: 600;
+        margin-right: 4px; display: inline-block; margin-bottom: 4px;
         border: 1px solid #e9ebf1;
     }
 
     .no-results {
-        text-align: center;
-        padding: 60px 20px;
-        background: #ffffff;
-        border-radius: var(--ap-radius);
-        border: 1px solid #eef0f4;
+        text-align: center; padding: 60px 20px; background: #ffffff;
+        border-radius: var(--ap-radius); border: 1px solid #eef0f4;
     }
-
-    .no-results i {
-        font-size: 40px;
-        color: #d9dce4;
-        margin-bottom: 16px;
-    }
-
-    .no-results h3 {
-        font-size: 18px;
-        color: var(--ap-navy);
-        margin-bottom: 8px;
-    }
-
-    .no-results p {
-        color: var(--ap-gray);
-        margin-bottom: 18px;
-    }
-
-    .no-results .ap-btn {
-        width: auto;
-        display: inline-flex;
-        padding: 12px 26px;
-    }
+    .no-results i { font-size: 40px; color: #d9dce4; margin-bottom: 16px; }
+    .no-results h3 { font-size: 18px; color: var(--ap-navy); margin-bottom: 8px; }
+    .no-results p { color: var(--ap-gray); margin-bottom: 18px; }
+    .no-results .ap-btn { width: auto; display: inline-flex; padding: 12px 26px; }
 
     @media (max-width: 991px) {
         .ap-cours-layout { flex-direction: column; }
@@ -417,7 +193,7 @@
     <div class="container-ap">
         <span class="ap-eyebrow"><i class="fas fa-book-open"></i> Programme pédagogique</span>
         <h1>Nos matières scolaires</h1>
-        <p>Découvrez le programme pédagogique complet du collège et les compétences développées dans chaque discipline.</p>
+        <p>Découvrez le programme pédagogique complet d'AcadPro, de la Maternelle à la Terminale, et les compétences développées à chaque étape du parcours de l'élève.</p>
     </div>
 </section>
 
@@ -434,33 +210,37 @@
                     </div>
 
                     <div class="ap-filter-group">
-                        <h5>Niveau scolaire</h5>
+                        <h5>Cycle scolaire</h5>
                         <div class="d-flex flex-wrap">
                             <span class="level-btn active" data-level="tous">Tous</span>
-                            <span class="level-btn" data-level="6eme">6ème</span>
-                            <span class="level-btn" data-level="5eme">5ème</span>
-                            <span class="level-btn" data-level="4eme">4ème</span>
-                            <span class="level-btn" data-level="3eme">3ème</span>
+                            <span class="level-btn" data-level="maternelle">Maternelle</span>
+                            <span class="level-btn" data-level="primaire">Primaire</span>
+                            <span class="level-btn" data-level="college">Collège</span>
+                            <span class="level-btn" data-level="lycee">Lycée</span>
                         </div>
                     </div>
 
                     <div class="ap-filter-group">
                         <h5>Domaine</h5>
                         <div class="form-check">
-                            <input class="form-check-input domain-filter" type="checkbox" id="domain1" value="scientifique" checked>
-                            <label class="form-check-label" for="domain1">Scientifique</label>
+                            <input class="form-check-input domain-filter" type="checkbox" id="domain1" value="eveil" checked>
+                            <label class="form-check-label" for="domain1">Éveil &amp; fondamentaux</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input domain-filter" type="checkbox" id="domain2" value="lettres" checked>
-                            <label class="form-check-label" for="domain2">Lettres &amp; langues</label>
+                            <input class="form-check-input domain-filter" type="checkbox" id="domain2" value="scientifique" checked>
+                            <label class="form-check-label" for="domain2">Scientifique</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input domain-filter" type="checkbox" id="domain3" value="sciences-humaines" checked>
-                            <label class="form-check-label" for="domain3">Sciences humaines</label>
+                            <input class="form-check-input domain-filter" type="checkbox" id="domain3" value="lettres" checked>
+                            <label class="form-check-label" for="domain3">Lettres &amp; langues</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input domain-filter" type="checkbox" id="domain4" value="arts" checked>
-                            <label class="form-check-label" for="domain4">Arts &amp; sport</label>
+                            <input class="form-check-input domain-filter" type="checkbox" id="domain4" value="sciences-humaines" checked>
+                            <label class="form-check-label" for="domain4">Sciences humaines</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input domain-filter" type="checkbox" id="domain5" value="arts" checked>
+                            <label class="form-check-label" for="domain5">Arts &amp; sport</label>
                         </div>
                     </div>
 
@@ -468,14 +248,16 @@
                         <h5>Enseignant</h5>
                         <select class="form-control" id="teacher-filter">
                             <option value="tous">Tous les enseignants</option>
-                            <option value="Thomas Dubois">Thomas Dubois (Mathématiques)</option>
-                            <option value="Sophie Martin">Sophie Martin (Français)</option>
-                            <option value="Émilie Lambert">Émilie Lambert (Histoire-Géo)</option>
-                            <option value="Pierre Moreau">Pierre Moreau (SVT)</option>
-                            <option value="Marc Lefèvre">Marc Lefèvre (Physique-Chimie)</option>
-                            <option value="Lucie Bernard">Lucie Bernard (Anglais)</option>
-                            <option value="Philippe Durand">Philippe Durand (Technologie)</option>
-                            <option value="Julien Petit">Julien Petit (EPS)</option>
+                            <option value="M. Komlan Agbeko">M. Komlan Agbeko (Mathématiques)</option>
+                            <option value="Mme Akossiwa Mensah">Mme Akossiwa Mensah (Français)</option>
+                            <option value="M. Yao Adjovi">M. Yao Adjovi (Histoire-Géo)</option>
+                            <option value="Mme Afi Amégan">Mme Afi Amégan (SVT)</option>
+                            <option value="M. Kossi Adjalla">M. Kossi Adjalla (Physique-Chimie)</option>
+                            <option value="Mme Sena Agbodjan">Mme Sena Agbodjan (Anglais)</option>
+                            <option value="M. Edem Atsu">M. Edem Atsu (Technologie)</option>
+                            <option value="M. Amégan Kodjo">M. Amégan Kodjo (EPS)</option>
+                            <option value="M. Kafui Sossou">M. Kafui Sossou (Philosophie)</option>
+                            <option value="Mme Ama Dossou">Mme Ama Dossou (Éveil)</option>
                         </select>
                     </div>
 
@@ -489,7 +271,7 @@
                         <li><a href="#"><i class="fas fa-book"></i> Programmes officiels</a></li>
                         <li><a href="#"><i class="fas fa-calendar-alt"></i> Emplois du temps</a></li>
                         <li><a href="#"><i class="fas fa-chalkboard-teacher"></i> Ressources pédagogiques</a></li>
-                        <li><a href="#"><i class="fas fa-graduation-cap"></i> Diplôme National du Brevet</a></li>
+                        <li><a href="#"><i class="fas fa-graduation-cap"></i> Examens : BEPC &amp; Baccalauréat</a></li>
                     </ul>
                 </div>
             </aside>
@@ -498,12 +280,33 @@
             <div style="flex: 1 1 auto; min-width: 0;">
                 <div class="ap-main-head">
                     <h2>Toutes les matières</h2>
-                    <div id="results-count">8 matières trouvées</div>
+                    <div id="results-count">10 matières trouvées</div>
                 </div>
 
                 <div class="subject-grid" id="subjects-container">
+                    <!-- Éveil (Maternelle / Primaire) -->
+                    <div data-levels="maternelle primaire" data-domain="eveil" data-teacher="Ama Dossou">
+                        <div class="subject-card">
+                            <div class="subject-img" style="background-image: url('{% static 'accueil/images/eveil.jpg' %}'); background-color:#f59e0b;">
+                                <span class="domain-indicator eveil">Éveil</span>
+                            </div>
+                            <div class="subject-info">
+                                <h3 class="subject-title">Éveil &amp; premiers apprentissages</h3>
+                                <div class="subject-meta">
+                                    <span><i class="fas fa-clock"></i> Quotidien</span>
+                                    <span><i class="fas fa-user-graduate"></i> Ama Dossou</span>
+                                </div>
+                                <p>Langage, motricité, découverte du monde et socialisation. Un accompagnement bienveillant pour poser les bases du plaisir d'apprendre dès la Maternelle et le Primaire.</p>
+                                <div>
+                                    <span class="badge-level">Maternelle</span>
+                                    <span class="badge-level">Primaire</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Mathématiques -->
-                    <div data-levels="6eme 5eme 4eme 3eme" data-domain="scientifique" data-teacher="Thomas Dubois">
+                    <div data-levels="maternelle primaire college lycee" data-domain="scientifique" data-teacher="Komlan Agbeko">
                         <div class="subject-card">
                             <div class="subject-img" style="background-image: url('{% static 'accueil/images/maths.png' %}');">
                                 <span class="domain-indicator scientifique">Scientifique</span>
@@ -511,22 +314,22 @@
                             <div class="subject-info">
                                 <h3 class="subject-title">Mathématiques</h3>
                                 <div class="subject-meta">
-                                    <span><i class="fas fa-clock"></i> 4h/semaine</span>
-                                    <span><i class="fas fa-user-graduate"></i> Thomas Dubois</span>
+                                    <span><i class="fas fa-clock"></i> 4h à 5h/semaine</span>
+                                    <span><i class="fas fa-user-graduate"></i> Komlan Agbeko</span>
                                 </div>
-                                <p>Développement des compétences en algèbre, géométrie et calcul. Préparation au raisonnement logique et à la résolution de problèmes complexes.</p>
+                                <p>Du calcul et des nombres au Primaire à l'algèbre, la géométrie et l'analyse au Lycée. Développement du raisonnement logique et de la résolution de problèmes.</p>
                                 <div>
-                                    <span class="badge-level">6ème</span>
-                                    <span class="badge-level">5ème</span>
-                                    <span class="badge-level">4ème</span>
-                                    <span class="badge-level">3ème</span>
+                                    <span class="badge-level">Maternelle</span>
+                                    <span class="badge-level">Primaire</span>
+                                    <span class="badge-level">Collège</span>
+                                    <span class="badge-level">Lycée</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Français -->
-                    <div data-levels="6eme 5eme 4eme 3eme" data-domain="lettres" data-teacher="Sophie Martin">
+                    <div data-levels="maternelle primaire college lycee" data-domain="lettres" data-teacher="Akossiwa Mensah">
                         <div class="subject-card">
                             <div class="subject-img" style="background-image: url('{% static 'accueil/images/fr.png' %}');">
                                 <span class="domain-indicator lettres">Lettres &amp; langues</span>
@@ -534,22 +337,22 @@
                             <div class="subject-info">
                                 <h3 class="subject-title">Français</h3>
                                 <div class="subject-meta">
-                                    <span><i class="fas fa-clock"></i> 4h30/semaine</span>
-                                    <span><i class="fas fa-user-graduate"></i> Sophie Martin</span>
+                                    <span><i class="fas fa-clock"></i> 4h à 5h/semaine</span>
+                                    <span><i class="fas fa-user-graduate"></i> Akossiwa Mensah</span>
                                 </div>
-                                <p>Maîtrise de la langue française, étude de textes littéraires, expression écrite et orale. Développement de l'esprit critique et de l'argumentation.</p>
+                                <p>De l'apprentissage de la lecture et de l'écriture à l'étude des textes littéraires et à l'argumentation. Maîtrise de la langue française et développement de l'esprit critique.</p>
                                 <div>
-                                    <span class="badge-level">6ème</span>
-                                    <span class="badge-level">5ème</span>
-                                    <span class="badge-level">4ème</span>
-                                    <span class="badge-level">3ème</span>
+                                    <span class="badge-level">Maternelle</span>
+                                    <span class="badge-level">Primaire</span>
+                                    <span class="badge-level">Collège</span>
+                                    <span class="badge-level">Lycée</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Histoire-Géographie -->
-                    <div data-levels="6eme 5eme 4eme 3eme" data-domain="sciences-humaines" data-teacher="Émilie Lambert">
+                    <div data-levels="primaire college lycee" data-domain="sciences-humaines" data-teacher="Yao Adjovi">
                         <div class="subject-card">
                             <div class="subject-img" style="background-image: url('{% static 'accueil/images/hg.png' %}');">
                                 <span class="domain-indicator sciences-humaines">Sciences humaines</span>
@@ -557,22 +360,21 @@
                             <div class="subject-info">
                                 <h3 class="subject-title">Histoire-Géographie</h3>
                                 <div class="subject-meta">
-                                    <span><i class="fas fa-clock"></i> 3h/semaine</span>
-                                    <span><i class="fas fa-user-graduate"></i> Émilie Lambert</span>
+                                    <span><i class="fas fa-clock"></i> 2h à 3h/semaine</span>
+                                    <span><i class="fas fa-user-graduate"></i> Yao Adjovi</span>
                                 </div>
-                                <p>Étude des grandes périodes historiques et des enjeux géographiques contemporains. Développement de l'esprit critique et de la compréhension du monde.</p>
+                                <p>Des grandes périodes historiques aux enjeux géographiques contemporains. Compréhension du monde, des sociétés et développement de l'esprit critique.</p>
                                 <div>
-                                    <span class="badge-level">6ème</span>
-                                    <span class="badge-level">5ème</span>
-                                    <span class="badge-level">4ème</span>
-                                    <span class="badge-level">3ème</span>
+                                    <span class="badge-level">Primaire</span>
+                                    <span class="badge-level">Collège</span>
+                                    <span class="badge-level">Lycée</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- SVT -->
-                    <div data-levels="6eme 5eme 4eme 3eme" data-domain="scientifique" data-teacher="Pierre Moreau">
+                    <div data-levels="primaire college lycee" data-domain="scientifique" data-teacher="Afi Amégan">
                         <div class="subject-card">
                             <div class="subject-img" style="background-image: url('{% static 'accueil/images/svt.png' %}');">
                                 <span class="domain-indicator scientifique">Scientifique</span>
@@ -580,22 +382,21 @@
                             <div class="subject-info">
                                 <h3 class="subject-title">Sciences de la Vie et de la Terre</h3>
                                 <div class="subject-meta">
-                                    <span><i class="fas fa-clock"></i> 1h30/semaine</span>
-                                    <span><i class="fas fa-user-graduate"></i> Pierre Moreau</span>
+                                    <span><i class="fas fa-clock"></i> 1h30 à 3h/semaine</span>
+                                    <span><i class="fas fa-user-graduate"></i> Afi Amégan</span>
                                 </div>
-                                <p>Étude du vivant, de la Terre et de l'environnement. Démarche scientifique, expérimentation et développement de l'esprit d'observation.</p>
+                                <p>Étude du vivant, de la Terre et de l'environnement. Démarche scientifique, expérimentation et développement de l'esprit d'observation, du Primaire au Lycée.</p>
                                 <div>
-                                    <span class="badge-level">6ème</span>
-                                    <span class="badge-level">5ème</span>
-                                    <span class="badge-level">4ème</span>
-                                    <span class="badge-level">3ème</span>
+                                    <span class="badge-level">Primaire</span>
+                                    <span class="badge-level">Collège</span>
+                                    <span class="badge-level">Lycée</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Physique-Chimie -->
-                    <div data-levels="5eme 4eme 3eme" data-domain="scientifique" data-teacher="Marc Lefèvre">
+                    <div data-levels="college lycee" data-domain="scientifique" data-teacher="Kossi Adjalla">
                         <div class="subject-card">
                             <div class="subject-img" style="background-image: url('{% static 'accueil/images/pc.png' %}');">
                                 <span class="domain-indicator scientifique">Scientifique</span>
@@ -603,21 +404,20 @@
                             <div class="subject-info">
                                 <h3 class="subject-title">Physique-Chimie</h3>
                                 <div class="subject-meta">
-                                    <span><i class="fas fa-clock"></i> 1h30/semaine</span>
-                                    <span><i class="fas fa-user-graduate"></i> Marc Lefèvre</span>
+                                    <span><i class="fas fa-clock"></i> 1h30 à 4h/semaine</span>
+                                    <span><i class="fas fa-user-graduate"></i> Kossi Adjalla</span>
                                 </div>
-                                <p>Découverte des phénomènes physiques et chimiques. Expérimentation, démarche scientifique et applications concrètes dans la vie quotidienne.</p>
+                                <p>Découverte des phénomènes physiques et chimiques. Expérimentation, démarche scientifique et applications concrètes dans la vie quotidienne, du Collège au Lycée.</p>
                                 <div>
-                                    <span class="badge-level">5ème</span>
-                                    <span class="badge-level">4ème</span>
-                                    <span class="badge-level">3ème</span>
+                                    <span class="badge-level">Collège</span>
+                                    <span class="badge-level">Lycée</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Anglais -->
-                    <div data-levels="6eme 5eme 4eme 3eme" data-domain="lettres" data-teacher="Lucie Bernard">
+                    <div data-levels="primaire college lycee" data-domain="lettres" data-teacher="Sena Agbodjan">
                         <div class="subject-card">
                             <div class="subject-img" style="background-image: url('{% static 'accueil/images/ang.jpg' %}');">
                                 <span class="domain-indicator lettres">Lettres &amp; langues</span>
@@ -625,45 +425,62 @@
                             <div class="subject-info">
                                 <h3 class="subject-title">Anglais</h3>
                                 <div class="subject-meta">
-                                    <span><i class="fas fa-clock"></i> 3h/semaine</span>
-                                    <span><i class="fas fa-user-graduate"></i> Lucie Bernard</span>
+                                    <span><i class="fas fa-clock"></i> 2h à 3h/semaine</span>
+                                    <span><i class="fas fa-user-graduate"></i> Sena Agbodjan</span>
                                 </div>
                                 <p>Apprentissage de la langue anglaise à travers la compréhension orale et écrite, l'expression et l'interaction. Découverte des cultures anglophones.</p>
                                 <div>
-                                    <span class="badge-level">6ème</span>
-                                    <span class="badge-level">5ème</span>
-                                    <span class="badge-level">4ème</span>
-                                    <span class="badge-level">3ème</span>
+                                    <span class="badge-level">Primaire</span>
+                                    <span class="badge-level">Collège</span>
+                                    <span class="badge-level">Lycée</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Technologie -->
-                    <div data-levels="6eme 5eme 4eme 3eme" data-domain="scientifique" data-teacher="Philippe Durand">
+                    <div data-levels="college lycee" data-domain="scientifique" data-teacher="Edem Atsu">
                         <div class="subject-card">
                             <div class="subject-img" style="background-image: url('{% static 'accueil/images/inf.png' %}');">
                                 <span class="domain-indicator scientifique">Scientifique</span>
                             </div>
                             <div class="subject-info">
-                                <h3 class="subject-title">Technologie</h3>
+                                <h3 class="subject-title">Technologie &amp; Informatique</h3>
                                 <div class="subject-meta">
-                                    <span><i class="fas fa-clock"></i> 1h30/semaine</span>
-                                    <span><i class="fas fa-user-graduate"></i> Philippe Durand</span>
+                                    <span><i class="fas fa-clock"></i> 1h30 à 2h/semaine</span>
+                                    <span><i class="fas fa-user-graduate"></i> Edem Atsu</span>
                                 </div>
                                 <p>Découverte des technologies contemporaines, initiation à la programmation, conception assistée par ordinateur et projets interdisciplinaires.</p>
                                 <div>
-                                    <span class="badge-level">6ème</span>
-                                    <span class="badge-level">5ème</span>
-                                    <span class="badge-level">4ème</span>
-                                    <span class="badge-level">3ème</span>
+                                    <span class="badge-level">Collège</span>
+                                    <span class="badge-level">Lycée</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Philosophie -->
+                    <div data-levels="lycee" data-domain="sciences-humaines" data-teacher="Kafui Sossou">
+                        <div class="subject-card">
+                            <div class="subject-img" style="background-image: url('{% static 'accueil/images/philo.jpg' %}');">
+                                <span class="domain-indicator sciences-humaines">Sciences humaines</span>
+                            </div>
+                            <div class="subject-info">
+                                <h3 class="subject-title">Philosophie</h3>
+                                <div class="subject-meta">
+                                    <span><i class="fas fa-clock"></i> 2h à 4h/semaine</span>
+                                    <span><i class="fas fa-user-graduate"></i> Kafui Sossou</span>
+                                </div>
+                                <p>Initiation à la réflexion philosophique, étude des grands auteurs et construction d'une pensée personnelle argumentée. Préparation à l'épreuve de Philosophie du Baccalauréat.</p>
+                                <div>
+                                    <span class="badge-level">Lycée</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- EPS -->
-                    <div data-levels="6eme 5eme 4eme 3eme" data-domain="arts" data-teacher="Julien Petit">
+                    <div data-levels="maternelle primaire college lycee" data-domain="arts" data-teacher="Amégan Kodjo">
                         <div class="subject-card">
                             <div class="subject-img" style="background-image: url('{% static 'accueil/images/sport.png' %}');">
                                 <span class="domain-indicator arts">Arts &amp; sport</span>
@@ -671,15 +488,15 @@
                             <div class="subject-info">
                                 <h3 class="subject-title">Éducation Physique et Sportive</h3>
                                 <div class="subject-meta">
-                                    <span><i class="fas fa-clock"></i> 3h/semaine</span>
-                                    <span><i class="fas fa-user-graduate"></i> Julien Petit</span>
+                                    <span><i class="fas fa-clock"></i> 2h à 3h/semaine</span>
+                                    <span><i class="fas fa-user-graduate"></i> Amégan Kodjo</span>
                                 </div>
-                                <p>Développement des capacités physiques, apprentissage de sports collectifs et individuels. Éducation à la santé et au bien-être.</p>
+                                <p>Développement des capacités physiques, apprentissage de sports collectifs et individuels. Éducation à la santé et au bien-être, à tous les niveaux.</p>
                                 <div>
-                                    <span class="badge-level">6ème</span>
-                                    <span class="badge-level">5ème</span>
-                                    <span class="badge-level">4ème</span>
-                                    <span class="badge-level">3ème</span>
+                                    <span class="badge-level">Maternelle</span>
+                                    <span class="badge-level">Primaire</span>
+                                    <span class="badge-level">Collège</span>
+                                    <span class="badge-level">Lycée</span>
                                 </div>
                             </div>
                         </div>
@@ -716,8 +533,10 @@
         const resultsCount = document.getElementById('results-count');
         const filterCount = document.getElementById('filterCount');
 
+        const ALL_DOMAINS = ['eveil', 'scientifique', 'lettres', 'sciences-humaines', 'arts'];
+
         let currentLevel = 'tous';
-        let currentDomains = ['scientifique', 'lettres', 'sciences-humaines', 'arts'];
+        let currentDomains = [...ALL_DOMAINS];
         let currentTeacher = 'tous';
 
         levelButtons.forEach(btn => {
@@ -732,7 +551,7 @@
         domainCheckboxes.forEach(cb => {
             cb.addEventListener('change', function() {
                 if (this.checked) {
-                    currentDomains.push(this.value);
+                    if (!currentDomains.includes(this.value)) currentDomains.push(this.value);
                 } else {
                     currentDomains = currentDomains.filter(d => d !== this.value);
                 }
@@ -785,14 +604,12 @@
         function resetFilters() {
             levelButtons.forEach(btn => {
                 btn.classList.remove('active');
-                if (btn.getAttribute('data-level') === 'tous') {
-                    btn.classList.add('active');
-                }
+                if (btn.getAttribute('data-level') === 'tous') btn.classList.add('active');
             });
             currentLevel = 'tous';
 
             domainCheckboxes.forEach(cb => { cb.checked = true; });
-            currentDomains = ['scientifique', 'lettres', 'sciences-humaines', 'arts'];
+            currentDomains = [...ALL_DOMAINS];
 
             teacherSelect.value = 'tous';
             currentTeacher = 'tous';
@@ -805,9 +622,8 @@
             let count = 0;
             if (currentLevel !== 'tous') count++;
 
-            const allDomains = ['scientifique', 'lettres', 'sciences-humaines', 'arts'];
-            const activeDomains = allDomains.filter(d => currentDomains.includes(d));
-            if (activeDomains.length < allDomains.length) count++;
+            const activeDomains = ALL_DOMAINS.filter(d => currentDomains.includes(d));
+            if (activeDomains.length < ALL_DOMAINS.length) count++;
 
             if (currentTeacher !== 'tous') count++;
 

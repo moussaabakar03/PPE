@@ -382,7 +382,7 @@
     <div class="container-ap">
         <span class="ap-eyebrow"><i class="fas fa-comments"></i> Contact</span>
         <h1>Contactez-nous</h1>
-        <p>Une question, une demande d'information ou un problème technique ? Notre équipe est à votre écoute.</p>
+        <p>Une question sur l'inscription, la scolarité ou la vie de l'école ? Notre équipe est à votre écoute.</p>
     </div>
 </section>
 
@@ -393,20 +393,20 @@
             <div class="ap-info-card">
                 <div class="ap-info-icon"><i class="fas fa-map-marker-alt"></i></div>
                 <h3>Adresse</h3>
-                <p>Collège AcadPro<br>Agoé Assiyéyé, Rue de 40 m<br>Lomé, Togo</p>
+                <p>École AcadPro<br>Agoé Assiyéyé, Rue de 40 m<br>Lomé, Togo</p>
                 <a href="#map" class="ap-btn ap-btn-outline">Voir sur la carte</a>
             </div>
             <div class="ap-info-card">
                 <div class="ap-info-icon"><i class="fas fa-phone"></i></div>
                 <h3>Téléphone</h3>
-                <p>Standard : <strong>+228 96 52 93 46</strong><br>Support AcadPro : <strong>+228 97 13 47 43</strong></p>
+                <p>Secrétariat : <strong> +228 72 35 41 40</strong><br>Direction : <strong>+228 97 13 47 43</strong></p>
                 <a href="tel:+22896529346" class="ap-btn ap-btn-outline">Appeler maintenant</a>
             </div>
             <div class="ap-info-card">
                 <div class="ap-info-icon"><i class="fas fa-envelope"></i></div>
                 <h3>Email</h3>
-                <p>Direction : <strong>direction@acadpro.fr</strong><br>Support technique : <strong>alimoussaabakar003@gmail.com</strong></p>
-                <a href="mailto:alimoussaabakar003@gmail.com" class="ap-btn ap-btn-outline">Envoyer un email</a>
+                <p>Direction : <strong>direction@acadpro.tg</strong><br>Secrétariat : <strong>contact@acadpro.tg</strong></p>
+                <a href="mailto:contact@acadpro.tg" class="ap-btn ap-btn-outline">Envoyer un email</a>
             </div>
         </div>
     </div>
@@ -419,7 +419,7 @@
             <div class="ap-form-col">
                 <span class="ap-eyebrow"><i class="fas fa-paper-plane"></i> Message</span>
                 <h2 class="ap-title">Envoyez-nous un message</h2>
-                <p class="ap-lead" style="margin-bottom: 26px;">Utilisez ce formulaire pour toute demande d'information ou assistance technique.</p>
+                <p class="ap-lead" style="margin-bottom: 26px;">Utilisez ce formulaire pour toute demande d'information, d'inscription ou d'assistance.</p>
 
                 {% if messages %}
                     {% for message in messages %}
@@ -440,16 +440,16 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Votre email *</label>
-                                <input type="email" name="email" class="form-control" placeholder="email@exemple.fr" required>
+                                <input type="email" name="email" class="form-control" placeholder="email@exemple.com" required>
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Sujet de votre message *</label>
                                 <select name="sujet" class="form-select" required>
                                     <option value="">Sélectionnez un sujet</option>
                                     <option>Demande d'inscription</option>
+                                    <option>Question sur la scolarité</option>
                                     <option>Question pédagogique</option>
-                                    <option>Support technique AcadPro</option>
-                                    <option>Problème de connexion</option>
+                                    <option>Assistance administrative</option>
                                     <option>Autre demande</option>
                                 </select>
                             </div>
@@ -461,7 +461,7 @@
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="consent" required>
                                     <label class="form-check-label" for="consent">
-                                        J'autorise le collège AcadPro à conserver mes informations pour traiter ma demande.
+                                        J'autorise l'école AcadPro à conserver mes informations pour traiter ma demande.
                                     </label>
                                 </div>
                             </div>
@@ -483,18 +483,18 @@
                 <div class="ap-side-card">
                     <h4><i class="fas fa-clock" style="color: var(--ap-gold-dark); margin-right: 8px;"></i>Horaires d'ouverture</h4>
                     <ul>
-                        <li><i class="fas fa-check"></i> Lundi - Vendredi : 8h00 - 18h00</li>
-                        <li><i class="fas fa-check"></i> Samedi : 9h00 - 12h00</li>
+                        <li><i class="fas fa-check"></i> Lundi - Vendredi : 7h30 - 17h30</li>
+                        <li><i class="fas fa-check"></i> Samedi : 8h00 - 12h00</li>
                         <li><i class="fas fa-xmark"></i> Dimanche : Fermé</li>
                     </ul>
                 </div>
 
                 <div class="ap-side-card">
-                    <h4><i class="fas fa-headset" style="color: var(--ap-gold-dark); margin-right: 8px;"></i>Support technique AcadPro</h4>
+                    <h4><i class="fas fa-headset" style="color: var(--ap-gold-dark); margin-right: 8px;"></i>Secrétariat de l'école</h4>
                     <ul>
-                        <li><i class="fas fa-phone"></i> +228 96 52 93 46</li>
-                        <li><i class="fas fa-envelope"></i> alimoussaabakar003@gmail.com</li>
-                        <li><i class="fas fa-clock"></i> Assistance : 8h-20h en semaine</li>
+                        <li><i class="fas fa-phone"></i> +228 72 35 41 40</li>
+                        <li><i class="fas fa-envelope"></i> contact@acadpro.tg</li>
+                        <li><i class="fas fa-clock"></i> Accueil : 7h30 - 17h30 (Lun-Ven)</li>
                     </ul>
                 </div>
             </div>
@@ -513,13 +513,13 @@
         <div class="ap-faq-card">
             <div class="faq-item">
                 <div class="faq-question">
-                    <span>Comment inscrire mon enfant au collège ?</span>
+                    <span>Comment inscrire mon enfant à AcadPro ?</span>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
                     <p>L'inscription se fait en plusieurs étapes :</p>
                     <ol>
-                        <li>Prenez rendez-vous avec le secrétariat au +228 96 52 93 46</li>
+                        <li>Prenez rendez-vous avec le secrétariat au +228 72 35 41 40</li>
                         <li>Préparez les documents nécessaires (acte de naissance, bulletins scolaires)</li>
                         <li>Remplissez le dossier d'inscription en ligne ou au secrétariat</li>
                         <li>Participez à l'entretien d'admission avec la direction pédagogique</li>
@@ -529,11 +529,11 @@
             </div>
             <div class="faq-item">
                 <div class="faq-question">
-                    <span>J'ai oublié mon mot de passe AcadPro, que faire ?</span>
+                    <span>Comment accéder à l'espace parents en ligne ?</span>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
-                    <p>Rendez-vous sur la page de connexion AcadPro et utilisez le lien "Nous écrire" pour contacter le secrétariat, qui pourra réinitialiser votre accès.</p>
+                    <p>L'espace parents vous permet de consulter les notes, bulletins et informations de scolarité. Si vous avez oublié vos identifiants ou rencontrez une difficulté de connexion, contactez le secrétariat au +228 72 35 41 40 ou par email à contact@acadpro.tg. Nous vous aiderons à réinitialiser votre accès.</p>
                 </div>
             </div>
             <div class="faq-item">

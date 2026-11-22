@@ -765,15 +765,18 @@ def all_parents(request):
 
             contenu_message = f"De: <{email}>\n\n{message}"
 
-            send_mail(
-                sujet,
-                contenu_message,
-                settings.EMAIL_HOST_USER,
-                [email],# Mets ici ton adresse de réception
-                fail_silently=False,
-            )
-            messages.success(request, "Message envoyé avec succès!")
-            message_envoye = True
+            try:
+                send_mail(
+                    sujet,
+                    contenu_message,
+                    settings.EMAIL_HOST_USER,
+                    [email],# Mets ici ton adresse de réception
+                    fail_silently=False,
+                )
+                messages.success(request, "Message envoyé avec succès!")
+                message_envoye = True
+            except Exception as e:
+                messages.error(request, f"Échec de l'envoi de l'email : {e}")
             
     
     parents = Parent.objects.all()
@@ -1072,15 +1075,18 @@ def studentParSalle(request, id):
 
             contenu_message = f"De: <{email}>\n\n{message}"
 
-            send_mail(
-                sujet,
-                contenu_message,
-                settings.EMAIL_HOST_USER,
-                [email],# Mets ici ton adresse de réception
-                fail_silently=False,
-            )
-            messages.success(request, "Message envoyé avec succès!")
-            message_envoye = True
+            try:
+                send_mail(
+                    sujet,
+                    contenu_message,
+                    settings.EMAIL_HOST_USER,
+                    [email],# Mets ici ton adresse de réception
+                    fail_silently=False,
+                )
+                messages.success(request, "Message envoyé avec succès!")
+                message_envoye = True
+            except Exception as e:
+                messages.error(request, f"Échec de l'envoi de l'email : {e}")
             
         return render(request, 'studentParSalle.html', {"salle": salle, 'inscrits': inscrits, 'nombre': nombre, 'nombreMasculin': nombreMasculin,'nombreFeminin': nombreFeminin, 'nombreEtendu': nombreEtendu, 'annee': anneeScolaire, 'form': form, 'message_envoye': message_envoye})
     

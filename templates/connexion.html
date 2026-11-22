@@ -12,10 +12,8 @@
             color: white;
         }
         :root {
-            {% comment %} --primary-color:rgb(226, 205, 118); {% endcomment %}
             --primary-light: #6ea1e1;
             --primary-dark: #2c5ba8;
-            {% comment %} --secondary-color:rgb(177, 188, 93); {% endcomment %}
             --text-color: #333;
             --light-gray: #f8f9fa;
             --medium-gray: #e9ecef;
@@ -56,7 +54,6 @@
         }
         
         .auth-card {
-            {% comment %} background-color: white; {% endcomment %}
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             padding: 40px;
@@ -67,7 +64,6 @@
             overflow: hidden;
             transition: var(--transition);
             border: 0.5px solid black;
-                {% comment %} background: linear-gradient( #2c5ba8, #2c5ba8 ); {% endcomment %}
             background: linear-gradient(rgba(72, 105, 150, 0.85), rgba(67, 96, 138, 0.9)), url('{% static 'accueil/images/contactAccueil.jpg' %}');
 
 
@@ -186,7 +182,6 @@
         }
         
         .btn {
-            {% comment %} background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%); {% endcomment %}
             color: black;
             border: none;
             padding: 14px 20px;
@@ -420,14 +415,14 @@
                 
                 <div class="divider" style="color: #ece3e3ff;">ou</div>
                 
-                <div class="social-login">
+                <!-- <div class="social-login">
                     <button type="button" class="social-btn facebook">
                         <i>f</i>
                     </button>
                     <button type="button" class="social-btn google">
                         <i>G</i>
                     </button>
-                </div>
+                </div> -->
                 
                 <div class="switch-form">
                     <a href="#" style="font-size: 14px; color: #ece3e3ff; text-decoration: none;">Mot de passe oublié?</a><a href="{% url 'contact' %}" style="color: red;" id="switch-to-signup">Nous ecrire</a>
