@@ -86,6 +86,12 @@
                                     <label>Classe *</label>
                                     <select class="select2" name="classe" required>
                                         <option value="">Veuillez sélectionner le niveau</option>
+                                        <option value="CP1" {% if classe.classe == "CP1" %}selected{% endif %}>CP1</option>
+                                        <option value="CP2" {% if classe.classe == "CP2" %}selected{% endif %}>CP2</option>
+                                        <option value="CE1" {% if classe.classe == "CE1" %}selected{% endif %}>CE1</option>
+                                        <option value="CE2" {% if classe.classe == "CE2" %}selected{% endif %}>CE2</option>
+                                        <option value="CM1" {% if classe.classe == "CM1" %}selected{% endif %}>CM1</option>
+                                        <option value="CM2" {% if classe.classe == "CM2" %}selected{% endif %}>CM2</option>
                                         <option value="6ème" {% if classe.classe == "6ème" %}selected{% endif %}>6e</option>
                                         <option value="5ème" {% if classe.classe == "5ème" %}selected{% endif %}>5e</option>
                                         <option value="4ème" {% if classe.classe == "4ème" %}selected{% endif %}>4e</option>
